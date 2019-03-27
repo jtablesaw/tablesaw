@@ -14,6 +14,10 @@
 
 package tech.tablesaw.io.csv;
 
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.Source;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,10 +25,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.Locale;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.Source;
 
 public class CsvReadOptions extends ReadOptions {
 
@@ -123,6 +123,10 @@ public class CsvReadOptions extends ReadOptions {
         return commentPrefix;
     }
 
+    public int maxCharsPerColumn() {
+        return maxCharsPerColumn;
+    }
+
     public static class Builder extends ReadOptions.Builder {
 
         private Character separator = ',';
@@ -218,6 +222,11 @@ public class CsvReadOptions extends ReadOptions {
             return this;
         }
 
+        public Builder maxCharsPerColumn(int maxCharsPerColumn) {
+            super.maxCharsPerColumn(maxCharsPerColumn);
+            return this;
+        }
+
         @Override
         public Builder dateTimeFormat(String dateTimeFormat) {
             super.dateTimeFormat(dateTimeFormat);
@@ -242,5 +251,4 @@ public class CsvReadOptions extends ReadOptions {
             return this;
         }
     }
-
 }

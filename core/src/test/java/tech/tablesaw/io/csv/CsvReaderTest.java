@@ -14,6 +14,30 @@
 
 package tech.tablesaw.io.csv;
 
+import com.univocity.parsers.common.TextParsingException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.AddCellToColumnException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.nio.file.Paths;
+import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,31 +53,6 @@ import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.SKIP;
 import static tech.tablesaw.api.ColumnType.STRING;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.file.Paths;
-import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import org.junit.jupiter.api.Test;
-
-import com.univocity.parsers.common.TextParsingException;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.AddCellToColumnException;
-
 /**
  * Tests for CSV Reading
  */
@@ -63,6 +62,39 @@ public class CsvReaderTest {
 
     private final ColumnType[] bus_types = {SHORT, STRING, STRING, FLOAT, FLOAT};
     private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
+
+    @Test
+    public void testMaxCharsPerColumnPass() throws IOException {
+        final Reader reader = new StringReader(
+                "Text" + LINE_END
+                        + "\"short\"" + LINE_END
+                        + "1234567890" + LINE_END);
+
+        final boolean header = true;
+        final int maxCharsPerColumn = 12;
+
+        CsvReadOptions options = CsvReadOptions.builder(reader)
+                .header(header)
+                .maxCharsPerColumn(maxCharsPerColumn)
+                .build();
+
+        Table result = Table.read().csv(CsvReadOptions.builder(reader).maxCharsPerColumn(maxCharsPerColumn));
+        assertEquals(2, result.rowCount());
+    }
+
+    @Test
+    public void testMaxCharsPerColumnException() throws IOException {
+        final Reader reader = new StringReader(
+                "Text" + LINE_END
+                        + "\"short\"" + LINE_END
+                        + "1234567890" + LINE_END);
+
+        final int maxCharsPerColumn = 8;
+
+        Assertions.assertThrows(com.univocity.parsers.common.TextParsingException.class, () -> {
+            Table.read().csv(CsvReadOptions.builder(reader).maxCharsPerColumn(maxCharsPerColumn));
+        });
+    }
 
     @Test
     public void testWithBusData() throws IOException {
@@ -208,7 +240,6 @@ public class CsvReaderTest {
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
         assertEquals(actual, Collections.singletonList(LOCAL_DATE_TIME));
-
     }
 
     @Test

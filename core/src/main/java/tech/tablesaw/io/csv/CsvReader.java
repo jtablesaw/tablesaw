@@ -14,26 +14,23 @@
 
 package tech.tablesaw.io.csv;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.List;
-
-import javax.annotation.concurrent.Immutable;
-
-import org.apache.commons.math3.util.Pair;
-
 import com.google.common.io.CharStreams;
 import com.univocity.parsers.common.AbstractParser;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-
+import org.apache.commons.math3.util.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.FileReader;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
+
+import javax.annotation.concurrent.Immutable;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.List;
 
 @Immutable
 public class CsvReader extends FileReader implements DataReader<CsvReadOptions> {
@@ -163,6 +160,7 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
         CsvParserSettings settings = new CsvParserSettings();
         settings.setLineSeparatorDetectionEnabled(options.lineSeparatorDetectionEnabled());
         settings.setFormat(csvFormat(options));
+        settings.setMaxCharsPerColumn(options.maxCharsPerColumn());
         if (options.maxNumberOfColumns() != null) {
             settings.setMaxColumns(options.maxNumberOfColumns());
         }

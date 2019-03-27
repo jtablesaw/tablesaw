@@ -70,6 +70,8 @@ public class ReadOptions {
     protected final Locale locale;
     protected final String missingValueIndicator;
     protected final boolean minimizeColumnSizes;
+    protected final int maxCharsPerColumn;
+
     protected final boolean header;
 
     protected ReadOptions(ReadOptions.Builder builder) {
@@ -82,6 +84,7 @@ public class ReadOptions {
         missingValueIndicator = builder.missingValueIndicator;
         minimizeColumnSizes = builder.minimizeColumnSizes;
         header = builder.header;
+        maxCharsPerColumn = builder.maxCharsPerColumn;
 
         if (builder.locale == null) {
             locale = Locale.getDefault();
@@ -151,6 +154,7 @@ public class ReadOptions {
         protected String missingValueIndicator;
         protected boolean minimizeColumnSizes = false;
         protected boolean header = true;
+        protected int maxCharsPerColumn = 4096;
 
         protected Builder() {
             source = null;
@@ -195,6 +199,11 @@ public class ReadOptions {
 
         public Builder timeFormat(String timeFormat) {
             this.timeFormat = timeFormat;
+            return this;
+        }
+
+        public Builder maxCharsPerColumn(int maxCharsPerColumn) {
+            this.maxCharsPerColumn = maxCharsPerColumn;
             return this;
         }
 

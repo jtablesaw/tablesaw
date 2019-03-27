@@ -14,18 +14,17 @@
 
 package tech.tablesaw.io.fixed;
 
+import com.univocity.parsers.fixed.FixedWidthFields;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.Source;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Locale;
-
-import com.univocity.parsers.fixed.FixedWidthFields;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.Source;
 
 public class FixedWidthReadOptions extends ReadOptions {
 
@@ -164,6 +163,10 @@ public class FixedWidthReadOptions extends ReadOptions {
             return this;
         }
 
+        public Builder maxCharsPerColumn(int maxCharsPerColumn) {
+            super.maxCharsPerColumn(maxCharsPerColumn);
+            return this;
+        }
 
         public Builder lineEnding(String lineEnding) {
             this.lineEnding = lineEnding;
