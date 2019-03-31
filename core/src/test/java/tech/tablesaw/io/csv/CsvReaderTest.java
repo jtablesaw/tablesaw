@@ -70,7 +70,7 @@ public class CsvReaderTest {
                         + "1234567890" + LINE_END);
 
         final int maxCharsPerColumn = 12;
-        
+
         Table result = Table.read().csv(CsvReadOptions.builder(reader).maxCharsPerColumn(maxCharsPerColumn));
         assertEquals(2, result.rowCount());
     }
@@ -208,26 +208,18 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testLocalDateTimeDetectionEnglish() {
+    public void testDateTimeDetection() {
 
         final Reader reader = new StringReader(
               "Date" + LINE_END
-            + "09-Nov-2014 13:03" + LINE_END
-            + "09-Oct-2014 13:03" + LINE_END
-            + "09-Sep-2014 13:03" + LINE_END
-            + "09-Aug-2014 13:03" + LINE_END
-            + "09-Jul-2014 13:03" + LINE_END
-            + "09-Jun-2014 13:03" + LINE_END);
+            + "09-Nov-2014 13:03:04" + LINE_END
+            + "09-Oct-2014 13:03:56" + LINE_END);
 
         final boolean header = true;
-        final char delimiter = ',';
-        final boolean useSampling = true;
 
         CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(header)
-                .separator(delimiter)
-                .sample(useSampling)
-                .locale(Locale.ENGLISH)
+                .dateTimeFormat("dd-MMM-yyyy HH:mm:ss")
                 .build();
 
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
