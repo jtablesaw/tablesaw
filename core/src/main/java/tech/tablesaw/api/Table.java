@@ -203,49 +203,6 @@ public class Table extends Relation implements Iterable<Row> {
         return new DataFrameWriter(defaultWriterRegistry, this);
     }
 
-    private Table padColumnsWithMissing(boolean addColumns, final Column<?>... cols) {
-        int max = 0;
-        for (Column<?> col : columnList) {
-            max = Math.max(max, col.size());
-        }
-        for (Column<?> col : cols) {
-            max = Math.max(max, col.size());
-        }
-        for (Column<?> col : columnList) {
-            while (col.size() < max) {
-                col.appendMissing();
-            }
-        }
-        for (Column<?> col : cols) {
-            while (col.size() < max) {
-                col.appendMissing();
-            }
-        }
-        if (addColumns) {
-            addColumns(cols);
-        }
-        return this;
-    }
-
-    /**
-     * Appends missing values to columns in this table,
-     * to ensure the table is rectangular.
-     * @return this Table
-     */
-    public Table padColumnsWithMissing() {
-        return padColumnsWithMissing(false);
-    }
-
-    /**
-     * Appends missing values to columns in this table and to the columns given as arguments,
-     * before adding the columns. This ensures the table is rectangular.
-     * @param cols the columns to pad and add 
-     * @return this Table
-     */
-    public Table padWithMissingAndAddColumns(final Column<?>... cols) {
-        return padColumnsWithMissing(true, cols);
-    }
-
     /**
      * Adds the given column to this table
      */

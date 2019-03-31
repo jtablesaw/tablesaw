@@ -30,6 +30,8 @@ import tech.tablesaw.util.StringUtils;
  */
 public class DataFramePrinter {
 
+    private final static String TOO_SHORT_COLUMN_MARKER = "?"; 
+
     private final int maxRows;
     private final OutputStream stream;
 
@@ -172,8 +174,6 @@ public class DataFramePrinter {
         });
         return header;
     }
-
-    private final static String TOO_SHORT_COLUMN_MARKER = "💣"; 
     
     /**
      * Returns the 2-D array of data tokens from the frame specified
