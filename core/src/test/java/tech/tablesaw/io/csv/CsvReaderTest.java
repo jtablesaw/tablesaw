@@ -33,6 +33,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Paths;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +50,7 @@ import static tech.tablesaw.api.ColumnType.FLOAT;
 import static tech.tablesaw.api.ColumnType.INTEGER;
 import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
 import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
 import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.SKIP;
 import static tech.tablesaw.api.ColumnType.STRING;
@@ -204,7 +207,7 @@ public class CsvReaderTest {
 
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-        assertEquals(actual, Collections.singletonList(LOCAL_DATE));
+        assertEquals(Collections.singletonList(LOCAL_DATE), actual);
     }
 
     @Test
@@ -224,7 +227,97 @@ public class CsvReaderTest {
 
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-        assertEquals(actual, Collections.singletonList(LOCAL_DATE_TIME));
+        assertEquals(Collections.singletonList(LOCAL_DATE_TIME), actual);
+    }
+
+    @Test
+    public void testDateTimeDetection2() {
+
+        final Reader reader = new StringReader(
+              "Date" + LINE_END
+            + "09-Nov-2014 13:03:04" + LINE_END
+            + "09-Oct-2014 13:03:56" + LINE_END);
+
+        final boolean header = true;
+
+        CsvReadOptions options = CsvReadOptions.builder(reader)
+                .header(header)
+                .dateTimeFormat(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss"))
+                .build();
+
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+
+        assertEquals(Collections.singletonList(LOCAL_DATE_TIME), actual);
+    }
+
+    @Test
+    public void testDateTimeDetection3() {
+
+        final Reader reader = new StringReader(
+              "Date" + LINE_END
+            + "09-NOV-2014 13:03:04" + LINE_END
+            + "09-OCT-2014 13:03:56" + LINE_END);
+
+        final boolean header = true;
+
+        CsvReadOptions options = CsvReadOptions.builder(reader)
+                .header(header)
+                .dateTimeFormat(
+                        new DateTimeFormatterBuilder()
+                                .parseCaseInsensitive()
+                                .appendPattern("dd-MMM-yyyy HH:mm:ss")
+                                .toFormatter())
+                .build();
+
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+
+        assertEquals(Collections.singletonList(LOCAL_DATE_TIME), actual);
+    }
+
+    @Test
+    public void testDateDetection1() {
+
+        final Reader reader = new StringReader(
+              "Time" + LINE_END
+            + "13.03.04" + LINE_END
+            + "13.03.04" + LINE_END);
+
+        final boolean header = true;
+
+        CsvReadOptions options = CsvReadOptions.builder(reader)
+                .header(header)
+                .timeFormat(
+                        new DateTimeFormatterBuilder()
+                                .parseCaseInsensitive()
+                                .appendPattern("HH.mm.ss")
+                                .toFormatter())
+                .build();
+
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+        assertEquals(Collections.singletonList(LOCAL_TIME), actual);
+    }
+
+    @Test
+    public void testTimeDetection1() {
+
+        final Reader reader = new StringReader(
+              "Date" + LINE_END
+            + "09-NOV-2014" + LINE_END
+            + "09-OCT-2014" + LINE_END);
+
+        final boolean header = true;
+
+        CsvReadOptions options = CsvReadOptions.builder(reader)
+                .header(header)
+                .dateFormat(
+                        new DateTimeFormatterBuilder()
+                                .parseCaseInsensitive()
+                                .appendPattern("dd-MMM-yyyy")
+                                .toFormatter())
+                .build();
+
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+        assertEquals(Collections.singletonList(LOCAL_DATE), actual);
     }
 
     @Test
@@ -327,7 +420,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testDateWithFormatter2() throws IOException {
+    public void testDateWithFormatter1() throws IOException {
 
         final boolean header = false;
         final char delimiter = ',';
@@ -338,6 +431,25 @@ public class CsvReaderTest {
                 .separator(delimiter)
                 .sample(useSampling)
                 .dateFormat("yyyy.MM.dd")
+                .build();
+
+        final Table table = Table.read().csv(options);
+        DateColumn date = table.dateColumn(0);
+        assertFalse(date.isEmpty());
+    }
+
+    @Test
+    public void testDateWithFormatter2() throws IOException {
+
+        final boolean header = false;
+        final char delimiter = ',';
+        final boolean useSampling = true;
+
+        CsvReadOptions options = CsvReadOptions.builder("../data/date_format_test.txt")
+                .header(header)
+                .separator(delimiter)
+                .sample(useSampling)
+                .dateFormat(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
                 .build();
 
         final Table table = Table.read().csv(options);

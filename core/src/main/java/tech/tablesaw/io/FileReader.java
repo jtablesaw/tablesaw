@@ -227,5 +227,4 @@ public abstract class FileReader {
         buf.append(System.lineSeparator());
         return buf.toString();
     }
-
 }

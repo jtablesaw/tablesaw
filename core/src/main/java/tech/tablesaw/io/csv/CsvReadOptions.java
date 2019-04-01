@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class CsvReadOptions extends ReadOptions {
@@ -211,25 +212,46 @@ public class CsvReadOptions extends ReadOptions {
         }
 
         @Override
+        @Deprecated
         public Builder dateFormat(String dateFormat) {
             super.dateFormat(dateFormat);
             return this;
         }
 
         @Override
+        @Deprecated
         public Builder timeFormat(String timeFormat) {
             super.timeFormat(timeFormat);
             return this;
         }
 
-        public Builder maxCharsPerColumn(int maxCharsPerColumn) {
-            super.maxCharsPerColumn(maxCharsPerColumn);
+        @Override
+        @Deprecated
+        public Builder dateTimeFormat(String dateTimeFormat) {
+            super.dateTimeFormat(dateTimeFormat);
             return this;
         }
 
         @Override
-        public Builder dateTimeFormat(String dateTimeFormat) {
+        public Builder dateFormat(DateTimeFormatter dateFormat) {
+            super.dateFormat(dateFormat);
+            return this;
+        }
+
+        @Override
+        public Builder timeFormat(DateTimeFormatter timeFormat) {
+            super.timeFormat(timeFormat);
+            return this;
+        }
+
+        @Override
+        public Builder dateTimeFormat(DateTimeFormatter dateTimeFormat) {
             super.dateTimeFormat(dateTimeFormat);
+            return this;
+        }
+
+        public Builder maxCharsPerColumn(int maxCharsPerColumn) {
+            super.maxCharsPerColumn(maxCharsPerColumn);
             return this;
         }
 
