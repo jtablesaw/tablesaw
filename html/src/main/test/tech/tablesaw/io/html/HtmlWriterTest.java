@@ -17,6 +17,7 @@ package tech.tablesaw.io.html;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
 
@@ -96,6 +97,51 @@ public class HtmlWriterTest {
                 "  <tr class=\"even\">" + LINE_END +
                 "   <td></td>" + LINE_END +
                 "   <td></td>" + LINE_END +
+                "  </tr>" + LINE_END +
+                " </tbody>" + LINE_END +
+                "</table>", output);
+    }
+
+    @Test
+    public void noEscape() throws IOException {
+        String[] data = {"<p>foo</p>"};
+        Table table = Table.create("t", StringColumn.create("data", data));
+
+        OutputStream baos = new ByteArrayOutputStream();
+
+        table.write().usingOptions(HtmlWriteOptions.builder(baos).escapeText(false).build());
+        String output = baos.toString();
+        assertEquals("<table>" + LINE_END +
+                " <thead>" + LINE_END +
+                "  <tr>" + LINE_END +
+                "   <th>data</th>" + LINE_END +
+                "  </tr>" + LINE_END +
+                " </thead>" + LINE_END +
+                " <tbody>" + LINE_END +
+                "  <tr>" + LINE_END +
+                "   <td><p>foo</p></td>" + LINE_END +
+                "  </tr>" + LINE_END +
+                " </tbody>" + LINE_END +
+                "</table>", output);
+    }
+    @Test
+    public void escape() throws IOException {
+        String[] data = {"<p>foo</p>"};
+        Table table = Table.create("t", StringColumn.create("data", data));
+
+        OutputStream baos = new ByteArrayOutputStream();
+
+        table.write().usingOptions(HtmlWriteOptions.builder(baos).build());
+        String output = baos.toString();
+        assertEquals("<table>" + LINE_END +
+                " <thead>" + LINE_END +
+                "  <tr>" + LINE_END +
+                "   <th>data</th>" + LINE_END +
+                "  </tr>" + LINE_END +
+                " </thead>" + LINE_END +
+                " <tbody>" + LINE_END +
+                "  <tr>" + LINE_END +
+                "   <td>&lt;p&gt;foo&lt;/p&gt;</td>" + LINE_END +
                 "  </tr>" + LINE_END +
                 " </tbody>" + LINE_END +
                 "</table>", output);

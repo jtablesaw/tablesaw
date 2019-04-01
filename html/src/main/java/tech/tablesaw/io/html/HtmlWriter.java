@@ -14,6 +14,7 @@
 
 package tech.tablesaw.io.html;
 
+import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Element;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -47,7 +48,7 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
         Element tbody = elements.create("tbody");
         html.appendChild(tbody);
         for (int row = 0; row < table.rowCount(); row++) {
-            tbody.appendChild(row(row, table, elements));
+            tbody.appendChild(row(row, table, elements, options));
         }
 
         Writer writer = options.destination().createWriter();
@@ -58,11 +59,16 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
     /**
      * Returns a string containing the html output of one table row
      */
-    private static Element row(int row, Table table, ElementCreator elements) {
+    private static Element row(int row, Table table, ElementCreator elements, HtmlWriteOptions options) {
         Element tr = elements.create("tr", null, row);
         for (Column<?> col : table.columns()) {
-          tr.appendChild(elements.create("td", col, row)
-              .appendText(String.valueOf(col.getString(row))));
+            if (options.escapeText()) {
+                tr.appendChild(elements.create("td", col, row)
+                        .appendText(String.valueOf(col.getString(row))));
+            } else {
+                tr.appendChild(elements.create("td", col, row)
+                        .appendChild(new DataNode(String.valueOf(col.getString(row)))));
+            }
         }
         return tr;
     }
@@ -73,7 +79,7 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
         thead.appendChild(tr);
         for (Column<?> col : cols) {
             tr.appendChild(elements.create("th", col, null)
-                .appendText(col.name()));
+                    .appendText(col.name()));
         }
         return thead;
     }

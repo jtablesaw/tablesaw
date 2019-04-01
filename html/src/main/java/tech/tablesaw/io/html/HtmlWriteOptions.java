@@ -1,23 +1,28 @@
 package tech.tablesaw.io.html;
 
+import org.jsoup.nodes.Element;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriteOptions;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
-import org.jsoup.nodes.Element;
-
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.Destination;
-import tech.tablesaw.io.WriteOptions;
-
 public class HtmlWriteOptions extends WriteOptions {
 
     private final ElementCreator elementCreator;
-  
+    private final boolean escapeText;
+
     protected HtmlWriteOptions(Builder builder) {
         super(builder);
+        this.escapeText = builder.escapeText;
         this.elementCreator = builder.elementCreator;
+    }
+
+    public boolean escapeText() {
+        return escapeText;
     }
 
     public ElementCreator elementCreator() {
@@ -46,7 +51,9 @@ public class HtmlWriteOptions extends WriteOptions {
 
     public static class Builder extends WriteOptions.Builder {
         private ElementCreator elementCreator
-            = (elementName, column, row) -> new Element(elementName);
+                = (elementName, column, row) -> new Element(elementName);
+
+        private boolean escapeText = true;
 
         protected Builder(Destination dest) {
             super(dest);
@@ -54,6 +61,11 @@ public class HtmlWriteOptions extends WriteOptions {
 
         protected Builder(File file) throws IOException {
             super(file);
+        }
+
+        public Builder escapeText(boolean escapeText) throws IOException {
+            this.escapeText = escapeText;
+            return this;
         }
 
         protected Builder(Writer writer) {
@@ -68,9 +80,9 @@ public class HtmlWriteOptions extends WriteOptions {
             this.elementCreator = elementCreator;
             return this;
         }
-        
+
         public HtmlWriteOptions build() {
-          return new HtmlWriteOptions(this);
+            return new HtmlWriteOptions(this);
         }
     }
 
@@ -89,5 +101,4 @@ public class HtmlWriteOptions extends WriteOptions {
             return create(elementName, null, null);
         }
     }
-
 }
