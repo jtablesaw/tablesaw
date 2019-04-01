@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class XlsxReadOptions extends ReadOptions {
@@ -108,7 +109,6 @@ public class XlsxReadOptions extends ReadOptions {
             return this;
         }
 
-/*
         @Override
         public Builder dateFormat(DateTimeFormatter dateFormat) {
             super.dateFormat(dateFormat);
@@ -126,7 +126,6 @@ public class XlsxReadOptions extends ReadOptions {
             super.dateTimeFormat(dateTimeFormat);
             return this;
         }
-*/
 
         @Override
         public Builder locale(Locale locale) {

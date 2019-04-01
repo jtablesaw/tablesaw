@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class HtmlReadOptions extends ReadOptions {
@@ -138,7 +139,6 @@ public class HtmlReadOptions extends ReadOptions {
             return this;
         }
 
-/*
         @Override
         public Builder dateFormat(DateTimeFormatter dateFormat) {
             super.dateFormat(dateFormat);
@@ -156,7 +156,6 @@ public class HtmlReadOptions extends ReadOptions {
             super.dateTimeFormat(dateTimeFormat);
             return this;
         }
-*/
 
         @Override
         public Builder locale(Locale locale) {
