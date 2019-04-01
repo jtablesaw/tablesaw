@@ -174,7 +174,11 @@ public class DataFramePrinter {
         });
         return header;
     }
-    
+
+    private String getDataToken(Column<?> col, int i) {
+        return col.size() > i ? col.getString(i) : TOO_SHORT_COLUMN_MARKER;
+    }
+
     /**
      * Returns the 2-D array of data tokens from the frame specified
      *
@@ -193,7 +197,7 @@ public class DataFramePrinter {
             for (i = 0; i < Math.ceil((double) rowCount / 2); i++) {
                 for (int j = 0; j < colCount; j++) {
                     Column<?> col = frame.column(j);
-                    data[i][j] = (col.size() > i ? col.getString(i) : TOO_SHORT_COLUMN_MARKER);
+                    data[i][j] = getDataToken(col, i);
                 }
             }
             for (int j = 0; j < colCount; j++) {
@@ -202,7 +206,7 @@ public class DataFramePrinter {
             for (++i; i <= rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
                     Column<?> col = frame.column(j);
-                    data[i][j] = (col.size() > frame.rowCount() - maxRows + i - 1 ? col.getString(frame.rowCount() - maxRows + i - 1) : TOO_SHORT_COLUMN_MARKER);
+                    data[i][j] = getDataToken(col, frame.rowCount() - maxRows + i - 1);
                 }
             }
         } else {
@@ -210,12 +214,11 @@ public class DataFramePrinter {
             for (int i = 0; i < rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
                     Column<?> col = frame.column(j);
-                    String value = (col.size() > i ? col.getString(i) : TOO_SHORT_COLUMN_MARKER);
+                    String value = getDataToken(col, i);
                     data[i][j] = value == null ? "" : value;
                 }
             }
         }
         return data;
     }
-
 }
