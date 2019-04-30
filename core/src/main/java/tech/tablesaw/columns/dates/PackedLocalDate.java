@@ -21,12 +21,10 @@ import tech.tablesaw.columns.numbers.IntColumnType;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.ZoneId;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
-import java.util.Date;
 import java.util.Locale;
 
 import static java.time.DayOfWeek.FRIDAY;
@@ -111,10 +109,6 @@ public class PackedLocalDate {
                 (short) date.getYear(),
                 (byte) date.getMonthValue(),
                 (byte) date.getDayOfMonth());
-    }
-
-    public static int pack(Date date) {
-        return pack(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
     }
 
     public static int pack(short yr, byte m, byte d) {
