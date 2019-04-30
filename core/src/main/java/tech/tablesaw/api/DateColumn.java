@@ -14,7 +14,24 @@
 
 package tech.tablesaw.api;
 
+import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 import com.google.common.base.Preconditions;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -30,23 +47,9 @@ import tech.tablesaw.columns.dates.DateFillers;
 import tech.tablesaw.columns.dates.DateFilters;
 import tech.tablesaw.columns.dates.DateMapFunctions;
 import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
-
-import java.nio.ByteBuffer;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * A column in a base table that contains float values
@@ -522,6 +525,67 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
 	return DoubleColumn.create(name(), asDoubleArray());
     }
 
+    /**
+     * Returns an array where each entry is the difference, measured in seconds,
+     * between the LocalDateTime and midnight, January 1, 1970 UTC.
+     *
+     * If a value is missing, DateTimeColumnType.missingValueIndicator() is used
+     */
+    public long[] asEpochSecondArray() {
+        return asEpochSecondArray(ZoneOffset.UTC);
+    }
+
+    /**
+     * Returns the seconds from epoch for each value as an array based on the given offset
+     *
+     * If a value is missing, DateTimeColumnType.missingValueIndicator() is used
+     */
+    public long[] asEpochSecondArray(ZoneOffset offset) {
+        long[] output = new long[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            LocalDate dateTime = PackedLocalDate.asLocalDate(data.getInt(i));
+            if (dateTime == null) {
+                output[i] = DateTimeColumnType.missingValueIndicator();
+            } else {
+                output[i] = dateTime.atStartOfDay(offset).toEpochSecond();
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Returns an array where each entry is the difference, measured in milliseconds,
+     * between the LocalDate and midnight, January 1, 1970 UTC.
+     *
+     * If a missing value is encountered, DateTimeColumnType.missingValueIndicator() is inserted in the array
+     */
+    public long[] asEpochMillisArray() {
+        return asEpochMillisArray(ZoneOffset.UTC);
+    }
+
+    /**
+     * Returns an array where each entry is the difference, measured in milliseconds,
+     * between the LocalDate and midnight, January 1, 1970 UTC.
+     *
+     * If a missing value is encountered, DateTimeColumnType.missingValueIndicator() is inserted in the array
+     */
+    public long[] asEpochMillisArray(ZoneOffset offset) {
+        long[] output = new long[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            LocalDate dateTime = PackedLocalDate.asLocalDate(data.getInt(i));
+            if (dateTime == null) {
+                output[i] = DateTimeColumnType.missingValueIndicator();
+            } else {
+                output[i] = dateTime.atStartOfDay(offset).toInstant().toEpochMilli();
+            }
+        }
+        return output;
+    }
+
+    public DateTimeColumn asDateTimeColumn() {
+	return DateTimeColumn.create(name(), asEpochMillisArray());
+    }
+
     @Override
     public boolean isMissing(int rowNumber) {
         return valueIsMissing(getIntInternal(rowNumber));
@@ -701,4 +765,5 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     public DateColumn sampleX(double proportion) {
         return (DateColumn) super.sampleX(proportion);
     }
+    
 }

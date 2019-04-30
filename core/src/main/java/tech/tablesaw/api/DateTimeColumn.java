@@ -36,6 +36,7 @@ import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -83,6 +84,14 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(initialSize));
         for (int i = 0; i < initialSize; i++) {
             column.appendMissing();
+        }
+        return column;
+    }
+
+    public static DateTimeColumn create(String name, long[] epochMillis) {
+        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(epochMillis.length));
+        for (long epochMilli : epochMillis) {
+            column.append(LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMilli), ZoneOffset.UTC));
         }
         return column;
     }
@@ -403,7 +412,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
      * Returns an array where each entry is the difference, measured in milliseconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
      *
-     * If a missing value is encountered, Long.MIN_VALUE is inserted in the array
+     * If a missing value is encountered, DateTimeColumnType.missingValueIndicator() is inserted in the array
      */
     public long[] asEpochMillisArray() {
         return asEpochMillisArray(ZoneOffset.UTC);
@@ -413,14 +422,14 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
      * Returns an array where each entry is the difference, measured in milliseconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
      *
-     * If a missing value is encountered, Long.MIN_VALUE is inserted in the array
+     * If a missing value is encountered, DateTimeColumnType.missingValueIndicator() is inserted in the array
      */
     public long[] asEpochMillisArray(ZoneOffset offset) {
         long[] output = new long[data.size()];
         for (int i = 0; i < data.size(); i++) {
             LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
             if (dateTime == null) {
-                output[i] = Long.MIN_VALUE;
+                output[i] = DateTimeColumnType.missingValueIndicator();
             } else {
                 output[i] = dateTime.toInstant(offset).toEpochMilli();
             }
