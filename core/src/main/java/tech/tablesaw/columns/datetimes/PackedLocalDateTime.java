@@ -20,20 +20,16 @@ import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.times.PackedLocalTime;
 
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.WeekFields;
-import java.util.Date;
 import java.util.Locale;
 
 import static tech.tablesaw.columns.datetimes.DateTimeColumnType.missingValueIndicator;
@@ -109,13 +105,6 @@ public class PackedLocalDateTime {
         LocalDate date = dateTime.toLocalDate();
         LocalTime time = dateTime.toLocalTime();
         return (pack(date, time));
-    }
-
-    public static long pack(Date date) {
-        if (date == null) {
-            return missingValueIndicator();
-        }
-        return pack(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
 
     public static long pack(short yr, byte m, byte d, byte hr, byte min, byte s, byte n) {
@@ -422,17 +411,6 @@ public class PackedLocalDateTime {
 
     public static long create(int date, int time) {
         return (((long) date) << 32) | (time & 0xffffffffL);
-    }
-
-    public static long toEpochMilli(long packedLocalDateTime, ZoneOffset offset) {
-        LocalDateTime dateTime = asLocalDateTime(packedLocalDateTime);
-        Instant instant = dateTime.toInstant(offset);
-        return instant.toEpochMilli();
-    }
-
-    public static long ofEpochMilli(long millisecondsSinceEpoch, ZoneId zoneId) {
-        Instant instant = Instant.ofEpochMilli(millisecondsSinceEpoch);
-        return pack(LocalDateTime.ofInstant(instant, zoneId));
     }
 
     public static int lengthOfYear(long packedDateTime) {
