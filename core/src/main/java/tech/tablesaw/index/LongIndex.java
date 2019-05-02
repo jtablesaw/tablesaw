@@ -14,18 +14,20 @@
 
 package tech.tablesaw.index;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
-import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.instant.PackedInstant;
+import tech.tablesaw.columns.temporal.TemporalColumn;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.time.LocalDateTime;
 
 /**
  * An index for eight-byte long and long backed columns (datetime)
@@ -34,7 +36,7 @@ public class LongIndex implements Index {
 
     private final Long2ObjectAVLTreeMap<IntArrayList> index;
 
-    public LongIndex(DateTimeColumn column) {
+    public LongIndex(TemporalColumn<?> column) {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
@@ -108,6 +110,10 @@ public class LongIndex implements Index {
         return selection;
     }
 
+    public Selection get(Instant value) {
+        return get(PackedInstant.pack(value));
+    }
+
     public Selection get(LocalDateTime value) {
         return get(PackedLocalDateTime.pack(value));
     }
@@ -119,6 +125,10 @@ public class LongIndex implements Index {
             addAllToSelection(keys, selection);
         }
         return selection;
+    }
+
+    public Selection atLeast(Instant value) {
+        return atLeast(PackedInstant.pack(value));
     }
 
     public Selection atLeast(LocalDateTime value) {
@@ -134,6 +144,10 @@ public class LongIndex implements Index {
         return selection;
     }
 
+    public Selection greaterThan(Instant value) {
+        return greaterThan(PackedInstant.pack(value));
+    }
+
     public Selection greaterThan(LocalDateTime value) {
         return greaterThan(PackedLocalDateTime.pack(value));
     }
@@ -147,6 +161,10 @@ public class LongIndex implements Index {
         return selection;
     }
 
+    public Selection atMost(Instant value) {
+        return atMost(PackedInstant.pack(value));
+    }
+
     public Selection atMost(LocalDateTime value) {
         return atMost(PackedLocalDateTime.pack(value));
     }
@@ -158,6 +176,10 @@ public class LongIndex implements Index {
             addAllToSelection(keys, selection);
         }
         return selection;
+    }
+
+    public Selection lessThan(Instant value) {
+        return lessThan(PackedInstant.pack(value));
     }
 
     public Selection lessThan(LocalDateTime value) {

@@ -20,7 +20,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -45,21 +44,21 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
-import tech.tablesaw.columns.datetimes.DateTimeColumnType;
-import tech.tablesaw.columns.datetimes.DateTimeFilters;
-import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.instant.InstantColumnFormatter;
+import tech.tablesaw.columns.instant.InstantColumnType;
+import tech.tablesaw.columns.instant.PackedInstant;
 import tech.tablesaw.columns.temporal.TemporalFillers;
+import tech.tablesaw.columns.temporal.TemporalFilters;
+import tech.tablesaw.columns.temporal.TemporalMapFunctions;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
-public class DateTimeColumn extends AbstractColumn<LocalDateTime>
-    implements DateTimeMapFunctions, DateTimeFilters, TemporalFillers<LocalDateTime, DateTimeColumn>,
-        CategoricalColumn<LocalDateTime> {
+public class InstantColumn extends AbstractColumn<Instant>
+    implements TemporalMapFunctions<Instant>, TemporalFillers<Instant, InstantColumn>,
+        TemporalFilters<Instant>, CategoricalColumn<Instant> {
 
     private final LongComparator reverseLongComparator = DescendingLongComparator.instance();
 
@@ -71,43 +70,43 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return Long.compare(f1, f2);
     };
 
-    private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
+    private InstantColumnFormatter printFormatter = new InstantColumnFormatter();
 
-    private DateTimeColumn(String name, LongArrayList data) {
-        super(DateTimeColumnType.instance(), name);
+    private InstantColumn(String name, LongArrayList data) {
+        super(InstantColumnType.instance(), name);
         this.data = data;
     }
 
-    public static DateTimeColumn create(String name) {
-        return new DateTimeColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
+    public static InstantColumn create(String name) {
+        return new InstantColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
     }
 
-    public static DateTimeColumn create(String name, int initialSize) {
-        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(initialSize));
+    public static InstantColumn create(String name, int initialSize) {
+        InstantColumn column = new InstantColumn(name, new LongArrayList(initialSize));
         for (int i = 0; i < initialSize; i++) {
             column.appendMissing();
         }
         return column;
     }
 
-    public static DateTimeColumn create(String name, List<LocalDateTime> data) {
-        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.size()));
-        for (LocalDateTime date : data) {
+    public static InstantColumn create(String name, List<Instant> data) {
+        InstantColumn column = new InstantColumn(name, new LongArrayList(data.size()));
+        for (Instant date : data) {
             column.append(date);
         }
         return column;
     }
 
-    public static DateTimeColumn create(String name, LocalDateTime[] data) {
-        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.length));
-        for (LocalDateTime date : data) {
+    public static InstantColumn create(String name, Instant[] data) {
+        InstantColumn column = new InstantColumn(name, new LongArrayList(data.length));
+        for (Instant date : data) {
             column.append(date);
         }
         return column;
     }
 
     public static boolean valueIsMissing(long value) {
-        return DateTimeColumnType.missingValueIndicator() == value;
+        return InstantColumnType.missingValueIndicator() == value;
     }
 
     @Override
@@ -116,8 +115,8 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn subset(final int[] rows) {
-        final DateTimeColumn c = this.emptyCopy();
+    public InstantColumn subset(final int[] rows) {
+        final InstantColumn c = this.emptyCopy();
         for (final int row : rows) {
             c.appendInternal(getLongInternal(row));
         }
@@ -125,10 +124,10 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn removeMissing() {
-        DateTimeColumn noMissing = emptyCopy();
+    public InstantColumn removeMissing() {
+        InstantColumn noMissing = emptyCopy();
         LongIterator iterator = longIterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             long i = iterator.nextLong();
             if (!valueIsMissing(i)) {
                 noMissing.appendInternal(i);
@@ -137,86 +136,75 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return noMissing;
     }
 
-    public boolean contains(LocalDateTime dateTime) {
-        long dt = PackedLocalDateTime.pack(dateTime);
+    public boolean contains(Instant dateTime) {
+        long dt = PackedInstant.pack(dateTime);
         return data().contains(dt);
     }
 
     @Override
-    public Column<LocalDateTime> setMissing(int i) {
-        return set(i, DateTimeColumnType.missingValueIndicator());
+    public Column<Instant> setMissing(int i) {
+        return set(i, InstantColumnType.missingValueIndicator());
     }
 
-    public DateTimeColumn where(Selection selection) {
+    public InstantColumn where(Selection selection) {
         return subset(selection.toArray());
     }
 
-    public void setPrintFormatter(DateTimeFormatter dateTimeFormatter, String missingValueString) {
-        Preconditions.checkNotNull(dateTimeFormatter);
-        Preconditions.checkNotNull(missingValueString);
-        this.printFormatter = new DateTimeColumnFormatter(dateTimeFormatter, missingValueString);
-    }
-
-    public void setPrintFormatter(DateTimeFormatter dateTimeFormatter) {
-        Preconditions.checkNotNull(dateTimeFormatter);
-        this.printFormatter = new DateTimeColumnFormatter(dateTimeFormatter);
-    }
-
-    public void setPrintFormatter(DateTimeColumnFormatter formatter) {
+    public void setPrintFormatter(InstantColumnFormatter formatter) {
         Preconditions.checkNotNull(formatter);
         this.printFormatter = formatter;
     }
 
     @Override
-    public DateTimeColumn lag(int n) {
+    public InstantColumn lag(int n) {
         int srcPos = n >= 0 ? 0 : 0 - n;
         long[] dest = new long[size()];
         int destPos = n <= 0 ? 0 : n;
         int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = DateTimeColumnType.missingValueIndicator();
+            dest[i] = InstantColumnType.missingValueIndicator();
         }
 
         System.arraycopy(data.toLongArray(), srcPos, dest, destPos, length);
 
-        DateTimeColumn copy = emptyCopy(size());
+        InstantColumn copy = emptyCopy(size());
         copy.data = new LongArrayList(dest);
         copy.setName(name() + " lag(" + n + ")");
         return copy;
     }
 
     @Override
-    public DateTimeColumn appendCell(String stringValue) {
-        return appendInternal(PackedLocalDateTime.pack(DateTimeColumnType.DEFAULT_PARSER.parse(stringValue)));
+    public InstantColumn appendCell(String stringValue) {
+        return appendInternal(PackedInstant.pack(InstantColumnType.DEFAULT_PARSER.parse(stringValue)));
     }
 
     @Override
-    public DateTimeColumn appendCell(String stringValue, AbstractColumnParser<?> parser) {
+    public InstantColumn appendCell(String stringValue, AbstractColumnParser<?> parser) {
         return appendObj(parser.parse(stringValue));
     }
 
-    public DateTimeColumn append(LocalDateTime dateTime) {
+    public InstantColumn append(Instant dateTime) {
         if (dateTime != null) {
-            final long dt = PackedLocalDateTime.pack(dateTime);
+            final long dt = PackedInstant.pack(dateTime);
             appendInternal(dt);
         } else {
-            appendInternal(DateTimeColumnType.missingValueIndicator());
+            appendInternal(InstantColumnType.missingValueIndicator());
         }
         return this;
     }
 
     @Override
-    public DateTimeColumn appendObj(Object obj) {
+    public InstantColumn appendObj(Object obj) {
         if (obj == null) {
             return appendMissing();
         }
-        if (obj instanceof LocalDateTime) {
-            return append((LocalDateTime) obj);
+        if (obj instanceof Instant) {
+            return append((Instant) obj);
         }
         if (obj instanceof Timestamp ){
             Timestamp timestamp = (Timestamp) obj;
-            return append(timestamp.toLocalDateTime());
+            return append(timestamp.toInstant());
         }
         throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to DateTimeColumn");
     }
@@ -229,7 +217,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return data;
     }
 
-    public DateTimeColumn appendInternal(long dateTime) {
+    public InstantColumn appendInternal(long dateTime) {
         data.add(dateTime);
         return this;
     }
@@ -241,26 +229,26 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     @Override
     public String getUnformattedString(int row) {
-        return PackedLocalDateTime.toString(getPackedDateTime(row));
+        return PackedInstant.toString(getPackedDateTime(row));
     }
 
     @Override
-    public DateTimeColumn emptyCopy() {
-        DateTimeColumn empty = create(name());
+    public InstantColumn emptyCopy() {
+        InstantColumn empty = create(name());
         empty.printFormatter = printFormatter;
         return empty;
     }
 
     @Override
-    public DateTimeColumn emptyCopy(int rowSize) {
-        DateTimeColumn column = create(name(), rowSize);
+    public InstantColumn emptyCopy(int rowSize) {
+        InstantColumn column = create(name(), rowSize);
         column.setPrintFormatter(printFormatter);
         return column;
     }
 
     @Override
-    public DateTimeColumn copy() {
-        DateTimeColumn column = emptyCopy(data.size());
+    public InstantColumn copy() {
+        InstantColumn column = emptyCopy(data.size());
         column.data = data.clone();
         return column;
     }
@@ -313,12 +301,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn unique() {
+    public InstantColumn unique() {
         LongSet ints = new LongOpenHashSet(data.size());
         for (long i : data) {
             ints.add(i);
         }
-        DateTimeColumn column = emptyCopy(ints.size());
+        InstantColumn column = emptyCopy(ints.size());
         column.setName(name() + " Unique values");
         column.data = LongArrayList.wrap(ints.toLongArray());
         return column;
@@ -337,8 +325,8 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return getLongInternal(index);
     }
 
-    public LocalDateTime get(int index) {
-        return PackedLocalDateTime.asLocalDateTime(getPackedDateTime(index));
+    public Instant get(int index) {
+        return PackedInstant.asInstant(getPackedDateTime(index));
     }
 
     @Override
@@ -351,9 +339,9 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
      * matches the selection criteria
      * <p>
      * Example:
-     * myColumn.set(myColumn.valueIsMissing(), LocalDateTime.now()); // no more missing values
+     * myColumn.set(myColumn.valueIsMissing(), Instant.now()); // no more missing values
      */
-    public DateTimeColumn set(Selection rowSelection, LocalDateTime newValue) {
+    public InstantColumn set(Selection rowSelection, Instant newValue) {
         for (int row : rowSelection) {
             set(row, newValue);
         }
@@ -367,7 +355,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (getPackedDateTime(i) == DateTimeColumnType.missingValueIndicator()) {
+            if (getPackedDateTime(i) == InstantColumnType.missingValueIndicator()) {
                 count++;
             }
         }
@@ -376,9 +364,9 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     /**
      * Returns an array where each entry is the difference, measured in seconds,
-     * between the LocalDateTime and midnight, January 1, 1970 UTC.
+     * between the Instant and midnight, January 1, 1970 UTC.
      *
-     * If a value is missing, DateTimeColumnType.missingValueIndicator() is used
+     * If a value is missing, InstantColumnType.missingValueIndicator() is used
      */
     public long[] asEpochSecondArray() {
         return asEpochSecondArray(ZoneOffset.UTC);
@@ -387,16 +375,16 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     /**
      * Returns the seconds from epoch for each value as an array based on the given offset
      *
-     * If a value is missing, DateTimeColumnType.missingValueIndicator() is used
+     * If a value is missing, InstantColumnType.missingValueIndicator() is used
      */
     public long[] asEpochSecondArray(ZoneOffset offset) {
         long[] output = new long[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
-            if (dateTime == null) {
-                output[i] = DateTimeColumnType.missingValueIndicator();
+            Instant instant = PackedInstant.asInstant(data.getLong(i));
+            if (instant == null) {
+                output[i] = InstantColumnType.missingValueIndicator();
             } else {
-                output[i] = dateTime.toEpochSecond(offset);
+                output[i] = instant.getEpochSecond();
             }
         }
         return output;
@@ -404,9 +392,9 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     /**
      * Returns an array where each entry is the difference, measured in milliseconds,
-     * between the LocalDateTime and midnight, January 1, 1970 UTC.
+     * between the Instant and midnight, January 1, 1970 UTC.
      *
-     * If a missing value is encountered, DateTimeColumnType.missingValueIndicator() is inserted in the array
+     * If a missing value is encountered, InstantColumnType.missingValueIndicator() is inserted in the array
      */
     public long[] asEpochMillisArray() {
         return asEpochMillisArray(ZoneOffset.UTC);
@@ -414,44 +402,44 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     /**
      * Returns an array where each entry is the difference, measured in milliseconds,
-     * between the LocalDateTime and midnight, January 1, 1970 UTC.
+     * between the Instant and midnight, January 1, 1970 UTC.
      *
-     * If a missing value is encountered, DateTimeColumnType.missingValueIndicator() is inserted in the array
+     * If a missing value is encountered, InstantColumnType.missingValueIndicator() is inserted in the array
      */
     public long[] asEpochMillisArray(ZoneOffset offset) {
         long[] output = new long[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
-            if (dateTime == null) {
-                output[i] = DateTimeColumnType.missingValueIndicator();
+            Instant instant = PackedInstant.asInstant(data.getLong(i));
+            if (instant == null) {
+                output[i] = InstantColumnType.missingValueIndicator();
             } else {
-                output[i] = dateTime.toInstant(offset).toEpochMilli();
+                output[i] = instant.toEpochMilli();
             }
         }
         return output;
     }
 
-    public InstantColumn asInstantColumn() {
-        return asInstantColumn(ZoneOffset.UTC);
+    public DateTimeColumn asLocalDateTimeColumn() {
+        return asLocalDateTimeColumn(ZoneOffset.UTC);
     }
 
-    public InstantColumn asInstantColumn(ZoneId zone) {
-        Instant[] output = new Instant[data.size()];
+    public DateTimeColumn asLocalDateTimeColumn(ZoneId zone) {
+        LocalDateTime[] output = new LocalDateTime[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
-            if (dateTime == null) {
+            Instant instant = PackedInstant.asInstant(data.getLong(i));
+            if (instant == null) {
                 output[i] = null;
             } else {
-                output[i] = dateTime.atZone(zone).toInstant();
+                output[i] = LocalDateTime.ofInstant(instant, zone);
             }
         }
-        return InstantColumn.create(name(), output);
+        return DateTimeColumn.create(name(), output);
     }
 
     @Override
-    public DateTimeColumn append(Column<LocalDateTime> column) {
+    public InstantColumn append(Column<Instant> column) {
         Preconditions.checkArgument(column.type() == this.type());
-        DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
+        InstantColumn dateTimeColumn = (InstantColumn) column;
         final int size = dateTimeColumn.size();
         for (int i = 0; i < size; i++) {
             append(dateTimeColumn.get(i));
@@ -460,18 +448,18 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn append(Column<LocalDateTime> column, int row) {
+    public InstantColumn append(Column<Instant> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
-        return appendInternal(((DateTimeColumn) column).getLongInternal(row));
+        return appendInternal(((InstantColumn) column).getLongInternal(row));
     }
 
     @Override
-    public DateTimeColumn set(int row, Column<LocalDateTime> column, int sourceRow) {
+    public InstantColumn set(int row, Column<Instant> column, int sourceRow) {
         Preconditions.checkArgument(column.type() == this.type());
-        return set(row, ((DateTimeColumn) column).getLongInternal(sourceRow));
+        return set(row, ((InstantColumn) column).getLongInternal(sourceRow));
     }
 
-    public LocalDateTime max() {
+    public Instant max() {
         long max;
         if (!isEmpty()) {
             max = getPackedDateTime(0);
@@ -479,25 +467,25 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             return null;
         }
         for (long aData : data) {
-            if (DateTimeColumnType.missingValueIndicator() != aData) {
+            if (InstantColumnType.missingValueIndicator() != aData) {
                 max = (max > aData) ? max : aData;
             }
         }
 
-        if (DateTimeColumnType.missingValueIndicator() == max) {
+        if (InstantColumnType.missingValueIndicator() == max) {
             return null;
         }
-        return PackedLocalDateTime.asLocalDateTime(max);
+        return PackedInstant.asInstant(max);
     }
 
     @Override
-    public DateTimeColumn appendMissing() {
-        appendInternal(DateTimeColumnType.missingValueIndicator());
+    public InstantColumn appendMissing() {
+        appendInternal(InstantColumnType.missingValueIndicator());
         return this;
     }
 
     @Override
-    public LocalDateTime min() {
+    public Instant min() {
         long min;
 
         if (!isEmpty()) {
@@ -506,24 +494,24 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             return null;
         }
         for (long aData : data) {
-            if (DateTimeColumnType.missingValueIndicator() != aData) {
+            if (InstantColumnType.missingValueIndicator() != aData) {
                 min = (min < aData) ? min : aData;
             }
         }
         if (Integer.MIN_VALUE == min) {
             return null;
         }
-        return PackedLocalDateTime.asLocalDateTime(min);
+        return PackedInstant.asInstant(min);
     }
 
-    public DateTimeColumn set(int index, long value) {
+    public InstantColumn set(int index, long value) {
         data.set(index, value);
         return this;
     }
 
     @Override
-    public DateTimeColumn set(int index, LocalDateTime value) {
-        data.set(index, PackedLocalDateTime.pack(value));
+    public InstantColumn set(int index, Instant value) {
+        data.set(index, PackedInstant.pack(value));
         return this;
     }
 
@@ -534,12 +522,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
      *          number of observations in the column
      * @return A list, possibly empty, of the largest observations
      */
-    public List<LocalDateTime> top(int n) {
-        List<LocalDateTime> top = new ArrayList<>();
+    public List<Instant> top(int n) {
+        List<Instant> top = new ArrayList<>();
         long[] values = data.toLongArray();
         LongArrays.parallelQuickSort(values, DescendingLongComparator.instance());
         for (int i = 0; i < n && i < values.length; i++) {
-            top.add(PackedLocalDateTime.asLocalDateTime(values[i]));
+            top.add(PackedInstant.asInstant(values[i]));
         }
         return top;
     }
@@ -551,12 +539,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
      *          number of observations in the column
      * @return A list, possibly empty, of the smallest n observations
      */
-    public List<LocalDateTime> bottom(int n) {
-        List<LocalDateTime> bottom = new ArrayList<>();
+    public List<Instant> bottom(int n) {
+        List<Instant> bottom = new ArrayList<>();
         long[] values = data.toLongArray();
         LongArrays.parallelQuickSort(values);
         for (int i = 0; i < n && i < values.length; i++) {
-            bottom.add(PackedLocalDateTime.asLocalDateTime(values[i]));
+            bottom.add(PackedInstant.asInstant(values[i]));
         }
         return bottom;
     }
@@ -565,11 +553,11 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return data.iterator();
     }
 
-    public Set<LocalDateTime> asSet() {
-        Set<LocalDateTime> times = new HashSet<>();
-        DateTimeColumn unique = unique();
-        for (LocalDateTime localDateTime : unique) {
-            times.add(localDateTime);
+    public Set<Instant> asSet() {
+        Set<Instant> times = new HashSet<>();
+        InstantColumn unique = unique();
+        for (Instant Instant : unique) {
+            times.add(Instant);
         }
         return times;
     }
@@ -609,9 +597,9 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
      * @return an Iterator.
      */
     @Override
-    public Iterator<LocalDateTime> iterator() {
+    public Iterator<Instant> iterator() {
 
-        return new Iterator<LocalDateTime>() {
+        return new Iterator<Instant>() {
 
             final LongIterator longIterator = longIterator();
 
@@ -621,15 +609,15 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             }
 
             @Override
-            public LocalDateTime next() {
-                return PackedLocalDateTime.asLocalDateTime(longIterator.nextLong());
+            public Instant next() {
+                return PackedInstant.asInstant(longIterator.nextLong());
             }
         };
     }
 
     // fillWith methods
 
-    private DateTimeColumn fillWith(int count, Iterator<LocalDateTime> iterator, Consumer<LocalDateTime> acceptor) {
+    private InstantColumn fillWith(int count, Iterator<Instant> iterator, Consumer<Instant> acceptor) {
         for (int r = 0; r < count; r++) {
             if (!iterator.hasNext()) {
                 break;
@@ -640,14 +628,14 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn fillWith(Iterator<LocalDateTime> iterator) {
+    public InstantColumn fillWith(Iterator<Instant> iterator) {
         int[] r = new int[1];
         fillWith(size(), iterator, date -> set(r[0]++, date));
         return this;
     }
 
-    private DateTimeColumn fillWith(int count, Iterable<LocalDateTime> iterable, Consumer<LocalDateTime> acceptor) {
-        Iterator<LocalDateTime> iterator = iterable.iterator();
+    private InstantColumn fillWith(int count, Iterable<Instant> iterable, Consumer<Instant> acceptor) {
+        Iterator<Instant> iterator = iterable.iterator();
         for (int r = 0; r < count; r++) {
             if (!iterator.hasNext()) {
                 iterator = iterable.iterator();
@@ -661,13 +649,13 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn fillWith(Iterable<LocalDateTime> iterable) {
+    public InstantColumn fillWith(Iterable<Instant> iterable) {
         int[] r = new int[1];
         fillWith(size(), iterable, date -> set(r[0]++, date));
         return this;
     }
 
-    private DateTimeColumn fillWith(int count, Supplier<LocalDateTime> supplier, Consumer<LocalDateTime> acceptor) {
+    private InstantColumn fillWith(int count, Supplier<Instant> supplier, Consumer<Instant> acceptor) {
         for (int r = 0; r < count; r++) {
             try {
                 acceptor.accept(supplier.get());
@@ -679,15 +667,15 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn fillWith(Supplier<LocalDateTime> supplier) {
+    public InstantColumn fillWith(Supplier<Instant> supplier) {
         int[] r = new int[1];
         fillWith(size(), supplier, date -> set(r[0]++, date));
         return this;
     }
 
     @Override
-    public LocalDateTime[] asObjectArray() {
-        final LocalDateTime[] output = new LocalDateTime[data.size()];
+    public Instant[] asObjectArray() {
+        final Instant[] output = new Instant[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = get(i);
         }
@@ -695,67 +683,67 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public int compare(LocalDateTime o1, LocalDateTime o2) {
+    public int compare(Instant o1, Instant o2) {
         return o1.compareTo(o2);
     }
 
     @Override
-    public DateTimeColumn setName(String name) {
-        return (DateTimeColumn) super.setName(name);
+    public InstantColumn setName(String name) {
+        return (InstantColumn) super.setName(name);
     }
 
     @Override
-    public DateTimeColumn filter(Predicate<? super LocalDateTime> test) {
-        return (DateTimeColumn) super.filter(test);
+    public InstantColumn filter(Predicate<? super Instant> test) {
+        return (InstantColumn) super.filter(test);
     }
 
     @Override
-    public DateTimeColumn sorted(Comparator<? super LocalDateTime> comp) {
-        return (DateTimeColumn) super.sorted(comp);
+    public InstantColumn sorted(Comparator<? super Instant> comp) {
+        return (InstantColumn) super.sorted(comp);
     }
 
     @Override
-    public DateTimeColumn map(Function<? super LocalDateTime, ? extends LocalDateTime> fun) {
-        return (DateTimeColumn) super.map(fun);
+    public InstantColumn map(Function<? super Instant, ? extends Instant> fun) {
+        return (InstantColumn) super.map(fun);
     }
 
     @Override
-    public DateTimeColumn min(Column<LocalDateTime> other) {
-        return (DateTimeColumn) super.min(other);
+    public InstantColumn min(Column<Instant> other) {
+        return (InstantColumn) super.min(other);
     }
 
     @Override
-    public DateTimeColumn max(Column<LocalDateTime> other) {
-        return (DateTimeColumn) super.max(other);
+    public InstantColumn max(Column<Instant> other) {
+        return (InstantColumn) super.max(other);
     }
 
     @Override
-    public DateTimeColumn set(Selection condition, Column<LocalDateTime> other) {
-        return (DateTimeColumn) super.set(condition, other);
+    public InstantColumn set(Selection condition, Column<Instant> other) {
+        return (InstantColumn) super.set(condition, other);
     }
 
     @Override
-    public DateTimeColumn first(int numRows) {
-        return (DateTimeColumn) super.first(numRows);
+    public InstantColumn first(int numRows) {
+        return (InstantColumn) super.first(numRows);
     }
 
     @Override
-    public DateTimeColumn last(int numRows) {
-        return (DateTimeColumn) super.last(numRows);
+    public InstantColumn last(int numRows) {
+        return (InstantColumn) super.last(numRows);
     }
 
     @Override
-    public DateTimeColumn inRange(int start, int end) {
-        return (DateTimeColumn) super.inRange(start, end);
+    public InstantColumn inRange(int start, int end) {
+        return (InstantColumn) super.inRange(start, end);
     }
 
     @Override
-    public DateTimeColumn sampleN(int n) {
-        return (DateTimeColumn) super.sampleN(n);
+    public InstantColumn sampleN(int n) {
+        return (InstantColumn) super.sampleN(n);
     }
 
     @Override
-    public DateTimeColumn sampleX(double proportion) {
-        return (DateTimeColumn) super.sampleX(proportion);
+    public InstantColumn sampleX(double proportion) {
+        return (InstantColumn) super.sampleX(proportion);
     }
 }

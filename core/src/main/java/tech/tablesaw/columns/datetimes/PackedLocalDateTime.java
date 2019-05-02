@@ -14,10 +14,7 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import com.google.common.base.Strings;
-import com.google.common.primitives.Ints;
-import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.columns.times.PackedLocalTime;
+import static tech.tablesaw.columns.datetimes.DateTimeColumnType.missingValueIndicator;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -26,13 +23,16 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalUnit;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
-import static tech.tablesaw.columns.datetimes.DateTimeColumnType.missingValueIndicator;
+import com.google.common.base.Strings;
+import com.google.common.primitives.Ints;
+
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.instant.PackedInstant;
+import tech.tablesaw.columns.times.PackedLocalTime;
 
 /*
  * TODO(lwhite): Extend missing-value handling on predicates to DateColumn and TimeColumn
@@ -58,7 +58,7 @@ import static tech.tablesaw.columns.datetimes.DateTimeColumnType.missingValueInd
  * Neither Java nor Guava provide unsigned short support so we use char, which is a 16-bit unsigned int to
  * store values of up to 60,000 milliseconds (60 secs * 1000)
  */
-public class PackedLocalDateTime {
+public class PackedLocalDateTime extends PackedInstant {
 
     private PackedLocalDateTime() {}
 
@@ -193,17 +193,6 @@ public class PackedLocalDateTime {
             return -1;
         }
         return PackedLocalDate.getQuarter(date(packedDate));
-    }
-
-    /**
-     * Returns the given packedDateTime with amtToAdd of temporal units added
-     *
-     * TODO(lwhite): Replace with a native implementation that doesn't convert everything to LocalDateTime
-     */
-    public static long plus(long packedDateTime, long amountToAdd, TemporalUnit unit) {
-
-        LocalDateTime dateTime = asLocalDateTime(packedDateTime);
-        return pack(dateTime.plus(amountToAdd, unit));
     }
 
     public static boolean isInQ1(long packedDateTime) {
@@ -409,32 +398,8 @@ public class PackedLocalDateTime {
         return total;
     }
 
-    public static long create(int date, int time) {
-        return (((long) date) << 32) | (time & 0xffffffffL);
-    }
-
     public static int lengthOfYear(long packedDateTime) {
         return (isLeapYear(packedDateTime) ? 366 : 365);
-    }
-
-    // TODO: packed support for minutesUntil and hoursUnit. These implementations are inefficient
-    public static long minutesUntil(long packedDateTimeEnd, long packedDateTimeStart) {
-
-        return ChronoUnit.MINUTES.between(asLocalDateTime(packedDateTimeStart),
-                        asLocalDateTime(packedDateTimeEnd));
-    }
-
-    public static long hoursUntil(long packedDateTimeEnd, long packedDateTimeStart) {
-        return ChronoUnit.HOURS.between(asLocalDateTime(packedDateTimeStart), asLocalDateTime(packedDateTimeEnd));
-    }
-
-    public static int daysUntil(long packedDateTimeEnd, long packedDateTimeStart) {
-        return (int) (PackedLocalDate.toEpochDay(date(packedDateTimeEnd))
-                - PackedLocalDate.toEpochDay(date(packedDateTimeStart)));
-    }
-
-    public static int weeksUntil(long packedDateTimeEnd, long packedDateStart) {
-        return daysUntil(packedDateTimeEnd, packedDateStart)/7;
     }
 
     public static int monthsUntil(long packedDateTimeEnd, long packedDateStart) {
@@ -452,16 +417,4 @@ public class PackedLocalDateTime {
         return (getYear(packedDateTime) * 12 + getMonthValue(packedDateTime) - 1);
     }
 
-    public static boolean isEqualTo(long packedDateTime, long value) {
-        return DateTimePredicates.isEqualTo.test(packedDateTime, value);
-    }
-
-    public static boolean isOnOrAfter(long valueToTest, long valueToTestAgainst) {
-        return valueToTest >= valueToTestAgainst;
-    }
-
-    public static boolean isOnOrBefore(long valueToTest, long valueToTestAgainst) {
-        return isBefore(valueToTest, valueToTestAgainst)
-                || isEqualTo(valueToTest, valueToTestAgainst);
-    }
 }

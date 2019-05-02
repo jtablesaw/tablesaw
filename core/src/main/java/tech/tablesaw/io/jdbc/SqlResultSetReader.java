@@ -50,7 +50,8 @@ public class SqlResultSetReader {
 
                 .put(Types.DATE, ColumnType.LOCAL_DATE)
                 .put(Types.TIME, ColumnType.LOCAL_TIME)
-                .put(Types.TIMESTAMP, ColumnType.LOCAL_DATE_TIME)
+                 // Instant, LocalDateTime, OffsetDateTime and ZonedDateTime are often mapped to timestamp
+                .put(Types.TIMESTAMP, ColumnType.INSTANT)
 
                 .put(Types.DECIMAL, ColumnType.DOUBLE)
                 .put(Types.DOUBLE, ColumnType.DOUBLE)

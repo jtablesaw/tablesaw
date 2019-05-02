@@ -7,6 +7,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Row;
@@ -18,6 +19,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
+import tech.tablesaw.columns.instant.InstantColumnType;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
@@ -209,15 +211,20 @@ public class DataFrameJoiner {
                     DateColumn col1 = (DateColumn) table1Column;
                     int value = col1.getIntInternal(ri);
                     rowBitMapOneCol = index.get(value);
+                } else if (type instanceof TimeColumnType) {
+                    IntIndex index = (IntIndex) columnIndexMap.get(column);
+                    TimeColumn col1 = (TimeColumn) table1Column;
+                    int value = col1.getIntInternal(ri);
+                    rowBitMapOneCol = index.get(value);
                 } else if (type instanceof DateTimeColumnType) {
                     LongIndex index = (LongIndex) columnIndexMap.get(column);
                     DateTimeColumn col1 = (DateTimeColumn) table1Column;
                     long value = col1.getLongInternal(ri);
                     rowBitMapOneCol = index.get(value);
-                } else if (type instanceof TimeColumnType) {
-                    IntIndex index = (IntIndex) columnIndexMap.get(column);
-                    TimeColumn col1 = (TimeColumn) table1Column;
-                    int value = col1.getIntInternal(ri);
+                } else if (type instanceof InstantColumnType) {
+                    LongIndex index = (LongIndex) columnIndexMap.get(column);
+                    InstantColumn col1 = (InstantColumn) table1Column;
+                    long value = col1.getLongInternal(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
                     StringIndex index = (StringIndex) columnIndexMap.get(column);
