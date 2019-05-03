@@ -30,7 +30,6 @@ import tech.tablesaw.io.Source;
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
 
 @Immutable
 public class CsvReader extends FileReader implements DataReader<CsvReadOptions> {
@@ -52,15 +51,6 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
      */
     public CsvReader() {
         super();
-    }
-
-    /**
-     * Constructs a CsvReader with the given list of ColumnTypes
-     * <p>
-     * These are the only types that the CsvReader can detect and parse
-     */
-    public CsvReader(List<ColumnType> typeDetectionList) {
-        super(typeDetectionList);
     }
 
     /**

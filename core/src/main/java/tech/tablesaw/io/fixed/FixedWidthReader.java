@@ -30,7 +30,6 @@ import tech.tablesaw.io.Source;
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
 
 @Immutable
 public class FixedWidthReader extends FileReader implements DataReader<FixedWidthReadOptions> {
@@ -50,15 +49,6 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
      */
     public FixedWidthReader() {
         super();
-    }
-
-    /**
-     * Constructs a FixedWidthReader with the given list of ColumnTypes
-     * <p>
-     * These are the only types that the FixedWidthReader can detect and parse
-     */
-    public FixedWidthReader(List<ColumnType> typeDetectionList) {
-        super(typeDetectionList);
     }
 
     /**

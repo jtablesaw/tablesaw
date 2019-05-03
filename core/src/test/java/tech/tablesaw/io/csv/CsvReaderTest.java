@@ -164,7 +164,7 @@ public class CsvReaderTest {
         Reader reader = new FileReader("../data/bus_stop_test.csv");
         CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(true)
-                .minimizeColumnSizes(true)
+                .minimizeColumnSizes()
                 .separator(',')
                 .sample(false)
                 .locale(Locale.getDefault())
@@ -590,7 +590,7 @@ public class CsvReaderTest {
     public void testReadFailure() throws IOException {
         // TODO (lwhite): These tests don't fail. What was their intent?
         Table table1 = Table.read().csv(CsvReadOptions.builder("../data/read_failure_test.csv")
-                .minimizeColumnSizes(true));
+                .minimizeColumnSizes());
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
         //TODO(lwhite): Better tests
@@ -601,7 +601,7 @@ public class CsvReaderTest {
     public void testReadFailure2() throws IOException {
         Table table1 = Table.read().csv(
                 CsvReadOptions.builder("../data/read_failure_test2.csv")
-                .minimizeColumnSizes(true));
+                .minimizeColumnSizes());
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
 

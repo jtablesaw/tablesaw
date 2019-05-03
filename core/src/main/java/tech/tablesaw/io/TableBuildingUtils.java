@@ -15,7 +15,7 @@ public class TableBuildingUtils {
             return table;
         }
 
-        ColumnTypeDetector detector = new ColumnTypeDetector();
+        ColumnTypeDetector detector = new ColumnTypeDetector(options.columnTypesToDetect());
         Iterator<String[]> iterator = dataRows.iterator();
         ColumnType[] types = detector.detectColumnTypes(iterator, options);
         for (int i = 0; i < columnNames.size(); i++) {

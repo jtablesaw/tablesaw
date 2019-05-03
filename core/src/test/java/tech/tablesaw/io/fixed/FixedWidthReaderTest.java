@@ -113,7 +113,7 @@ public class FixedWidthReaderTest {
                 .lineEnding("\n")
                 .sample(false)
                 .locale(Locale.getDefault())
-                .minimizeColumnSizes(true)
+                .minimizeColumnSizes()
                 .build();
 
         Reader reader = new FileReader("../data/fixed_width_missing_values.txt");
@@ -131,7 +131,7 @@ public class FixedWidthReaderTest {
                 .padding('_')
                 .lineEnding("\n")
                 .missingValueIndicator("null")
-                .minimizeColumnSizes(true)
+                .minimizeColumnSizes()
                 .sample(false)
                 .build();
 
