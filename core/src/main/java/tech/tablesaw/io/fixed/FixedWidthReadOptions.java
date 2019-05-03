@@ -290,8 +290,8 @@ public class FixedWidthReadOptions extends ReadOptions {
         }
 
         @Override
-        public Builder minimizeColumnSizes(boolean minimizeColumnSizes) {
-            super.minimizeColumnSizes(minimizeColumnSizes);
+        public Builder minimizeColumnSizes() {
+            super.minimizeColumnSizes();
             return this;
         }
     }

@@ -92,7 +92,7 @@ public class RowTest {
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
                         .columnTypes(types)
-                        .minimizeColumnSizes(true));
+                        .minimizeColumnSizes());
         DateTimeColumn dateTimeCol = table.dateColumn("Date").atTime(table.timeColumn("Time"));
         dateTimeCol.setName("DateTime");
         table.addColumns(dateTimeCol);
@@ -154,7 +154,7 @@ public class RowTest {
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/bush.csv"))
                         .columnTypes(types)
-                        .minimizeColumnSizes(true));
+                        .minimizeColumnSizes());
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
@@ -172,7 +172,7 @@ public class RowTest {
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/bush.csv"))
                         .columnTypes(types)
-                        .minimizeColumnSizes(true));
+                        .minimizeColumnSizes());
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
@@ -205,7 +205,7 @@ public class RowTest {
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
                         .columnTypes(types)
-                        .minimizeColumnSizes(true));
+                        .minimizeColumnSizes());
         DateTimeColumn dateTimeCol = table.dateColumn("Date").atTime(table.timeColumn("Time"));
         dateTimeCol.setName("DateTime");
         table.addColumns(dateTimeCol);
@@ -227,7 +227,7 @@ public class RowTest {
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
                         .columnTypes(types)
-                        .minimizeColumnSizes(true));
+                        .minimizeColumnSizes());
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
@@ -244,7 +244,7 @@ public class RowTest {
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/bush.csv"))
                         .columnTypes(types)
-                        .minimizeColumnSizes(true));
+                        .minimizeColumnSizes());
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
@@ -260,7 +260,7 @@ public class RowTest {
         ColumnType[] types = {LOCAL_DATE, SHORT, STRING};
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/bush.csv"))
-                        .minimizeColumnSizes(true)
+                        .minimizeColumnSizes()
                         .columnTypes(types));
         Row row = new Row(table);
         while (row.hasNext()) {
@@ -277,7 +277,7 @@ public class RowTest {
         ColumnType[] types = {LOCAL_DATE, SHORT, TEXT};
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/bush.csv"))
-                        .minimizeColumnSizes(true)
+                        .minimizeColumnSizes()
                         .columnTypes(types));
         Row row = new Row(table);
         while (row.hasNext()) {
@@ -297,7 +297,7 @@ public class RowTest {
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
                         .columnTypes(types)
-                        .minimizeColumnSizes(true));
+                        .minimizeColumnSizes());
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
@@ -360,7 +360,7 @@ public class RowTest {
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
                         .columnTypes(types)
-                        .minimizeColumnSizes(true));
+                        .minimizeColumnSizes());
         DateTimeColumn dateTimeCol = table.dateColumn("Date").atTime(table.timeColumn("Time"));
         dateTimeCol.setName("DateTime");
         table.addColumns(dateTimeCol);
@@ -467,7 +467,7 @@ public class RowTest {
         ColumnType[] types = {LOCAL_DATE, LONG, STRING};
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/bush.csv"))
-                        .minimizeColumnSizes(true)
+                        .minimizeColumnSizes()
                         .columnTypes(types));
         Row row = new Row(table);
         while (row.hasNext()) {
@@ -491,7 +491,7 @@ public class RowTest {
         ColumnType[] types = {LOCAL_DATE, SHORT, STRING};
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/bush.csv"))
-                        .minimizeColumnSizes(true)
+                        .minimizeColumnSizes()
                         .columnTypes(types));
         Row row = new Row(table);
         while (row.hasNext()) {
@@ -537,7 +537,7 @@ public class RowTest {
         ColumnType[] types = {LOCAL_DATE, SHORT, TEXT};
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/bush.csv"))
-                        .minimizeColumnSizes(true)
+                        .minimizeColumnSizes()
                         .columnTypes(types));
         Row row = new Row(table);
         while (row.hasNext()) {
@@ -566,7 +566,7 @@ public class RowTest {
         Table table = Table.read().csv(
                 CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
                         .columnTypes(types)
-                        .minimizeColumnSizes(true));
+                        .minimizeColumnSizes());
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();

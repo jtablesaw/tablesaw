@@ -1,9 +1,6 @@
 package tech.tablesaw.io;
 
-import com.google.common.collect.Lists;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.strings.StringColumnType;
+import static tech.tablesaw.api.ColumnType.TEXT;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,15 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static tech.tablesaw.api.ColumnType.BOOLEAN;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
-import static tech.tablesaw.api.ColumnType.LONG;
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.strings.StringColumnType;
 
 public class ColumnTypeDetector {
 
@@ -47,29 +38,18 @@ public class ColumnTypeDetector {
      */
     private static final double STRING_COLUMN_CUTOFF = 0.50;
 
-    /**
-     * Types to choose from. When more than one would work, we pick the first of the options. The order these appear in
-     * is critical. The broadest must go last, which is why String is at the end of the list. Any String read from
-     * the input will match string. If it were first on the list, you would get nothing but strings in your table.
-     *
-     * As another example, an integer type, should go before double. Otherwise double would match integers so
-     * the integer test would never be evaluated and all the ints would be read as doubles.
-     */
-    private List<ColumnType> typeArray =
-            Lists.newArrayList(
-                    LOCAL_DATE_TIME,
-                    LOCAL_TIME,
-                    LOCAL_DATE,
-                    BOOLEAN,
-                    INTEGER,
-                    LONG,
-                    DOUBLE,
-                    STRING);
-
-    public ColumnTypeDetector() {}
+    private final List<ColumnType> typeArray;
     
-    public ColumnTypeDetector(List<ColumnType> typeArrayOverrides) {
-	    typeArray = typeArrayOverrides;
+    /**
+     * @param typeArray Types to choose from. When more than one would work, we pick the first of
+     * the options. The order these appear in is critical. The broadest must go last, so String
+     * must be at the end of the list. Any String read from the input will match string. If it
+     * were first on the list, you would get nothing but strings in your table. As another example,
+     * an integer type, should go before double. Otherwise double would match integers so the
+     * integer test would never be evaluated and all the ints would be read as doubles.
+     */
+    public ColumnTypeDetector(List<ColumnType> typeArray) {
+        this.typeArray = typeArray;
     }
     
     /**
