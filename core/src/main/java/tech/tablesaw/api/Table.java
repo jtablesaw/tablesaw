@@ -651,6 +651,12 @@ public class Table extends Relation implements Iterable<Row> {
         }
     }
 
+    public Row row(int rowIndex) {
+	Row row = new Row(Table.this);
+	row.at(rowIndex);
+	return row;
+    }
+
     public Table rows(int... rowNumbers) {
         Preconditions.checkArgument(Ints.max(rowNumbers) <= rowCount());
         return where(Selection.with(rowNumbers));
