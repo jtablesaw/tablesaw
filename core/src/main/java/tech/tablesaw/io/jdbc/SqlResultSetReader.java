@@ -24,7 +24,6 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.ShortColumnType;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -115,14 +114,16 @@ int, Integer:       -2147483648             2147483647          NUMBER(9)       
 long, Long:         -9223372036854775808    9223372036854775807 NUMBER(18)      999_999_999_999_999_999
 
 */
-                    // Start with SHORT (since ColumnType.BYTE isn't supported yet)
-                    // and find the smallest java integer type that fits
-                    if (p <= 4) {
-                        type = ShortColumnType.instance();
-                    } else if (p <= 9) {
-                        type = ColumnType.INTEGER;
-                    } else if (p <= 18) {
-                        type = ColumnType.LONG;
+                    if (p > 0) {
+                        if (p <= 4) {
+                            // Start with SHORT (since ColumnType.BYTE isn't supported yet)
+                            // and find the smallest java integer type that fits
+                            type = ColumnType.SHORT;
+                        } else if (p <= 9) {
+                            type = ColumnType.INTEGER;
+                        } else if (p <= 18) {
+                            type = ColumnType.LONG;
+                        }
                     }
                 } else { // s is not zero, so a decimal value is expected. First try float, then double
                     if (s <= 7) {
