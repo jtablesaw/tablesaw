@@ -1,37 +1,30 @@
 package tech.tablesaw.columns.datetimes;
 
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.isEqualTo;
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.isGreaterThan;
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.isGreaterThanOrEqualTo;
 import static tech.tablesaw.columns.datetimes.DateTimePredicates.isInYear;
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.isLessThan;
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.isLessThanOrEqualTo;
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.isMissing;
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.isNotEqualTo;
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.isNotMissing;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.isEqualTo;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.isGreaterThan;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.isGreaterThanOrEqualTo;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.isLessThan;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.isLessThanOrEqualTo;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.isNotEqualTo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.function.BiPredicate;
-import java.util.function.LongPredicate;
-import java.util.function.Predicate;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.predicates.LongBiPredicate;
+import tech.tablesaw.columns.temporal.TemporalFilters;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-public interface DateTimeFilters extends Column<LocalDateTime> {
+public interface DateTimeFilters extends TemporalFilters<LocalDateTime> {
 
     default Selection isAfter(LocalDateTime value) {
         return eval(isGreaterThan, PackedLocalDateTime.pack(value));
     }
 
     default Selection isAfter(LocalDate value) {
-        return isOnOrAfter(value.plusDays(1).atStartOfDay());
+        return isAfter(value.atStartOfDay());
     }
 
     default Selection isOnOrAfter(LocalDate value) {
@@ -238,59 +231,6 @@ public interface DateTimeFilters extends Column<LocalDateTime> {
         return eval(PackedLocalDateTime::PM);
     }
 
-    default Selection eval(LongPredicate predicate) {
-        Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            long next = data().getLong(idx);
-            if (predicate.test(next)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
-    }
-
-    default Selection eval(LongBiPredicate predicate, long value) {
-        Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            long next = data().getLong(idx);
-            if (predicate.test(next, value)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
-    }
-
-    default Selection eval(LongBiPredicate predicate, DateTimeColumn otherColumn) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(this.getLongInternal(idx), otherColumn.getLongInternal(idx))) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    default Selection eval(BiPredicate<LocalDateTime, LocalDateTime> predicate, LocalDateTime valueToCompare) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(get(idx), valueToCompare)) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    default Selection eval(Predicate<LocalDateTime> predicate) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(get(idx))) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-
     default Selection isBetweenExcluding(LocalDateTime lowValue, LocalDateTime highValue) {
         return isBetweenExcluding(PackedLocalDateTime.pack(lowValue), PackedLocalDateTime.pack(highValue));
     }
@@ -299,35 +239,8 @@ public interface DateTimeFilters extends Column<LocalDateTime> {
         return isBetweenIncluding(PackedLocalDateTime.pack(lowValue), PackedLocalDateTime.pack(highValue));
     }
 
-    default Selection isBetweenExcluding(long lowPackedDateTime, long highPackedDateTime) {
-        return eval(PackedLocalDateTime::isAfter, lowPackedDateTime)
-                .and(eval(PackedLocalDateTime::isBefore, highPackedDateTime));
-    }
-
-    default Selection isBetweenIncluding(long lowPackedDateTime, long highPackedDateTime) {
-        return eval(PackedLocalDateTime::isOnOrAfter, lowPackedDateTime)
-                .and(eval(PackedLocalDateTime::isOnOrBefore, highPackedDateTime));
-    }
-
     default Selection isInYear(int year) {
         return eval(isInYear, year);
     }
 
-    @Override
-    default Selection isMissing() {
-        return eval(isMissing);
-    }
-
-    @Override
-    default Selection isNotMissing() {
-        return eval(isNotMissing);
-    }
-
-    int size();
-
-    LongArrayList data();
-
-    long getLongInternal(int index);
-
-    LocalDateTime get(int index);
 }

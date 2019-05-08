@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.tablesaw.api.TimeColumn.create;
-import static tech.tablesaw.columns.datetimes.fillers.TemporalRangeIterable.range;
+import static tech.tablesaw.columns.temporal.fillers.TemporalRangeIterable.range;
 
 public class TimeFillersTest {
 
