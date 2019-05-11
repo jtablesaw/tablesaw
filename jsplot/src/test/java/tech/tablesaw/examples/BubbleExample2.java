@@ -35,10 +35,10 @@ public class BubbleExample2 {
                                 .and(wines.stringColumn("region").isEqualTo("California")));
 
         Figure figure = BubblePlot.create("Average retail price for champagnes by year and rating",
-                champagne,					    // table name
-                "highest pro score",		// x variable column name
-                "year",					// y variable column name
-                "Mean Retail"		// bubble size
+                champagne,           // table name
+                "highest pro score", // x variable column name
+                "year",              // y variable column name
+                "Mean Retail"        // bubble size
         );
 
         Plot.show(figure);
