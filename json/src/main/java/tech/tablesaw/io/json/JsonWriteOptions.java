@@ -32,12 +32,12 @@ public class JsonWriteOptions extends WriteOptions {
         return new Builder(destination);
     }
 
-    protected static class Builder extends WriteOptions.Builder {
+    public static class Builder extends WriteOptions.Builder {
 
         private boolean asObjects = true;
         private boolean header = false;
 
-        public Builder(Destination destination) {
+        protected Builder(Destination destination) {
           super(destination);
         }
         
