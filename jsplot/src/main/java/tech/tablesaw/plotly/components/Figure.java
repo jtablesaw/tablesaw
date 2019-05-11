@@ -135,11 +135,11 @@ public class Figure {
         StringBuilder builder = new StringBuilder();
         
         if (eventHandlers != null ) {
-        	builder.append(System.lineSeparator());
-        	for (int i=0; i < eventHandlers.length; i++) {
-        		builder.append( eventHandlers[i].asJavascript(targetName, divName) );
-        	}
-        	builder.append(System.lineSeparator());
+            builder.append(System.lineSeparator());
+            for (int i=0; i < eventHandlers.length; i++) {
+        	builder.append( eventHandlers[i].asJavascript(targetName, divName) );
+            }
+            builder.append(System.lineSeparator());
         }
 
         return builder.toString();

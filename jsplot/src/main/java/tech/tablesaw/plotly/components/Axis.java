@@ -354,7 +354,7 @@ public class Axis extends Component {
         if(showLine != DEFAULT_SHOW_LINE) context.put("showLine", showLine);
         if(zeroLine != DEFAULT_ZERO_LINE) context.put("zeroLine", zeroLine);
         if(showGrid != DEFAULT_SHOW_GRID) context.put("showGrid", showGrid);
-        if(domain != null) context.put("domain", String.format("[%.2f, %.2f]", domain[0], domain[1]));
+        if (domain != null) { context.put("domain", String.format("[%.2f, %.2f]", domain[0], domain[1])); }
         return context;
     }
 

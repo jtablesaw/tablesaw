@@ -1,6 +1,5 @@
 package tech.tablesaw.plotly.event;
 
-
 public interface EventHandlerBody {
 
     /**
@@ -11,5 +10,4 @@ public interface EventHandlerBody {
      * @return               A string that can be rendered in javascript
      */
     String asJavascript(String targetName, String divName, String eventData);
-
 }

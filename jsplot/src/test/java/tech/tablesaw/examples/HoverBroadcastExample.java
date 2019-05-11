@@ -17,31 +17,31 @@ import tech.tablesaw.plotly.event.HoverEventHandler;
 public class HoverBroadcastExample {
 
     public static void main(String[] args) throws Exception {
-    	  int seriesLen = 50;
-    	  Random rng = new Random();
-    	  Double[] prices = new Double[seriesLen];
-    	  int[] volumes = new int[seriesLen];
-    	  LocalDateTime startDT = LocalDateTime.of(2019, 1, 1, 9, 30, 0);
-    	  LocalDateTime[] times = new LocalDateTime[seriesLen];
+	int seriesLen = 50;
+    	Random rng = new Random();
+    	Double[] prices = new Double[seriesLen];
+    	int[] volumes = new int[seriesLen];
+    	LocalDateTime startDT = LocalDateTime.of(2019, 1, 1, 9, 30, 0);
+    	LocalDateTime[] times = new LocalDateTime[seriesLen];
     	  
-    	  HoverBroadcastBody hbb = HoverBroadcastBody.builder()
+    	HoverBroadcastBody hbb = HoverBroadcastBody.builder()
         .subPlots( new String[] {"xy", "xy2"} )
         .numTraces(2)
         .build();
         
-    	  HoverEventHandler heh = HoverEventHandler.builder().body(hbb).build();
+    	HoverEventHandler heh = HoverEventHandler.builder().body(hbb).build();
     	  
-    	  for (int i = 0; i < seriesLen; i++) {
-    	  	prices[i] = 25.0 + rng.nextDouble();
-    	  	volumes[i] = rng.nextInt(10000);
-    	  	times[i] = startDT.plusMinutes(i);
-    	  }
+    	for (int i = 0; i < seriesLen; i++) {
+    	    prices[i] = 25.0 + rng.nextDouble();
+    	    volumes[i] = rng.nextInt(10000);
+    	    times[i] = startDT.plusMinutes(i);
+    	}
     	  
-    	  DateTimeColumn x = DateTimeColumn.create("time", times);
-    	  DoubleColumn y2 = DoubleColumn.create("price", prices);
-    	  IntColumn y1 = IntColumn.create("volume", volumes);
+    	DateTimeColumn x = DateTimeColumn.create("time", times);
+    	DoubleColumn y2 = DoubleColumn.create("price", prices);
+    	IntColumn y1 = IntColumn.create("volume", volumes);
     	  
-    	  ScatterTrace trace0 = ScatterTrace.builder( x, y2 )
+    	ScatterTrace trace0 = ScatterTrace.builder( x, y2 )
         .showLegend(true)
         .name("Price")
         .mode(ScatterTrace.Mode.LINE)
