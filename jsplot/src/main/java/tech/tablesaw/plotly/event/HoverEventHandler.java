@@ -6,11 +6,11 @@ public class HoverEventHandler implements EventHandler {
     private final String eventDataVarName = "eventData";
 
     public static HoverEventHanlderBuilder builder() {
-	return new HoverEventHanlderBuilder();
+        return new HoverEventHanlderBuilder();
     }
 
     private HoverEventHandler(HoverEventHanlderBuilder builder) {
-	this.body = builder.body;
+        this.body = builder.body;
     }
 
     /**
@@ -23,29 +23,29 @@ public class HoverEventHandler implements EventHandler {
      */
     @Override
     public String asJavascript(String targetName, String divName) {
-	StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
-	builder.append(String.format("%s.on('plotly_hover', function(%s){", targetName, eventDataVarName));
-	builder.append(System.lineSeparator());
+        builder.append(String.format("%s.on('plotly_hover', function(%s){", targetName, eventDataVarName));
+        builder.append(System.lineSeparator());
 
-	builder.append(body.asJavascript(targetName, divName, eventDataVarName));
+        builder.append(body.asJavascript(targetName, divName, eventDataVarName));
 
-	builder.append("});");
-	builder.append(System.lineSeparator());
+        builder.append("});");
+        builder.append(System.lineSeparator());
 
-	return builder.toString();
+        return builder.toString();
     }
 
     public static class HoverEventHanlderBuilder {
-	private EventHandlerBody body;
+        private EventHandlerBody body;
 
-	public HoverEventHanlderBuilder body(EventHandlerBody body) {
-	    this.body = body;
-	    return this;
-	}
+        public HoverEventHanlderBuilder body(EventHandlerBody body) {
+            this.body = body;
+            return this;
+        }
 
-	public HoverEventHandler build() {
-	    return new HoverEventHandler(this);
-	}
+        public HoverEventHandler build() {
+            return new HoverEventHandler(this);
+        }
     }
 }

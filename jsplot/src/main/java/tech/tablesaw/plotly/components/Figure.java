@@ -137,7 +137,7 @@ public class Figure {
         if (eventHandlers != null ) {
             builder.append(System.lineSeparator());
             for (int i=0; i < eventHandlers.length; i++) {
-        	builder.append( eventHandlers[i].asJavascript(targetName, divName) );
+                builder.append( eventHandlers[i].asJavascript(targetName, divName) );
             }
             builder.append(System.lineSeparator());
         }
