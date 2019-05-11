@@ -13,28 +13,28 @@ public class ReaderRegistry {
 
 
     public void registerOptions(Class<? extends ReadOptions> optionsType, DataReader<?> reader) {
-	optionTypesRegistry.put(optionsType.getCanonicalName(), reader);
+        optionTypesRegistry.put(optionsType.getCanonicalName(), reader);
     }
 
     public void registerExtension(String extension, DataReader<?> reader) {
-	extensionsRegistry.put(extension, reader);
+        extensionsRegistry.put(extension, reader);
     }
 
     public void registerMimeType(String mimeType, DataReader<?> reader) {
-	mimeTypesRegistry.put(mimeType, reader);
+        mimeTypesRegistry.put(mimeType, reader);
     }
 
     @SuppressWarnings("unchecked")
     public <T extends ReadOptions> DataReader<T> getReaderForOptions(T options) {
-	return (DataReader<T>) optionTypesRegistry.get(options.getClass().getCanonicalName());
+        return (DataReader<T>) optionTypesRegistry.get(options.getClass().getCanonicalName());
     }
 
     public DataReader<?> getReaderForExtension(String extension) {
-	return extensionsRegistry.get(extension);
+        return extensionsRegistry.get(extension);
     }
 
     public DataReader<?> getReaderForMimeType(String mimeType) {
-	return mimeTypesRegistry.get(mimeType);
+        return mimeTypesRegistry.get(mimeType);
     }
 
 }

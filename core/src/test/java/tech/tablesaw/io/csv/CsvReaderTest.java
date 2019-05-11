@@ -654,7 +654,7 @@ public class CsvReaderTest {
     
     @Test
     public void carriageReturnLineEnding() throws IOException {
-	Table table = Table.read().csv(CsvReadOptions.builder("../data/sacramento_real_estate_transactions.csv"));
-	assertEquals(985, table.rowCount());
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/sacramento_real_estate_transactions.csv"));
+        assertEquals(985, table.rowCount());
     }
 }

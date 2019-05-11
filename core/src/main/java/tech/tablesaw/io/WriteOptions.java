@@ -10,32 +10,32 @@ public class WriteOptions {
     protected final Destination dest;
 
     protected WriteOptions(Builder builder) {
-	this.dest = builder.dest;
+        this.dest = builder.dest;
     }
 
     public Destination destination() {
-	return dest;
+        return dest;
     }
 
     public static class Builder {
 
-	protected Destination dest;
+        protected Destination dest;
 
-	protected Builder(Destination dest) {
+        protected Builder(Destination dest) {
             this.dest = dest;
-	}
-	
-	protected Builder(OutputStream dest) {
-            this.dest = new Destination(dest);
-	}
+        }
 
-	protected Builder(Writer dest) {
+        protected Builder(OutputStream dest) {
             this.dest = new Destination(dest);
-	}
+        }
 
-	protected Builder(File dest) throws IOException {
+        protected Builder(Writer dest) {
             this.dest = new Destination(dest);
-	}
+        }
+
+        protected Builder(File dest) throws IOException {
+            this.dest = new Destination(dest);
+        }
     }
 
 }

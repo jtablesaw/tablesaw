@@ -60,7 +60,7 @@ public class SliceBugTests {
             DoubleColumn priceColFromName = slice.doubleColumn("price");
 
             assertTrue(Arrays.equals(priceColFromName.asDoubleArray(), priceColFromIndex.asDoubleArray()),
-        	    "Columns should have same data");
+                    "Columns should have same data");
         }
     }
 

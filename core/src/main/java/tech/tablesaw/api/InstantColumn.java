@@ -588,7 +588,7 @@ public class InstantColumn extends AbstractColumn<Instant>
     }
 
     public DoubleColumn asDoubleColumn() {
-	return DoubleColumn.create(name(), asEpochSecondArray());
+        return DoubleColumn.create(name(), asEpochSecondArray());
     }
 
     /**

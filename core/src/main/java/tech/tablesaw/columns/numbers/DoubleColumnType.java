@@ -36,7 +36,7 @@ public class DoubleColumnType extends AbstractColumnType {
     }
 
     public static boolean isMissingValue(double value) {
-	return Double.isNaN(value);
+        return Double.isNaN(value);
     }
 
     public static double missingValueIndicator() {

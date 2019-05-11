@@ -37,7 +37,7 @@ public class DataFrameReader {
     private final ReaderRegistry registry;
 
     public DataFrameReader(ReaderRegistry registry) {
-	this.registry = registry;
+        this.registry = registry;
     }
 
     /**
@@ -46,7 +46,7 @@ public class DataFrameReader {
      * Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
      */
     public Table url(String url) throws IOException {
-	return url(new URL(url));
+        return url(new URL(url));
     }
 
     /**
@@ -55,13 +55,13 @@ public class DataFrameReader {
      * Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
      */
     public Table url(URL url) throws IOException {
-	URLConnection connection = url.openConnection();
-	String contentType = connection.getContentType();
-	String[] pair = contentType.split(";");
-	String mimeType = pair[0].trim();
-	Charset charset = pair.length == 0 ? Charset.defaultCharset() : Charset.forName(pair[1].split("=")[1].trim());
-	DataReader<?> reader = registry.getReaderForMimeType(mimeType);
-	return reader.read(new Source(connection.getInputStream(), charset));
+        URLConnection connection = url.openConnection();
+        String contentType = connection.getContentType();
+        String[] pair = contentType.split(";");
+        String mimeType = pair[0].trim();
+        Charset charset = pair.length == 0 ? Charset.defaultCharset() : Charset.forName(pair[1].split("=")[1].trim());
+        DataReader<?> reader = registry.getReaderForMimeType(mimeType);
+        return reader.read(new Source(connection.getInputStream(), charset));
     }
 
     /**
@@ -70,12 +70,12 @@ public class DataFrameReader {
      * Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
      */
     public Table string(String s, String fileExtension) {
-	DataReader<?> reader = registry.getReaderForExtension(fileExtension);
-	try {
+        DataReader<?> reader = registry.getReaderForExtension(fileExtension);
+        try {
             return reader.read(Source.fromString(s));
-	} catch (IOException e) {
-	    throw new IllegalStateException(e);
-	}
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
@@ -93,18 +93,18 @@ public class DataFrameReader {
      * Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
      */
     public Table file(File file) throws IOException {
-	String extension = Files.getFileExtension(file.getCanonicalPath());
-	DataReader<?> reader = registry.getReaderForExtension(extension);
-	return reader.read(new Source(file));
+        String extension = Files.getFileExtension(file.getCanonicalPath());
+        DataReader<?> reader = registry.getReaderForExtension(extension);
+        return reader.read(new Source(file));
     }
 
     public <T extends ReadOptions> Table usingOptions(T options) throws IOException {
-	DataReader<T> reader = registry.getReaderForOptions(options);
-	return reader.read(options);
+        DataReader<T> reader = registry.getReaderForOptions(options);
+        return reader.read(options);
     }
 
     public Table usingOptions(ReadOptions.Builder builder) throws IOException {
-	return usingOptions(builder.build());
+        return usingOptions(builder.build());
     }
 
     public Table db(ResultSet resultSet) throws SQLException {
@@ -153,7 +153,7 @@ public class DataFrameReader {
     }
 
     public Table csv(CsvReadOptions options) throws IOException {
-	return new CsvReader().read(options);
+        return new CsvReader().read(options);
     }
 
 }

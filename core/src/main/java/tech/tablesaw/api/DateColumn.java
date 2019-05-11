@@ -519,7 +519,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     public DoubleColumn asDoubleColumn() {
-	return DoubleColumn.create(name(), asDoubleArray());
+        return DoubleColumn.create(name(), asDoubleArray());
     }
 
     @Override

@@ -35,7 +35,7 @@ public class FloatColumnType extends AbstractColumnType {
     }
 
     public static boolean isMissingValue(float value) {
-	return Float.isNaN(value);
+        return Float.isNaN(value);
     }
 
     public static float missingValueIndicator() {

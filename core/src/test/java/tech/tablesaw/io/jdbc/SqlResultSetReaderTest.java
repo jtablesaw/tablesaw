@@ -113,6 +113,6 @@ public class SqlResultSetReaderTest {
 
     @Test
     public void invalidPrecision() {
-	assertEquals(ColumnType.DOUBLE, SqlResultSetReader.getColumnType(Types.NUMERIC, 0, 0));
+        assertEquals(ColumnType.DOUBLE, SqlResultSetReader.getColumnType(Types.NUMERIC, 0, 0));
     }
 }

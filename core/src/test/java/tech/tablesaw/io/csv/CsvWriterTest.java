@@ -16,12 +16,12 @@ public class CsvWriterTest {
 
     @Test
     public void toWriterWithExtension() throws IOException {
-	StringColumn colA = StringColumn.create("colA", ImmutableList.of("a","b"));
-	StringColumn colB = StringColumn.create("colB", ImmutableList.of("1","2"));
-	Table table = Table.create("testTable", colA, colB);
-	StringWriter writer = new StringWriter();
-	table.write().toWriter(writer, "csv");
-	assertEquals("colA,colB\na,1\nb,2\n", writer.toString());
+        StringColumn colA = StringColumn.create("colA", ImmutableList.of("a","b"));
+        StringColumn colB = StringColumn.create("colB", ImmutableList.of("1","2"));
+        Table table = Table.create("testTable", colA, colB);
+        StringWriter writer = new StringWriter();
+        table.write().toWriter(writer, "csv");
+        assertEquals("colA,colB\na,1\nb,2\n", writer.toString());
     }
 
 }

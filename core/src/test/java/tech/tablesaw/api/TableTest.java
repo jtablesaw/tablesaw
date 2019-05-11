@@ -437,7 +437,7 @@ public class TableTest {
 
     public void testAppendTableWithDifferentShape() {
         assertThrows(IllegalStateException.class, () -> {
-    	    DoubleColumn column =  DoubleColumn.create("e1");
+            DoubleColumn column =  DoubleColumn.create("e1");
             table.addColumns(column);
             Table tableToAppend = Table.create("different", column);
             assertEquals(2, table.columns().size());

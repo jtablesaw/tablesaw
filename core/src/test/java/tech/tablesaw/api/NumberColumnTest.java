@@ -84,8 +84,8 @@ public class NumberColumnTest {
 
     @Test
     public void testPercentiles() {
-	IntColumn c = IntColumn.indexColumn("t", 99, 1);
-	IntColumn c2 = c.copy();
+        IntColumn c = IntColumn.indexColumn("t", 99, 1);
+        IntColumn c2 = c.copy();
         c2.appendCell("");
         assertEquals(50, c.median(), 0.00001);
         assertEquals(50, c2.median(), 0.00001);
@@ -111,8 +111,8 @@ public class NumberColumnTest {
 
     @Test
     public void testSummarize() {
-	IntColumn c = IntColumn.indexColumn("t", 99, 1);
-	IntColumn c2 = c.copy();
+        IntColumn c = IntColumn.indexColumn("t", 99, 1);
+        IntColumn c2 = c.copy();
         c2.appendCell("");
         double c2Variance = c2.variance();
         double cVariance = StatUtils.variance(c.asDoubleArray());
@@ -333,7 +333,7 @@ public class NumberColumnTest {
 
     @Test
     public void testIndexColumn() {
-	IntColumn numberColumn = IntColumn.indexColumn("index", 12424, 0);
+        IntColumn numberColumn = IntColumn.indexColumn("index", 12424, 0);
         assertEquals("12423", numberColumn.getString(numberColumn.size() - 1));
     }
 

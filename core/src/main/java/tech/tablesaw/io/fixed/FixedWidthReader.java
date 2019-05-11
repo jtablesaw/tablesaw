@@ -37,11 +37,11 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
     private static final FixedWidthReader INSTANCE = new FixedWidthReader();
 
     static {
-	register(Table.defaultReaderRegistry);
+        register(Table.defaultReaderRegistry);
     }
 
     public static void register(ReaderRegistry registry) {
-	registry.registerOptions(FixedWidthReadOptions.class, INSTANCE);
+        registry.registerOptions(FixedWidthReadOptions.class, INSTANCE);
     }
 
     /**
@@ -183,6 +183,6 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
 
     @Override
     public Table read(Source source) throws IOException {
-	return read(FixedWidthReadOptions.builder(source).build());
+        return read(FixedWidthReadOptions.builder(source).build());
     }
 }

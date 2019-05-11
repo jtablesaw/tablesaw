@@ -52,11 +52,11 @@ public interface DictionaryMap {
             String value = getValueForIndex(i);
               int uniqueIndex = uniqueValues.indexOf(value);
               if (uniqueIndex < 0) {
-        	    uniqueValues.add(value);
-        	    uniqueIndex = uniqueValues.size() - 1;
-        	    }
-              result[i] = uniqueIndex;
+                    uniqueValues.add(value);
+                    uniqueIndex = uniqueValues.size() - 1;
               }
+              result[i] = uniqueIndex;
+        }
         return result;
     }
 

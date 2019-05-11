@@ -24,7 +24,7 @@ public class TableBuildingUtils {
 
         for (int i = 0; i < dataRows.size(); i++) {
             for (int j = 0; j < table.columnCount(); j++) {
-                table.column(j).appendCell(dataRows.get(i)[j]);        	
+                table.column(j).appendCell(dataRows.get(i)[j]);
             }
         }
 

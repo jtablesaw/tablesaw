@@ -90,7 +90,7 @@ public class ReadOptions {
     protected final boolean header;
 
     protected ReadOptions(ReadOptions.Builder builder) {
-	source = builder.source;
+        source = builder.source;
         tableName = builder.tableName;
         columnTypesToDetect = builder.columnTypesToDetect;
         sample = builder.sample;
@@ -199,16 +199,16 @@ public class ReadOptions {
         }
         
         protected Builder(Source source) {
-      	    this.source = source;
+            this.source = source;
         }
 
         protected Builder(File file) {
-      	    this.source = new Source(file);
+            this.source = new Source(file);
             this.tableName = file.getName();
         }
 
         protected Builder(URL url) throws IOException {
-      	    this.source = new Source(url.openStream());
+            this.source = new Source(url.openStream());
             this.tableName = url.toString();
         }
 

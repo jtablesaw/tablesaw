@@ -360,16 +360,16 @@ public class DataFrameJoinerTest {
 
     @Test
     public void innerJoinWithDoubleBirdsCatsFishDouble() {
-    	Table joined = DOUBLE_INDEXED_BIRDS.join("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_FISH);
-    	assertEquals(4, joined.columnCount());
-    	assertEquals(1, joined.rowCount());
+            Table joined = DOUBLE_INDEXED_BIRDS.join("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_FISH);
+            assertEquals(4, joined.columnCount());
+            assertEquals(1, joined.rowCount());
     }
 
     @Test
     public void innerJoinWithDoubleDogsCatsBirdsDouble() {
-    	Table joined = DOUBLE_INDEXED_FISH.join("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_BIRDS);
-    	assertEquals(4, joined.columnCount());
-    	assertEquals(1, joined.rowCount());
+            Table joined = DOUBLE_INDEXED_FISH.join("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_BIRDS);
+            assertEquals(4, joined.columnCount());
+            assertEquals(1, joined.rowCount());
     }
 
     @Test

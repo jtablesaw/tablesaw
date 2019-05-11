@@ -37,13 +37,13 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
     private static final CsvReader INSTANCE = new CsvReader();
 
     static {
-	register(Table.defaultReaderRegistry);
+        register(Table.defaultReaderRegistry);
     }
 
     public static void register(ReaderRegistry registry) {
-	registry.registerExtension("csv", INSTANCE);
-	registry.registerMimeType("text/csv", INSTANCE);
-	registry.registerOptions(CsvReadOptions.class, INSTANCE);
+        registry.registerExtension("csv", INSTANCE);
+        registry.registerMimeType("text/csv", INSTANCE);
+        registry.registerOptions(CsvReadOptions.class, INSTANCE);
     }
 
     /**
@@ -173,7 +173,7 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
 
     @Override
     public Table read(Source source) throws IOException {
-	return read(CsvReadOptions.builder(source).build());
+        return read(CsvReadOptions.builder(source).build());
     }
 
 }

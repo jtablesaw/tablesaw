@@ -404,7 +404,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     public DoubleColumn asDoubleColumn() {
-	return DoubleColumn.create(name(), asDoubleArray());
+        return DoubleColumn.create(name(), asDoubleArray());
     }
 
     @Override

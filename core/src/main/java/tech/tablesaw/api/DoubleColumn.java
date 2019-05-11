@@ -456,9 +456,9 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         return this;
     }
 
-    @Override	
+    @Override
     public DoubleColumn fillWith(final DoubleRangeIterable iterable) {
-	DoubleIterator iterator = iterable.iterator();
+        DoubleIterator iterator = iterable.iterator();
         for (int r = 0; r < size(); r++) {
             if (!iterator.hasNext()) {
                 iterator = iterable.iterator();

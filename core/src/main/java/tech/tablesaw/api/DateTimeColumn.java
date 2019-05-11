@@ -600,7 +600,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     public DoubleColumn asDoubleColumn() {
-	return DoubleColumn.create(name(), asEpochSecondArray());
+        return DoubleColumn.create(name(), asEpochSecondArray());
     }
 
     /**

@@ -37,7 +37,7 @@ public class CsvReadOptions extends ReadOptions {
     private final boolean lineSeparatorDetectionEnabled;
 
     private CsvReadOptions(CsvReadOptions.Builder builder) {
-	super(builder);
+        super(builder);
 
         columnTypes = builder.columnTypes;
         separator = builder.separator;
@@ -113,7 +113,7 @@ public class CsvReadOptions extends ReadOptions {
     }
 
     public boolean lineSeparatorDetectionEnabled() {
-	return lineSeparatorDetectionEnabled;
+        return lineSeparatorDetectionEnabled;
     }
 
     public Integer maxNumberOfColumns() {
