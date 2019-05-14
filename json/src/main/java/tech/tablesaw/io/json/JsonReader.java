@@ -53,20 +53,20 @@ public class JsonReader implements DataReader<JsonReadOptions> {
 
     private Table convertArrayOfArrays(JsonNode jsonObj, ReadOptions options) {
         JsonNode firstNode = jsonObj.get(0);
-	boolean firstRowAllStrings = true;
+        boolean firstRowAllStrings = true;
         List<String> columnNames = new ArrayList<>();
         for (JsonNode n : firstNode) {
-    	if (!n.isTextual()) {
-    	    firstRowAllStrings = false;
-    	}
+            if (!n.isTextual()) {
+                firstRowAllStrings = false;
+            }
         }
         boolean hasHeader = firstRowAllStrings;
         for (int i = 0; i < firstNode.size(); i++) {
-    	columnNames.add(hasHeader ? firstNode.get(i).textValue() : "Column " + i);
+            columnNames.add(hasHeader ? firstNode.get(i).textValue() : "Column " + i);
         }
         List<String[]> dataRows = new ArrayList<>();
         for (int i = hasHeader ? 1 : 0; i < jsonObj.size(); i++) {
-    	JsonNode arr = jsonObj.get(i);
+            JsonNode arr = jsonObj.get(i);
             String[] row = new String[arr.size()];
             for (int j = 0; j < arr.size(); j++) {
                 row[j] = arr.get(j).asText();
@@ -94,7 +94,7 @@ public class JsonReader implements DataReader<JsonReadOptions> {
         for (JsonNode row : flattenedJsonObj) {
             Iterator<String> fieldNames = row.fieldNames();
             while (fieldNames.hasNext()) {
-        	colNames.add(fieldNames.next());
+                colNames.add(fieldNames.next());
             }
         }
 
@@ -103,7 +103,7 @@ public class JsonReader implements DataReader<JsonReadOptions> {
         for (JsonNode node : flattenedJsonObj) {
             String[] arr = new String[columnNames.size()];
             for (int i = 0; i < columnNames.size(); i++) {
-        	arr[i] = node.get(columnNames.get(i)).asText();
+                arr[i] = node.get(columnNames.get(i)).asText();
             }
             dataRows.add(arr);
         }
