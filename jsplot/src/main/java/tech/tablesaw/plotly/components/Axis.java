@@ -290,7 +290,6 @@ public class Axis extends Component {
         scaleRatio = builder.scaleRatio;
         categoryOrder = builder.categoryOrder;
         domain = builder.domain;
-        
     }
 
     public String asJavascript() {

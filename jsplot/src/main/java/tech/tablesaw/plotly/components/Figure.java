@@ -134,10 +134,10 @@ public class Figure {
     private String eventHandlerFunction(String targetName, String divName) {
         StringBuilder builder = new StringBuilder();
         
-        if (eventHandlers != null ) {
+        if (eventHandlers != null) {
             builder.append(System.lineSeparator());
             for (int i=0; i < eventHandlers.length; i++) {
-                builder.append( eventHandlers[i].asJavascript(targetName, divName) );
+                builder.append(eventHandlers[i].asJavascript(targetName, divName));
             }
             builder.append(System.lineSeparator());
         }
