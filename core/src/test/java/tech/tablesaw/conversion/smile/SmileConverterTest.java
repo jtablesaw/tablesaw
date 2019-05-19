@@ -37,6 +37,16 @@ public class SmileConverterTest {
         OLS winsModel = new OLS(moneyball.select("W", "RD").smile().numericDataset("RD"));
         assertNotNull(winsModel.toString());
     }
+    
+    @Test
+    public void regressionWithStratifiedSampleTest() throws IOException {
+        Table moneyball = Table.read().csv("../data/baseball.csv");
+        Table[] splits = moneyball.stratifiedSampleSplit(moneyball.stringColumn("Team"), 0.6);
+        Table stratifiedMoneyBall = splits[0];
+        stratifiedMoneyBall.addColumns(stratifiedMoneyBall.numberColumn("RS").subtract(stratifiedMoneyBall.numberColumn("RA")).setName("RD"));
+        OLS winsModel = new OLS(stratifiedMoneyBall.select("W", "RD").smile().numericDataset("RD"));
+        assertNotNull(winsModel.toString());
+    }
 
     @Test
     public void classification() throws IOException {
