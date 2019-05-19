@@ -223,7 +223,7 @@ public class TableTest {
         int totalFoxCount = t.where(t.stringColumn("who").equalsIgnoreCase("fox")).rowCount();
         int stratifiedFoxCount = results[0].where(results[0].stringColumn("who").equalsIgnoreCase("fox")).rowCount();
         
-        assertEquals(.75, (double)stratifiedFoxCount/totalFoxCount, 0.0);
+        assertEquals(.75, (double) stratifiedFoxCount/totalFoxCount, 0.0);
     }
 
     @Test

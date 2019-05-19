@@ -457,26 +457,24 @@ public class Table extends Relation implements Iterable<Row> {
     
     /**
      * Splits the table into two stratified samples, this uses the specified column to divide the table into groups, randomly assigning records to each according to the proportion given in trainingProportion. 
-     * 
-     *
      * @param column the column to be used for the stratified sampling
      * @param table1Proportion The proportion to go in the first table
      * @return An array two tables, with the first table having the proportion specified in the method parameter,
      * and the second table having the balance of the rows
      */
-    public Table[] stratifiedSampleSplit(CategoricalColumn column, double table1Proportion){
+    public Table[] stratifiedSampleSplit(CategoricalColumn column, double table1Proportion) {
         Preconditions.checkArgument( CategoricalColumn.class.isInstance(this.column(column.name())),
                 "The categorical column must be part of the table, you can create a string column and add it to this table before sampling.");
         final Table first = this.emptyCopy();
         final Table second = this.emptyCopy();
         
         this.splitOn(column).asTableList().forEach(tab-> {
-           Table[] splits = tab.sampleSplit(table1Proportion); 
+            Table[] splits = tab.sampleSplit(table1Proportion); 
             first.append(splits[0]);
             second.append(splits[1]);
         });
         
-        return new Table[]{first, second};
+        return new Table[]{ first, second };
     }
 
     /**
