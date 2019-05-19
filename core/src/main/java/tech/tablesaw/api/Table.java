@@ -463,7 +463,7 @@ public class Table extends Relation implements Iterable<Row> {
      * and the second table having the balance of the rows
      */
     public Table[] stratifiedSampleSplit(CategoricalColumn column, double table1Proportion) {
-        Preconditions.checkArgument( CategoricalColumn.class.isInstance(this.column(column.name())),
+        Preconditions.checkArgument(containsColumn(column),
                 "The categorical column must be part of the table, you can create a string column and add it to this table before sampling.");
         final Table first = this.emptyCopy();
         final Table second = this.emptyCopy();
