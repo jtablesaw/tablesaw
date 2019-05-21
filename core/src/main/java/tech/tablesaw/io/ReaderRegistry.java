@@ -26,15 +26,28 @@ public class ReaderRegistry {
 
     @SuppressWarnings("unchecked")
     public <T extends ReadOptions> DataReader<T> getReaderForOptions(T options) {
-        return (DataReader<T>) optionTypesRegistry.get(options.getClass().getCanonicalName());
+	String clazz = options.getClass().getCanonicalName();
+	DataReader<T> reader = (DataReader<T>) optionTypesRegistry.get(clazz);
+	if (reader == null) {
+	    throw new IllegalArgumentException("No reader registered for class " + clazz);
+	}
+	return reader;
     }
 
     public DataReader<?> getReaderForExtension(String extension) {
-        return extensionsRegistry.get(extension);
+	DataReader<?> reader = extensionsRegistry.get(extension);
+	if (reader == null) {
+	    throw new IllegalArgumentException("No reader registered for extension " + extension);
+	}
+	return reader;
     }
 
     public DataReader<?> getReaderForMimeType(String mimeType) {
-        return mimeTypesRegistry.get(mimeType);
+	DataReader<?> reader = mimeTypesRegistry.get(mimeType);
+	if (reader == null) {
+	    throw new IllegalArgumentException("No reader registered for mime-type " + mimeType);
+	}
+	return reader;
     }
 
 }
