@@ -14,20 +14,12 @@
 
 package tech.tablesaw.io.csv;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.List;
-
-import javax.annotation.concurrent.Immutable;
-
-import org.apache.commons.math3.util.Pair;
-
 import com.google.common.io.CharStreams;
 import com.univocity.parsers.common.AbstractParser;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-
+import org.apache.commons.math3.util.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.DataReader;
@@ -35,19 +27,23 @@ import tech.tablesaw.io.FileReader;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
 
+import javax.annotation.concurrent.Immutable;
+import java.io.IOException;
+import java.io.Reader;
+
 @Immutable
 public class CsvReader extends FileReader implements DataReader<CsvReadOptions> {
 
     private static final CsvReader INSTANCE = new CsvReader();
 
     static {
-	register(Table.defaultReaderRegistry);
+        register(Table.defaultReaderRegistry);
     }
 
     public static void register(ReaderRegistry registry) {
-	registry.registerExtension("csv", INSTANCE);
-	registry.registerMimeType("text/csv", INSTANCE);
-	registry.registerOptions(CsvReadOptions.class, INSTANCE);
+        registry.registerExtension("csv", INSTANCE);
+        registry.registerMimeType("text/csv", INSTANCE);
+        registry.registerOptions(CsvReadOptions.class, INSTANCE);
     }
 
     /**
@@ -55,15 +51,6 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
      */
     public CsvReader() {
         super();
-    }
-
-    /**
-     * Constructs a CsvReader with the given list of ColumnTypes
-     * <p>
-     * These are the only types that the CsvReader can detect and parse
-     */
-    public CsvReader(List<ColumnType> typeDetectionList) {
-        super(typeDetectionList);
     }
 
     /**
@@ -163,6 +150,7 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
         CsvParserSettings settings = new CsvParserSettings();
         settings.setLineSeparatorDetectionEnabled(options.lineSeparatorDetectionEnabled());
         settings.setFormat(csvFormat(options));
+        settings.setMaxCharsPerColumn(options.maxCharsPerColumn());
         if (options.maxNumberOfColumns() != null) {
             settings.setMaxColumns(options.maxNumberOfColumns());
         }
@@ -185,7 +173,7 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
 
     @Override
     public Table read(Source source) throws IOException {
-	return read(CsvReadOptions.builder(source).build());
+        return read(CsvReadOptions.builder(source).build());
     }
 
 }

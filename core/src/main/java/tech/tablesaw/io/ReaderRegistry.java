@@ -13,28 +13,41 @@ public class ReaderRegistry {
 
 
     public void registerOptions(Class<? extends ReadOptions> optionsType, DataReader<?> reader) {
-	optionTypesRegistry.put(optionsType.getCanonicalName(), reader);
+        optionTypesRegistry.put(optionsType.getCanonicalName(), reader);
     }
 
     public void registerExtension(String extension, DataReader<?> reader) {
-	extensionsRegistry.put(extension, reader);
+        extensionsRegistry.put(extension, reader);
     }
 
     public void registerMimeType(String mimeType, DataReader<?> reader) {
-	mimeTypesRegistry.put(mimeType, reader);
+        mimeTypesRegistry.put(mimeType, reader);
     }
 
     @SuppressWarnings("unchecked")
     public <T extends ReadOptions> DataReader<T> getReaderForOptions(T options) {
-	return (DataReader<T>) optionTypesRegistry.get(options.getClass().getCanonicalName());
+	String clazz = options.getClass().getCanonicalName();
+	DataReader<T> reader = (DataReader<T>) optionTypesRegistry.get(clazz);
+	if (reader == null) {
+	    throw new IllegalArgumentException("No reader registered for class " + clazz);
+	}
+	return reader;
     }
 
     public DataReader<?> getReaderForExtension(String extension) {
-	return extensionsRegistry.get(extension);
+	DataReader<?> reader = extensionsRegistry.get(extension);
+	if (reader == null) {
+	    throw new IllegalArgumentException("No reader registered for extension " + extension);
+	}
+	return reader;
     }
 
     public DataReader<?> getReaderForMimeType(String mimeType) {
-	return mimeTypesRegistry.get(mimeType);
+	DataReader<?> reader = mimeTypesRegistry.get(mimeType);
+	if (reader == null) {
+	    throw new IllegalArgumentException("No reader registered for mime-type " + mimeType);
+	}
+	return reader;
     }
 
 }

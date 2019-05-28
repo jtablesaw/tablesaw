@@ -55,10 +55,10 @@ public class ScatterVisualizations extends AbstractExample {
                 "appellation"));
 
         Plot.show(Scatter3DPlot.create("Average retail price for champagnes by vintage and rating",
-                champagne,				    // table
-                "highest pro score",  	// x
-                "vintage", 			// y
-                "Mean Retail")); 		// z
+                champagne,            // table
+                "highest pro score",  // x
+                "vintage",            // y
+                "Mean Retail"));      // z
 
         Plot.show(ScatterPlot.create("Wine prices and ratings", wines, "Mean Retail", "highest pro score", "wine type"));
 

@@ -21,9 +21,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Types;
 
 import org.junit.jupiter.api.Test;
 
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
@@ -107,5 +109,10 @@ public class SqlResultSetReaderTest {
             }
 
         }
+    }
+
+    @Test
+    public void invalidPrecision() {
+        assertEquals(ColumnType.DOUBLE, SqlResultSetReader.getColumnType(Types.NUMERIC, 0, 0));
     }
 }

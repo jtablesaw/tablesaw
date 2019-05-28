@@ -36,18 +36,17 @@ final public class FixedWidthWriter implements DataWriter<FixedWidthWriteOptions
     private static final FixedWidthWriter INSTANCE = new FixedWidthWriter();
 
     static {
-	register(Table.defaultWriterRegistry);
+        register(Table.defaultWriterRegistry);
     }
 
     public static void register(WriterRegistry registry) {
-	registry.registerOptions(FixedWidthWriteOptions.class, INSTANCE);
+        registry.registerOptions(FixedWidthWriteOptions.class, INSTANCE);
     }
 
     public void write(Table table, FixedWidthWriteOptions options) {
-
-	FixedWidthWriterSettings settings = fixedWidthWriterSettings(options);
+        FixedWidthWriterSettings settings = fixedWidthWriterSettings(options);
         settings.setFormat(fixedWidthFormat(options));
-	
+
         com.univocity.parsers.fixed.FixedWidthWriter fixedWidthWriter = null;
         // Creates a writer with the above settings;
         try {
@@ -161,7 +160,7 @@ final public class FixedWidthWriter implements DataWriter<FixedWidthWriteOptions
 
     @Override
     public void write(Table table, Destination dest) throws IOException {
-	write(table, FixedWidthWriteOptions.builder(dest).build());
+        write(table, FixedWidthWriteOptions.builder(dest).build());
     }
 }
 

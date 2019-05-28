@@ -19,21 +19,10 @@ import static tech.tablesaw.api.ColumnType.SKIP;
 
 public abstract class FileReader {
 
-    private List<ColumnType> typeArrayOverrides = new ArrayList<>();
-
     /**
      * Constructs a CsvReader
      */
     public FileReader() {}
-
-    /**
-     * Constructs a CsvReader with the given list of ColumnTypes
-     * <p>
-     * These are the only types that the CsvReader can detect and parse
-     */
-    public FileReader(List<ColumnType> typeDetectionList) {
-        this.typeArrayOverrides = typeDetectionList;
-    }
 
     protected ColumnType[] getTypes(Reader reader, ReadOptions options, int linesToSkip, AbstractParser<?> parser) {
 
@@ -43,12 +32,7 @@ public abstract class FileReader {
             parser.parseNext();
         }
 
-        if (options.minimizeColumnSizes()) {
-            typeArrayOverrides = ReadOptions.EXTENDED_TYPE_ARRAY;
-        }
-
-        ColumnTypeDetector detector = typeArrayOverrides.isEmpty()
-                ? new ColumnTypeDetector() : new ColumnTypeDetector(typeArrayOverrides);
+        ColumnTypeDetector detector = new ColumnTypeDetector(options.columnTypesToDetect());
 
         return detector.detectColumnTypes(new Iterator<String[]>() {
 
@@ -227,5 +211,4 @@ public abstract class FileReader {
         buf.append(System.lineSeparator());
         return buf.toString();
     }
-
 }

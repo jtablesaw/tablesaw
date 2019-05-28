@@ -1,11 +1,12 @@
 package tech.tablesaw.io.html;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
@@ -33,8 +34,15 @@ public class HtmlReader implements DataReader<HtmlReadOptions> {
 
     @Override
     public Table read(HtmlReadOptions options) throws IOException {
-        Reader reader = options.source().createReader(null);
-        Document doc = Parser.htmlParser().parseInput(reader, "");
+        Document doc;
+        InputStream inputStream = options.source().inputStream();
+        if (inputStream != null) {
+            // Reader must support mark, so can't use InputStreamReader
+            // Parse the InputStream directly
+            doc = Jsoup.parse(inputStream, null, "");
+        } else {
+            doc = Parser.htmlParser().parseInput(options.source().createReader(null), "");
+        }
         Elements tables = doc.select("table");
         if (tables.size() != 1) {
             throw new IllegalStateException(
@@ -59,10 +67,16 @@ public class HtmlReader implements DataReader<HtmlReadOptions> {
             return table;
         }
 
-        String[] headerRow = rows.get(0);
         List<String> columnNames = new ArrayList<>();
-        for (int i = 0; i < headerRow.length; i++) {
-            columnNames.add(headerRow[i]); // TODO: cleansing and fallback name
+        if (options.header()) {
+            String[] headerRow = rows.remove(0);
+            for (int i = 0; i < headerRow.length; i++) {
+                columnNames.add(headerRow[i]);
+            }
+        } else {
+            for (int i = 0; i < rows.get(0).length; i++) {
+                columnNames.add("C" + i);
+            }
         }
 
         return TableBuildingUtils.build(columnNames, rows, options);

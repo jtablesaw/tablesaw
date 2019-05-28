@@ -256,7 +256,11 @@ public class ScatterTrace extends AbstractTrace {
             this.y = y.asDoubleArray();
         }
 
-        private ScatterBuilder(Column<?> x, NumericColumn<? extends Number> open, NumericColumn<? extends Number> high, NumericColumn<? extends Number> low, NumericColumn<? extends Number> close) {
+        private ScatterBuilder(Column<?> x,
+                               NumericColumn<? extends Number> open,
+                               NumericColumn<? extends Number> high,
+                               NumericColumn<? extends Number> low,
+                               NumericColumn<? extends Number> close) {
             this.x = x.asObjectArray();
             this.open = open.asDoubleArray();
             this.high = high.asDoubleArray();

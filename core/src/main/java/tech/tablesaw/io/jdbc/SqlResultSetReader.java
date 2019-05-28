@@ -24,7 +24,6 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.ShortColumnType;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -50,7 +49,8 @@ public class SqlResultSetReader {
 
                 .put(Types.DATE, ColumnType.LOCAL_DATE)
                 .put(Types.TIME, ColumnType.LOCAL_TIME)
-                .put(Types.TIMESTAMP, ColumnType.LOCAL_DATE_TIME)
+                 // Instant, LocalDateTime, OffsetDateTime and ZonedDateTime are often mapped to timestamp
+                .put(Types.TIMESTAMP, ColumnType.INSTANT)
 
                 .put(Types.DECIMAL, ColumnType.DOUBLE)
                 .put(Types.DOUBLE, ColumnType.DOUBLE)
@@ -94,48 +94,12 @@ public class SqlResultSetReader {
 
         // Setup the columns and add to the table
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            String name = metaData.getColumnName(i);
-            int columnType = metaData.getColumnType(i);
-            ColumnType type = SQL_TYPE_TO_TABLESAW_TYPE.get(columnType);
-            // Try to improve on the initial type assigned to 'type' to minimize size/space of type needed.
-            // For all generic numeric columns inspect closer, checking the precision and 
-            // scale to more accurately determine the appropriate java type to use.
-            if (columnType == Types.NUMERIC || columnType == Types.DECIMAL) {
-                int s = metaData.getScale(i);
-                // When scale is 0 then column is a type of integer
-                if (s == 0) {
-                    int p = metaData.getPrecision(i);
-/* Mapping to java integer types based on integer precision defined:
+            ColumnType type = getColumnType(metaData.getColumnType(i), metaData.getScale(i), metaData.getPrecision(i));
 
-Java type           TypeMinVal              TypeMaxVal          p               MaxIntVal
------------------------------------------------------------------------------------------
-byte, Byte:         -128                    127                 NUMBER(2)       99
-short, Short:       -32768                  32767               NUMBER(4)       9_999
-int, Integer:       -2147483648             2147483647          NUMBER(9)       999_999_999 
-long, Long:         -9223372036854775808    9223372036854775807 NUMBER(18)      999_999_999_999_999_999
-
-*/
-                    // Start with SHORT (since ColumnType.BYTE isn't supported yet)
-                    // and find the smallest java integer type that fits
-                    if (p <= 4) {
-                        type = ShortColumnType.instance();
-                    } else if (p <= 9) {
-                        type = ColumnType.INTEGER;
-                    } else if (p <= 18) {
-                        type = ColumnType.LONG;
-                    }
-                } else { // s is not zero, so a decimal value is expected. First try float, then double
-                    if (s <= 7) {
-                        type = ColumnType.FLOAT;
-                    } else if (s <= 16) {
-                        type = ColumnType.DOUBLE;
-                    }
-                }
-            }
             Preconditions.checkState(type != null,
-                    "No column type found for %s as specified for column %s", metaData.getColumnType(i), name);
+                    "No column type found for %s as specified for column %s", metaData.getColumnType(i), metaData.getColumnName(i));
 
-            Column<?> newColumn = type.create(name);
+            Column<?> newColumn = type.create(metaData.getColumnName(i));
             table.addColumns(newColumn);
         }
 
@@ -160,4 +124,45 @@ long, Long:         -9223372036854775808    9223372036854775807 NUMBER(18)      
         }
         return table;
     }
+    
+    protected static ColumnType getColumnType(int columnType, int scale, int precision) {
+        ColumnType type = SQL_TYPE_TO_TABLESAW_TYPE.get(columnType);
+        // Try to improve on the initial type assigned to 'type' to minimize size/space of type needed.
+        // For all generic numeric columns inspect closer, checking the precision and 
+        // scale to more accurately determine the appropriate java type to use.
+        if (columnType == Types.NUMERIC || columnType == Types.DECIMAL) {
+            // When scale is 0 then column is a type of integer
+            if (scale == 0) {
+/* Mapping to java integer types based on integer precision defined:
+
+Java type           TypeMinVal              TypeMaxVal          p               MaxIntVal
+-----------------------------------------------------------------------------------------
+byte, Byte:         -128                    127                 NUMBER(2)       99
+short, Short:       -32768                  32767               NUMBER(4)       9_999
+int, Integer:       -2147483648             2147483647          NUMBER(9)       999_999_999 
+long, Long:         -9223372036854775808    9223372036854775807 NUMBER(18)      999_999_999_999_999_999
+
+*/
+                if (precision > 0) {
+                    if (precision <= 4) {
+                        // Start with SHORT (since ColumnType.BYTE isn't supported yet)
+                        // and find the smallest java integer type that fits
+                        type = ColumnType.SHORT;
+                    } else if (precision <= 9) {
+                        type = ColumnType.INTEGER;
+                    } else if (precision <= 18) {
+                        type = ColumnType.LONG;
+                    }
+                }
+            } else { // s is not zero, so a decimal value is expected. First try float, then double
+                if (scale <= 7) {
+                    type = ColumnType.FLOAT;
+                } else if (scale <= 16) {
+                    type = ColumnType.DOUBLE;
+                }
+            }
+        }
+        return type;
+    }
+
 }

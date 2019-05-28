@@ -41,7 +41,7 @@ public class TableFilteringTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes(true));
+        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
     }
 
     @Test

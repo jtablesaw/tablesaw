@@ -14,6 +14,31 @@
 
 package tech.tablesaw.io.csv;
 
+import com.univocity.parsers.common.TextParsingException;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.AddCellToColumnException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.nio.file.Paths;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,34 +50,10 @@ import static tech.tablesaw.api.ColumnType.FLOAT;
 import static tech.tablesaw.api.ColumnType.INTEGER;
 import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
 import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
 import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.SKIP;
 import static tech.tablesaw.api.ColumnType.STRING;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.file.Paths;
-import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import org.junit.jupiter.api.Test;
-
-import com.univocity.parsers.common.TextParsingException;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.AddCellToColumnException;
 
 /**
  * Tests for CSV Reading
@@ -63,6 +64,33 @@ public class CsvReaderTest {
 
     private final ColumnType[] bus_types = {SHORT, STRING, STRING, FLOAT, FLOAT};
     private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
+
+    @Test
+    public void testMaxCharsPerColumnPass() throws IOException {
+        final Reader reader = new StringReader(
+                "Text" + LINE_END
+                        + "\"short\"" + LINE_END
+                        + "1234567890" + LINE_END);
+
+        final int maxCharsPerColumn = 12;
+
+        Table result = Table.read().csv(CsvReadOptions.builder(reader).maxCharsPerColumn(maxCharsPerColumn));
+        assertEquals(2, result.rowCount());
+    }
+
+    @Test
+    public void testMaxCharsPerColumnException() {
+        final Reader reader = new StringReader(
+                "Text" + LINE_END
+                        + "\"short\"" + LINE_END
+                        + "1234567890" + LINE_END);
+
+        final int maxCharsPerColumn = 8;
+
+        assertThrows(TextParsingException.class, () -> {
+            Table.read().csv(CsvReadOptions.builder(reader).maxCharsPerColumn(maxCharsPerColumn));
+        });
+    }
 
     @Test
     public void testWithBusData() throws IOException {
@@ -136,7 +164,7 @@ public class CsvReaderTest {
         Reader reader = new FileReader("../data/bus_stop_test.csv");
         CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(true)
-                .minimizeColumnSizes(true)
+                .minimizeColumnSizes()
                 .separator(',')
                 .sample(false)
                 .locale(Locale.getDefault())
@@ -179,36 +207,117 @@ public class CsvReaderTest {
 
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-        assertEquals(actual, Collections.singletonList(LOCAL_DATE));
+        assertEquals(Collections.singletonList(LOCAL_DATE), actual);
     }
 
     @Test
-    public void testLocalDateTimeDetectionEnglish() {
+    public void testDateTimeDetection() {
 
         final Reader reader = new StringReader(
               "Date" + LINE_END
-            + "09-Nov-2014 13:03" + LINE_END
-            + "09-Oct-2014 13:03" + LINE_END
-            + "09-Sep-2014 13:03" + LINE_END
-            + "09-Aug-2014 13:03" + LINE_END
-            + "09-Jul-2014 13:03" + LINE_END
-            + "09-Jun-2014 13:03" + LINE_END);
+            + "09-Nov-2014 13:03:04" + LINE_END
+            + "09-Oct-2014 13:03:56" + LINE_END);
 
         final boolean header = true;
-        final char delimiter = ',';
-        final boolean useSampling = true;
 
         CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(header)
-                .separator(delimiter)
-                .sample(useSampling)
-                .locale(Locale.ENGLISH)
+                .dateTimeFormat("dd-MMM-yyyy HH:mm:ss")
                 .build();
 
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-        assertEquals(actual, Collections.singletonList(LOCAL_DATE_TIME));
+        assertEquals(Collections.singletonList(LOCAL_DATE_TIME), actual);
+    }
 
+    @Test
+    public void testDateTimeDetection2() {
+
+        final Reader reader = new StringReader(
+              "Date" + LINE_END
+            + "09-Nov-2014 13:03:04" + LINE_END
+            + "09-Oct-2014 13:03:56" + LINE_END);
+
+        final boolean header = true;
+
+        CsvReadOptions options = CsvReadOptions.builder(reader)
+                .header(header)
+                .dateTimeFormat(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss"))
+                .build();
+
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+
+        assertEquals(Collections.singletonList(LOCAL_DATE_TIME), actual);
+    }
+
+    @Test
+    public void testDateTimeDetection3() {
+
+        final Reader reader = new StringReader(
+              "Date" + LINE_END
+            + "09-NOV-2014 13:03:04" + LINE_END
+            + "09-OCT-2014 13:03:56" + LINE_END);
+
+        final boolean header = true;
+
+        CsvReadOptions options = CsvReadOptions.builder(reader)
+                .header(header)
+                .dateTimeFormat(
+                        new DateTimeFormatterBuilder()
+                                .parseCaseInsensitive()
+                                .appendPattern("dd-MMM-yyyy HH:mm:ss")
+                                .toFormatter())
+                .build();
+
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+
+        assertEquals(Collections.singletonList(LOCAL_DATE_TIME), actual);
+    }
+
+    @Test
+    public void testDateDetection1() {
+
+        final Reader reader = new StringReader(
+              "Time" + LINE_END
+            + "13.03.04" + LINE_END
+            + "13.03.04" + LINE_END);
+
+        final boolean header = true;
+
+        CsvReadOptions options = CsvReadOptions.builder(reader)
+                .header(header)
+                .timeFormat(
+                        new DateTimeFormatterBuilder()
+                                .parseCaseInsensitive()
+                                .appendPattern("HH.mm.ss")
+                                .toFormatter())
+                .build();
+
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+        assertEquals(Collections.singletonList(LOCAL_TIME), actual);
+    }
+
+    @Test
+    public void testTimeDetection1() {
+
+        final Reader reader = new StringReader(
+              "Date" + LINE_END
+            + "09-NOV-2014" + LINE_END
+            + "09-OCT-2014" + LINE_END);
+
+        final boolean header = true;
+
+        CsvReadOptions options = CsvReadOptions.builder(reader)
+                .header(header)
+                .dateFormat(
+                        new DateTimeFormatterBuilder()
+                                .parseCaseInsensitive()
+                                .appendPattern("dd-MMM-yyyy")
+                                .toFormatter())
+                .build();
+
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+        assertEquals(Collections.singletonList(LOCAL_DATE), actual);
     }
 
     @Test
@@ -311,7 +420,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testDateWithFormatter2() throws IOException {
+    public void testDateWithFormatter1() throws IOException {
 
         final boolean header = false;
         final char delimiter = ',';
@@ -322,6 +431,25 @@ public class CsvReaderTest {
                 .separator(delimiter)
                 .sample(useSampling)
                 .dateFormat("yyyy.MM.dd")
+                .build();
+
+        final Table table = Table.read().csv(options);
+        DateColumn date = table.dateColumn(0);
+        assertFalse(date.isEmpty());
+    }
+
+    @Test
+    public void testDateWithFormatter2() throws IOException {
+
+        final boolean header = false;
+        final char delimiter = ',';
+        final boolean useSampling = true;
+
+        CsvReadOptions options = CsvReadOptions.builder("../data/date_format_test.txt")
+                .header(header)
+                .separator(delimiter)
+                .sample(useSampling)
+                .dateFormat(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
                 .build();
 
         final Table table = Table.read().csv(options);
@@ -462,7 +590,7 @@ public class CsvReaderTest {
     public void testReadFailure() throws IOException {
         // TODO (lwhite): These tests don't fail. What was their intent?
         Table table1 = Table.read().csv(CsvReadOptions.builder("../data/read_failure_test.csv")
-                .minimizeColumnSizes(true));
+                .minimizeColumnSizes());
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
         //TODO(lwhite): Better tests
@@ -473,7 +601,7 @@ public class CsvReaderTest {
     public void testReadFailure2() throws IOException {
         Table table1 = Table.read().csv(
                 CsvReadOptions.builder("../data/read_failure_test2.csv")
-                .minimizeColumnSizes(true));
+                .minimizeColumnSizes());
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
 
@@ -526,7 +654,7 @@ public class CsvReaderTest {
     
     @Test
     public void carriageReturnLineEnding() throws IOException {
-	Table table = Table.read().csv(CsvReadOptions.builder("../data/sacramento_real_estate_transactions.csv"));
-	assertEquals(985, table.rowCount());
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/sacramento_real_estate_transactions.csv"));
+        assertEquals(985, table.rowCount());
     }
 }

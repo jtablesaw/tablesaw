@@ -14,28 +14,10 @@
 
 package tech.tablesaw.columns.datetimes;
 
+import tech.tablesaw.columns.temporal.TemporalPredicates;
 import tech.tablesaw.filtering.predicates.LongBiPredicate;
 
-import java.util.function.LongPredicate;
-
-public class DateTimePredicates {
-
-    public static final LongPredicate isMissing = i -> i == DateTimeColumnType.missingValueIndicator();
-
-    public static final LongPredicate isNotMissing = i -> i != DateTimeColumnType.missingValueIndicator();
-
-    public static final LongBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
-
-    public static final LongBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest >=
-            valueToCompareAgainst;
-
-    public static final LongBiPredicate isLessThan = (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
-
-    public static final LongBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
-
-    public static final LongBiPredicate isEqualTo = (long valueToTest, long valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
-
-    public static final LongBiPredicate isNotEqualTo = (long valueToTest, long valueToCompareAgainst) -> valueToTest != valueToCompareAgainst;
+public class DateTimePredicates extends TemporalPredicates {
 
     public static final LongBiPredicate isInYear = (long valueToTest, long year) -> {
         return PackedLocalDateTime.isInYear(valueToTest, (int) year);

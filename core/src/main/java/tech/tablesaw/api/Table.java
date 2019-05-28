@@ -23,15 +23,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
-import org.reflections.Reflections;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.aggregate.AggregateFunction;
@@ -69,7 +68,7 @@ public class Table extends Relation implements Iterable<Row> {
     public static final WriterRegistry defaultWriterRegistry = new WriterRegistry();
 
     static {
-	autoRegisterReadersAndWriters();
+        autoRegisterReadersAndWriters();
     }
 
     /**
@@ -117,25 +116,18 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     private static void autoRegisterReadersAndWriters() {
-	Reflections reflections = new Reflections("tech.tablesaw.io");
-	@SuppressWarnings("rawtypes")
-	Set<Class<? extends DataWriter>> writerClasses = reflections.getSubTypesOf(DataWriter.class);
-	for (Class<?> clazz : writerClasses) {
-	    try {
-		Class.forName(clazz.getCanonicalName());
-	    } catch (ClassNotFoundException e) {
-		new IllegalStateException(e);
-	    }
-	}	
-	@SuppressWarnings("rawtypes")
-	Set<Class<? extends DataReader>> readerClasses = reflections.getSubTypesOf(DataReader.class);
-	for (Class<?> clazz : readerClasses) {
-	    try {
-		Class.forName(clazz.getCanonicalName());
-	    } catch (ClassNotFoundException e) {
-		new IllegalStateException(e);
-	    }
-	}	
+        try (ScanResult scanResult = new ClassGraph().enableAllInfo().whitelistPackages("tech.tablesaw.io").scan()) {
+            List<String> classes = new ArrayList<>();
+            classes.addAll(scanResult.getClassesImplementing(DataWriter.class.getName()).getNames());
+            classes.addAll(scanResult.getClassesImplementing(DataReader.class.getName()).getNames());
+            for (String clazz : classes) {
+                try {
+                    Class.forName(clazz);
+                } catch (ClassNotFoundException e) {
+                    new IllegalStateException(e);
+                }
+            }
+        }
     }
 
     /**
@@ -659,6 +651,12 @@ public class Table extends Relation implements Iterable<Row> {
         }
     }
 
+    public Row row(int rowIndex) {
+        Row row = new Row(Table.this);
+        row.at(rowIndex);
+        return row;
+    }
+
     public Table rows(int... rowNumbers) {
         Preconditions.checkArgument(Ints.max(rowNumbers) <= rowCount());
         return where(Selection.with(rowNumbers));
@@ -979,7 +977,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public DataFrameJoiner join(String... columnNames) {
         return new DataFrameJoiner(this, columnNames);
-	}
+    }
 
     public Table missingValueCounts() {
         return summarize(columnNames(), countMissing).apply();

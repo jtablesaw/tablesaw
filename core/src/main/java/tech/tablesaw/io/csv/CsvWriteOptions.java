@@ -47,19 +47,19 @@ public class CsvWriteOptions extends WriteOptions {
     }
 
     public static Builder builder(Destination dest) {
-	return new Builder(dest);
+        return new Builder(dest);
     }
 
     public static Builder builder(OutputStream dest) {
-	return new Builder(dest);
+        return new Builder(dest);
     }
 
     public static Builder builder(Writer dest) {
-	return new Builder(dest);
+        return new Builder(dest);
     }
 
     public static Builder builder(File dest) throws IOException {
-	return new Builder(dest);
+        return new Builder(dest);
     }
 
     public static Builder builder(String fileName) throws IOException {

@@ -42,12 +42,22 @@ import static tech.tablesaw.api.ColumnType.TEXT;
 
 public class ReadOptions {
 
+    private static final List<ColumnType> DEFAULT_TYPES = Lists.newArrayList(
+            LOCAL_DATE_TIME,
+            LOCAL_TIME,
+            LOCAL_DATE,
+            BOOLEAN,
+            INTEGER,
+            LONG,
+            DOUBLE,
+            STRING);
+
     /**
      * An extended list of types that are used if minimizeColumnSizes is true. By including extra types like Short
      * the resulting table size is reduced at the cost of some additional complexity for the programmer if, for example,
      * they will subsequently modify the data in a way that exceeds the range of the type.
      */
-    public static final List<ColumnType> EXTENDED_TYPE_ARRAY =
+    private static final List<ColumnType> EXTENDED_TYPES =
             Lists.newArrayList(
                     LOCAL_DATE_TIME,
                     LOCAL_TIME,
@@ -63,6 +73,7 @@ public class ReadOptions {
 
     protected final Source source;
     protected final String tableName;
+    protected final List<ColumnType> columnTypesToDetect;
     protected final boolean sample;
     protected final String dateFormat;
     protected final String dateTimeFormat;
@@ -70,11 +81,18 @@ public class ReadOptions {
     protected final Locale locale;
     protected final String missingValueIndicator;
     protected final boolean minimizeColumnSizes;
+    protected final int maxCharsPerColumn;
+
+    protected final DateTimeFormatter dateFormatter;
+    protected final DateTimeFormatter dateTimeFormatter;
+    protected final DateTimeFormatter timeFormatter;
+
     protected final boolean header;
 
     protected ReadOptions(ReadOptions.Builder builder) {
-	source = builder.source;
+        source = builder.source;
         tableName = builder.tableName;
+        columnTypesToDetect = builder.columnTypesToDetect;
         sample = builder.sample;
         dateFormat = builder.dateFormat;
         timeFormat = builder.timeFormat;
@@ -82,6 +100,11 @@ public class ReadOptions {
         missingValueIndicator = builder.missingValueIndicator;
         minimizeColumnSizes = builder.minimizeColumnSizes;
         header = builder.header;
+        maxCharsPerColumn = builder.maxCharsPerColumn;
+
+        dateFormatter = builder.dateFormatter;
+        timeFormatter = builder.timeFormatter;
+        dateTimeFormatter = builder.dateTimeFormatter;
 
         if (builder.locale == null) {
             locale = Locale.getDefault();
@@ -96,6 +119,10 @@ public class ReadOptions {
 
     public String tableName() {
         return tableName;
+    }
+
+    public List<ColumnType> columnTypesToDetect() {
+        return columnTypesToDetect;
     }
 
     public boolean sample() {
@@ -119,6 +146,10 @@ public class ReadOptions {
     }    
 
     public DateTimeFormatter dateTimeFormatter() {
+        if (dateTimeFormatter != null) {
+            return dateTimeFormatter;
+        }
+
         if (Strings.isNullOrEmpty(dateTimeFormat)) {
             return null;
         }
@@ -126,6 +157,9 @@ public class ReadOptions {
     }
 
     public DateTimeFormatter timeFormatter() {
+        if (timeFormatter != null) {
+            return timeFormatter;
+        }
         if (Strings.isNullOrEmpty(timeFormat)) {
             return null;
         }
@@ -133,6 +167,9 @@ public class ReadOptions {
     }
 
     public DateTimeFormatter dateFormatter() {
+        if (dateFormatter != null) {
+            return dateFormatter;
+        }
         if (Strings.isNullOrEmpty(dateFormat)) {
             return null;
         }
@@ -143,30 +180,35 @@ public class ReadOptions {
 
         protected final Source source;
         protected String tableName = "";
+        protected List<ColumnType> columnTypesToDetect = DEFAULT_TYPES;
         protected boolean sample = true;
         protected String dateFormat;
+        protected DateTimeFormatter dateFormatter;
         protected String timeFormat;
+        protected DateTimeFormatter timeFormatter;
         protected String dateTimeFormat;
+        protected DateTimeFormatter dateTimeFormatter;
         protected Locale locale;
         protected String missingValueIndicator;
         protected boolean minimizeColumnSizes = false;
         protected boolean header = true;
+        protected int maxCharsPerColumn = 4096;
 
         protected Builder() {
             source = null;
         }
         
         protected Builder(Source source) {
-      	    this.source = source;
+            this.source = source;
         }
 
         protected Builder(File file) {
-      	    this.source = new Source(file);
+            this.source = new Source(file);
             this.tableName = file.getName();
         }
 
         protected Builder(URL url) throws IOException {
-      	    this.source = new Source(url.openStream());
+            this.source = new Source(url.openStream());
             this.tableName = url.toString();
         }
 
@@ -183,28 +225,60 @@ public class ReadOptions {
             return this;
         }
 
-        public Builder dateFormat(String dateFormat) {
-            this.dateFormat = dateFormat;
-            return this;
-        }
-
         public Builder header(boolean hasHeader) {
             this.header = hasHeader;
             return this;
         }
 
+        /**
+         * Deprecated. Use dateFormat(DateTimeFormatter dateFormat) instead
+         */
+        @Deprecated
+        public Builder dateFormat(String dateFormat) {
+            this.dateFormat = dateFormat;
+            return this;
+        }
+
+        public Builder dateFormat(DateTimeFormatter dateFormat) {
+            this.dateFormatter = dateFormat;
+            return this;
+        }
+
+        /**
+         * Deprecated. Use timeFormat(DateTimeFormatter dateFormat) instead
+         */
+        @Deprecated
         public Builder timeFormat(String timeFormat) {
             this.timeFormat = timeFormat;
             return this;
         }
 
+        public Builder timeFormat(DateTimeFormatter dateFormat) {
+            this.timeFormatter = dateFormat;
+            return this;
+        }
+
+        /**
+         * Deprecated. Use dateTimeFormat(DateTimeFormatter dateFormat) instead
+         */
+        @Deprecated
         public Builder dateTimeFormat(String dateTimeFormat) {
             this.dateTimeFormat = dateTimeFormat;
             return this;
         }
 
+        public Builder dateTimeFormat(DateTimeFormatter dateFormat) {
+            this.dateTimeFormatter = dateFormat;
+            return this;
+        }
+
         public Builder missingValueIndicator(String missingValueIndicator) {
             this.missingValueIndicator = missingValueIndicator;
+            return this;
+        }
+
+        public Builder maxCharsPerColumn(int maxCharsPerColumn) {
+            this.maxCharsPerColumn = maxCharsPerColumn;
             return this;
         }
 
@@ -218,8 +292,20 @@ public class ReadOptions {
             return this;
         }
 
-        public Builder minimizeColumnSizes(boolean minimize) {
-            this.minimizeColumnSizes = minimize;
+        /**
+         * @see ColumnTypeDetector
+         */
+        public Builder columnTypesToDetect(List<ColumnType> columnTypesToDetect) {
+            this.columnTypesToDetect = columnTypesToDetect;
+            return this;
+        }
+
+        /**
+         * Allow the {@link ColumnTypeDetector} to choose shorter column types such as float
+         * instead of double when the data will fit in a smaller type
+         */
+        public Builder minimizeColumnSizes() {
+            this.columnTypesToDetect = EXTENDED_TYPES;
             return this;
         }
         

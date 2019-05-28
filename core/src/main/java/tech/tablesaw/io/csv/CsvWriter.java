@@ -33,17 +33,17 @@ final public class CsvWriter implements DataWriter<CsvWriteOptions> {
     private static final String nullValue = "";
 
     static {
-	register(Table.defaultWriterRegistry);
+        register(Table.defaultWriterRegistry);
     }
 
     public static void register(WriterRegistry registry) {
-	registry.registerExtension("csv", INSTANCE);
-	registry.registerOptions(CsvWriteOptions.class, INSTANCE);
+        registry.registerExtension("csv", INSTANCE);
+        registry.registerOptions(CsvWriteOptions.class, INSTANCE);
     }
 
     public void write(Table table, CsvWriteOptions options) {
-	CsvWriterSettings settings = createSettings(options);
-	
+        CsvWriterSettings settings = createSettings(options);
+        
         com.univocity.parsers.csv.CsvWriter csvWriter = null;
         // Creates a writer with the above settings;
         try {
@@ -73,7 +73,7 @@ final public class CsvWriter implements DataWriter<CsvWriteOptions> {
     }
 
     protected static CsvWriterSettings createSettings(CsvWriteOptions options) {
-	CsvWriterSettings settings = new CsvWriterSettings();
+        CsvWriterSettings settings = new CsvWriterSettings();
         // Sets the character sequence to write for the values that are null.
         settings.setNullValue(nullValue);
         settings.getFormat().setDelimiter(options.separator());
@@ -87,7 +87,7 @@ final public class CsvWriter implements DataWriter<CsvWriteOptions> {
 
     @Override
     public void write(Table table, Destination dest) {
-	write(table, CsvWriteOptions.builder(dest).build());
+        write(table, CsvWriteOptions.builder(dest).build());
     }
     
 }

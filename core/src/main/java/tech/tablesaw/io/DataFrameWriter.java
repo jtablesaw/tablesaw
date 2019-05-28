@@ -32,44 +32,44 @@ public class DataFrameWriter {
     private final Table table;
 
     public DataFrameWriter(WriterRegistry registry, Table table) {
-	this.registry = registry;
+        this.registry = registry;
         this.table = table;
     }
 
     public void toFile(String file) throws IOException {
-	toFile(new File(file));
+        toFile(new File(file));
     }
 
     public void toFile(File file) throws IOException {
-	String extension = Files.getFileExtension(file.getCanonicalPath());
-	DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
-	dataWriter.write(table, new Destination(file));
+        String extension = Files.getFileExtension(file.getCanonicalPath());
+        DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
+        dataWriter.write(table, new Destination(file));
     }
 
     public void toStream(OutputStream stream, String extension) throws IOException {
-	DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
-	dataWriter.write(table, new Destination(stream));
+        DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
+        dataWriter.write(table, new Destination(stream));
     }
 
     public void toWriter(Writer writer, String extension) throws IOException {
-	DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
-	dataWriter.write(table, new Destination(writer));
+        DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
+        dataWriter.write(table, new Destination(writer));
     }
  
     public <T extends WriteOptions> void usingOptions(T options) throws IOException {
-	DataWriter<T> dataWriter = registry.getWriterForOptions(options);
-	dataWriter.write(table, options);
+        DataWriter<T> dataWriter = registry.getWriterForOptions(options);
+        dataWriter.write(table, options);
     }
 
     public String toString(String extension) {
-	StringWriter writer = new StringWriter();
-	DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
-	try {
-	    dataWriter.write(table, new Destination(writer));
-	} catch (IOException e) {
-	    new IllegalStateException(e);
-	}
-	return writer.toString();
+        StringWriter writer = new StringWriter();
+        DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
+        try {
+            dataWriter.write(table, new Destination(writer));
+        } catch (IOException e) {
+            new IllegalStateException(e);
+        }
+        return writer.toString();
     }
 
     // legacy methods left for backwards compatibility

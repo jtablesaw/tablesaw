@@ -2,6 +2,7 @@ package tech.tablesaw.api;
 
 import tech.tablesaw.columns.Column;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,6 +24,7 @@ public class Row implements Iterator<Row> {
     private final Map<String, Column<String>> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, BooleanColumn> booleanColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, DateTimeColumn> dateTimeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, InstantColumn> instantColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, TimeColumn> timeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, Column<?>> columnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private int rowNumber;
@@ -61,6 +63,9 @@ public class Row implements Iterator<Row> {
 
             } else if (column instanceof DateTimeColumn) {
                 dateTimeColumnMap.put(column.name(), (DateTimeColumn) column);
+
+            } else if (column instanceof InstantColumn) {
+                instantColumnMap.put(column.name(), (InstantColumn) column);
 
             } else if (column instanceof TimeColumn) {
                 timeColumnMap.put(column.name(), (TimeColumn) column);
@@ -106,6 +111,14 @@ public class Row implements Iterator<Row> {
 
     public LocalDateTime getDateTime(String columnName) {
         return ((DateTimeColumn) columnMap.get(columnName)).get(rowNumber);
+    }
+
+    public Instant getInstant(int columnIndex) {
+        return getInstant(columnNames[columnIndex]);
+    }
+
+    public Instant getInstant(String columnName) {
+        return ((InstantColumn) columnMap.get(columnName)).get(rowNumber);
     }
 
     public double getDouble(int columnIndex) {
@@ -241,6 +254,14 @@ public class Row implements Iterator<Row> {
 
     public void setDateTime(String columnName, LocalDateTime value) {
         dateTimeColumnMap.get(columnName).set(rowNumber, value);
+    }
+
+    public void setInstant(int columnIndex, Instant value) {
+	setInstant(columnNames[columnIndex], value);
+    }
+
+    public void setInstant(String columnName, Instant value) {
+        instantColumnMap.get(columnName).set(rowNumber, value);
     }
 
     public void setDouble(int columnIndex, double value) {

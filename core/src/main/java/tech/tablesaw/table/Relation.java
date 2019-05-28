@@ -22,6 +22,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.NumberColumn;
@@ -303,6 +304,8 @@ public abstract class Relation {
             return ((DateColumn) c).asDoubleColumn();
         } else if (c.type() == ColumnType.LOCAL_DATE_TIME) {
             return ((DateTimeColumn) c).asDoubleColumn();
+        } else if (c.type() == ColumnType.INSTANT) {
+            return ((InstantColumn) c).asDoubleColumn();
         } else if (c.type() == ColumnType.LOCAL_TIME) {
             return ((TimeColumn) c).asDoubleColumn();
         }
@@ -362,19 +365,23 @@ public abstract class Relation {
 
 
     public BooleanColumn[] booleanColumns() {
-        return columns().stream().filter(e->e.type() == ColumnType.BOOLEAN).toArray(BooleanColumn[]::new);
+        return columns().stream().filter(e -> e.type() == ColumnType.BOOLEAN).toArray(BooleanColumn[]::new);
     }
 
     public DateColumn[] dateColumns() {
-        return columns().stream().filter(e->e.type() == ColumnType.LOCAL_DATE).toArray(DateColumn[]::new);
+        return columns().stream().filter(e -> e.type() == ColumnType.LOCAL_DATE).toArray(DateColumn[]::new);
     }
 
     public DateTimeColumn[] dateTimeColumns() {
-        return columns().stream().filter(e->e.type() == ColumnType.LOCAL_DATE_TIME).toArray(DateTimeColumn[]::new);
+        return columns().stream().filter(e -> e.type() == ColumnType.LOCAL_DATE_TIME).toArray(DateTimeColumn[]::new);
+    }
+
+    public InstantColumn[] instantColumns() {
+        return columns().stream().filter(e -> e.type() == ColumnType.INSTANT).toArray(InstantColumn[]::new);
     }
 
     public TimeColumn[] timeColumns() {
-        return columns().stream().filter(e->e.type() == ColumnType.LOCAL_TIME).toArray(TimeColumn[]::new);
+        return columns().stream().filter(e -> e.type() == ColumnType.LOCAL_TIME).toArray(TimeColumn[]::new);
     }
 
     public CategoricalColumn<?> categoricalColumn(String columnName) {
@@ -485,6 +492,14 @@ public abstract class Relation {
 
     public DateTimeColumn dateTimeColumn(String columnName) {
         return (DateTimeColumn) column(columnName);
+    }
+
+    public InstantColumn instantColumn(int columnIndex) {
+        return (InstantColumn) column(columnIndex);
+    }
+
+    public InstantColumn instantColumn(String columnName) {
+        return (InstantColumn) column(columnName);
     }
 
     public TableConverter as() {

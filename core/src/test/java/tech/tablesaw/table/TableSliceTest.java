@@ -95,20 +95,20 @@ public class TableSliceTest {
 
     @Test
     public void addColumn() {
-	UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class, () -> {
+        UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class, () -> {
             TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
             slice.addColumns(StringColumn.create("test"));
         });
-	assertTrue(thrown.getMessage().contains("Class TableSlice does not support the addColumns operation"));
+        assertTrue(thrown.getMessage().contains("Class TableSlice does not support the addColumns operation"));
     }
 
     @Test
     public void removeColumns() {
-	UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class, () -> {
+        UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class, () -> {
             TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
             slice.removeColumns("who");
         });
-	assertTrue(thrown.getMessage().contains("Class TableSlice does not support the removeColumns operation"));
+        assertTrue(thrown.getMessage().contains("Class TableSlice does not support the removeColumns operation"));
     }
 
     @Test

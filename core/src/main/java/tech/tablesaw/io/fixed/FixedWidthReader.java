@@ -14,20 +14,12 @@
 
 package tech.tablesaw.io.fixed;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.List;
-
-import javax.annotation.concurrent.Immutable;
-
-import org.apache.commons.math3.util.Pair;
-
 import com.google.common.io.CharStreams;
 import com.univocity.parsers.common.AbstractParser;
 import com.univocity.parsers.fixed.FixedWidthFormat;
 import com.univocity.parsers.fixed.FixedWidthParser;
 import com.univocity.parsers.fixed.FixedWidthParserSettings;
-
+import org.apache.commons.math3.util.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.DataReader;
@@ -35,17 +27,21 @@ import tech.tablesaw.io.FileReader;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
 
+import javax.annotation.concurrent.Immutable;
+import java.io.IOException;
+import java.io.Reader;
+
 @Immutable
 public class FixedWidthReader extends FileReader implements DataReader<FixedWidthReadOptions> {
 
     private static final FixedWidthReader INSTANCE = new FixedWidthReader();
 
     static {
-	register(Table.defaultReaderRegistry);
+        register(Table.defaultReaderRegistry);
     }
 
     public static void register(ReaderRegistry registry) {
-	registry.registerOptions(FixedWidthReadOptions.class, INSTANCE);
+        registry.registerOptions(FixedWidthReadOptions.class, INSTANCE);
     }
 
     /**
@@ -53,15 +49,6 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
      */
     public FixedWidthReader() {
         super();
-    }
-
-    /**
-     * Constructs a FixedWidthReader with the given list of ColumnTypes
-     * <p>
-     * These are the only types that the FixedWidthReader can detect and parse
-     */
-    public FixedWidthReader(List<ColumnType> typeDetectionList) {
-        super(typeDetectionList);
     }
 
     /**
@@ -167,6 +154,7 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
             settings = new FixedWidthParserSettings(options.columnSpecs());
         }
         settings.setFormat(fixedWidthFormat(options));
+        settings.setMaxCharsPerColumn(options.maxNumberOfColumns());
         if (options.skipTrailingCharsUntilNewline()) {
             settings.setSkipTrailingCharsUntilNewline(options.skipTrailingCharsUntilNewline());
         }
@@ -195,7 +183,6 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
 
     @Override
     public Table read(Source source) throws IOException {
-	return read(FixedWidthReadOptions.builder(source).build());
+        return read(FixedWidthReadOptions.builder(source).build());
     }
-
 }

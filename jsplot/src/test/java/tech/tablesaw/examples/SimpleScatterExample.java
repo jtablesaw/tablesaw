@@ -14,29 +14,20 @@
 
 package tech.tablesaw.examples;
 
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
-import tech.tablesaw.plotly.components.Axis;
-import tech.tablesaw.plotly.components.Figure;
-import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.ScatterTrace;
-import tech.tablesaw.plotly.traces.Trace;
+import tech.tablesaw.plotly.api.ScatterPlot;
 
 /**
- *
+ * Basic plot example showing use of the classes in the api package. These classes make it easy to create a quick
+ * plot for data exploration. See the MarkerOptionsExample for various customized versions of this plot.
  */
-public class ScatterplotExample {
+public class SimpleScatterExample {
 
     public static void main(String[] args) throws Exception {
+
         Table baseball = Table.read().csv("../data/baseball.csv");
-        NumberColumn<?> x = baseball.nCol("BA");
-        NumberColumn<?> y = baseball.nCol("W");
-        Layout layout = Layout.builder().title("Wins vs BA")
-                .xAxis(Axis.builder().title("Batting Average").build())
-                .yAxis(Axis.builder().title("Wins").build())
-                .build();
-        Trace trace = ScatterTrace.builder(x, y).build();
-        Plot.show(new Figure(layout, trace));
+
+        Plot.show(ScatterPlot.create("Wins vs BA", baseball, "BA", "W"));
     }
 }

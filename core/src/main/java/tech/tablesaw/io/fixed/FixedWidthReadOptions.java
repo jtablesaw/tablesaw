@@ -14,18 +14,18 @@
 
 package tech.tablesaw.io.fixed;
 
+import com.univocity.parsers.fixed.FixedWidthFields;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.Source;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
-import com.univocity.parsers.fixed.FixedWidthFields;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.Source;
 
 public class FixedWidthReadOptions extends ReadOptions {
 
@@ -164,6 +164,10 @@ public class FixedWidthReadOptions extends ReadOptions {
             return this;
         }
 
+        public Builder maxCharsPerColumn(int maxCharsPerColumn) {
+            super.maxCharsPerColumn(maxCharsPerColumn);
+            return this;
+        }
 
         public Builder lineEnding(String lineEnding) {
             this.lineEnding = lineEnding;
@@ -235,19 +239,40 @@ public class FixedWidthReadOptions extends ReadOptions {
         }
 
         @Override
+        @Deprecated
         public Builder dateFormat(String dateFormat) {
             super.dateFormat(dateFormat);
             return this;
         }
 
         @Override
+        @Deprecated
         public Builder timeFormat(String timeFormat) {
             super.timeFormat(timeFormat);
             return this;
         }
 
         @Override
+        @Deprecated
         public Builder dateTimeFormat(String dateTimeFormat) {
+            super.dateTimeFormat(dateTimeFormat);
+            return this;
+        }
+
+        @Override
+        public Builder dateFormat(DateTimeFormatter dateFormat) {
+            super.dateFormat(dateFormat);
+            return this;
+        }
+
+        @Override
+        public Builder timeFormat(DateTimeFormatter timeFormat) {
+            super.timeFormat(timeFormat);
+            return this;
+        }
+
+        @Override
+        public Builder dateTimeFormat(DateTimeFormatter dateTimeFormat) {
             super.dateTimeFormat(dateTimeFormat);
             return this;
         }
@@ -265,8 +290,8 @@ public class FixedWidthReadOptions extends ReadOptions {
         }
 
         @Override
-        public Builder minimizeColumnSizes(boolean minimizeColumnSizes) {
-            super.minimizeColumnSizes(minimizeColumnSizes);
+        public Builder minimizeColumnSizes() {
+            super.minimizeColumnSizes();
             return this;
         }
     }

@@ -134,7 +134,7 @@ public class SortTest {
         for (int rowIndex = 0; rowIndex < maxRows; rowIndex++) {
             for (int columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
                 assertEquals(sortedTable.get(rowIndex, columnIndex), compareWith.get(rowIndex, columnIndex),
-                	"cells[" + rowIndex + ", " + columnIndex + "] do not match");
+                        "cells[" + rowIndex + ", " + columnIndex + "] do not match");
             }
         }
     }

@@ -14,17 +14,18 @@
 
 package tech.tablesaw.io.csv;
 
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.Source;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.Source;
 
 public class CsvReadOptions extends ReadOptions {
 
@@ -36,7 +37,7 @@ public class CsvReadOptions extends ReadOptions {
     private final boolean lineSeparatorDetectionEnabled;
 
     private CsvReadOptions(CsvReadOptions.Builder builder) {
-	super(builder);
+        super(builder);
 
         columnTypes = builder.columnTypes;
         separator = builder.separator;
@@ -112,7 +113,7 @@ public class CsvReadOptions extends ReadOptions {
     }
 
     public boolean lineSeparatorDetectionEnabled() {
-	return lineSeparatorDetectionEnabled;
+        return lineSeparatorDetectionEnabled;
     }
 
     public Integer maxNumberOfColumns() {
@@ -121,6 +122,10 @@ public class CsvReadOptions extends ReadOptions {
 
     public Character commentPrefix() {
         return commentPrefix;
+    }
+
+    public int maxCharsPerColumn() {
+        return maxCharsPerColumn;
     }
 
     public static class Builder extends ReadOptions.Builder {
@@ -207,20 +212,46 @@ public class CsvReadOptions extends ReadOptions {
         }
 
         @Override
+        @Deprecated
         public Builder dateFormat(String dateFormat) {
             super.dateFormat(dateFormat);
             return this;
         }
 
         @Override
+        @Deprecated
         public Builder timeFormat(String timeFormat) {
             super.timeFormat(timeFormat);
             return this;
         }
 
         @Override
+        @Deprecated
         public Builder dateTimeFormat(String dateTimeFormat) {
             super.dateTimeFormat(dateTimeFormat);
+            return this;
+        }
+
+        @Override
+        public Builder dateFormat(DateTimeFormatter dateFormat) {
+            super.dateFormat(dateFormat);
+            return this;
+        }
+
+        @Override
+        public Builder timeFormat(DateTimeFormatter timeFormat) {
+            super.timeFormat(timeFormat);
+            return this;
+        }
+
+        @Override
+        public Builder dateTimeFormat(DateTimeFormatter dateTimeFormat) {
+            super.dateTimeFormat(dateTimeFormat);
+            return this;
+        }
+
+        public Builder maxCharsPerColumn(int maxCharsPerColumn) {
+            super.maxCharsPerColumn(maxCharsPerColumn);
             return this;
         }
 
@@ -237,10 +268,9 @@ public class CsvReadOptions extends ReadOptions {
         }
 
         @Override
-        public Builder minimizeColumnSizes(boolean minimizeColumnSizes) {
-            super.minimizeColumnSizes(minimizeColumnSizes);
+        public Builder minimizeColumnSizes() {
+            super.minimizeColumnSizes();
             return this;
         }
     }
-
 }

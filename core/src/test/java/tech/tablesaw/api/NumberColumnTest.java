@@ -14,6 +14,28 @@
 
 package tech.tablesaw.api;
 
+import com.google.common.base.Stopwatch;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.Selection;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleFunction;
+import java.util.function.DoublePredicate;
+
 import static java.lang.Double.NaN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,31 +48,6 @@ import static tech.tablesaw.aggregate.AggregateFunctions.percentile95;
 import static tech.tablesaw.aggregate.AggregateFunctions.percentile99;
 import static tech.tablesaw.aggregate.AggregateFunctions.quartile1;
 import static tech.tablesaw.aggregate.AggregateFunctions.quartile3;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.function.DoubleBinaryOperator;
-import java.util.function.DoubleFunction;
-import java.util.function.DoublePredicate;
-
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
-import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import com.devskiller.jfairy.Fairy;
-import com.google.common.base.Stopwatch;
-
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.selection.Selection;
 
 /**
  * Unit tests for the NumberColumn class
@@ -65,9 +62,6 @@ public class NumberColumnTest {
     @Disabled
     @Test
     public void testApplyFilter() {
-
-        Fairy fairy = Fairy.create();
-        fairy.baseProducer().trueOrFalse();
 
         Table table = Table.create("t");
         DoubleColumn numberColumn = DoubleColumn.create("test", 100_000_000);
@@ -90,8 +84,8 @@ public class NumberColumnTest {
 
     @Test
     public void testPercentiles() {
-	IntColumn c = IntColumn.indexColumn("t", 99, 1);
-	IntColumn c2 = c.copy();
+        IntColumn c = IntColumn.indexColumn("t", 99, 1);
+        IntColumn c2 = c.copy();
         c2.appendCell("");
         assertEquals(50, c.median(), 0.00001);
         assertEquals(50, c2.median(), 0.00001);
@@ -117,8 +111,8 @@ public class NumberColumnTest {
 
     @Test
     public void testSummarize() {
-	IntColumn c = IntColumn.indexColumn("t", 99, 1);
-	IntColumn c2 = c.copy();
+        IntColumn c = IntColumn.indexColumn("t", 99, 1);
+        IntColumn c2 = c.copy();
         c2.appendCell("");
         double c2Variance = c2.variance();
         double cVariance = StatUtils.variance(c.asDoubleArray());
@@ -339,7 +333,7 @@ public class NumberColumnTest {
 
     @Test
     public void testIndexColumn() {
-	IntColumn numberColumn = IntColumn.indexColumn("index", 12424, 0);
+        IntColumn numberColumn = IntColumn.indexColumn("index", 12424, 0);
         assertEquals("12423", numberColumn.getString(numberColumn.size() - 1));
     }
 

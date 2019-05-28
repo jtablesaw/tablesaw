@@ -36,10 +36,10 @@ public class BarPieAndParetoExample {
         // Plot
         Plot.show(
                 HorizontalBarPlot.create(
-                        "fatalities by scale",		        // plot title
-                        fatalities1,				            // table
-                        "scale",					// grouping column name
-                        "sum [fatalities]"));		// numeric column name
+                        "fatalities by scale", // plot title
+                        fatalities1,           // table
+                        "scale",               // grouping column name
+                        "sum [fatalities]"));  // numeric column name
 
         // Plot the mean injuries rather than a sum.
         Table injuries1 = tornadoes.summarize("injuries", mean).by("scale");

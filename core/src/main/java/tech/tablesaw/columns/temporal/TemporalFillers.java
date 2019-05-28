@@ -12,19 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.columns.datetimes;
+package tech.tablesaw.columns.temporal;
 
-import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
-public interface DateTimeFillers<T> {
+import tech.tablesaw.columns.Column;
 
-    T fillWith(Iterator<LocalDateTime> iterator);
+public interface TemporalFillers<T extends Temporal, C extends Column<T>> {
 
-    default T fillWith(final Iterable<LocalDateTime> iterable) {
+    C fillWith(Iterator<T> iterator);
+
+    default C fillWith(final Iterable<T> iterable) {
         return fillWith(iterable.iterator());
     }
 
-    T fillWith(Supplier<LocalDateTime> supplier);
+    C fillWith(Supplier<T> supplier);
 }

@@ -13,30 +13,30 @@ public class Destination {
     protected final Writer writer;
 
     public Destination(File file) throws IOException {
-	this.stream = new FileOutputStream(file);
-	this.writer = null;
+        this.stream = new FileOutputStream(file);
+        this.writer = null;
     }
 
     public Destination(Writer writer) {
-	this.stream = null;
-	this.writer = writer;
+        this.stream = null;
+        this.writer = writer;
     }
 
     public Destination(OutputStream stream) {
-	this.stream = stream;
-	this.writer = null;
+        this.stream = stream;
+        this.writer = null;
     }
 
     public OutputStream stream() {
-	return stream;
+        return stream;
     }
 
     public Writer writer() {
-	return writer;
+        return writer;
     }
 
     public Writer createWriter() {
-	return writer != null ? writer : new OutputStreamWriter(stream);
+        return writer != null ? writer : new OutputStreamWriter(stream);
     }
 
 }

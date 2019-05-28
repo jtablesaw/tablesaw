@@ -14,29 +14,11 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparator;
-import it.unimi.dsi.fastutil.longs.LongIterator;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
-import tech.tablesaw.columns.datetimes.DateTimeColumnType;
-import tech.tablesaw.columns.datetimes.DateTimeFillers;
-import tech.tablesaw.columns.datetimes.DateTimeFilters;
-import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingLongComparator;
-
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -51,11 +33,32 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import com.google.common.base.Preconditions;
+
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrays;
+import it.unimi.dsi.fastutil.longs.LongComparator;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
+import tech.tablesaw.columns.datetimes.DateTimeFilters;
+import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.temporal.TemporalFillers;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.comparators.DescendingLongComparator;
+
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
 public class DateTimeColumn extends AbstractColumn<LocalDateTime>
-    implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>,
+    implements DateTimeMapFunctions, DateTimeFilters, TemporalFillers<LocalDateTime, DateTimeColumn>,
         CategoricalColumn<LocalDateTime> {
 
     private final LongComparator reverseLongComparator = DescendingLongComparator.instance();
@@ -375,7 +378,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
      * Returns an array where each entry is the difference, measured in seconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
      *
-     * If a value is missing, Long.MIN_VALUE is used
+     * If a value is missing, DateTimeColumnType.missingValueIndicator() is used
      */
     public long[] asEpochSecondArray() {
         return asEpochSecondArray(ZoneOffset.UTC);
@@ -384,14 +387,14 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     /**
      * Returns the seconds from epoch for each value as an array based on the given offset
      *
-     * If a value is missing, Long.MIN_VALUE is used
+     * If a value is missing, DateTimeColumnType.missingValueIndicator() is used
      */
     public long[] asEpochSecondArray(ZoneOffset offset) {
         long[] output = new long[data.size()];
         for (int i = 0; i < data.size(); i++) {
             LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
             if (dateTime == null) {
-                output[i] = Long.MIN_VALUE;
+                output[i] = DateTimeColumnType.missingValueIndicator();
             } else {
                 output[i] = dateTime.toEpochSecond(offset);
             }
@@ -403,7 +406,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
      * Returns an array where each entry is the difference, measured in milliseconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
      *
-     * If a missing value is encountered, Long.MIN_VALUE is inserted in the array
+     * If a missing value is encountered, DateTimeColumnType.missingValueIndicator() is inserted in the array
      */
     public long[] asEpochMillisArray() {
         return asEpochMillisArray(ZoneOffset.UTC);
@@ -413,19 +416,36 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
      * Returns an array where each entry is the difference, measured in milliseconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
      *
-     * If a missing value is encountered, Long.MIN_VALUE is inserted in the array
+     * If a missing value is encountered, DateTimeColumnType.missingValueIndicator() is inserted in the array
      */
     public long[] asEpochMillisArray(ZoneOffset offset) {
         long[] output = new long[data.size()];
         for (int i = 0; i < data.size(); i++) {
             LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
             if (dateTime == null) {
-                output[i] = Long.MIN_VALUE;
+                output[i] = DateTimeColumnType.missingValueIndicator();
             } else {
                 output[i] = dateTime.toInstant(offset).toEpochMilli();
             }
         }
         return output;
+    }
+
+    public InstantColumn asInstantColumn() {
+        return asInstantColumn(ZoneOffset.UTC);
+    }
+
+    public InstantColumn asInstantColumn(ZoneId zone) {
+        Instant[] output = new Instant[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
+            if (dateTime == null) {
+                output[i] = null;
+            } else {
+                output[i] = dateTime.atZone(zone).toInstant();
+            }
+        }
+        return InstantColumn.create(name(), output);
     }
 
     @Override
@@ -580,7 +600,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     public DoubleColumn asDoubleColumn() {
-	return DoubleColumn.create(name(), asEpochSecondArray());
+        return DoubleColumn.create(name(), asEpochSecondArray());
     }
 
     /**

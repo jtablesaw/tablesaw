@@ -58,7 +58,7 @@ public class DateTimeParser extends AbstractColumnParser<LocalDateTime> {
 
     public DateTimeParser(DateTimeColumnType dateTimeColumnType, ReadOptions readOptions) {
         super(dateTimeColumnType);
-        DateTimeFormatter readCsvFormatter = readOptions.dateFormatter();
+        DateTimeFormatter readCsvFormatter = readOptions.dateTimeFormatter();
         if (readCsvFormatter != null) {
             formatter = readCsvFormatter;
         }

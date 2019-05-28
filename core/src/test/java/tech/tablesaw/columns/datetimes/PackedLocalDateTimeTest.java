@@ -28,16 +28,12 @@ import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMonthValue;
 import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecond;
 import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecondOfDay;
 import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.ofEpochMilli;
 import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.pack;
 import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.time;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.toEpochMilli;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
 
 import org.junit.jupiter.api.Test;
@@ -133,11 +129,4 @@ public class PackedLocalDateTimeTest {
         assertEquals(now.get(ChronoField.DAY_OF_WEEK), getDayOfWeek(pack(now)).getValue());
     }
 
-    @Test
-    public void testToEpochMillis() {
-        long now = pack(LocalDateTime.now());
-        long millis = toEpochMilli(now, ZoneOffset.UTC);
-        long now2 = ofEpochMilli(millis, ZoneId.of("UTC"));
-        assertEquals(now, now2);
-    }
 }

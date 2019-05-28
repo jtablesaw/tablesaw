@@ -5,7 +5,7 @@
     <parent>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-parent</artifactId>
-        <version>0.32.4-SNAPSHOT</version>
+        <version>0.33.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>tablesaw-core</artifactId>
@@ -111,35 +111,14 @@
             <version>2.7.5</version>
         </dependency>
         <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.11</version>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.8.22</version>
         </dependency>
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-data</artifactId>
             <version>1.5.2 </version>
-            <optional>true</optional>
-            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
-        </dependency>
-        <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-excel</artifactId>
-            <version>0.32.4-SNAPSHOT</version>
-            <optional>true</optional>
-            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
-        </dependency>
-        <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-html</artifactId>
-            <version>0.32.4-SNAPSHOT</version>
-            <optional>true</optional>
-            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
-        </dependency>
-        <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-json</artifactId>
-            <version>0.32.4-SNAPSHOT</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
@@ -154,15 +133,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.jbellis</groupId>
-            <artifactId>jamm</artifactId> <!-- Memory usage testing -->
-            <version>0.3.2</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.devskiller</groupId>
-            <artifactId>jfairy</artifactId>
-            <version>0.6.2</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jbellis</groupId>
+            <artifactId>jamm</artifactId> <!-- Memory usage testing -->
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

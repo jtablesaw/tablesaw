@@ -14,18 +14,18 @@
 
 package tech.tablesaw.io.html;
 
-import static tech.tablesaw.io.ParsingUtils.splitCamelCase;
-import static tech.tablesaw.io.ParsingUtils.splitOnUnderscore;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.util.List;
-
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Element;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataWriter;
 import tech.tablesaw.io.Destination;
 import tech.tablesaw.io.WriterRegistry;
+import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
 
 public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
 
@@ -41,63 +41,51 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
     }
 
     public void write(Table table, HtmlWriteOptions options) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<table>").append(System.lineSeparator());
-        builder.append(header(table.columnNames()));
-        builder.append("<tbody>").append(System.lineSeparator());
+        ElementCreator elements = options.elementCreator();
+        Element html = elements.create("table");
+        html.appendChild(header(table.columns(), elements));
+
+        Element tbody = elements.create("tbody");
+        html.appendChild(tbody);
         for (int row = 0; row < table.rowCount(); row++) {
-            builder.append(row(row, table));
+            tbody.appendChild(row(row, table, elements, options));
         }
-        builder.append("</tbody>").append(System.lineSeparator());
-        builder.append("</table>");
-        String str = builder.toString();
 
         Writer writer = options.destination().createWriter();
-        writer.write(str);
+        writer.write(html.toString());
         writer.flush();
     }
 
     /**
      * Returns a string containing the html output of one table row
      */
-    private static String row(int row, Table table) {
-        StringBuilder builder = new StringBuilder()
-                .append("<tr>");
-
+    private static Element row(int row, Table table, ElementCreator elements, HtmlWriteOptions options) {
+        Element tr = elements.create("tr", null, row);
         for (Column<?> col : table.columns()) {
-            builder
-                    .append("<td>")
-                    .append(String.valueOf(col.getString(row)))
-                    .append("</td>");
+            if (options.escapeText()) {
+                tr.appendChild(elements.create("td", col, row)
+                        .appendText(String.valueOf(col.getString(row))));
+            } else {
+                tr.appendChild(elements.create("td", col, row)
+                        .appendChild(new DataNode(String.valueOf(col.getString(row)))));
+            }
         }
-        builder
-                .append("</tr>")
-                .append(System.lineSeparator());
-        return builder.toString();
+        return tr;
     }
 
-    private static String header(List<String> columnNames) {
-        StringBuilder builder = new StringBuilder()
-                .append("<thead>")
-                .append(System.lineSeparator())
-                .append("<tr>");
-        for (String name : columnNames) {
-            builder
-                    .append("<th>")
-                    .append(splitCamelCase(splitOnUnderscore(name)))
-                    .append("</th>");
+    private static Element header(List<Column<?>> cols, ElementCreator elements) {
+        Element thead = elements.create("thead");
+        Element tr = elements.create("tr");
+        thead.appendChild(tr);
+        for (Column<?> col : cols) {
+            tr.appendChild(elements.create("th", col, null)
+                    .appendText(col.name()));
         }
-        builder
-                .append("</tr>")
-                .append(System.lineSeparator())
-                .append("</thead>")
-                .append(System.lineSeparator());
-
-        return builder.toString();
+        return thead;
     }
 
     @Override
     public void write(Table table, Destination dest) throws IOException {
-        write(table, HtmlWriteOptions.build(dest).build());
+        write(table, HtmlWriteOptions.builder(dest).build());
     }
 }
