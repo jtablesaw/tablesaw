@@ -1,7 +1,7 @@
 package tech.tablesaw.columns.instant;
 
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.io.ReadOptions;
 
@@ -26,8 +26,8 @@ public class InstantColumnType extends AbstractColumnType {
     }
 
     @Override
-    public DateTimeColumn create(String name) {
-        return DateTimeColumn.create(name);
+    public InstantColumn create(String name) {
+        return InstantColumn.create(name);
     }
 
     @Override
