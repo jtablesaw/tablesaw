@@ -5,6 +5,7 @@ import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.InstantColumn;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,9 +16,16 @@ public class InstantParserTest {
   private static final InstantParser parser = new InstantParser(ColumnType.INSTANT);
 
   @Test
-  public void testToString() {
+  public void string() {
     Instant instant = Instant.now();
     assertEquals(instant, parser.parse(instant.toString()));
+  }
+
+  @Test
+  public void unformattedString() {
+    Instant instant = Instant.now();
+    InstantColumn col = InstantColumn.create("instantCol", new Instant[] { instant });
+    assertEquals(instant, parser.parse(col.getUnformattedString(0)));
   }
 
   @Test
