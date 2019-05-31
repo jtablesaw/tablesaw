@@ -17,13 +17,13 @@ public class InstantParserTest {
 
   @Test
   public void string() {
-    Instant instant = Instant.now();
+    Instant instant = Instant.parse("2019-05-31T03:45:04.021Z");
     assertEquals(instant, parser.parse(instant.toString()));
   }
 
   @Test
   public void unformattedString() {
-    Instant instant = Instant.now();
+    Instant instant = Instant.parse("2019-05-31T03:45:04.021Z");
     InstantColumn col = InstantColumn.create("instantCol", new Instant[] { instant });
     assertEquals(instant, parser.parse(col.getUnformattedString(0)));
   }
