@@ -9,7 +9,7 @@ public class InstantColumnType extends AbstractColumnType {
 
     public static int BYTE_SIZE = 8;
 
-    public static final InstantParser DEFAULT_PARSER = new InstantParser(ColumnType.LOCAL_DATE_TIME);
+    public static final InstantParser DEFAULT_PARSER = new InstantParser(ColumnType.INSTANT);
 
     private static InstantColumnType INSTANCE =
             new InstantColumnType(BYTE_SIZE, "INSTANT", "Instant");

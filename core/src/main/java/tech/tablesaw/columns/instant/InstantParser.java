@@ -5,10 +5,6 @@ import java.time.Instant;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
 
-/**
- * Dummy implementation
- * Create an InstantColumn using SqlReader which doesn't require string parsing or convert from another column type
- */
 public class InstantParser extends AbstractColumnParser<Instant> {
 
     public InstantParser(ColumnType columnType) {
@@ -17,11 +13,19 @@ public class InstantParser extends AbstractColumnParser<Instant> {
 
     @Override
     public boolean canParse(String s) {
-        return false;
+        if (isMissing(s)) {
+            return true;
+        }
+        try {
+            parse(s);
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     @Override
     public Instant parse(String value) {
-        throw new IllegalArgumentException("Cannot parse " + value);
+        return Instant.parse(value);
     }
 }
