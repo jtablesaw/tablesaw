@@ -14,29 +14,8 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.base.Stopwatch;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
-import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.selection.Selection;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.function.DoubleBinaryOperator;
-import java.util.function.DoubleFunction;
-import java.util.function.DoublePredicate;
-
 import static java.lang.Double.NaN;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -48,6 +27,31 @@ import static tech.tablesaw.aggregate.AggregateFunctions.percentile95;
 import static tech.tablesaw.aggregate.AggregateFunctions.percentile99;
 import static tech.tablesaw.aggregate.AggregateFunctions.quartile1;
 import static tech.tablesaw.aggregate.AggregateFunctions.quartile3;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleFunction;
+import java.util.function.DoublePredicate;
+
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.base.Stopwatch;
+
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.Selection;
 
 /**
  * Unit tests for the NumberColumn class
@@ -699,6 +703,23 @@ public class NumberColumnTest {
     public void testReduceDoubleBinaryOperator() {
         assertEquals(Double.valueOf(0.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduce(sumD).get());
         assertFalse(DoubleColumn.create("t1", new double[] {}).reduce(sumD).isPresent());
+    }
+
+    @Test
+    public void fillMissing_defaultValue() {
+        DoubleColumn col1 = DoubleColumn.create("col1", new double[] { 0.0, 1.0,
+                DoubleColumnType.missingValueIndicator(), 2.0, DoubleColumnType.missingValueIndicator() });
+        DoubleColumn expected = DoubleColumn.create("expected", new double[] { 0.0, 1.0, 7.0, 2.0, 7.0 });
+        assertArrayEquals(expected.asDoubleArray(), col1.set(isMissing, 7.0).asDoubleArray(), 0.0001);
+    }
+
+    @Test
+    public void fillMissing_columnArg() {
+        DoubleColumn col1 = DoubleColumn.create("col1", new double[] { 0.0, 1.0,
+                DoubleColumnType.missingValueIndicator(), 2.0, DoubleColumnType.missingValueIndicator() });
+        DoubleColumn col2 = DoubleColumn.create("col1", new double[] { 7.0, 7.0, 3.0, 7.0, 4.0 });
+        DoubleColumn expected = DoubleColumn.create("expected", new double[] { 0.0, 1.0, 3.0, 2.0, 4.0 });
+        assertArrayEquals(expected.asDoubleArray(), col1.set(isMissing, col2).asDoubleArray(), 0.0001);
     }
 
 }

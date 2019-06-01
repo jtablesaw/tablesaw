@@ -297,6 +297,24 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         return this;
     }
 
+    /**
+     * Updates this column where values matching the selection are replaced with the corresponding value
+     * from the given column
+     */
+    public DoubleColumn set(DoublePredicate condition, NumericColumn<?> other) {
+        for (int row = 0; row < size(); row++) {
+            if (condition.test(getDouble(row))) {
+                set(row, other.getDouble(row));
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public DoubleColumn set(DoublePredicate condition, Double newValue) {
+        return (DoubleColumn) super.set(condition, newValue);
+    }
+
     @Override
     public DoubleColumn append(final Column<Double> column) {
         Preconditions.checkArgument(column.type() == this.type());
@@ -657,4 +675,5 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         values.trim();
         return FloatColumn.create(this.name(), values.elements());
     }
+
 }
