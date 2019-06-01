@@ -618,7 +618,7 @@ public class DataFrameJoiner {
      */
 
     public Table rightOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-        Table leftOuter = table2.join(col2Names).leftOuter(table, allowDuplicateColumnNames, columnNames);
+        Table leftOuter = table2.joinOn(col2Names).leftOuter(table, allowDuplicateColumnNames, columnNames);
 
         // reverse the columns
         Table result = Table.create(leftOuter.name());
