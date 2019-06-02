@@ -975,7 +975,7 @@ public class Table extends Relation implements Iterable<Row> {
      * @param columnNames   Name of the columns to join on.
      * @return              The new DataFrameJoiner
      */
-    public DataFrameJoiner join(String... columnNames) {
+    public DataFrameJoiner joinOn(String... columnNames) {
         return new DataFrameJoiner(this, columnNames);
     }
 
