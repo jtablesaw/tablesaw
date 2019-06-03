@@ -465,8 +465,8 @@ public class Table extends Relation implements Iterable<Row> {
     public Table[] stratifiedSampleSplit(CategoricalColumn column, double table1Proportion) {
         Preconditions.checkArgument(containsColumn(column),
                 "The categorical column must be part of the table, you can create a string column and add it to this table before sampling.");
-        final Table first = this.emptyCopy();
-        final Table second = this.emptyCopy();
+        final Table first = emptyCopy();
+        final Table second = emptyCopy();
         
         this.splitOn(column).asTableList().forEach(tab-> {
             Table[] splits = tab.sampleSplit(table1Proportion); 
