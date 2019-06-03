@@ -468,7 +468,7 @@ public class Table extends Relation implements Iterable<Row> {
         final Table first = emptyCopy();
         final Table second = emptyCopy();
         
-        this.splitOn(column).asTableList().forEach(tab-> {
+        splitOn(column).asTableList().forEach(tab-> {
             Table[] splits = tab.sampleSplit(table1Proportion); 
             first.append(splits[0]);
             second.append(splits[1]);
