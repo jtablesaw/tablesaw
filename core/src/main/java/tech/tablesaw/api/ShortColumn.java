@@ -20,6 +20,7 @@ import tech.tablesaw.selection.Selection;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -422,6 +423,16 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     @Override
     public ShortColumn set(Selection rowSelection, Short newValue) {
         return (ShortColumn) super.set(rowSelection, newValue);
+    }
+
+    @Override
+    public ShortColumn set(DoublePredicate condition, Short newValue) {
+        return (ShortColumn) super.set(condition, newValue);
+    }
+
+    @Override
+    public ShortColumn set(DoublePredicate condition, NumberColumn<Short> other) {
+      return (ShortColumn) super.set(condition, other);
     }
 
     @Override

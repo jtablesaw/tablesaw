@@ -463,6 +463,19 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
      * Updates this column where values matching the selection are replaced with the corresponding value
      * from the given column
      */
+    default Column<T> set(Predicate<T> condition, Column<T> other) {
+        for (int row = 0; row < size(); row++) {
+            if (condition.test(get(row))) {
+                set(row, other.get(row));
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Updates this column where values matching the selection are replaced with the corresponding value
+     * from the given column
+     */
     default Column<T> set(Selection condition, Column<T> other) {
         for (int row : condition) {
             set(row, other.get(row));

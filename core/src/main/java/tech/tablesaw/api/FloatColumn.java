@@ -19,6 +19,7 @@ import tech.tablesaw.selection.Selection;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -396,6 +397,16 @@ public class FloatColumn extends NumberColumn<Float> {
     @Override
     public FloatColumn set(Selection rowSelection, Float newValue) {
         return (FloatColumn) super.set(rowSelection, newValue);
+    }
+
+    @Override
+    public FloatColumn set(DoublePredicate condition, Float newValue) {
+        return (FloatColumn) super.set(condition, newValue);
+    }
+
+    @Override
+    public FloatColumn set(DoublePredicate condition, NumberColumn<Float> other) {
+      return (FloatColumn) super.set(condition, other);
     }
 
     @Override
