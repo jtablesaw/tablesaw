@@ -664,27 +664,29 @@ public class NumberColumnTest {
         assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).noneMatch(isNegativeD));
     }
 
-    private <T> void check(Column<T> column, @SuppressWarnings("unchecked") T... ts) {
-        assertEquals(ts.length, column.size());
-        for (int i = 0; i < ts.length; i++) {
-            assertEquals(ts[i], column.get(i));
+    private <T> void assertColumnContentsEquals(T[] expected, Column<T> column) {
+        assertEquals(expected.length, column.size());
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], column.get(i));
         }
     }
 
     @Test
     public void testFilter() {
         Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZeroD);
-        check(filtered, 0.0, 1.0);
+        assertColumnContentsEquals(new Double[] { 0.0, 1.0 }, filtered);
     }
 
     @Test
     public void testMap() {
-        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).map(x -> x * 2.0 + 1.0), -1.0, 1.0, 3.0);
+        DoubleColumn mapped = DoubleColumn.create("t1", new double[] {-1, 0, 1}).map(x -> x * 2.0 + 1.0);
+        assertColumnContentsEquals(new Double[] { -1.0, 1.0, 3.0 }, mapped);
     }
 
     @Test
     public void testMapInto() {
-        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).mapInto(toStringD, StringColumn.create("result")), "-1.0", "0.0", "1.0");
+        StringColumn mapped = DoubleColumn.create("t1", new double[] {-1, 0, 1}).mapInto(toStringD, StringColumn.create("result"));
+        assertColumnContentsEquals(new String[] { "-1.0", "0.0", "1.0" }, mapped);
     }
 
     @Test

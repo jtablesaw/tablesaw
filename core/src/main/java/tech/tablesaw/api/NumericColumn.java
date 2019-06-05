@@ -284,7 +284,7 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
      * @param into Column to which results are appended
      * @return the provided Column, to which results are appended
      */
-    default <R> Column<R> mapInto(DoubleFunction<? extends R> fun, Column<R> into) {
+    default <R extends Column<RT>, RT> R mapInto(DoubleFunction<? extends RT> fun, R into) {
         for (int i = 0; i < size(); i++) {
             try {
                 into.append(fun.apply(getDouble(i)));
