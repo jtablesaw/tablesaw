@@ -678,6 +678,11 @@ public class NumberColumnTest {
     }
 
     @Test
+    public void testMap() {
+        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).map(x -> x * 2.0 + 1.0), -1.0, 1.0, 3.0);
+    }
+
+    @Test
     public void testMapInto() {
         check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).mapInto(toStringD, StringColumn.create("result")), "-1.0", "0.0", "1.0");
     }
