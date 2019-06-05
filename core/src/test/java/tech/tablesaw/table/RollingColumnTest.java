@@ -13,19 +13,8 @@ import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
 
 public class RollingColumnTest {
-
-    @Test
-    public void testRollingMean() {
-        double[] data = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        double missing = DoubleColumnType.missingValueIndicator();
-        double[] sma5 = new double[]{missing, missing, missing, missing, 3, 4, 5, 6, 7, 8};
-        DoubleColumn result = DoubleColumn.create("data", data).rolling(5).mean();
-        assertArrayEquals(sma5, result.asDoubleArray(), 0.000001);
-        assertEquals("dataMean5", result.name());
-    }
 
     @Test
     public void testRollingMaxDate() {
