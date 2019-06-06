@@ -433,6 +433,11 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
         return new NumberRollingColumn(this, windowSize);
     }
 
+    default DoubleColumn pctChange(int periods) {
+        return (DoubleColumn) rolling(periods + 1).calc(AggregateFunctions.pctChange)
+            .setName(name() + " " + periods + "-period " + AggregateFunctions.pctChange.functionName());
+    }
+
     @Override
     default NumericColumn<T> lead(final int n) {
         final NumericColumn<T> numberColumn = lag(-n);
