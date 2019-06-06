@@ -507,7 +507,7 @@ public class Table extends Relation implements Iterable<Row> {
     /**
      * Sorts this table into a new table on the columns indexed
      * <p>
-     * if index is negative then sort that column in decending order otherwise sort ascending
+     * if index is negative then sort that column in descending order otherwise sort ascending
      */
     public Table sortOn(int... columnIndexes) {
         List<String> names = new ArrayList<>();

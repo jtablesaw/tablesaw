@@ -5,7 +5,6 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-import tech.tablesaw.util.StringUtils;
 
 /**
  * Does a calculation on a rolling basis (e.g. mean for last 20 days)
@@ -21,11 +20,9 @@ public class RollingColumn {
     }
 
     protected String generateNewColumnName(AggregateFunction<?, ?> function) {
-        boolean useSpaces = column.name().matches("\\s+");
-        String separator = useSpaces ? " " : "";
         return new StringBuilder(column.name())
-                .append(separator).append(useSpaces ? function.functionName() : StringUtils.capitalize(function.functionName()))
-                .append(separator).append(window)
+                .append(" ").append(window).append("-period")
+                .append(" ").append(function.functionName())
                 .toString();
     }
 
