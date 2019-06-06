@@ -18,7 +18,7 @@ To do regression modeling in Tablesaw, we'll first need to import Smile:
 <dependency>
   <groupId>com.github.haifengl</groupId>
   <artifactId>smile-core</artifactId>
-  <version>1.5.2</version>
+  <version>1.5.3</version>
 </dependency>
 ```
 
