@@ -669,8 +669,30 @@ public class Table extends Relation implements Iterable<Row> {
         return where(selection);
     }
 
+    /**
+     * Retains the first rowCount rows if rowCount positive.
+     * Retains the last rowCount rows if rowCount negative.
+     */
+    public Table inRange(int rowCount) {
+        Preconditions.checkArgument(rowCount <= rowCount());
+        int rowStart = rowCount >= 0 ? 0 : rowCount() + rowCount;
+        int rowEnd = rowCount >= 0 ? rowCount : rowCount();
+        return where(Selection.withRange(rowStart, rowEnd));
+    }
+
     public Table inRange(int rowStart, int rowEnd) {
         Preconditions.checkArgument(rowEnd <= rowCount());
+        return where(Selection.withRange(rowStart, rowEnd));
+    }
+
+    /**
+     * Drops the first rowCount rows if rowCount positive.
+     * Drops the last rowCount rows if rowCount negative.
+     */
+    public Table dropRange(int rowCount) {
+        Preconditions.checkArgument(rowCount <= rowCount());
+        int rowStart = rowCount >= 0 ? rowCount : 0;
+        int rowEnd = rowCount >= 0 ? rowCount() : rowCount() + rowCount;
         return where(Selection.withRange(rowStart, rowEnd));
     }
 
