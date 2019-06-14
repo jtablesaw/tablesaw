@@ -30,7 +30,6 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
 
 public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<DoubleColumn> {
 
@@ -338,24 +337,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         Preconditions.checkArgument(column.type() == this.type());
         DoubleColumn doubleColumn = (DoubleColumn) column;
         return set(row, doubleColumn.getDouble(sourceRow));
-    }
-
-    /**
-     * Maps the function across all rows, appending the results to a new NumberColumn
-     *
-     * @param fun function to map
-     * @return the NumberColumn with the results
-     */
-    public DoubleColumn map(ToDoubleFunction<Double> fun) {
-        DoubleColumn result = DoubleColumn.create(name());
-        for (double t : this) {
-            try {
-                result.append(fun.applyAsDouble(t));
-            } catch (Exception e) {
-                result.appendMissing();
-            }
-        }
-        return result;
     }
 
     /**
