@@ -535,6 +535,54 @@ public class TableTest {
         }
     }
 
+    @Test
+    public void dropRangeStarting() throws IOException {
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = table.dropRange(20);
+        assertEquals(table.rowCount() - 20, result.rowCount());
+        for (Column<?> c: result.columns()) {
+            for (int r = 0; r < result.rowCount(); r++) {
+                assertEquals(result.getString(r, c.name()), table.getString(r + 20, c.name()));
+            }
+        }
+    }
+
+    @Test
+    public void dropRangeEnding() throws IOException {
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = table.dropRange(-20);
+        assertEquals(table.rowCount() - 20, result.rowCount());
+        for (Column<?> c: result.columns()) {
+            for (int r = 0; r < result.rowCount(); r++) {
+                assertEquals(result.getString(r, c.name()), table.getString(r, c.name()));
+            }
+        }
+    }    
+
+    @Test
+    public void inRangeStarting() throws IOException {
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = table.inRange(20);
+        assertEquals(20, result.rowCount());
+        for (Column<?> c: result.columns()) {
+            for (int r = 0; r < result.rowCount(); r++) {
+                assertEquals(result.getString(r, c.name()), table.getString(r, c.name()));
+            }
+        }
+    }
+
+    @Test
+    public void inRangeEnding() throws IOException {
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = table.inRange(-20);
+        assertEquals(20, result.rowCount());
+        for (Column<?> c: result.columns()) {
+            for (int r = 0; r < result.rowCount(); r++) {
+                assertEquals(result.getString(r, c.name()), table.getString(table.rowCount() - 20 + r, c.name()));
+            }
+        }
+    }  
+
     private DoubleColumn sum(DoubleColumn... columns) {
         int size = columns[0].size();
         DoubleColumn result = DoubleColumn.create("sum", size);
