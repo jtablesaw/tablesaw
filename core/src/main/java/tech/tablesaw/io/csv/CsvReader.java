@@ -159,6 +159,9 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
 
     private CsvFormat csvFormat(CsvReadOptions options) {
         CsvFormat format = new CsvFormat();
+        if (options.quoteChar() != null) {
+            format.setQuote(options.quoteChar());
+        }
         if (options.separator() != null) {
             format.setDelimiter(options.separator());
         }
