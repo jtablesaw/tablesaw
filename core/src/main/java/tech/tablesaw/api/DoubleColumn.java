@@ -483,6 +483,14 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     }
 
     @Override
+    public DoubleColumn fillWith(double d) {
+        for (int r = 0; r < size(); r++) {
+            set(r, d);
+        }
+        return this;
+    }
+
+    @Override
     public DoubleColumn inRange(int start, int end) {
         return (DoubleColumn) super.inRange(start, end);
     }
