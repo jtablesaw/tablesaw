@@ -25,8 +25,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
 
 import io.github.classgraph.ClassGraph;
@@ -1024,27 +1026,24 @@ public class Table extends Relation implements Iterable<Row> {
         };
     }
 
+    public Stream<Row> stream() {
+        return Streams.stream(iterator());
+    }
+
     /**
      * Applies the operation in {@code doable} to every row in the table
+     * @deprecated use {@code stream().forEach}
      */
     public void doWithRows(Consumer<Row> doable) {
-        Row row = new Row(this);
-        while (row.hasNext()) {
-            doable.accept(row.next());
-        }
+        stream().forEach(doable);
     }
 
     /**
      * Applies the predicate to each row, and return true if any row returns true
+     * @deprecated use {@code stream().anyMatch}
      */
     public boolean detect(Predicate<Row> predicate) {
-        Row row = new Row(this);
-        while (row.hasNext()) {
-            if (predicate.test(row.next())) {
-                return true;
-            }
-        }
-        return false;
+        return stream().anyMatch(predicate);
     }
 
     /**
