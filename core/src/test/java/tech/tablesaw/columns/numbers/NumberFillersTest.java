@@ -18,6 +18,11 @@ public class NumberFillersTest {
     }
 
     @Test
+    public void fillWithDouble() {
+        assertContentEquals(create("doubles", new double[5]).fillWith(1.0), 1.0, 1.0, 1.0, 1.0, 1.0);
+    }
+    
+    @Test
     public void testFromToBy() {
         assertContentEquals(create("doubles", new double[5]).fillWith(range(1.0, 12.0, 2.5)), 1.0, 3.5, 6.0, 8.5, 11.0);
         assertContentEquals(create("doubles", new double[5]).fillWith(range(1.0, 7.0, 2.5)), 1.0, 3.5, 6.0, 1.0, 3.5);
