@@ -214,7 +214,7 @@ public class TableTest {
         Table[] results = t.sampleSplit(.75);
         assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
     }
-    
+
     @Test
     public void testStratifiedSampleSplit() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
@@ -237,7 +237,7 @@ public class TableTest {
                 assertTrue(ratings.contains(row.getShort("approval")));
             }
         };
-        t.doWithRows(doable);
+        t.stream().forEach(doable);
     }
 
     @Test
@@ -252,7 +252,7 @@ public class TableTest {
                 count.getAndIncrement();
             }
         };
-        t.doWithRows(doable);
+        t.stream().forEach(doable);
         assertTrue(count.get() > 0);
     }
 
@@ -264,7 +264,7 @@ public class TableTest {
         Predicate<Row> doable = row ->
                 (row.getPackedDate("date") > dateTarget
                 && row.getShort("approval") > ratingTarget);
-        assertTrue(t.detect(doable));
+        assertTrue(t.stream().anyMatch(doable));
     }
 
     @Test
