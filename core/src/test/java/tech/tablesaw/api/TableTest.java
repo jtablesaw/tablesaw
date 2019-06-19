@@ -214,6 +214,17 @@ public class TableTest {
         Table[] results = t.sampleSplit(.75);
         assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
     }
+    
+    @Test
+    public void testStratifiedSampleSplit() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+        Table[] results = t.stratifiedSampleSplit(t.stringColumn("who"), .75);
+        assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
+        int totalFoxCount = t.where(t.stringColumn("who").equalsIgnoreCase("fox")).rowCount();
+        int stratifiedFoxCount = results[0].where(results[0].stringColumn("who").equalsIgnoreCase("fox")).rowCount();
+        
+        assertEquals(.75, (double) stratifiedFoxCount/totalFoxCount, 0.0);
+    }
 
     @Test
     public void testDoWithEachRow() throws Exception {

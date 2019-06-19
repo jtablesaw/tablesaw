@@ -110,8 +110,9 @@ public class SmileConverter {
     }
 
     private NominalAttribute colAsNominalAttribute(Column<?> col) {
+        Column<?> unique = col.unique();
         return new NominalAttribute(col.name(),
-            col.unique().mapInto(o -> o.toString(), StringColumn.create(col.name(), col.size())).asObjectArray());
+            unique.mapInto(o -> o.toString(), StringColumn.create(col.name(), unique.size())).asObjectArray());
     }
 
     private static enum AttributeType {
