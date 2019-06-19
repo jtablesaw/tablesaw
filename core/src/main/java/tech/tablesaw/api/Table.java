@@ -464,7 +464,7 @@ public class Table extends Relation implements Iterable<Row> {
      * @return An array two tables, with the first table having the proportion specified in the method parameter,
      * and the second table having the balance of the rows
      */
-    public Table[] stratifiedSampleSplit(CategoricalColumn column, double table1Proportion) {
+    public Table[] stratifiedSampleSplit(CategoricalColumn<?> column, double table1Proportion) {
         Preconditions.checkArgument(containsColumn(column),
                 "The categorical column must be part of the table, you can create a string column and add it to this table before sampling.");
         final Table first = emptyCopy();
