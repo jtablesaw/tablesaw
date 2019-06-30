@@ -529,4 +529,22 @@ TODO: fix
         }
         assertArrayEquals(expected, result, 0.000_000_1);
     }
-}
+
+    @Test
+    public void countUniqueSetEmpty() {
+        StringColumn col = StringColumn.create("col1", 2);
+        col.set(0, "A");
+        col.set(1, "B");
+        assertEquals(2, col.countUnique());
+    }
+
+    @Test
+    public void countUniqueSetAfterAppend() {
+        StringColumn col = StringColumn.create("col1");
+        col.append("A");
+        col.append("B");
+        assertEquals(2, col.countUnique());
+        col.set(0, "C");
+        col.set(1, "D");
+        assertEquals(2, col.countUnique());
+    }}
