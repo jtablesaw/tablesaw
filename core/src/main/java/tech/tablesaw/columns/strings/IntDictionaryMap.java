@@ -48,16 +48,19 @@ public class IntDictionaryMap implements DictionaryMap {
 
     private final AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
 
-    // we maintain two maps, one from strings to keys, and the second from keys to strings.
+    // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to count of values
     private final Int2ObjectMap<String> keyToValue = new Int2ObjectOpenHashMap<>();
 
     private final Object2IntOpenHashMap<String> valueToKey = new Object2IntOpenHashMap<>();
+
+    private final Int2IntOpenHashMap keyToCount = new Int2IntOpenHashMap();
 
     /**
      * Returns a new DictionaryMap that is a deep copy of the original
      */
     IntDictionaryMap(DictionaryMap original) throws NoKeysAvailableException {
         valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
+        keyToCount.defaultReturnValue(0);
 
         for (int i = 0; i < original.size(); i++) {
             String value = original.getValueForIndex(i);
@@ -132,7 +135,7 @@ public class IntDictionaryMap implements DictionaryMap {
         this.values = new IntArrayList(elements);
     }
 
-    public int countOccurrences(String value) {
+    public int countOccurrences(String value) {  // TODO: optimize using new count map
         if (!contains(value)) {
             return 0;
         }
@@ -220,6 +223,7 @@ public class IntDictionaryMap implements DictionaryMap {
             put(key, value);
         }
         values.add(key);
+        keyToCount.addTo(key, 1);
     }
 
     private int getValueId() throws NoKeysAvailableException {
@@ -258,7 +262,12 @@ public class IntDictionaryMap implements DictionaryMap {
             valueId = getValueId();
             put(valueId, str);
         }
-        values.set(rowIndex, valueId);
+        int oldKey = values.set(rowIndex, valueId);
+        keyToCount.addTo(valueId, 1);
+        if (keyToCount.addTo(oldKey, -1) == 1) {
+        	String obsoleteValue = keyToValue.remove(oldKey);
+        	valueToKey.removeInt(obsoleteValue);
+        }
     }
 
     @Override
@@ -266,12 +275,13 @@ public class IntDictionaryMap implements DictionaryMap {
         values.clear();
         keyToValue.clear();
         valueToKey.clear();
+        keyToCount.clear();
     }
 
     /**
      */
     @Override
-    public Table countByCategory(String columnName) {
+    public Table countByCategory(String columnName) { // TODO: optimize with new count map
         Table t = Table.create("Column: " + columnName);
         StringColumn categories = StringColumn.create("Category");
         IntColumn counts = IntColumn.create("Count");
@@ -355,7 +365,7 @@ public class IntDictionaryMap implements DictionaryMap {
      * Returns the count of missing values in this column
      */
     @Override
-    public int countMissing() {
+    public int countMissing() { // TODO: optimize with new count map
         int count = 0;
         for (int i = 0; i < size(); i++) {
             if (MISSING_VALUE == getKeyForIndex(i)) {
