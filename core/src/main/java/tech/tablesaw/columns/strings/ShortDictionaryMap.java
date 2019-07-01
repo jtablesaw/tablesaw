@@ -98,16 +98,6 @@ public class ShortDictionaryMap implements DictionaryMap {
         return values.getShort(rowIndex);
     }
 
-    /**
-     * Returns true if we have seen this stringValue before, and it hasn't been removed.
-     * <p>
-     * NOTE: An answer of true does not imply that the column still contains the value, only that
-     * it is in the dictionary map
-     */
-    private boolean contains(String stringValue) {
-        return valueToKey.containsKey(stringValue);
-    }
-
     private Set<String> categories() {
         return valueToKey.keySet();
     }
@@ -139,18 +129,8 @@ public class ShortDictionaryMap implements DictionaryMap {
         this.values = new ShortArrayList(elements);
     }
 
-    public int countOccurrences(String value) { // TODO: optimize using new count map
-        if (!contains(value)) {
-            return 0;
-        }
-        short key = getKeyForValue(value);
-        int count = 0;
-        for (short k : values) {
-            if (k == key) {
-                count++;
-            }
-        }
-        return count;
+    public int countOccurrences(String value) {
+    	return keyToCount.get(getKeyForValue(value));
     }
 
     public Set<String> asSet() {
@@ -271,6 +251,7 @@ public class ShortDictionaryMap implements DictionaryMap {
         if (keyToCount.addTo(oldKey, -1) == 1) {
         	String obsoleteValue = keyToValue.remove(oldKey);
         	valueToKey.removeShort(obsoleteValue);
+        	keyToCount.remove(oldKey);
         }
     }
 
@@ -285,27 +266,14 @@ public class ShortDictionaryMap implements DictionaryMap {
     /**
      */
     @Override
-    public Table countByCategory(String columnName) { // TODO: optimize with new count map
+    public Table countByCategory(String columnName) {
         Table t = Table.create("Column: " + columnName);
         StringColumn categories = StringColumn.create("Category");
         IntColumn counts = IntColumn.create("Count");
-
-        Short2IntMap valueToCount = new Short2IntOpenHashMap();
-
-        for (short next : values) {
-            if (valueToCount.containsKey(next)) {
-                valueToCount.put(next, valueToCount.get(next) + 1);
-            } else {
-                valueToCount.put(next, 1);
-            }
-        }
-        for (Map.Entry<Short, Integer> entry : valueToCount.short2IntEntrySet()) {
+        // Now uses the keyToCount map
+        for (Map.Entry<Short, Integer> entry : keyToCount.short2IntEntrySet()) {
             categories.append(getValueForKey(entry.getKey()));
             counts.append(entry.getValue());
-        }
-        if (countMissing() > 0) {
-            categories.append("* missing values");
-            counts.append(countMissing());
         }
         t.addColumns(categories);
         t.addColumns(counts);
@@ -369,14 +337,8 @@ public class ShortDictionaryMap implements DictionaryMap {
      * Returns the count of missing values in this column
      */
     @Override
-    public int countMissing() { // TODO: optimize with new count map
-        int count = 0;
-        for (int i = 0; i < size(); i++) {
-            if (MISSING_VALUE == getKeyForIndex(i)) {
-                count++;
-            }
-        }
-        return count;
+    public int countMissing() {
+    	return keyToCount.get(MISSING_VALUE);
     }
 
     @Override
