@@ -1,7 +1,6 @@
 package tech.tablesaw.columns.strings;
 
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
-import it.unimi.dsi.fastutil.shorts.Short2IntMap;
 import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
