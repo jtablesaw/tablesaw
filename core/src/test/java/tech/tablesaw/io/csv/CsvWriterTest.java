@@ -21,7 +21,7 @@ public class CsvWriterTest {
         Table table = Table.create("testTable", colA, colB);
         StringWriter writer = new StringWriter();
         table.write().toWriter(writer, "csv");
-        assertEquals("colA,colB\na,1\nb,2\n", writer.toString());
+        assertEquals("colA,colB\na,1\nb,2\n", writer.toString().replaceAll("\\r\\n", "\n"));
     }
 
 }
