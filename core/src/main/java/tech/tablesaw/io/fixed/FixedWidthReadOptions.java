@@ -29,7 +29,6 @@ import java.util.Locale;
 
 public class FixedWidthReadOptions extends ReadOptions {
 
-    // we always have one of these (file, reader, or inputStream)
     private final ColumnType[] columnTypes;
     private final FixedWidthFields columnSpecs;
     private final String lineEnding;
@@ -172,6 +171,10 @@ public class FixedWidthReadOptions extends ReadOptions {
         public Builder lineEnding(String lineEnding) {
             this.lineEnding = lineEnding;
             return this;
+        }
+
+        public Builder systemLineEnding() {
+            return lineEnding(System.lineSeparator());
         }
 
         public Builder padding(char padding) {

@@ -15,16 +15,14 @@ import java.util.Scanner;
 
 public class Source {
 
+    // we always have one of these (file, reader, or inputStream)
     protected final File file;
     protected final Reader reader;
     protected final InputStream inputStream;
     protected final Charset charset;
 
     public Source(File file) {
-        this.file = file;
-        this.reader = null;
-        this.inputStream = null;
-        this.charset = Charset.defaultCharset();
+        this(file, Charset.defaultCharset());
     }
 
     public Source(File file, Charset charset) {
@@ -42,10 +40,7 @@ public class Source {
     }
 
     public Source(InputStream inputStream) {
-        this.file = null;
-        this.reader = null;
-        this.inputStream = inputStream;
-        this.charset = Charset.defaultCharset();
+        this(inputStream, Charset.defaultCharset());
     }
 
     public Source(InputStream inputStream, Charset charset) {
