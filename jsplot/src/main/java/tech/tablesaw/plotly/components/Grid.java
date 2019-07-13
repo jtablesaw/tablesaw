@@ -191,10 +191,10 @@ public class Grid extends Component {
         
         /**
          * If no `subplots`, `xaxes`, or `yaxes` are given but we do have `rows` and `columns`,',
-        * we can generate defaults using consecutive axis IDs, in two ways:',
-        * '*coupled* gives one x axis per column and one y axis per row.',
-        * '*independent* uses a new xy pair for each cell, left-to-right across each row',
-        * 'then iterating rows according to `roworder`.
+         * we can generate defaults using consecutive axis IDs, in two ways:',
+         * '*coupled* gives one x axis per column and one y axis per row.',
+         * '*independent* uses a new xy pair for each cell, left-to-right across each row',
+         * 'then iterating rows according to `roworder`.
          *
          * @param pattern defaults to COUPLED
          * @return  this GridBuilder

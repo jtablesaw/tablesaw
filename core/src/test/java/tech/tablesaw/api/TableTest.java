@@ -226,8 +226,6 @@ public class TableTest {
         assertEquals(.75, (double) stratifiedFoxCount/totalFoxCount, 0.0);
     }
 
-    
-
     @Test
     public void testDoWithEachRow() throws Exception {
         Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes()).first(10);

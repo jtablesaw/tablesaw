@@ -93,9 +93,8 @@ public class HistogramTrace extends AbstractTrace {
         }
 
         /**
-         * Specifies the maximum number of desired bins. This value will be used
-         * in an algorithm that will decide the optimal bin size such that the
-         * histogram best visualizes the distribution of the data.
+         * Specifies the maximum number of desired bins. This value will be used in an algorithm that will decide
+         * the optimal bin size such that the histogram best visualizes the distribution of the data.
          */
         public HistogramBuilder nBinsX(int bins) {
             this.nBinsX = bins;
@@ -108,9 +107,9 @@ public class HistogramTrace extends AbstractTrace {
         }
 
         /**
-         * Determines whether or not the x axis bin attributes are picked by an
-         * algorithm. Note that this should be set to False if you want to
-         * manually set the number of bins using the attributes in xbins.
+         * Determines whether or not the x axis bin attributes are picked by an algorithm.
+         * Note that this should be set to False if you want to manually set the number of bins using the attributes
+         * in xbins.
          *
          * Note also that this should be true (default) to use nbinsx to suggest
          * a bin count
