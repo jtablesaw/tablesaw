@@ -18,7 +18,7 @@ To do regression modeling in Tablesaw, we'll first need to import Smile:
 <dependency>
   <groupId>com.github.haifengl</groupId>
   <artifactId>smile-core</artifactId>
-  <version>1.5.2</version>
+  <version>1.5.3</version>
 </dependency>
 ```
 
@@ -258,8 +258,10 @@ Table AsIn2001 = moneyball.select("year", "OOBP", "OBP", "OSLG", "SLG")
 Now we get the prediction:
 
 ```java
-double[][] values = new double [][] {{0.308, 0.345, .38, 0.439}};
+{% raw %}
+double[][] values = new double[][] {{ 0.308, 0.345, .38, 0.439 }};
 double[] value = winsFinal.predict(values);
+{% endraw %}
 ```
 
 The model predicted that the 2001 A's would win 102 games given their slugging and On-Base stats. They won 103. 

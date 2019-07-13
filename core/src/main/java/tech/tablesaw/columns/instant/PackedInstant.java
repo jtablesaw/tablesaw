@@ -119,7 +119,8 @@ public class PackedInstant {
                         + ":"
                         + Strings.padStart(Byte.toString(PackedLocalTime.getSecond(time)), 2, '0')
                         + "."
-                        + Strings.padStart(String.valueOf(PackedLocalTime.getMilliseconds(time)), 3, '0');
+                        + Strings.padStart(String.valueOf(PackedLocalTime.getMilliseconds(time)), 3, '0')
+                        + "Z";
     }
 
     /**

@@ -42,8 +42,6 @@ import tech.tablesaw.columns.numbers.NumberFilters;
 import tech.tablesaw.columns.numbers.NumberMapFunctions;
 import tech.tablesaw.columns.numbers.NumberRollingColumn;
 import tech.tablesaw.columns.numbers.Stats;
-import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
-import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -76,50 +74,12 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
     }
 
     @Override
-    default Selection eval(final DoubleBiPredicate predicate, final DoubleColumn otherColumn) {
-        final Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(getDouble(idx), otherColumn.getDouble(idx))) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    @Override
-    default Selection eval(final DoubleBiPredicate predicate, final Number number) {
-        final double value = number.doubleValue();
-        final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            final double next = getDouble(idx);
-            if (predicate.test(next, value)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
-    }
-
-    @Override
     default Selection eval(final BiPredicate<Number, Number> predicate, final Number number) {
         final double value = number.doubleValue();
         final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
             final double next = getDouble(idx);
             if (predicate.test(next, value)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
-    }
-
-    @Override
-    default Selection eval(final DoubleRangePredicate predicate, final Number rangeStart, final Number rangeEnd) {
-        final double start = rangeStart.doubleValue();
-        final double end = rangeEnd.doubleValue();
-        final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            final double next = getDouble(idx);
-            if (predicate.test(next, start, end)) {
                 bitmap.add(idx);
             }
         }
@@ -284,7 +244,7 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
      * @param into Column to which results are appended
      * @return the provided Column, to which results are appended
      */
-    default <R> Column<R> mapInto(DoubleFunction<? extends R> fun, Column<R> into) {
+    default <R extends Column<RT>, RT> R mapInto(DoubleFunction<? extends RT> fun, R into) {
         for (int i = 0; i < size(); i++) {
             try {
                 into.append(fun.apply(getDouble(i)));
@@ -431,6 +391,11 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
     
     default NumberRollingColumn rolling(final int windowSize) {
         return new NumberRollingColumn(this, windowSize);
+    }
+
+    default DoubleColumn pctChange(int periods) {
+        return (DoubleColumn) rolling(periods + 1).calc(AggregateFunctions.pctChange)
+            .setName(name() + " " + periods + "-period " + AggregateFunctions.pctChange.functionName());
     }
 
     @Override

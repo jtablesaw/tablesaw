@@ -227,6 +227,17 @@ public class TableTest {
     }
 
     @Test
+    public void testStratifiedSampleSplit() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+        Table[] results = t.stratifiedSampleSplit(t.stringColumn("who"), .75);
+        assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
+        int totalFoxCount = t.where(t.stringColumn("who").equalsIgnoreCase("fox")).rowCount();
+        int stratifiedFoxCount = results[0].where(results[0].stringColumn("who").equalsIgnoreCase("fox")).rowCount();
+        
+        assertEquals(.75, (double) stratifiedFoxCount/totalFoxCount, 0.0);
+    }
+
+    @Test
     public void testDoWithEachRow() throws Exception {
         Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes()).first(10);
         Short[] ratingsArray = {53, 58};
@@ -237,7 +248,7 @@ public class TableTest {
                 assertTrue(ratings.contains(row.getShort("approval")));
             }
         };
-        t.doWithRows(doable);
+        t.stream().forEach(doable);
     }
 
     @Test
@@ -252,7 +263,7 @@ public class TableTest {
                 count.getAndIncrement();
             }
         };
-        t.doWithRows(doable);
+        t.stream().forEach(doable);
         assertTrue(count.get() > 0);
     }
 
@@ -264,7 +275,7 @@ public class TableTest {
         Predicate<Row> doable = row ->
                 (row.getPackedDate("date") > dateTarget
                 && row.getShort("approval") > ratingTarget);
-        assertTrue(t.detect(doable));
+        assertTrue(t.stream().anyMatch(doable));
     }
 
     @Test
@@ -545,6 +556,54 @@ public class TableTest {
             assertEquals(row.getRowNumber(), rowNumber++);
         }
     }
+
+    @Test
+    public void dropRangeStarting() throws IOException {
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = table.dropRange(20);
+        assertEquals(table.rowCount() - 20, result.rowCount());
+        for (Column<?> c: result.columns()) {
+            for (int r = 0; r < result.rowCount(); r++) {
+                assertEquals(result.getString(r, c.name()), table.getString(r + 20, c.name()));
+            }
+        }
+    }
+
+    @Test
+    public void dropRangeEnding() throws IOException {
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = table.dropRange(-20);
+        assertEquals(table.rowCount() - 20, result.rowCount());
+        for (Column<?> c: result.columns()) {
+            for (int r = 0; r < result.rowCount(); r++) {
+                assertEquals(result.getString(r, c.name()), table.getString(r, c.name()));
+            }
+        }
+    }    
+
+    @Test
+    public void inRangeStarting() throws IOException {
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = table.inRange(20);
+        assertEquals(20, result.rowCount());
+        for (Column<?> c: result.columns()) {
+            for (int r = 0; r < result.rowCount(); r++) {
+                assertEquals(result.getString(r, c.name()), table.getString(r, c.name()));
+            }
+        }
+    }
+
+    @Test
+    public void inRangeEnding() throws IOException {
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = table.inRange(-20);
+        assertEquals(20, result.rowCount());
+        for (Column<?> c: result.columns()) {
+            for (int r = 0; r < result.rowCount(); r++) {
+                assertEquals(result.getString(r, c.name()), table.getString(table.rowCount() - 20 + r, c.name()));
+            }
+        }
+    }  
 
     private DoubleColumn sum(DoubleColumn... columns) {
         int size = columns[0].size();

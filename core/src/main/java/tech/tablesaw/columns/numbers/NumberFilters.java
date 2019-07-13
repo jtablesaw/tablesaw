@@ -14,26 +14,15 @@
 
 package tech.tablesaw.columns.numbers;
 
-import static tech.tablesaw.columns.numbers.NumberPredicates.isBetweenExclusive;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isBetweenInclusive;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isEqualTo;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isGreaterThan;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isGreaterThanOrEqualTo;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isLessThan;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isLessThanOrEqualTo;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isNegative;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isNonNegative;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isNotEqualTo;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isPositive;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isZero;
 
 import java.util.function.BiPredicate;
 import java.util.function.DoublePredicate;
 
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
-import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -41,45 +30,38 @@ public interface NumberFilters {
 
     Selection eval(DoublePredicate predicate);
 
-    Selection eval(DoubleRangePredicate predicate, Number rangeStart, Number rangeEnd);
-
-    Selection eval(DoubleBiPredicate predicate, DoubleColumn otherColumn);
-
-    Selection eval(DoubleBiPredicate predicate, Number value);
-
     Selection eval(BiPredicate<Number, Number> predicate, Number value);
 
-
     default Selection isEqualTo(double d) {
-        return eval(isEqualTo, d);
+        return eval(NumberPredicates.isEqualTo(d));
     }
 
     default Selection isNotEqualTo(double d) {
-        return eval(isNotEqualTo, d);
+        return eval(NumberPredicates.isNotEqualTo(d));
     }
 
-    default Selection isBetweenExclusive(double start, Number end) {
-        return eval(isBetweenExclusive, start, end);
+    default Selection isBetweenExclusive(double start, double end) {
+        return eval(NumberPredicates.isBetweenExclusive(start, end));
     }
 
-    default Selection isBetweenInclusive(double start, Number end) {
-        return eval(isBetweenInclusive, start, end);
+    default Selection isBetweenInclusive(double start, double end) {
+        return eval(NumberPredicates.isBetweenInclusive(start, end));
     }
 
     default Selection isGreaterThan(double f) {
-        return eval(isGreaterThan, f);
+        return eval(NumberPredicates.isGreaterThan(f));
     }
 
     default Selection isGreaterThanOrEqualTo(double f) {
-        return eval(isGreaterThanOrEqualTo, f);
+        return eval(NumberPredicates.isGreaterThanOrEqualTo(f));
     }
 
     default Selection isLessThan(double f) {
-        return eval(isLessThan, f);
+        return eval(NumberPredicates.isLessThan(f));
     }
 
     default Selection isLessThanOrEqualTo(double f) {
-        return eval(isLessThanOrEqualTo, f);
+        return eval(NumberPredicates.isLessThanOrEqualTo(f));
     }
 
     Selection isIn(Number... numbers);

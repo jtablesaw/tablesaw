@@ -1,7 +1,7 @@
 package tech.tablesaw.columns.instant;
 
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.io.ReadOptions;
 
@@ -9,7 +9,7 @@ public class InstantColumnType extends AbstractColumnType {
 
     public static int BYTE_SIZE = 8;
 
-    public static final InstantParser DEFAULT_PARSER = new InstantParser(ColumnType.LOCAL_DATE_TIME);
+    public static final InstantParser DEFAULT_PARSER = new InstantParser(ColumnType.INSTANT);
 
     private static InstantColumnType INSTANCE =
             new InstantColumnType(BYTE_SIZE, "INSTANT", "Instant");
@@ -26,8 +26,8 @@ public class InstantColumnType extends AbstractColumnType {
     }
 
     @Override
-    public DateTimeColumn create(String name) {
-        return DateTimeColumn.create(name);
+    public InstantColumn create(String name) {
+        return InstantColumn.create(name);
     }
 
     @Override

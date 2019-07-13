@@ -13,16 +13,16 @@ public class CsvWriteOptions extends WriteOptions {
 
     private final boolean header;
     private final char separator;
-    private final char quotechar;
-    private final char escapechar;
+    private final char quoteChar;
+    private final char escapeChar;
     private final String lineEnd;
 
     private CsvWriteOptions(Builder builder) {
         super(builder);
         this.header = builder.header;
         this.separator = builder.separator;
-        this.quotechar = builder.quoteChar;
-        this.escapechar = builder.escapeChar;
+        this.quoteChar = builder.quoteChar;
+        this.escapeChar = builder.escapeChar;
         this.lineEnd = builder.lineEnd;
     }
 
@@ -35,11 +35,11 @@ public class CsvWriteOptions extends WriteOptions {
     }
 
     public char escapeChar() {
-        return escapechar;
+        return escapeChar;
     }
 
     public char quoteChar() {
-        return quotechar;
+        return quoteChar;
     }
 
     public String lineEnd() {

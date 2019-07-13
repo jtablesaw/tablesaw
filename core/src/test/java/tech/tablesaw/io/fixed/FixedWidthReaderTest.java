@@ -53,7 +53,7 @@ public class FixedWidthReaderTest {
                 .columnTypes(car_types)
                 .columnSpecs(car_fields_specs)
                 .padding('_')
-                .lineEnding("\n")
+                .systemLineEnding()
                 .build()
         );
 
@@ -75,7 +75,7 @@ public class FixedWidthReaderTest {
                 .columnTypes(car_types_with_SKIP)
                 .columnSpecs(car_fields_specs)
                 .padding('_')
-                .lineEnding("\n")
+                .systemLineEnding()
                 .build());
 
         assertEquals(4, table.columnCount());
@@ -92,7 +92,7 @@ public class FixedWidthReaderTest {
                 .columnTypes(car_types_with_SKIP)
                 .columnSpecs(car_fields_specs)
                 .padding('_')
-                .lineEnding("\n")
+                .systemLineEnding()
                 .skipTrailingCharsUntilNewline(true)
                 .build());
 
@@ -110,7 +110,7 @@ public class FixedWidthReaderTest {
                 .header(true)
                 .columnSpecs(car_fields_specs)
                 .padding('_')
-                .lineEnding("\n")
+                .systemLineEnding()
                 .sample(false)
                 .locale(Locale.getDefault())
                 .minimizeColumnSizes()
@@ -129,7 +129,7 @@ public class FixedWidthReaderTest {
                 .header(true)
                 .columnSpecs(car_fields_specs)
                 .padding('_')
-                .lineEnding("\n")
+                .systemLineEnding()
                 .missingValueIndicator("null")
                 .minimizeColumnSizes()
                 .sample(false)
@@ -153,7 +153,7 @@ public class FixedWidthReaderTest {
                 .columnTypes(car_types)
                 .columnSpecs(car_fields_specs)
                 .padding('_')
-                .lineEnding("\n")
+                .systemLineEnding()
                 .skipTrailingCharsUntilNewline(true)
                 .build()
         );

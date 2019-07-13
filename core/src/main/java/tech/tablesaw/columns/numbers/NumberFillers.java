@@ -26,4 +26,6 @@ public interface NumberFillers<T> {
     T fillWith(DoubleRangeIterable iterable);
 
     T fillWith(final DoubleSupplier supplier);
+
+    T fillWith(double d);
 }

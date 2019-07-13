@@ -21,6 +21,7 @@ import tech.tablesaw.selection.Selection;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -424,6 +425,16 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     @Override
     public IntColumn set(Selection rowSelection, Integer newValue) {
         return (IntColumn) super.set(rowSelection, newValue);
+    }
+
+    @Override
+    public IntColumn set(DoublePredicate condition, Integer newValue) {
+        return (IntColumn) super.set(condition, newValue);
+    }
+
+    @Override
+    public IntColumn set(DoublePredicate condition, NumberColumn<Integer> other) {
+      return (IntColumn) super.set(condition, other);
     }
 
     @Override

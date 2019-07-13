@@ -29,6 +29,28 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
 
     protected abstract NumberColumn<T> createCol(final String name);
 
+    /**
+     * Updates this column where values matching the selection are replaced with the corresponding value
+     * from the given column
+     */
+    public NumberColumn<T> set(DoublePredicate condition, NumberColumn<T> other) {
+        for (int row = 0; row < size(); row++) {
+            if (condition.test(getDouble(row))) {
+                set(row, other.get(row));
+            }
+        }
+        return this;
+    }
+
+    public NumberColumn<T> set(DoublePredicate condition, T newValue) {
+      for (int row = 0; row < size(); row++) {
+        if (condition.test(getDouble(row))) {
+            set(row, newValue);
+        }
+      }
+      return this;
+    }
+
     public void setPrintFormatter(final NumberFormat format, final String missingValueString) {
         this.printFormatter = new NumberColumnFormatter(format, missingValueString);
     }

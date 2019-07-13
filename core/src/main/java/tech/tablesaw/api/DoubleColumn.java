@@ -30,7 +30,6 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
 
 public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<DoubleColumn> {
 
@@ -297,6 +296,24 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         return this;
     }
 
+    /**
+     * Updates this column where values matching the selection are replaced with the corresponding value
+     * from the given column
+     */
+    public DoubleColumn set(DoublePredicate condition, NumericColumn<?> other) {
+        for (int row = 0; row < size(); row++) {
+            if (condition.test(getDouble(row))) {
+                set(row, other.getDouble(row));
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public DoubleColumn set(DoublePredicate condition, Double newValue) {
+        return (DoubleColumn) super.set(condition, newValue);
+    }
+
     @Override
     public DoubleColumn append(final Column<Double> column) {
         Preconditions.checkArgument(column.type() == this.type());
@@ -320,24 +337,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         Preconditions.checkArgument(column.type() == this.type());
         DoubleColumn doubleColumn = (DoubleColumn) column;
         return set(row, doubleColumn.getDouble(sourceRow));
-    }
-
-    /**
-     * Maps the function across all rows, appending the results to a new NumberColumn
-     *
-     * @param fun function to map
-     * @return the NumberColumn with the results
-     */
-    public DoubleColumn map(ToDoubleFunction<Double> fun) {
-        DoubleColumn result = DoubleColumn.create(name());
-        for (double t : this) {
-            try {
-                result.append(fun.applyAsDouble(t));
-            } catch (Exception e) {
-                result.appendMissing();
-            }
-        }
-        return result;
     }
 
     /**
@@ -479,6 +478,14 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
             } catch (final Exception e) {
                 break;
             }
+        }
+        return this;
+    }
+
+    @Override
+    public DoubleColumn fillWith(double d) {
+        for (int r = 0; r < size(); r++) {
+            set(r, d);
         }
         return this;
     }
@@ -657,4 +664,5 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         values.trim();
         return FloatColumn.create(this.name(), values.elements());
     }
+
 }

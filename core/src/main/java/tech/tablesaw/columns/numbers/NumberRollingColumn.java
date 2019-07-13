@@ -30,8 +30,32 @@ public class NumberRollingColumn extends RollingColumn {
         return (DoubleColumn) calc(AggregateFunctions.sum);
     }
 
-    public DoubleColumn pctChange() {
-        return (DoubleColumn) calc(AggregateFunctions.pctChange);
+    public DoubleColumn min() {
+        return (DoubleColumn) calc(AggregateFunctions.min);
+    }
+
+    public DoubleColumn max() {
+        return (DoubleColumn) calc(AggregateFunctions.max);
+    }
+
+    public DoubleColumn countMissing() {
+        return (DoubleColumn) calc(AggregateFunctions.countMissing);
+    }
+
+    public DoubleColumn countNonMissing() {
+        return (DoubleColumn) calc(AggregateFunctions.countNonMissing);
+    }
+
+    public DoubleColumn variance() {
+        return (DoubleColumn) calc(AggregateFunctions.variance);
+    }
+
+    public DoubleColumn skewness() {
+        return (DoubleColumn) calc(AggregateFunctions.skewness);
+    }
+
+    public DoubleColumn kurtosis() {
+        return (DoubleColumn) calc(AggregateFunctions.kurtosis);
     }
 
 }

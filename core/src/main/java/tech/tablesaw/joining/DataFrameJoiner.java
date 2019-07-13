@@ -294,6 +294,9 @@ public class DataFrameJoiner {
         if (type instanceof DateTimeColumnType) {
             return new LongIndex(table2.dateTimeColumn(col2Name));
         }
+        if (type instanceof InstantColumnType) {
+            return new LongIndex(table2.instantColumn(col2Name));
+        }
         if (type instanceof TimeColumnType) {
             return new IntIndex(table2.timeColumn(col2Name));
         }
@@ -419,6 +422,11 @@ public class DataFrameJoiner {
                 } else if (type instanceof DateTimeColumnType) {
                     LongIndex index = new LongIndex(result.dateTimeColumn(col2Name));
                     DateTimeColumn col2 = (DateTimeColumn) table2.column(col2Name);
+                    long value = col2.getLongInternal(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof InstantColumnType) {
+                    LongIndex index = new LongIndex(result.instantColumn(col2Name));
+                    InstantColumn col2 = (InstantColumn) table2.column(col2Name);
                     long value = col2.getLongInternal(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof TimeColumnType) {
@@ -610,7 +618,7 @@ public class DataFrameJoiner {
      */
 
     public Table rightOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-        Table leftOuter = table2.join(col2Names).leftOuter(table, allowDuplicateColumnNames, columnNames);
+        Table leftOuter = table2.joinOn(col2Names).leftOuter(table, allowDuplicateColumnNames, columnNames);
 
         // reverse the columns
         Table result = Table.create(leftOuter.name());

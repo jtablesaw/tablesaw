@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -463,6 +464,16 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     @Override
     public LongColumn set(Selection rowSelection, Long newValue) {
         return (LongColumn) super.set(rowSelection, newValue);
+    }
+
+    @Override
+    public LongColumn set(DoublePredicate condition, Long newValue) {
+        return (LongColumn) super.set(condition, newValue);
+    }
+
+    @Override
+    public LongColumn set(DoublePredicate condition, NumberColumn<Long> other) {
+      return (LongColumn) super.set(condition, other);
     }
 
     @Override

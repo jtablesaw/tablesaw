@@ -25,8 +25,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
 
 import io.github.classgraph.ClassGraph;
@@ -462,7 +464,7 @@ public class Table extends Relation implements Iterable<Row> {
      * @return An array two tables, with the first table having the proportion specified in the method parameter,
      * and the second table having the balance of the rows
      */
-    public Table[] stratifiedSampleSplit(CategoricalColumn column, double table1Proportion) {
+    public Table[] stratifiedSampleSplit(CategoricalColumn<?> column, double table1Proportion) {
         Preconditions.checkArgument(containsColumn(column),
                 "The categorical column must be part of the table, you can create a string column and add it to this table before sampling.");
         final Table first = emptyCopy();
@@ -529,7 +531,7 @@ public class Table extends Relation implements Iterable<Row> {
     /**
      * Sorts this table into a new table on the columns indexed
      * <p>
-     * if index is negative then sort that column in decending order otherwise sort ascending
+     * if index is negative then sort that column in descending order otherwise sort ascending
      */
     public Table sortOn(int... columnIndexes) {
         List<String> names = new ArrayList<>();
@@ -691,8 +693,30 @@ public class Table extends Relation implements Iterable<Row> {
         return where(selection);
     }
 
+    /**
+     * Retains the first rowCount rows if rowCount positive.
+     * Retains the last rowCount rows if rowCount negative.
+     */
+    public Table inRange(int rowCount) {
+        Preconditions.checkArgument(rowCount <= rowCount());
+        int rowStart = rowCount >= 0 ? 0 : rowCount() + rowCount;
+        int rowEnd = rowCount >= 0 ? rowCount : rowCount();
+        return where(Selection.withRange(rowStart, rowEnd));
+    }
+
     public Table inRange(int rowStart, int rowEnd) {
         Preconditions.checkArgument(rowEnd <= rowCount());
+        return where(Selection.withRange(rowStart, rowEnd));
+    }
+
+    /**
+     * Drops the first rowCount rows if rowCount positive.
+     * Drops the last rowCount rows if rowCount negative.
+     */
+    public Table dropRange(int rowCount) {
+        Preconditions.checkArgument(rowCount <= rowCount());
+        int rowStart = rowCount >= 0 ? rowCount : 0;
+        int rowEnd = rowCount >= 0 ? rowCount() : rowCount() + rowCount;
         return where(Selection.withRange(rowStart, rowEnd));
     }
 
@@ -997,7 +1021,7 @@ public class Table extends Relation implements Iterable<Row> {
      * @param columnNames   Name of the columns to join on.
      * @return              The new DataFrameJoiner
      */
-    public DataFrameJoiner join(String... columnNames) {
+    public DataFrameJoiner joinOn(String... columnNames) {
         return new DataFrameJoiner(this, columnNames);
     }
 
@@ -1024,27 +1048,24 @@ public class Table extends Relation implements Iterable<Row> {
         };
     }
 
+    public Stream<Row> stream() {
+        return Streams.stream(iterator());
+    }
+
     /**
      * Applies the operation in {@code doable} to every row in the table
+     * @deprecated use {@code stream().forEach}
      */
     public void doWithRows(Consumer<Row> doable) {
-        Row row = new Row(this);
-        while (row.hasNext()) {
-            doable.accept(row.next());
-        }
+        stream().forEach(doable);
     }
 
     /**
      * Applies the predicate to each row, and return true if any row returns true
+     * @deprecated use {@code stream().anyMatch}
      */
     public boolean detect(Predicate<Row> predicate) {
-        Row row = new Row(this);
-        while (row.hasNext()) {
-            if (predicate.test(row.next())) {
-                return true;
-            }
-        }
-        return false;
+        return stream().anyMatch(predicate);
     }
 
     /**
