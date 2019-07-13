@@ -67,6 +67,6 @@ var layout = {
     barmode: '{{barMode}}',
 {% endif %}
 {% if grid is not null %}
-    grid:  '{{grid}}'
+    grid:  {{grid | raw}}
 {% endif %}
 };

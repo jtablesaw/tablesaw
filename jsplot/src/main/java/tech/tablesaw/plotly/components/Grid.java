@@ -15,11 +15,22 @@ public class Grid extends Component {
     public enum RowOrder {
         ENUMERATED,
         TOP_TO_BOTTOM,
-        BOTTOM_TO_TOP
+        BOTTOM_TO_TOP;
+        
+        @Override
+        public String toString() {
+            return this.name().toLowerCase().replaceAll("_", " ");
+        }
+        
     }
     public enum Pattern{
         INDEPENDENT,
-        COUPLED
+        COUPLED;
+        
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
     }
 
     /**
@@ -99,7 +110,7 @@ public class Grid extends Component {
         return context;
     }
 
-    public GridBuilder gridBuilder() {
+    public static GridBuilder builder() {
         return new GridBuilder();
     }
 
@@ -179,9 +190,13 @@ public class Grid extends Component {
         }
         
         /**
-         * Pattern to generate defaults using consecutive axis IDs
+         * If no `subplots`, `xaxes`, or `yaxes` are given but we do have `rows` and `columns`,',
+        * we can generate defaults using consecutive axis IDs, in two ways:',
+        * '*coupled* gives one x axis per column and one y axis per row.',
+        * '*independent* uses a new xy pair for each cell, left-to-right across each row',
+        * 'then iterating rows according to `roworder`.
          *
-         * @param pattern
+         * @param pattern defaults to COUPLED
          * @return  this GridBuilder
          */
         public GridBuilder pattern(Pattern pattern) {

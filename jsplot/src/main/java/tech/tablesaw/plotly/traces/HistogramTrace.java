@@ -20,6 +20,8 @@ public class HistogramTrace extends AbstractTrace {
     private final boolean autoBinX;
     private final boolean autoBinY;
     private final Marker marker;
+    private final String yAxis;
+    private final String xAxis;
 
     public static HistogramBuilder builder(double[] values) {
         return new HistogramBuilder(values);
@@ -38,6 +40,8 @@ public class HistogramTrace extends AbstractTrace {
         this.autoBinY = builder.autoBinY;
         this.opacity = builder.opacity;
         this.marker = builder.marker;
+        this.xAxis = builder.xAxis;
+        this.yAxis = builder.yAxis;
     }
 
     @Override
@@ -67,6 +71,8 @@ public class HistogramTrace extends AbstractTrace {
         if (marker != null) {
             context.put("marker", marker);
         }
+        context.put("xAxis", xAxis);
+        context.put("yAxis", yAxis);
         return context;
     }
 
@@ -79,14 +85,17 @@ public class HistogramTrace extends AbstractTrace {
         private boolean autoBinY;
         private final double[] x;
         private Marker marker;
+        private String xAxis = "x1";
+        private String yAxis = "y1";
 
         private HistogramBuilder(double[] values) {
             this.x = values;
         }
 
         /**
-         * Specifies the maximum number of desired bins. This value will be used in an algorithm that will decide
-         * the optimal bin size such that the histogram best visualizes the distribution of the data.
+         * Specifies the maximum number of desired bins. This value will be used
+         * in an algorithm that will decide the optimal bin size such that the
+         * histogram best visualizes the distribution of the data.
          */
         public HistogramBuilder nBinsX(int bins) {
             this.nBinsX = bins;
@@ -99,11 +108,12 @@ public class HistogramTrace extends AbstractTrace {
         }
 
         /**
-         * Determines whether or not the x axis bin attributes are picked by an algorithm.
-         * Note that this should be set to False if you want to manually set the number of bins using the attributes
-         * in xbins.
+         * Determines whether or not the x axis bin attributes are picked by an
+         * algorithm. Note that this should be set to False if you want to
+         * manually set the number of bins using the attributes in xbins.
          *
-         * Note also that this should be true (default) to use nbinsx to suggest a bin count
+         * Note also that this should be true (default) to use nbinsx to suggest
+         * a bin count
          */
         public HistogramBuilder autoBinX(boolean autoBinX) {
             this.autoBinX = autoBinX;
@@ -132,6 +142,16 @@ public class HistogramTrace extends AbstractTrace {
 
         public HistogramBuilder name(String name) {
             super.name(name);
+            return this;
+        }
+
+        public HistogramBuilder xAxis(String xAxis) {
+            this.xAxis = xAxis;
+            return this;
+        }
+
+        public HistogramBuilder yAxis(String yAxis) {
+            this.yAxis = yAxis;
             return this;
         }
 
