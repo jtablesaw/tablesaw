@@ -529,4 +529,110 @@ TODO: fix
         }
         assertArrayEquals(expected, result, 0.000_000_1);
     }
+
+    @Test
+    public void countUniqueSetAfterCreateByteDict() {
+        StringColumn col = StringColumn.create("col1", 2);
+        assertEquals(1, col.countUnique(), "Wrong number of unique values after StringColumn.create");
+        assertEquals(2, col.countMissing(), "Wrong number of missing values after StringColumn.create");
+        col.set(0, "A");
+        col.set(1, "B");
+        assertEquals(2, col.countUnique(), "Wrong number of unique values after Column.set");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
+        col.clear();
+        assertEquals(0, col.countUnique(), "Wrong number of unique values after Column.clear");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.clear");
+    }
+
+    @Test
+    public void countUniqueSetAfterAppendByteDict() {
+        StringColumn col = StringColumn.create("col1");
+        assertEquals(0, col.countUnique(), "Wrong number of unique values after StringColumn.create");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after StringColumn.create");
+        col.append("A");
+        col.append("B");
+        assertEquals(2, col.countUnique(), "Wrong number of unique values after Column.set");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
+        col.set(0, "C");
+        col.set(1, "D");
+        assertEquals(2, col.countUnique(), "Wrong number of unique values after Column.set");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
+        col.clear();
+        assertEquals(0, col.countUnique(), "Wrong number of unique values after Column.clear");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.clear");
+    }
+
+    @Test
+    public void countUniqueSetAfterCreateShortDict() {
+        int size = Byte.MAX_VALUE - Byte.MIN_VALUE + 1;
+		StringColumn col = StringColumn.create("col1", size);
+        assertEquals(1, col.countUnique(), "Wrong number of unique values after StringColumn.create");
+        assertEquals(size, col.countMissing(), "Wrong number of missing values after StringColumn.create");
+        for (int i = size; --i >= 0; ) {
+            col.set(i, Integer.toString(i));
+        }
+        assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
+        col.clear();
+        assertEquals(0, col.countUnique(), "Wrong number of unique values after Column.clear");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.clear");
+    }
+
+    @Test
+    public void countUniqueSetAfterAppendShortDict() {
+        StringColumn col = StringColumn.create("col1");
+        assertEquals(0, col.countUnique(), "Wrong number of unique values after StringColumn.create");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after StringColumn.create");
+        int size = Byte.MAX_VALUE - Byte.MIN_VALUE + 1;
+        for (int i = size; --i >= 0; ) {
+            col.append(Integer.toString(i));
+        }
+        assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
+        for (int i = size; --i >= 0; ) {
+            col.set(i, "A" + Integer.toString(i));
+        }
+        assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
+        col.clear();
+        assertEquals(0, col.countUnique(), "Wrong number of unique values after Column.clear");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.clear");
+    }
+
+    @Test
+    public void countUniqueSetAfterCreateIntDict() {
+        int size = Short.MAX_VALUE - Short.MIN_VALUE + 1;
+		StringColumn col = StringColumn.create("col1", size);
+        assertEquals(1, col.countUnique(), "Wrong number of unique values after StringColumn.create");
+        assertEquals(size, col.countMissing(), "Wrong number of missing values after StringColumn.create");
+        for (int i = size; --i >= 0; ) {
+            col.set(i, Integer.toString(i));
+        }
+        assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
+        col.clear();
+        assertEquals(0, col.countUnique(), "Wrong number of unique values after Column.clear");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.clear");
+    }
+
+    @Test
+    public void countUniqueSetAfterAppendIntDict() {
+        StringColumn col = StringColumn.create("col1");
+        assertEquals(0, col.countUnique(), "Wrong number of unique values after StringColumn.create");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after StringColumn.create");
+        int size = Short.MAX_VALUE - Short.MIN_VALUE + 1;
+        for (int i = size; --i >= 0; ) {
+            col.append(Integer.toString(i));
+        }
+        assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
+        for (int i = size; --i >= 0; ) {
+            col.set(i, "A" + Integer.toString(i));
+        }
+        assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
+        col.clear();
+        assertEquals(0, col.countUnique(), "Wrong number of unique values after Column.clear");
+        assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.clear");
+    }
 }

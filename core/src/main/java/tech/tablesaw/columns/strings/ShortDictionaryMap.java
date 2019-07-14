@@ -1,7 +1,6 @@
 package tech.tablesaw.columns.strings;
 
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
-import it.unimi.dsi.fastutil.shorts.Short2IntMap;
 import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
@@ -48,16 +47,19 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     private final AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
 
-    // we maintain two maps, one from strings to keys, and the second from keys to strings.
+    // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to count of values
     private final Short2ObjectMap<String> keyToValue = new Short2ObjectOpenHashMap<>();
 
     private final Object2ShortOpenHashMap<String> valueToKey = new Object2ShortOpenHashMap<>();
+    
+    private final Short2IntOpenHashMap keyToCount = new Short2IntOpenHashMap();
 
     /**
      * Returns a new DictionaryMap that is a deep copy of the original
      */
     ShortDictionaryMap(DictionaryMap original) throws NoKeysAvailableException {
         valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
+        keyToCount.defaultReturnValue(0);
 
         for (int i = 0; i < original.size(); i++) {
             String value = original.getValueForIndex(i);
@@ -95,16 +97,6 @@ public class ShortDictionaryMap implements DictionaryMap {
         return values.getShort(rowIndex);
     }
 
-    /**
-     * Returns true if we have seen this stringValue before, and it hasn't been removed.
-     * <p>
-     * NOTE: An answer of true does not imply that the column still contains the value, only that
-     * it is in the dictionary map
-     */
-    private boolean contains(String stringValue) {
-        return valueToKey.containsKey(stringValue);
-    }
-
     private Set<String> categories() {
         return valueToKey.keySet();
     }
@@ -137,17 +129,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     }
 
     public int countOccurrences(String value) {
-        if (!contains(value)) {
-            return 0;
-        }
-        short key = getKeyForValue(value);
-        int count = 0;
-        for (short k : values) {
-            if (k == key) {
-                count++;
-            }
-        }
-        return count;
+        return keyToCount.get(getKeyForValue(value));
     }
 
     public Set<String> asSet() {
@@ -224,6 +206,7 @@ public class ShortDictionaryMap implements DictionaryMap {
             put(key, value);
         }
         values.add(key);
+        keyToCount.addTo(key, 1);
     }
 
     private short getValueId() throws NoKeysAvailableException {
@@ -262,7 +245,13 @@ public class ShortDictionaryMap implements DictionaryMap {
             valueId = getValueId();
             put(valueId, str);
         }
-        values.set(rowIndex, valueId);
+        short oldKey = values.set(rowIndex, valueId);
+        keyToCount.addTo(valueId, 1);
+        if (keyToCount.addTo(oldKey, -1) == 1) {
+            String obsoleteValue = keyToValue.remove(oldKey);
+            valueToKey.removeShort(obsoleteValue);
+            keyToCount.remove(oldKey);
+        }
     }
 
     @Override
@@ -270,6 +259,7 @@ public class ShortDictionaryMap implements DictionaryMap {
         values.clear();
         keyToValue.clear();
         valueToKey.clear();
+        keyToCount.clear();
     }
 
     /**
@@ -279,23 +269,10 @@ public class ShortDictionaryMap implements DictionaryMap {
         Table t = Table.create("Column: " + columnName);
         StringColumn categories = StringColumn.create("Category");
         IntColumn counts = IntColumn.create("Count");
-
-        Short2IntMap valueToCount = new Short2IntOpenHashMap();
-
-        for (short next : values) {
-            if (valueToCount.containsKey(next)) {
-                valueToCount.put(next, valueToCount.get(next) + 1);
-            } else {
-                valueToCount.put(next, 1);
-            }
-        }
-        for (Map.Entry<Short, Integer> entry : valueToCount.short2IntEntrySet()) {
+        // Now uses the keyToCount map
+        for (Map.Entry<Short, Integer> entry : keyToCount.short2IntEntrySet()) {
             categories.append(getValueForKey(entry.getKey()));
             counts.append(entry.getValue());
-        }
-        if (countMissing() > 0) {
-            categories.append("* missing values");
-            counts.append(countMissing());
         }
         t.addColumns(categories);
         t.addColumns(counts);
@@ -360,13 +337,7 @@ public class ShortDictionaryMap implements DictionaryMap {
      */
     @Override
     public int countMissing() {
-        int count = 0;
-        for (int i = 0; i < size(); i++) {
-            if (MISSING_VALUE == getKeyForIndex(i)) {
-                count++;
-            }
-        }
-        return count;
+        return keyToCount.get(MISSING_VALUE);
     }
 
     @Override

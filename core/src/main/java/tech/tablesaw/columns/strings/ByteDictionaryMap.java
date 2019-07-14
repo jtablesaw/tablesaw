@@ -1,6 +1,5 @@
 package tech.tablesaw.columns.strings;
 
-import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
@@ -48,13 +47,16 @@ public class ByteDictionaryMap implements DictionaryMap {
 
     private final AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
 
-    // we maintain two maps, one from strings to keys, and the second from keys to strings.
+    // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to count of values
     private final Byte2ObjectMap<String> keyToValue = new Byte2ObjectOpenHashMap<>();
 
     private final Object2ByteOpenHashMap<String> valueToKey = new Object2ByteOpenHashMap<>();
+    
+    private final Byte2IntOpenHashMap keyToCount = new Byte2IntOpenHashMap();
 
     public ByteDictionaryMap() {
         valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
+        keyToCount.defaultReturnValue(0);
     }
 
     private void put(byte key, String value) {
@@ -85,16 +87,6 @@ public class ByteDictionaryMap implements DictionaryMap {
     @Override
     public int getKeyForIndex(int rowIndex) {
         return values.getByte(rowIndex);
-    }
-
-    /**
-     * Returns true if we have seen this stringValue before, and it hasn't been removed.
-     * <p>
-     * NOTE: An answer of true does not imply that the column still contains the value, only that
-     * it is in the dictionary map
-     */
-    private boolean contains(String stringValue) {
-        return valueToKey.containsKey(stringValue);
     }
 
     private Set<String> categories() {
@@ -129,17 +121,7 @@ public class ByteDictionaryMap implements DictionaryMap {
     }
 
     public int countOccurrences(String value) {
-        if (!contains(value)) {
-            return 0;
-        }
-        byte key = getKeyForValue(value);
-        int count = 0;
-        for (byte k : values) {
-            if (k == key) {
-                count++;
-            }
-        }
-        return count;
+        return keyToCount.get(getKeyForValue(value));
     }
 
     public Set<String> asSet() {
@@ -212,6 +194,7 @@ public class ByteDictionaryMap implements DictionaryMap {
             put(key, value);
         }
         values.add(key);
+        keyToCount.addTo(key, 1);
     }
 
     private byte getValueId() throws NoKeysAvailableException {
@@ -251,7 +234,13 @@ public class ByteDictionaryMap implements DictionaryMap {
             valueId = getValueId();
             put(valueId, str);
         }
-        values.set(rowIndex, valueId);
+        byte oldKey = values.set(rowIndex, valueId);
+        keyToCount.addTo(valueId, 1);
+        if (keyToCount.addTo(oldKey, -1) == 1) {
+            String obsoleteValue = keyToValue.remove(oldKey);
+            valueToKey.removeByte(obsoleteValue);
+            keyToCount.remove(oldKey);
+        }
     }
 
     @Override
@@ -259,6 +248,7 @@ public class ByteDictionaryMap implements DictionaryMap {
         values.clear();
         keyToValue.clear();
         valueToKey.clear();
+        keyToCount.clear();
     }
 
     @Override
@@ -273,23 +263,10 @@ public class ByteDictionaryMap implements DictionaryMap {
         Table t = Table.create("Column: " + columnName);
         StringColumn categories = StringColumn.create("Category");
         IntColumn counts = IntColumn.create("Count");
-
-        Byte2IntMap valueToCount = new Byte2IntOpenHashMap();
-
-        for (byte next : values) {
-            if (valueToCount.containsKey(next)) {
-                valueToCount.put(next, valueToCount.get(next) + 1);
-            } else {
-                valueToCount.put(next, 1);
-            }
-        }
-        for (Map.Entry<Byte, Integer> entry : valueToCount.byte2IntEntrySet()) {
+        // Now uses the keyToCount map
+        for (Map.Entry<Byte, Integer> entry : keyToCount.byte2IntEntrySet()) {
             categories.append(getValueForKey(entry.getKey()));
             counts.append(entry.getValue());
-        }
-        if (countMissing() > 0) {
-            categories.append("* missing values");
-            counts.append(countMissing());
         }
         t.addColumns(categories);
         t.addColumns(counts);
@@ -354,13 +331,7 @@ public class ByteDictionaryMap implements DictionaryMap {
      */
     @Override
     public int countMissing() {
-        int count = 0;
-        for (int i = 0; i < size(); i++) {
-            if (MISSING_VALUE == getKeyForIndex(i)) {
-                count++;
-            }
-        }
-        return count;
+        return keyToCount.get(MISSING_VALUE);
     }
 
     @Override
