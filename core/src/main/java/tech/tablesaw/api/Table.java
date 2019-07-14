@@ -126,7 +126,7 @@ public class Table extends Relation implements Iterable<Row> {
                 try {
                     Class.forName(clazz);
                 } catch (ClassNotFoundException e) {
-                    new IllegalStateException(e);
+                    throw new IllegalStateException(e);
                 }
             }
         }

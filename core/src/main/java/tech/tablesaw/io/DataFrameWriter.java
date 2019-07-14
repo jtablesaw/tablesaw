@@ -67,7 +67,7 @@ public class DataFrameWriter {
         try {
             dataWriter.write(table, new Destination(writer));
         } catch (IOException e) {
-            new IllegalStateException(e);
+            throw new IllegalStateException(e);
         }
         return writer.toString();
     }
