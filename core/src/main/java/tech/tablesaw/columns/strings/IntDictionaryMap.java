@@ -125,7 +125,7 @@ public class IntDictionaryMap implements DictionaryMap {
     }
 
     public int countOccurrences(String value) {
-    	return keyToCount.get(getKeyForValue(value));
+        return keyToCount.get(getKeyForValue(value));
     }
 
     public Set<String> asSet() {
@@ -244,9 +244,9 @@ public class IntDictionaryMap implements DictionaryMap {
         int oldKey = values.set(rowIndex, valueId);
         keyToCount.addTo(valueId, 1);
         if (keyToCount.addTo(oldKey, -1) == 1) {
-        	String obsoleteValue = keyToValue.remove(oldKey);
-        	valueToKey.removeInt(obsoleteValue);
-        	keyToCount.remove(oldKey);
+            String obsoleteValue = keyToValue.remove(oldKey);
+            valueToKey.removeInt(obsoleteValue);
+            keyToCount.remove(oldKey);
         }
     }
 
@@ -333,7 +333,7 @@ public class IntDictionaryMap implements DictionaryMap {
      */
     @Override
     public int countMissing() {
-    	return keyToCount.get(MISSING_VALUE);
+        return keyToCount.get(MISSING_VALUE);
     }
 
     @Override
