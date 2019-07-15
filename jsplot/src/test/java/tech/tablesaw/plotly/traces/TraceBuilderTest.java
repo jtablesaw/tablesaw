@@ -1,6 +1,6 @@
 package tech.tablesaw.plotly.traces;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ public class TraceBuilderTest {
             }
         };
         traceBuilder.xAxis(xAxis).yAxis(yAxis);
-        Assertions.assertEquals(xAxis, traceBuilder.xAxis);
-        Assertions.assertEquals(yAxis, traceBuilder.yAxis);
+        assertEquals(xAxis, traceBuilder.xAxis);
+        assertEquals(yAxis, traceBuilder.yAxis);
     }
 }

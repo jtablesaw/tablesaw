@@ -1,5 +1,6 @@
 package tech.tablesaw.components;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Axis;
@@ -54,6 +55,10 @@ public class LayoutTest {
                                 .build())
 
                 .build();
-        System.out.println(layout.asJavascript());
+        String asJavascript = layout.asJavascript();
+        assertTrue(asJavascript.contains("rows"));
+        assertTrue(asJavascript.contains("columns"));
+        assertTrue(asJavascript.contains("rows"));
+        assertTrue(asJavascript.contains("xAxis"));
     }
 }
