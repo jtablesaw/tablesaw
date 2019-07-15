@@ -15,7 +15,22 @@ public class Grid extends Component {
     public enum RowOrder {
         ENUMERATED,
         TOP_TO_BOTTOM,
-        BOTTOM_TO_TOP
+        BOTTOM_TO_TOP;
+        
+        @Override
+        public String toString() {
+            return this.name().toLowerCase().replaceAll("_", " ");
+        }
+        
+    }
+    public enum Pattern{
+        INDEPENDENT,
+        COUPLED;
+        
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
     }
 
     /**
@@ -30,6 +45,15 @@ public class Grid extends Component {
      */
     private final RowOrder rowOrder;
 
+    /**
+     * If no `subplots`, `xaxes`, or `yaxes` are given but we do have `rows` and `columns`,',
+     * we can generate defaults using consecutive axis IDs, in two ways:',
+     * '*coupled* gives one x axis per column and one y axis per row.',
+     * '*independent* uses a new xy pair for each cell, left-to-right across each row',
+     * 'then iterating rows according to `roworder`.
+     */
+    private final Pattern pattern;
+    
     /**
      * The number of columns in the grid. If you provide a 2D `subplots` array,
      * the length of its longest row is used as the default. If you give an `xaxes` array,
@@ -57,6 +81,7 @@ public class Grid extends Component {
         this.rowOrder = gridBuilder.rowOrder;
         this.xGap = gridBuilder.xGap;
         this.yGap = gridBuilder.yGap;
+        this.pattern = gridBuilder.pattern;
     }
 
 
@@ -81,10 +106,11 @@ public class Grid extends Component {
         context.put("rows", rows);
         context.put("columns", columns);
         context.put("rowOrder", rowOrder);
+        context.put("pattern", pattern);
         return context;
     }
 
-    public GridBuilder gridBuilder() {
+    public static GridBuilder builder() {
         return new GridBuilder();
     }
 
@@ -99,6 +125,7 @@ public class Grid extends Component {
         private double yGap = 80;
 
         private RowOrder rowOrder = RowOrder.TOP_TO_BOTTOM;
+        private Pattern pattern = Pattern.COUPLED;
 
         private GridBuilder() {}
 
@@ -159,6 +186,21 @@ public class Grid extends Component {
 
         public GridBuilder rowOrder(RowOrder rowOrder) {
             this.rowOrder = rowOrder;
+            return this;
+        }
+        
+        /**
+         * If no `subplots`, `xaxes`, or `yaxes` are given but we do have `rows` and `columns`,',
+         * we can generate defaults using consecutive axis IDs, in two ways:',
+         * '*coupled* gives one x axis per column and one y axis per row.',
+         * '*independent* uses a new xy pair for each cell, left-to-right across each row',
+         * 'then iterating rows according to `roworder`.
+         *
+         * @param pattern defaults to COUPLED
+         * @return  this GridBuilder
+         */
+        public GridBuilder pattern(Pattern pattern) {
+            this.pattern = pattern;
             return this;
         }
 

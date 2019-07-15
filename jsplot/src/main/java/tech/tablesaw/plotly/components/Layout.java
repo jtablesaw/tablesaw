@@ -197,6 +197,8 @@ public class Layout {
     private final Axis yAxis4;
 
     private final Axis zAxis;
+    
+    private final Grid grid;
 
     private final BarMode barMode;
 
@@ -224,6 +226,7 @@ public class Layout {
         this.showLegend = builder.showLegend;
         this.barMode = builder.barMode;
         this.scene = builder.scene;
+        this.grid = builder.grid;
     }
 
     public String getTitle() {
@@ -281,6 +284,9 @@ public class Layout {
         }
         if (zAxis != null) {  // TODO: remove? It's in scene for 3d scatters at least.
             context.put("zAxis", zAxis);
+        }
+        if (grid != null) {
+            context.put("grid", grid);
         }
         return context;
     }
@@ -407,6 +413,11 @@ public class Layout {
         private BarMode barMode = DEFAULT_BAR_MODE;
 
         private Scene scene;
+        
+        /**
+         * Define grid to use when creating subplots
+         */
+        private Grid grid;
 
         public Layout build() {
             return new Layout(this);
@@ -500,6 +511,11 @@ public class Layout {
 
         public LayoutBuilder paperBgColor(String color) {
             this.paperBgColor = color;
+            return this;
+        }
+        
+        public LayoutBuilder grid(Grid grid) {
+            this.grid = grid;
             return this;
         }
     }

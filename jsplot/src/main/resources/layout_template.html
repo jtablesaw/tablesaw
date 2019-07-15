@@ -64,7 +64,9 @@ var layout = {
     thousandsseparator: '{{thousandsSeparator}}',
 {% endif %}
 {% if barMode is not null %}
-    barmode: '{{barMode}}'
+    barmode: '{{barMode}}',
 {% endif %}
-
+{% if grid is not null %}
+    grid:  {{grid | raw}}
+{% endif %}
 };

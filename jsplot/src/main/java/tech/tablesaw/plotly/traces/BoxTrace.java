@@ -83,6 +83,18 @@ public class BoxTrace extends AbstractTrace {
         }
 
         @Override
+        public BoxBuilder xAxis(String xAxis) {
+            super.xAxis(xAxis);
+            return this;
+        }
+
+        @Override
+        public BoxBuilder yAxis(String yAxis) {
+            super.yAxis(yAxis);
+            return this;
+        }
+
+        @Override
         protected String getType() {
             return type;
         }

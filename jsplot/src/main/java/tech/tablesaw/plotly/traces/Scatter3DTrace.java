@@ -54,7 +54,9 @@ public class Scatter3DTrace extends AbstractTrace {
         context.put("x", dataAsString(x));
         context.put("z", dataAsString(z));
         context.put("showlegend", showLegend);
-        if (marker != null) context.put("marker", marker);
+        if (marker != null) {
+            context.put("marker", marker);
+        }
         if (hoverLabel != null) {
             context.put("hoverlabel", hoverLabel.asJavascript());
         }

@@ -214,8 +214,8 @@ public class TableTest {
         Table[] results = t.sampleSplit(.75);
         assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
     }
-
-    @Test
+    
+   @Test
     public void testStratifiedSampleSplit() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
         Table[] results = t.stratifiedSampleSplit(t.stringColumn("who"), .75);

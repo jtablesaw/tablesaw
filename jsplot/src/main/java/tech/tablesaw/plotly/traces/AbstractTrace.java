@@ -36,20 +36,21 @@ public abstract class AbstractTrace implements Trace {
             return value;
         }
 
-        }
+    }
 
     protected final String type;
 
     private final Visibility visible;
 
     /**
-     * Determines whether or not an item corresponding to this trace is shown in the legend.
+     * Determines whether or not an item corresponding to this trace is shown in
+     * the legend.
      */
     private final boolean showLegend;
 
     /**
-     * Sets the legend group for this trace. Traces part of the same legend group hide/show at the same time
-     * when toggling legend items.
+     * Sets the legend group for this trace. Traces part of the same legend
+     * group hide/show at the same time when toggling legend items.
      */
     private final String legendGroup;
 
@@ -59,15 +60,28 @@ public abstract class AbstractTrace implements Trace {
     private final double opacity; // number between or equal to 0 and 1
 
     /**
-     * Sets the trace name. The trace name appear as the legend item and on hover.
+     * Sets the trace name. The trace name appear as the legend item and on
+     * hover.
      */
     private final String name;
 
     /**
-     * Assigns id labels to each datum. These ids for object constancy of data points during animation.
-     * Should be an array of strings, not numbers or any other type.
+     * Assigns id labels to each datum. These ids for object constancy of data
+     * points during animation. Should be an array of strings, not numbers or
+     * any other type.
      */
     private final String[] ids;
+
+    /**
+     * Sets a reference between this trace's x coordinates and a 2D cartesian x axis. 
+     * If *x* , the x coordinates refer to `layout.xaxis`. If *x2*, the x coordinates refer to `layout.xaxis2`, and so on.
+     */
+    private final String xAxis;
+    /**
+     * Sets a reference between this trace's y coordinates and a 2D cartesian y axis. 
+     * If *y* , the y coordinates refer to `layout.yaxis`. If *y2*, the y coordinates refer to `layout.yaxis2`, and so on.
+     */
+    private final String yAxis;
 
     private final HoverLabel hoverLabel;
 
@@ -80,6 +94,8 @@ public abstract class AbstractTrace implements Trace {
         this.ids = builder.ids;
         this.hoverLabel = builder.hoverLabel;
         this.opacity = builder.opacity;
+        this.xAxis = builder.xAxis;
+        this.yAxis = builder.yAxis;
     }
 
     @Override
@@ -105,19 +121,27 @@ public abstract class AbstractTrace implements Trace {
         Map<String, Object> context = new HashMap<>();
         context.put("type", type);
         context.put("name", name);
-        if(showLegend != DEFAULT_SHOW_LEGEND) context.put("showLegend", showLegend);
+        if (showLegend != DEFAULT_SHOW_LEGEND) {
+            context.put("showLegend", showLegend);
+        }
         context.put("legendGroup", legendGroup);
-        if(!visible.equals(DEFAULT_VISIBILITY)) context.put("visible", visible);
+        if (!visible.equals(DEFAULT_VISIBILITY)) {
+            context.put("visible", visible);
+        }
         context.put("ids", ids);
         context.put("hoverLable", hoverLabel);
-        if(opacity != DEFAULT_OPACITY) context.put("opacity", opacity);
+        if (opacity != DEFAULT_OPACITY) {
+            context.put("opacity", opacity);
+        }
+        context.put("xAxis", xAxis);
+        context.put("yAxis", yAxis);
         return context;
     }
 
     public HoverLabel hoverLabel() {
         return hoverLabel;
     }
-
+    
     public boolean showLegend() {
         return showLegend;
     }

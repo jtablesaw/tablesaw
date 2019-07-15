@@ -108,7 +108,8 @@ public class BarTrace extends AbstractTrace {
         }
 
         /**
-         * Sets the orientation of the bars. With "v" ("h"), the value of the each bar spans along the vertical (horizontal).
+         * Sets the orientation of the bars. With "v" ("h"), the value of the
+         * each bar spans along the vertical (horizontal).
          */
         public BarBuilder orientation(Orientation orientation) {
             this.orientation = orientation;
@@ -132,6 +133,16 @@ public class BarTrace extends AbstractTrace {
 
         public BarBuilder marker(Marker marker) {
             this.marker = marker;
+            return this;
+        }
+
+        public BarBuilder xAxis(String xAxis) {
+            super.xAxis(xAxis);
+            return this;
+        }
+
+        public BarBuilder yAxis(String yAxis) {
+            super.yAxis(yAxis);
             return this;
         }
 

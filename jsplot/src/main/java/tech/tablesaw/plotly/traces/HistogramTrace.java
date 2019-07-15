@@ -39,7 +39,7 @@ public class HistogramTrace extends AbstractTrace {
         this.opacity = builder.opacity;
         this.marker = builder.marker;
     }
-
+    
     @Override
     public String asJavascript(int i) {
         Writer writer = new StringWriter();
@@ -67,6 +67,7 @@ public class HistogramTrace extends AbstractTrace {
         if (marker != null) {
             context.put("marker", marker);
         }
+
         return context;
     }
 
@@ -85,8 +86,9 @@ public class HistogramTrace extends AbstractTrace {
         }
 
         /**
-         * Specifies the maximum number of desired bins. This value will be used in an algorithm that will decide
-         * the optimal bin size such that the histogram best visualizes the distribution of the data.
+         * Specifies the maximum number of desired bins. This value will be used
+         * in an algorithm that will decide the optimal bin size such that the
+         * histogram best visualizes the distribution of the data.
          */
         public HistogramBuilder nBinsX(int bins) {
             this.nBinsX = bins;
@@ -99,11 +101,12 @@ public class HistogramTrace extends AbstractTrace {
         }
 
         /**
-         * Determines whether or not the x axis bin attributes are picked by an algorithm.
-         * Note that this should be set to False if you want to manually set the number of bins using the attributes
-         * in xbins.
+         * Determines whether or not the x axis bin attributes are picked by an
+         * algorithm. Note that this should be set to False if you want to
+         * manually set the number of bins using the attributes in xbins.
          *
-         * Note also that this should be true (default) to use nbinsx to suggest a bin count
+         * Note also that this should be true (default) to use nbinsx to suggest
+         * a bin count
          */
         public HistogramBuilder autoBinX(boolean autoBinX) {
             this.autoBinX = autoBinX;
@@ -132,6 +135,16 @@ public class HistogramTrace extends AbstractTrace {
 
         public HistogramBuilder name(String name) {
             super.name(name);
+            return this;
+        }
+
+        public HistogramBuilder xAxis(String xAxis) {
+            super.xAxis(xAxis);
+            return this;
+        }
+
+        public HistogramBuilder yAxis(String yAxis) {
+            super.yAxis(yAxis);
             return this;
         }
 

@@ -67,6 +67,18 @@ public class HeatmapTrace extends AbstractTrace {
             this.z = z;
         }
 
+        @Override
+        public HeatmapBuilder xAxis(String xAxis) {
+            super.xAxis(xAxis);
+            return this;
+        }
+
+        @Override
+        public HeatmapBuilder yAxis(String yAxis) {
+            super.yAxis(yAxis);
+            return this;
+        }
+
         public HeatmapTrace build() {
             return new HeatmapTrace(this);
         }
