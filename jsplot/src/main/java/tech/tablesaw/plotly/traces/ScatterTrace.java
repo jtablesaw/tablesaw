@@ -92,6 +92,7 @@ public class ScatterTrace extends AbstractTrace {
     public static ScatterBuilder builder(DateColumn x, NumericColumn<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
+
     public static ScatterBuilder builder(Column<?> x, NumericColumn<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
@@ -136,23 +137,43 @@ public class ScatterTrace extends AbstractTrace {
         context.put("variableName", "trace" + i);
         context.put("mode", mode);
         context.put("x", dataAsString(x));
-        if (y != null) context.put("y", dataAsString(y));
+        if (y != null) {
+            context.put("y", dataAsString(y));
+        }
 
         // for pricing data (candlesticks and OHLC)
-        if (open != null) context.put("open", dataAsString(open));
-        if (high != null) context.put("high", dataAsString(high));
-        if (low != null) context.put("low", dataAsString(low));
-        if (close != null) context.put("close", dataAsString(close));
-        if (whiskerWidth != DEFAULT_WHISKER_WIDTH) context.put("whiskerWidth", whiskerWidth);
-        if (increasing != null) context.put("increasing", increasing);
-        if (decreasing != null) context.put("increasing", decreasing);
+        if (open != null) {
+            context.put("open", dataAsString(open));
+        }
+        if (high != null) {
+            context.put("high", dataAsString(high));
+        }
+        if (low != null) {
+            context.put("low", dataAsString(low));
+        }
+        if (close != null) {
+            context.put("close", dataAsString(close));
+        }
+        if (whiskerWidth != DEFAULT_WHISKER_WIDTH) {
+            context.put("whiskerWidth", whiskerWidth);
+        }
+        if (increasing != null) {
+            context.put("increasing", increasing);
+        }
+        if (decreasing != null) {
+            context.put("increasing", decreasing);
+        }
         if (yAxis != null) {
             context.put("yAxis", yAxis);
         }
         context.put("marker", marker);
         context.put("showlegend", showLegend);
-        if (!fill.equals(DEFAULT_FILL)) context.put("fill", fill);
-        if (fillColor != null) context.put("fillColor", fillColor);
+        if (!fill.equals(DEFAULT_FILL)) {
+            context.put("fill", fill);
+        }
+        if (fillColor != null) {
+            context.put("fillColor", fillColor);
+        }
         if (hoverLabel != null) {
             context.put("hoverlabel", hoverLabel.asJavascript());
         }
@@ -220,25 +241,31 @@ public class ScatterTrace extends AbstractTrace {
         private Decreasing decreasing;
 
         /**
-         * Sets the area to fill with a solid color. Use with `fillcolor` if not "none". "tozerox" and "tozeroy"
-         * fill to x=0 and y=0 respectively. "tonextx" and "tonexty" fill between the endpoints of this trace and the
-         * endpoints of the trace before it, connecting those endpoints with straight lines (to make a stacked area graph);
-         * if there is no trace before it, they behave like "tozerox" and "tozeroy". "toself" connects the endpoints of
-         * the trace (or each segment of the trace if it has gaps) into a closed shape. "tonext" fills the space between
-         * two traces if one completely encloses the other (eg consecutive contour lines), and behaves like "toself"
-         * if there is no trace before it. "tonext" should not be used if one trace does not enclose the other.
+         * Sets the area to fill with a solid color. Use with `fillcolor` if not
+         * "none". "tozerox" and "tozeroy" fill to x=0 and y=0 respectively.
+         * "tonextx" and "tonexty" fill between the endpoints of this trace and
+         * the endpoints of the trace before it, connecting those endpoints with
+         * straight lines (to make a stacked area graph); if there is no trace
+         * before it, they behave like "tozerox" and "tozeroy". "toself"
+         * connects the endpoints of the trace (or each segment of the trace if
+         * it has gaps) into a closed shape. "tonext" fills the space between
+         * two traces if one completely encloses the other (eg consecutive
+         * contour lines), and behaves like "toself" if there is no trace before
+         * it. "tonext" should not be used if one trace does not enclose the
+         * other.
          */
         private ScatterTrace.Fill fill = DEFAULT_FILL;
 
         /**
-         * Sets the fill color. Defaults to a half-transparent variant of the line color, marker color, or marker line
-         * color, whichever is available.
+         * Sets the fill color. Defaults to a half-transparent variant of the
+         * line color, marker color, or marker line color, whichever is
+         * available.
          */
         private String fillColor;
 
         /**
-         * Sets the width of the whiskers relative to the box' width. For example, with 1, the whiskers are as wide
-         * as the box(es).
+         * Sets the width of the whiskers relative to the box' width. For
+         * example, with 1, the whiskers are as wide as the box(es).
          */
         private double whiskerWidth = DEFAULT_WHISKER_WIDTH;
 
@@ -257,10 +284,10 @@ public class ScatterTrace extends AbstractTrace {
         }
 
         private ScatterBuilder(Column<?> x,
-                               NumericColumn<? extends Number> open,
-                               NumericColumn<? extends Number> high,
-                               NumericColumn<? extends Number> low,
-                               NumericColumn<? extends Number> close) {
+                NumericColumn<? extends Number> open,
+                NumericColumn<? extends Number> high,
+                NumericColumn<? extends Number> low,
+                NumericColumn<? extends Number> close) {
             this.x = x.asObjectArray();
             this.open = open.asDoubleArray();
             this.high = high.asDoubleArray();
@@ -289,15 +316,17 @@ public class ScatterTrace extends AbstractTrace {
         }
 
         /**
-         * Sets a specific yAxis to this trace when you want to display more than one yAxis in a plot.
-         * This can be ignored if only one y axis is desired for the whole plot, and need not be set if this trace
-         * should get the default y-axis.
+         * Sets a specific yAxis to this trace when you want to display more
+         * than one yAxis in a plot. This can be ignored if only one y axis is
+         * desired for the whole plot, and need not be set if this trace should
+         * get the default y-axis.
          *
-         * There must be a corresponding Y Axis defined in the layout, e.g., if you specify YAxis.Y2 here, you must
-         * provide a value for yAxis2 in the layout
+         * There must be a corresponding Y Axis defined in the layout, e.g., if
+         * you specify YAxis.Y2 here, you must provide a value for yAxis2 in the
+         * layout
          *
-         * @param axis  The Axis to use for this trace
-         * @return      this ScatterBuilder
+         * @param axis The Axis to use for this trace
+         * @return this ScatterBuilder
          */
         public ScatterBuilder yAxis(YAxis axis) {
             this.yAxis = axis;
@@ -344,7 +373,7 @@ public class ScatterTrace extends AbstractTrace {
         /**
          * For candlestick plots
          */
-        public ScatterBuilder decreasing (Decreasing decreasing) {
+        public ScatterBuilder decreasing(Decreasing decreasing) {
             this.decreasing = decreasing;
             return this;
         }
@@ -390,6 +419,18 @@ public class ScatterTrace extends AbstractTrace {
 
         public ScatterBuilder hoverLabel(HoverLabel hoverLabel) {
             return (ScatterBuilder) super.hoverLabel(hoverLabel);
+        }
+
+        @Override
+        public ScatterBuilder xAxis(String xAxis) {
+            super.xAxis(xAxis);
+            return this;
+        }
+
+        @Override
+        public ScatterBuilder yAxis(String yAxis) {
+            super.yAxis(yAxis);
+            return this;
         }
     }
 }

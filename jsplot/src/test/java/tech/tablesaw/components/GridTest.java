@@ -1,10 +1,10 @@
 package tech.tablesaw.components;
 
-import org.junit.jupiter.api.Disabled;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Grid;
 
-@Disabled
+
 public class GridTest {
 
     @Test
@@ -16,6 +16,13 @@ public class GridTest {
                 .pattern(Grid.Pattern.INDEPENDENT)
                 .build();
 
-        System.out.println(x);
+        String asJavascript = x.asJavascript();
+        assertTrue(asJavascript.contains("rows"));
+        assertTrue(asJavascript.contains("columns"));
+        assertTrue(asJavascript.contains("roworder"));
+        assertTrue(asJavascript.contains("pattern"));
     }
+    
+    
+    
 }
