@@ -22,7 +22,4 @@ public class GridTest {
         assertTrue(asJavascript.contains("roworder"));
         assertTrue(asJavascript.contains("pattern"));
     }
-    
-    
-    
 }

@@ -38,9 +38,8 @@ public class HistogramTrace extends AbstractTrace {
         this.autoBinY = builder.autoBinY;
         this.opacity = builder.opacity;
         this.marker = builder.marker;
-
     }
-
+    
     @Override
     public String asJavascript(int i) {
         Writer writer = new StringWriter();

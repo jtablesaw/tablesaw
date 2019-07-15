@@ -141,10 +141,8 @@ public abstract class AbstractTrace implements Trace {
     public HoverLabel hoverLabel() {
         return hoverLabel;
     }
-
+    
     public boolean showLegend() {
         return showLegend;
     }
-
-    
 }
