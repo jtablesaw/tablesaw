@@ -44,8 +44,14 @@ public class TimeSeriesVisualizations {
 
         Table priceTable = Table.read().csv("../data/ohlcdata.csv");
         priceTable.numberColumn("Volume").setPrintFormatter(NumberColumnFormatter.intsWithGrouping());
-        System.out.println(priceTable.first(5));
         Plot.show(OHLCPlot.create("Prices", priceTable, "date", "open", "high", "low", "close"));
         Plot.show(CandlestickPlot.create("Prices", priceTable, "date", "open", "high", "low", "close"));
+
+        // using a datetime column
+        Table dateTable = Table.read().csv("../data/dateTimeTestFile.csv");
+        Plot.show(TimeSeriesPlot.create("Value over time", "time", dateTable.dateTimeColumn("Time"), "values", dateTable.numberColumn("Value")));
+
+        // using a datetime column2
+        Plot.show(TimeSeriesPlot.createDateTimeSeries("Value over time", dateTable, "Time", "Value"));
     }
 }

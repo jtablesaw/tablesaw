@@ -1,6 +1,7 @@
 package tech.tablesaw.plotly.api;
 
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
@@ -51,4 +52,32 @@ public class TimeSeriesPlot {
         return new Figure(layout, trace);
     }
 
+    public static Figure create(String title, String xTitle, DateTimeColumn xCol, String yTitle, NumberColumn<?> yCol) {
+        Layout layout = Layout.builder(title, xTitle, yTitle).build();
+        ScatterTrace trace = ScatterTrace.builder(xCol, yCol)
+                .mode(ScatterTrace.Mode.LINE)
+                .build();
+        return new Figure(layout, trace);
+    }
+
+    /**
+     * Creates a time series where the x values are from a DateTimeColumn, rather than a DateColumn
+     * @param title                 The title of the plot
+     * @param table                 The table containing the source data
+     * @param dateTimeColumnName    The name of a DateTimeColumn
+     * @param numberColumnName      The name of a NumberColumn
+     * @return                      The figure to be displayed
+     */
+    public static Figure createDateTimeSeries(String title, Table table, String dateTimeColumnName, String numberColumnName) {
+
+        DateTimeColumn xCol = table.dateTimeColumn(dateTimeColumnName);
+        NumberColumn<?> yCol = table.numberColumn(numberColumnName);
+
+        Layout layout = Layout.builder(title, xCol.name(), yCol.name()).build();
+
+        ScatterTrace trace = ScatterTrace.builder(xCol, yCol)
+                .mode(ScatterTrace.Mode.LINE)
+                .build();
+        return new Figure(layout, trace);
+    }
 }
