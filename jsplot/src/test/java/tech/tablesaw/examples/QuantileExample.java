@@ -14,34 +14,17 @@
 
 package tech.tablesaw.examples;
 
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
-import tech.tablesaw.plotly.components.Figure;
-import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.ScatterTrace;
+import tech.tablesaw.plotly.api.QuantilePlot;
 
 /**
- *
+ *  Illustrates how to create a quantile plot for visualizing a distribution
  */
 public class QuantileExample {
 
     public static void main(String[] args) throws Exception {
         Table baseball = Table.read().csv("../data/baseball.csv");
-        NumberColumn<?> xCol = baseball.nCol("BA");
-
-        double[] x = new double[xCol.size()];
-
-        for (int i = 0; i < x.length; i++) {
-            x[i] = i / (float) x.length;
-        }
-
-        NumberColumn<?> copy = xCol.copy();
-        copy.sortAscending();
-
-        ScatterTrace trace = ScatterTrace.builder(x, copy.asDoubleArray()).build();
-
-        Layout layout = Layout.builder().title("Distribution of team batting averages").build();
-        Plot.show(new Figure(layout, trace));
+        Plot.show(QuantilePlot.create("Distribution of team batting averages", baseball, "BA"));
     }
 }
