@@ -14,27 +14,7 @@
 
 package tech.tablesaw.api;
 
-import java.nio.ByteBuffer;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
@@ -53,6 +33,26 @@ import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.columns.temporal.TemporalFillers;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingLongComparator;
+
+import java.nio.ByteBuffer;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
@@ -96,6 +96,23 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             column.append(date);
         }
         return column;
+    }
+
+    @Override
+    public DateTimeColumn plus(long amountToAdd, ChronoUnit unit) {
+        DateTimeColumn newColumn = emptyCopy();
+        newColumn.setName(temporalColumnName(this, amountToAdd, unit));
+        DateTimeColumn column1 = this;
+
+        for (int r = 0; r < column1.size(); r++) {
+            long packedDateTime = column1.getLongInternal(r);
+            if (packedDateTime == DateTimeColumnType.missingValueIndicator()) {
+                newColumn.appendMissing();
+            } else {
+                newColumn.appendInternal(PackedLocalDateTime.plus(packedDateTime, amountToAdd, unit));
+            }
+        }
+        return newColumn;
     }
 
     public static DateTimeColumn create(String name, LocalDateTime[] data) {

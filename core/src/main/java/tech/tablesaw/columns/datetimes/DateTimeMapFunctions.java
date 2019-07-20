@@ -14,32 +14,7 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfMonth;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfWeek;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getHour;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinute;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinuteOfDay;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMonthValue;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getQuarter;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecondOfDay;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getWeekOfYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.monthsUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.pack;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.yearsUntil;
-import static tech.tablesaw.columns.instant.PackedInstant.daysUntil;
-import static tech.tablesaw.columns.instant.PackedInstant.hoursUntil;
-import static tech.tablesaw.columns.instant.PackedInstant.minutesUntil;
-import static tech.tablesaw.columns.instant.PackedInstant.weeksUntil;
-
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.UnsupportedTemporalTypeException;
-
 import com.google.common.base.Strings;
-
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.IntColumn;
@@ -51,6 +26,13 @@ import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.temporal.TemporalMapFunctions;
 import tech.tablesaw.columns.times.TimeColumnType;
+
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.UnsupportedTemporalTypeException;
+
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
 
 public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime> {
 
@@ -163,11 +145,59 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
             if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(StringColumnType.missingValueIndicator());
             } else {
-                String yq = String.valueOf(getYear(c1)) + "-" + getQuarter(c1);
+                String yq = getYear(c1) + "-" + getQuarter(c1);
                 newColumn.append(yq);
             }
         }
         return newColumn;
+    }
+
+    @Override
+    DateTimeColumn plus(long amountToAdd, ChronoUnit unit);
+
+    @Override
+    default DateTimeColumn plusYears(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.YEARS);
+    }
+
+    @Override
+    default DateTimeColumn plusMonths(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.MONTHS);
+    }
+
+    @Override
+    default DateTimeColumn plusWeeks(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.WEEKS);
+    }
+
+    @Override
+    default DateTimeColumn plusDays(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.DAYS);
+    }
+
+    @Override
+    default DateTimeColumn plusHours(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.HOURS);
+    }
+
+    @Override
+    default DateTimeColumn plusMinutes(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.MINUTES);
+    }
+
+    @Override
+    default DateTimeColumn plusSeconds(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.SECONDS);
+    }
+
+    @Override
+    default DateTimeColumn plusMillis(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.MILLIS);
+    }
+
+    @Override
+    default DateTimeColumn plusMicros(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.MICROS);
     }
 
     /**
@@ -398,5 +428,4 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
     default LongColumn timeWindow(ChronoUnit unit, int n) {
         return timeWindow(unit, n, min());
     }
-
 }

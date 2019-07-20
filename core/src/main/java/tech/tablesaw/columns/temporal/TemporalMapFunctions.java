@@ -14,19 +14,17 @@
 
 package tech.tablesaw.columns.temporal;
 
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.asLocalDateTime;
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.booleans.BooleanColumnType;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
 
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.booleans.BooleanColumnType;
-import tech.tablesaw.columns.instant.InstantColumnType;
-import tech.tablesaw.columns.instant.PackedInstant;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.asLocalDateTime;
 
 public interface TemporalMapFunctions<T extends Temporal> extends TemporalColumn<T> {
 
@@ -80,21 +78,7 @@ public interface TemporalMapFunctions<T extends Temporal> extends TemporalColumn
         return newColumn;
     }
     
-    default Column<T> plus(long amountToAdd, ChronoUnit unit) {
-        TemporalColumn<T> newColumn = emptyCopy();
-        newColumn.setName(temporalColumnName(this, amountToAdd, unit));
-        TemporalColumn<T> column1 = this;
-
-        for (int r = 0; r < column1.size(); r++) {
-            long packedDateTime = column1.getLongInternal(r);
-            if (packedDateTime == InstantColumnType.missingValueIndicator()) {
-                newColumn.appendMissing();
-            } else {
-                newColumn.appendInternal(PackedInstant.plus(packedDateTime, amountToAdd, unit));
-            }
-        }
-        return newColumn;
-    }
+    Column<T> plus(long amountToAdd, ChronoUnit unit);
 
     default Column<T> plusYears(long amountToAdd) {
         return plus(amountToAdd, ChronoUnit.YEARS);
