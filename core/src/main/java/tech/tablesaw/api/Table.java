@@ -14,23 +14,9 @@
 
 package tech.tablesaw.api;
 
-import static java.util.stream.Collectors.toList;
-import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
-import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
-
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import it.unimi.dsi.fastutil.ints.IntArrays;
@@ -56,6 +42,19 @@ import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
+import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
+import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
@@ -1013,6 +1012,20 @@ public class Table extends Relation implements Iterable<Row> {
      * the counts for each grouping column value
      */
     public Table countBy(CategoricalColumn<?> groupingColumn) {
+        return groupingColumn.countByCategory();
+    }
+
+    /**
+     * Returns a table containing two columns, the grouping column, and a column named "Count" that contains
+     * the counts for each grouping column value
+     *
+     * @param categoricalColumnName The name of a CategoricalColumn in this table
+     * @return  A table containing counts of rows grouped by the categorical column
+     * @throws  ClassCastException if the categoricalColumnName parameter is the name of a column that does not
+     *      * implement categorical
+     */
+    public Table countBy(String categoricalColumnName)  {
+        CategoricalColumn<?> groupingColumn = categoricalColumn(categoricalColumnName);
         return groupingColumn.countByCategory();
     }
 

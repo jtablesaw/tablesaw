@@ -14,29 +14,25 @@
 
 package tech.tablesaw.api;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.TestDataUtil;
+import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.selection.Selection;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 
-import tech.tablesaw.TestDataUtil;
-import tech.tablesaw.columns.strings.StringColumnFormatter;
-import tech.tablesaw.selection.Selection;
-
-public class StringColumnTest {
+class StringColumnTest {
 
     private final StringColumn column = StringColumn.create("testing");
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         column.append("Value 1");
         column.append("Value 2");
         column.append("Value 3");
@@ -46,7 +42,7 @@ public class StringColumnTest {
 /*
 TODO: fix
     @Test
-    public void testSummarizeIf() {
+    void testSummarizeIf() {
         double result = column.summarizeIf(
                 column.endsWith("3").or(column.endsWith("4")),
                 count);
@@ -58,13 +54,13 @@ TODO: fix
 */
 
     @Test
-    public void testAppendObj2() {
+    void testAppendObj2() {
         final StringColumn sc = StringColumn.create("sc", Arrays.asList("a", "b", "c", "a"));
         assertArrayEquals(sc.asList().toArray(), sc.asObjectArray());
     }
 
     @Test
-    public void testForNulls() {
+    void testForNulls() {
         String[] array1 = {"1", "2", "3", "4", null};
         Table table1 = Table.create("table1", StringColumn.create("id", array1));
         assertEquals("", table1.stringColumn("id").get(4));
@@ -75,7 +71,7 @@ TODO: fix
     }
 
     @Test
-    public void testAppendObj() {
+    void testAppendObj() {
         StringColumn column = StringColumn.create("testing");
         column.appendObj("Value 1");
         column.appendObj(null);
@@ -84,14 +80,14 @@ TODO: fix
     }
     
     @Test
-    public void testConditionalSet() {
+    void testConditionalSet() {
         column.set(column.isEqualTo("Value 4"), "no Value");
         assertTrue(column.contains("no Value"));
         assertFalse(column.contains("Value 4"));
     }
 
     @Test
-    public void lag() {
+    void lag() {
         StringColumn c1 = column.lag(1);
         Table t = Table.create("Test");
         t.addColumns(column, c1);
@@ -101,7 +97,7 @@ TODO: fix
     }
 
     @Test
-    public void lag2() {
+    void lag2() {
         StringColumn c1 = column.lag(-1);
         Table t = Table.create("Test");
         t.addColumns(column, c1);
@@ -111,7 +107,7 @@ TODO: fix
     }
 
     @Test
-    public void lead() {
+    void lead() {
         StringColumn c1 = column.lead(1);
         Table t = Table.create("Test");
         t.addColumns(column, c1);
@@ -121,58 +117,58 @@ TODO: fix
     }
 
     @Test
-    public void testSelectWhere() {
+    void testSelectWhere() {
         StringColumn result = column.where(column.equalsIgnoreCase("VALUE 1"));
         assertEquals(1, result.size());
     }
 
     @Test
-    public void testDefaultReturnValue() {
+    void testDefaultReturnValue() {
         assertEquals(-1, column.firstIndexOf("test"));
     }
 
     @Test
-    public void testType() {
+    void testType() {
         assertEquals(ColumnType.STRING, column.type());
     }
 
     @Test
-    public void testGetString() {
+    void testGetString() {
         assertEquals("Value 2", column.getString(1));
     }
 
     @Test
-    public void testSize() {
+    void testSize() {
         assertEquals(4, column.size());
     }
 
     @Test
-    public void testGetDummies() {
+    void testGetDummies() {
         List<BooleanColumn> dummies = column.getDummies();
         assertEquals(4, dummies.size());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertEquals("String column: testing", column.toString());
     }
 
     @Test
-    public void testMax() {
+    void testMax() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
         assertEquals("Wyoming", stringColumn.top(5).get(0));
     }
 
     @Test
-    public void testMin() {
+    void testMin() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
         assertEquals("Alabama", stringColumn.bottom(5).get(0));
     }
 
     @Test
-    public void testStartsWith() {
+    void testStartsWith() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
 
@@ -188,7 +184,7 @@ TODO: fix
     }
 
     @Test
-    public void testFormattedPrinting() {
+    void testFormattedPrinting() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
 
@@ -199,7 +195,7 @@ TODO: fix
     }
 
     @Test
-    public void testSelectWithFilter() {
+    void testSelectWithFilter() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
 
@@ -212,7 +208,7 @@ TODO: fix
     }
 
     @Test
-    public void testIsNotEqualTo() {
+    void testIsNotEqualTo() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
 
@@ -224,7 +220,7 @@ TODO: fix
     }
 
     @Test
-    public void testColumnEqualIgnoringCase() {
+    void testColumnEqualIgnoringCase() {
         StringColumn other = column.copy();
         other.set(1, "Some other thing");
         other.set(2, other.get(2).toUpperCase());
@@ -240,7 +236,7 @@ TODO: fix
     }
 
     @Test
-    public void testIsEqualTo() {
+    void testIsEqualTo() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
         stringColumn.append("Alabama");  // so we have two entries
@@ -257,7 +253,7 @@ TODO: fix
     }
 
     @Test
-    public void testIsNotEqualTo2() {
+    void testIsNotEqualTo2() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
 
@@ -268,7 +264,7 @@ TODO: fix
     }
 
     @Test
-    public void testIsIn() {
+    void testIsIn() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
         StringColumn selection = stringColumn.where(stringColumn.isIn("Alabama", "Texas"));
@@ -278,7 +274,7 @@ TODO: fix
     }
 
     @Test
-    public void testIsNotIn() {
+    void testIsNotIn() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
         StringColumn selection = stringColumn.where(stringColumn.isNotIn("Alabama", "Texas"));
@@ -289,7 +285,7 @@ TODO: fix
     }
 
     @Test
-    public void testToList() {
+    void testToList() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
         List<String> states = stringColumn.asList();
@@ -297,7 +293,7 @@ TODO: fix
     }
 
     @Test
-    public void testFormatting() {
+    void testFormatting() {
         String[] names = {"John White", "George Victor"};
         StringColumn nameColumn = StringColumn.create("names", names);
         StringColumn formatted = nameColumn.format("Name: %s");
@@ -305,7 +301,7 @@ TODO: fix
     }
 
     @Test
-    public void testDistance() {
+    void testDistance() {
         String[] words = {"canary", "banana", "island", "reggae"};
         String[] words2 = {"cancel", "bananas", "islander", "calypso"};
         StringColumn wordColumn = StringColumn.create("words", words);
@@ -316,7 +312,7 @@ TODO: fix
     }
 
     @Test
-    public void testCommonSuffix() {
+    void testCommonSuffix() {
         String[] words = {"running", "icecube", "regular", "reggae"};
         String[] words2 = {"rowing", "cube", "premium", "place"};
         StringColumn wordColumn = StringColumn.create("words", words);
@@ -328,7 +324,7 @@ TODO: fix
     }
 
     @Test
-    public void testCommonPrefix() {
+    void testCommonPrefix() {
         String[] words = {"running", "icecube", "back"};
         String[] words2 = {"rowing", "iceland", "backup"};
         StringColumn wordColumn = StringColumn.create("words", words);
@@ -340,7 +336,7 @@ TODO: fix
     }
 
     @Test
-    public void testPadStart() {
+    void testPadStart() {
         String[] words = {"running", "icecube", "back"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.padStart(8, ' ');
@@ -350,7 +346,7 @@ TODO: fix
     }
 
     @Test
-    public void testPadEnd() {
+    void testPadEnd() {
         String[] words = {"running", "icecube", "back"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.padEnd(8, 'X');
@@ -360,7 +356,37 @@ TODO: fix
     }
 
     @Test
-    public void testSubstring() {
+    void testParseInt() {
+        String[] values = {"4", "72", "132"};
+        StringColumn wordColumn = StringColumn.create("values", values);
+        IntColumn result = wordColumn.parseInt();
+        assertEquals(result.get(0), 4);
+        assertEquals(result.get(1), 72);
+        assertEquals(result.get(2), 132);
+    }
+
+    @Test
+    void testParseDouble() {
+        String[] values = {"0.4", "0.72", "1.132"};
+        StringColumn wordColumn = StringColumn.create("values", values);
+        DoubleColumn result = wordColumn.parseDouble();
+        assertEquals(result.get(0), 0.4);
+        assertEquals(result.get(1), 0.72);
+        assertEquals(result.get(2), 1.132);
+    }
+
+    @Test
+    void testParseFloat() {
+        String[] values = {"0.4", "0.72", "1.132"};
+        StringColumn wordColumn = StringColumn.create("values", values);
+        FloatColumn result = wordColumn.parseFloat();
+        assertEquals(result.get(0), 0.4f);
+        assertEquals(result.get(1), 0.72f);
+        assertEquals(result.get(2), 1.132f);
+    }
+
+    @Test
+    void testSubstring() {
         String[] words = {"running", "icecube", "back"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.substring(3);
@@ -370,7 +396,7 @@ TODO: fix
     }
 
     @Test
-    public void testSubstring2() {
+    void testSubstring2() {
         String[] words = {"running", "icecube", "back"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.substring(1,3);
@@ -380,7 +406,7 @@ TODO: fix
     }
 
     @Test
-    public void testReplaceFirst() {
+    void testReplaceFirst() {
         String[] words = {"running", "run run run"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.replaceFirst("run","walk");
@@ -389,7 +415,7 @@ TODO: fix
     }
 
     @Test
-    public void testReplaceAll() {
+    void testReplaceAll() {
         String[] words = {"running", "run run run"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.replaceAll("run","walk");
@@ -398,7 +424,7 @@ TODO: fix
     }
 
     @Test
-    public void testReplaceAll2() {
+    void testReplaceAll2() {
         String[] words = {"running", "run run run"};
         String[] regex = {"n", "g"};
         StringColumn wordColumn = StringColumn.create("words", words);
@@ -408,7 +434,7 @@ TODO: fix
     }
 
     @Test
-    public void testJoin() {
+    void testJoin() {
         String[] words = {"running", "run"};
         String[] words2 = {"walking", "walk"};
         String[] words3 = {"swimming", "swim"};
@@ -421,7 +447,7 @@ TODO: fix
     }
 
     @Test
-    public void testTrim() {
+    void testTrim() {
         String[] words = {" running ", " run run run "};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.trim();
@@ -430,7 +456,7 @@ TODO: fix
     }
 
     @Test
-    public void testUpperCase() {
+    void testUpperCase() {
         String[] words = {"running", "run run run"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.upperCase();
@@ -439,7 +465,7 @@ TODO: fix
     }
 
     @Test
-    public void testLowerCase() {
+    void testLowerCase() {
         String[] words = {"RUNNING", "RUN RUN RUN"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.lowerCase();
@@ -448,7 +474,7 @@ TODO: fix
     }
 
     @Test
-    public void testAbbreviate() {
+    void testAbbreviate() {
         String[] words = {"running", "Stop Breaking Down", "Backwards Writing"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.abbreviate(10);
@@ -458,7 +484,7 @@ TODO: fix
     }
 
     @Test
-    public void tokenizeAndSort() {
+    void tokenizeAndSort() {
         String[] words = {"Stop Breaking Down", "Backwards Writing"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.tokenizeAndSort();
@@ -467,7 +493,7 @@ TODO: fix
     }
 
     @Test
-    public void tokenizeAndSort1() {
+    void tokenizeAndSort1() {
         String[] words = {"Stop,Breaking,Down", "Writing Backwards"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.tokenizeAndSort(",");
@@ -476,7 +502,7 @@ TODO: fix
     }
 
     @Test
-    public void tokenizeAndRemoveDuplicates() {
+    void tokenizeAndRemoveDuplicates() {
         String[] words = {"Stop Breaking Stop Down", "walk run run"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.tokenizeAndRemoveDuplicates(" ");
@@ -485,7 +511,7 @@ TODO: fix
     }
 
     @Test
-    public void chainMaps() {
+    void chainMaps() {
         String[] words = {"Stop Breaking Stop Down", "walk run run"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.tokenizeAndRemoveDuplicates(" ").tokenizeAndSort();
@@ -494,7 +520,7 @@ TODO: fix
     }
 
     @Test
-    public void chainMaps1() {
+    void chainMaps1() {
         String[] words = {"foo", "bar"};
         StringColumn wordColumn = StringColumn.create("words", words);
         StringColumn result = wordColumn.concatenate(" bam");
@@ -503,7 +529,7 @@ TODO: fix
     }
 
     @Test
-    public void asDoubleColumn() {
+    void asDoubleColumn() {
         String[] words = {"foo", "bar", "larry", "foo", "lion", "ben", "tiger", "bar"};
         StringColumn wordColumn = StringColumn.create("words", words);
         DoubleColumn result = wordColumn.asDoubleColumn();
@@ -511,7 +537,7 @@ TODO: fix
     }
 
     @Test
-    public void asDoubleArray() {
+    void asDoubleArray() {
         String[] words = {"foo", "bar", "larry", "foo", "lion", null, "ben", "tiger", "bar"};
         StringColumn wordColumn = StringColumn.create("words", words);
         double[] result = wordColumn.asDoubleArray();
@@ -519,7 +545,7 @@ TODO: fix
     }
 
     @Test
-    public void getDouble() {
+    void getDouble() {
         String[] words = {"foo", "bar", "larry", "foo", "lion", null, "ben", "tiger", "bar"};
         StringColumn wordColumn = StringColumn.create("words", words);
         double[] expected = new double[] { 0.0, 1.0, 2.0, 0.0, 3.0, 4.0, 5.0, 6.0, 1.0 };
@@ -531,7 +557,7 @@ TODO: fix
     }
 
     @Test
-    public void countUniqueSetAfterCreateByteDict() {
+    void countUniqueSetAfterCreateByteDict() {
         StringColumn col = StringColumn.create("col1", 2);
         assertEquals(1, col.countUnique(), "Wrong number of unique values after StringColumn.create");
         assertEquals(2, col.countMissing(), "Wrong number of missing values after StringColumn.create");
@@ -545,7 +571,7 @@ TODO: fix
     }
 
     @Test
-    public void countUniqueSetAfterAppendByteDict() {
+    void countUniqueSetAfterAppendByteDict() {
         StringColumn col = StringColumn.create("col1");
         assertEquals(0, col.countUnique(), "Wrong number of unique values after StringColumn.create");
         assertEquals(0, col.countMissing(), "Wrong number of missing values after StringColumn.create");
@@ -563,7 +589,7 @@ TODO: fix
     }
 
     @Test
-    public void countUniqueSetAfterCreateShortDict() {
+    void countUniqueSetAfterCreateShortDict() {
         int size = Byte.MAX_VALUE - Byte.MIN_VALUE + 1;
 		StringColumn col = StringColumn.create("col1", size);
         assertEquals(1, col.countUnique(), "Wrong number of unique values after StringColumn.create");
@@ -579,7 +605,7 @@ TODO: fix
     }
 
     @Test
-    public void countUniqueSetAfterAppendShortDict() {
+    void countUniqueSetAfterAppendShortDict() {
         StringColumn col = StringColumn.create("col1");
         assertEquals(0, col.countUnique(), "Wrong number of unique values after StringColumn.create");
         assertEquals(0, col.countMissing(), "Wrong number of missing values after StringColumn.create");
@@ -590,7 +616,7 @@ TODO: fix
         assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
         assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
         for (int i = size; --i >= 0; ) {
-            col.set(i, "A" + Integer.toString(i));
+            col.set(i, "A" + i);
         }
         assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
         assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
@@ -600,7 +626,7 @@ TODO: fix
     }
 
     @Test
-    public void countUniqueSetAfterCreateIntDict() {
+    void countUniqueSetAfterCreateIntDict() {
         int size = Short.MAX_VALUE - Short.MIN_VALUE + 1;
 		StringColumn col = StringColumn.create("col1", size);
         assertEquals(1, col.countUnique(), "Wrong number of unique values after StringColumn.create");
@@ -616,7 +642,7 @@ TODO: fix
     }
 
     @Test
-    public void countUniqueSetAfterAppendIntDict() {
+    void countUniqueSetAfterAppendIntDict() {
         StringColumn col = StringColumn.create("col1");
         assertEquals(0, col.countUnique(), "Wrong number of unique values after StringColumn.create");
         assertEquals(0, col.countMissing(), "Wrong number of missing values after StringColumn.create");
@@ -627,7 +653,7 @@ TODO: fix
         assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
         assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");
         for (int i = size; --i >= 0; ) {
-            col.set(i, "A" + Integer.toString(i));
+            col.set(i, "A" + i);
         }
         assertEquals(size, col.countUnique(), "Wrong number of unique values after Column.set");
         assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.set");

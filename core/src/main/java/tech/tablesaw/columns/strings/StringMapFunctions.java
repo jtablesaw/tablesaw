@@ -18,6 +18,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
@@ -145,11 +146,56 @@ public interface StringMapFunctions extends Column<String> {
         return newColumn;
     }
 
+    /**
+     * Returns an IntColumn containing all the values of this string column as integers,
+     * assuming all the values are stringified ints in the first place. Otherwise an exception is thrown
+     *
+     * @return  An IntColumn containing ints parsed from the strings in this column
+     */
     default IntColumn parseInt() {
-
         IntColumn newColumn = IntColumn.create(name() + "[parsed]");
-        for (int r = 0; r < size(); r++) {
-            newColumn.append(Integer.parseInt(getString(r)));
+        for (String s : this) {
+            if (StringColumn.valueIsMissing(s)) {
+                newColumn.appendMissing();
+            } else {
+                newColumn.append(Integer.parseInt(s));
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns an Double containing all the values of this string column as doubles,
+     * assuming all the values are stringified doubles in the first place. Otherwise an exception is thrown
+     *
+     * @return  A DoubleColumn containing doubles parsed from the strings in this column
+     */
+    default DoubleColumn parseDouble() {
+        DoubleColumn newColumn = DoubleColumn.create(name() + "[parsed]");
+        for (String s : this) {
+            if (StringColumn.valueIsMissing(s)) {
+                newColumn.appendMissing();
+            } else {
+                newColumn.append(Double.parseDouble(s));
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns an Float containing all the values of this string column as floats,
+     * assuming all the values are stringified floats in the first place. Otherwise an exception is thrown
+     *
+     * @return  A FloatColumn containing floats parsed from the strings in this column
+     */
+    default FloatColumn parseFloat() {
+        FloatColumn newColumn = FloatColumn.create(name() + "[parsed]");
+        for (String s : this) {
+            if (StringColumn.valueIsMissing(s)) {
+                newColumn.appendMissing();
+            } else {
+                newColumn.append(Float.parseFloat(s));
+            }
         }
         return newColumn;
     }

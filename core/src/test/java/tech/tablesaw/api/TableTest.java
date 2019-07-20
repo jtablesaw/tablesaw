@@ -52,13 +52,13 @@ public class TableTest {
     private DoubleColumn numberColumn =  DoubleColumn.create("d1");
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         table = Table.create("t");
         table.addColumns(f1);
     }
 
     @Test
-    public void testSummarize() throws Exception {
+    void testSummarize() throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
         Table result = table.summarize("Injuries", mean, stdDev).by("State");
         assertEquals(49, result.rowCount());
@@ -67,12 +67,13 @@ public class TableTest {
     }
 
     @Test
-    public void testColumn() {
+    void testColumn() {
         Column<?> column1 = table.column(0);
         assertNotNull(column1);
     }
 
-    public void testColumnSizeCheck() {
+    @Test
+    void testColumnSizeCheck() {
         assertThrows(IllegalArgumentException.class, () -> {
             double[] a = {3, 4};
             double[] b = {3, 4, 5};
@@ -83,7 +84,7 @@ public class TableTest {
     }
 
     @Test
-    public void testRowWiseAddition() {
+    void testRowWiseAddition() {
         double[] a = {3, 4, 5};
         double[] b = {3, 4, 5};
         double[] c = {3, 4, 5};
@@ -103,7 +104,7 @@ public class TableTest {
     }
 
     @Test
-    public void testRowWiseAddition2() {
+    void testRowWiseAddition2() {
         double[] a = {3, 4, 5};
         double[] b = {3, 4, 5};
         double[] c = {3, 4, 5};
@@ -123,7 +124,7 @@ public class TableTest {
     }
 
     @Test
-    public void testRemoveColumns() {
+    void testRemoveColumns() {
         StringColumn sc = StringColumn.create("0");
         StringColumn sc1 = StringColumn.create("1");
         StringColumn sc2 = StringColumn.create("2");
@@ -137,7 +138,7 @@ public class TableTest {
     }
 
     @Test
-    public void printEmptyTable() {
+    void printEmptyTable() {
         Table t = Table.create("Test");
         assertEquals("Test" + LINE_END + LINE_END, t.print());
 
@@ -147,7 +148,7 @@ public class TableTest {
     }
 
     @Test
-    public void testDropDuplicateRows() throws Exception {
+    void testDropDuplicateRows() throws Exception {
         Table t1 = Table.read().csv("../data/bush.csv");
         int rowCount = t1.rowCount();
         Table t2 = Table.read().csv("../data/bush.csv");
@@ -159,7 +160,7 @@ public class TableTest {
     }
 
     @Test
-    public void testMissingValueCounts() {
+    void testMissingValueCounts() {
         StringColumn c1 = StringColumn.create("SC");
         DoubleColumn c2 = DoubleColumn.create("NC");
         DateColumn c3 = DateColumn.create("DC");
@@ -168,7 +169,7 @@ public class TableTest {
     }
 
     @Test
-    public void testFullCopy() {
+    void testFullCopy() {
         numberColumn.append(2.23424);
         Table t = Table.create("test");
         t.addColumns(numberColumn);
@@ -179,13 +180,13 @@ public class TableTest {
     }
 
     @Test
-    public void testColumnCount() {
+    void testColumnCount() {
         assertEquals(0, Table.create("t").columnCount());
         assertEquals(1, table.columnCount());
     }
 
     @Test
-    public void testLast() throws IOException {
+    void testLast() throws IOException {
         Table t = Table.read().csv("../data/bush.csv");
         t = t.sortOn("date");
         Table t1 = t.last(3);
@@ -194,14 +195,14 @@ public class TableTest {
     }
 
     @Test
-    public void testSelect1() throws Exception {
+    void testSelect1() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
         Table t1 = t.select(t.column(1), t.column(2));
         assertEquals(2, t1.columnCount());
     }
 
     @Test
-    public void testSelect2() throws Exception {
+    void testSelect2() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
         Table t1 = t.select(t.column(0), t.column(1), t.column(2), t.dateColumn(0).year());
         assertEquals(4, t1.columnCount());
@@ -209,14 +210,14 @@ public class TableTest {
     }
 
     @Test
-    public void testSampleSplit() throws Exception {
+    void testSampleSplit() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
         Table[] results = t.sampleSplit(.75);
         assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
     }
     
    @Test
-    public void testStratifiedSampleSplit() throws Exception {
+    void testStratifiedSampleSplit() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
         Table[] results = t.stratifiedSampleSplit(t.stringColumn("who"), .75);
         assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
@@ -227,7 +228,7 @@ public class TableTest {
     }
 
     @Test
-    public void testDoWithEachRow() throws Exception {
+    void testDoWithEachRow() throws Exception {
         Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes()).first(10);
         Short[] ratingsArray = {53, 58};
         List<Short> ratings = Lists.asList((short) 52, ratingsArray);
@@ -241,7 +242,7 @@ public class TableTest {
     }
 
     @Test
-    public void testDoWithEachRow2() throws Exception {
+    void testDoWithEachRow2() throws Exception {
         Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
         int dateTarget = PackedLocalDate.pack(LocalDate.of(2002, 1, 1));
         double ratingTarget = 75;
@@ -257,7 +258,7 @@ public class TableTest {
     }
 
     @Test
-    public void testDetect() throws Exception {
+    void testDetect() throws Exception {
         Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
         int dateTarget = PackedLocalDate.pack(LocalDate.of(2002, 1, 1));
         double ratingTarget = 75;
@@ -268,7 +269,7 @@ public class TableTest {
     }
 
     @Test
-    public void testRowToString() throws Exception {
+    void testRowToString() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
         Row row = new Row(t);
         row.at(0);
@@ -279,14 +280,14 @@ public class TableTest {
     }
 
     @Test
-    public void testPairs() throws Exception {
+    void testPairs() throws Exception {
         Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
         PairChild pairs = new PairChild();
         t.doWithRows(pairs);
     }
 
     @Test
-    public void testPairs2() throws Exception {
+    void testPairs2() throws Exception {
         Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
 
         Table.Pairs runningAvg =  new Table.Pairs() {
@@ -310,7 +311,7 @@ public class TableTest {
     }
 
     @Test
-    public void stepWithRows() throws Exception {
+    void stepWithRows() throws Exception {
         Table t = Table.read()
                 .csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes())
                 .first(6);
@@ -340,7 +341,7 @@ public class TableTest {
     }
 
     @Test
-    public void testRollWithNrows2() throws Exception {
+    void testRollWithNrows2() throws Exception {
         Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes()).first(4);
         ShortColumn approval = t.shortColumn("approval");
 
@@ -371,7 +372,7 @@ public class TableTest {
     }
 
     @Test
-    public void testRowCount() {
+    void testRowCount() {
         assertEquals(0, table.rowCount());
         DoubleColumn floatColumn = this.f1;
         floatColumn.append(2f);
@@ -381,19 +382,19 @@ public class TableTest {
     }
 
     @Test
-    public void testAppend() {
+    void testAppend() {
         int appendedRows = appendRandomlyGeneratedColumn(table);
         assertTableColumnSize(table, f1, appendedRows);
     }
 
     @Test
-    public void testAppendEmptyTable() {
+    void testAppendEmptyTable() {
         appendEmptyColumn(table);
         assertTrue(table.isEmpty());
     }
 
     @Test
-    public void testAppendToNonEmptyTable() {
+    void testAppendToNonEmptyTable() {
         populateColumn(f1);
         assertFalse(table.isEmpty());
         int initialSize = table.rowCount();
@@ -402,7 +403,7 @@ public class TableTest {
     }
 
     @Test
-    public void testAppendEmptyTableToNonEmptyTable() {
+    void testAppendEmptyTableToNonEmptyTable() {
         populateColumn(f1);
         assertFalse(table.isEmpty());
         int initialSize = table.rowCount();
@@ -411,7 +412,7 @@ public class TableTest {
     }
 
     @Test
-    public void testAppendMultipleColumns() {
+    void testAppendMultipleColumns() {
         DoubleColumn column =  DoubleColumn.create("e1");
         table.addColumns(column);
         DoubleColumn first = f1.emptyCopy();
@@ -425,20 +426,20 @@ public class TableTest {
         assertTableColumnSize(table, column, secondColumnSize);
     }
 
-    public void testAppendNull() {
+    void testAppendNull() {
         assertThrows(NullPointerException.class, () -> {
             table.append(null);
         });
     }
 
-    public void testAppendTableWithNonExistingColumns() {
+    void testAppendTableWithNonExistingColumns() {
         assertThrows(IllegalStateException.class, () -> {
             Table tableToAppend = Table.create("wrong", numberColumn);
             table.append(tableToAppend);
         });
     }
 
-    public void testAppendTableWithAnotherColumnName() {
+    void testAppendTableWithAnotherColumnName() {
         assertThrows(IllegalStateException.class, () -> {
             DoubleColumn column =  DoubleColumn.create("42");
             Table tableToAppend = Table.create("wrong", column);
@@ -446,7 +447,7 @@ public class TableTest {
         });
     }
 
-    public void testAppendTableWithDifferentShape() {
+    void testAppendTableWithDifferentShape() {
         assertThrows(IllegalStateException.class, () -> {
             DoubleColumn column =  DoubleColumn.create("e1");
             table.addColumns(column);
@@ -458,7 +459,7 @@ public class TableTest {
     }
 
     @Test
-    public void testReplaceColumn() {
+    void testReplaceColumn() {
         DoubleColumn first =  DoubleColumn.create("c1", new double[]{1, 2, 3, 4, 5});
         DoubleColumn second =  DoubleColumn.create("c2", new double[]{6, 7, 8, 9, 10});
         DoubleColumn replacement =  DoubleColumn.create("c2", new double[]{10, 20, 30, 40, 50});
@@ -509,7 +510,7 @@ public class TableTest {
     }
 
     @Test
-    public void testAsMatrix() {
+    void testAsMatrix() {
         DoubleColumn first =  DoubleColumn.create("c1", new double[]{1L, 2L, 3L, 4L, 5L});
         DoubleColumn second =  DoubleColumn.create("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
         DoubleColumn third =  DoubleColumn.create("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
@@ -525,7 +526,7 @@ public class TableTest {
     }
 
     @Test
-    public void testRowSort() throws Exception {
+    void testRowSort() throws Exception {
         Table bush = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
 
         Comparator<Row> rowComparator = Comparator.comparingDouble(o -> o.getShort("approval"));
@@ -538,7 +539,7 @@ public class TableTest {
     }
 
     @Test
-    public void testIterable() throws Exception {
+    void testIterable() throws Exception {
         Table bush = Table.read().csv("../data/bush.csv");
         int rowNumber = 0;
         for (Row row : bush.first(10)) {
@@ -547,7 +548,21 @@ public class TableTest {
     }
 
     @Test
-    public void dropRangeStarting() throws IOException {
+    void testCountBy1() throws Exception {
+        Table bush = Table.read().csv("../data/bush.csv");
+        Table result = bush.countBy(bush.categoricalColumn("who"));
+        assertEquals(bush.categoricalColumn("who").countUnique(), result.rowCount());
+    }
+
+    @Test
+    void testCountBy2() throws Exception {
+        Table bush = Table.read().csv("../data/bush.csv");
+        Table result = bush.countBy("who");
+        assertEquals(bush.categoricalColumn("who").countUnique(), result.rowCount());
+    }
+
+    @Test
+    void dropRangeStarting() throws IOException {
         Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
         Table result = table.dropRange(20);
         assertEquals(table.rowCount() - 20, result.rowCount());
@@ -559,7 +574,7 @@ public class TableTest {
     }
 
     @Test
-    public void dropRangeEnding() throws IOException {
+    void dropRangeEnding() throws IOException {
         Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
         Table result = table.dropRange(-20);
         assertEquals(table.rowCount() - 20, result.rowCount());
@@ -571,7 +586,7 @@ public class TableTest {
     }    
 
     @Test
-    public void inRangeStarting() throws IOException {
+    void inRangeStarting() throws IOException {
         Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
         Table result = table.inRange(20);
         assertEquals(20, result.rowCount());
@@ -583,7 +598,7 @@ public class TableTest {
     }
 
     @Test
-    public void inRangeEnding() throws IOException {
+    void inRangeEnding() throws IOException {
         Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
         Table result = table.inRange(-20);
         assertEquals(20, result.rowCount());
