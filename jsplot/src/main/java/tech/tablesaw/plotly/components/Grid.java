@@ -23,6 +23,31 @@ public class Grid extends Component {
         }
         
     }
+
+    public enum XSide {
+        BOTTOM,
+        BOTTOM_PLOT,
+        TOP,
+        TOP_PLOT;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase().replaceAll("_", " ");
+        }
+    }
+
+    public enum YSide {
+        LEFT,
+        LEFT_PLOT,
+        RIGHT,
+        RIGHT_PLOT;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase().replaceAll("_", " ");
+        }
+    }
+
     public enum Pattern{
         INDEPENDENT,
         COUPLED;
@@ -75,6 +100,11 @@ public class Grid extends Component {
      */
     private final double yGap; // number between or equal to 0 and 1
 
+
+    private final XSide xSide;
+
+    private final YSide ySide;
+
     public Grid(GridBuilder gridBuilder) {
         this.rows = gridBuilder.rows;
         this.columns = gridBuilder.columns;
@@ -82,6 +112,8 @@ public class Grid extends Component {
         this.xGap = gridBuilder.xGap;
         this.yGap = gridBuilder.yGap;
         this.pattern = gridBuilder.pattern;
+        this.xSide = gridBuilder.xSide;
+        this.ySide = gridBuilder.ySide;
     }
 
 
@@ -107,6 +139,8 @@ public class Grid extends Component {
         context.put("columns", columns);
         context.put("rowOrder", rowOrder);
         context.put("pattern", pattern);
+        context.put("xSide", xSide);
+        context.put("ySide", ySide);
         return context;
     }
 
@@ -123,6 +157,10 @@ public class Grid extends Component {
         private double xGap = 100;
 
         private double yGap = 80;
+
+        private XSide xSide = XSide.BOTTOM;
+
+        private YSide ySide = YSide.LEFT;
 
         private RowOrder rowOrder = RowOrder.TOP_TO_BOTTOM;
         private Pattern pattern = Pattern.COUPLED;
@@ -181,6 +219,24 @@ public class Grid extends Component {
         public GridBuilder yGap(double yGap) {
             Preconditions.checkArgument(yGap >= 0 && yGap <= 1);
             this.yGap = yGap;
+            return this;
+        }
+
+        /**
+         * Sets where the y axis labels and titles go. "left" means the very left edge of the grid.
+         * "left plot" is the leftmost plot that each y axis is used in. "right" and "right plot" are similar.
+         */
+        public GridBuilder ySide(YSide ySide) {
+            this.ySide = ySide;
+            return this;
+        }
+
+        /**
+         * Sets where the x axis labels and titles go. "bottom" means the very bottom of the grid.
+         * "bottom plot" is the lowest plot that each x axis is used in. "top" and "top plot" are similar.
+         */
+        public GridBuilder xSide(XSide xSide) {
+            this.xSide = xSide;
             return this;
         }
 
