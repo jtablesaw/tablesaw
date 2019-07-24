@@ -199,7 +199,11 @@ public class FloatColumn extends NumberColumn<Float> {
     public Float[] asObjectArray() {
         final Float[] output = new Float[size()];
         for (int i = 0; i < size(); i++) {
-            output[i] = getFloat(i);
+            if (!isMissing(i)) {
+                output[i] = getFloat(i);
+            } else {
+                output[i] = null;
+            }
         }
         return output;
     }

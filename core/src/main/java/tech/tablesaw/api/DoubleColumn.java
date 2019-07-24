@@ -276,7 +276,11 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     public Double[] asObjectArray() {
         final Double[] output = new Double[size()];
         for (int i = 0; i < size(); i++) {
-            output[i] = getDouble(i);
+            if (!isMissing(i)) {
+                output[i] = getDouble(i);
+            } else {
+                output[i] = null;
+            }
         }
         return output;
     }

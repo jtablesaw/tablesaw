@@ -209,7 +209,11 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     public Integer[] asObjectArray() {
         final Integer[] output = new Integer[size()];
         for (int i = 0; i < size(); i++) {
-            output[i] = getInt(i);
+            if (!isMissing(i)) {
+                output[i] = getInt(i);
+            } else {
+                output[i] = null;
+            }
         }
         return output;
     }

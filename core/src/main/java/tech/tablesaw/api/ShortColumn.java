@@ -200,7 +200,11 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     public Short[] asObjectArray() {
         final Short[] output = new Short[size()];
         for (int i = 0; i < size(); i++) {
-            output[i] = getShort(i);
+            if (!isMissing(i)) {
+                output[i] = getShort(i);
+            } else {
+                output[i] = null;
+            }
         }
         return output;
     }

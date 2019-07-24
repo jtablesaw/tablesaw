@@ -245,7 +245,11 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     public Long[] asObjectArray() {
         final Long[] output = new Long[size()];
         for (int i = 0; i < size(); i++) {
-            output[i] = getLong(i);
+            if (!isMissing(i)) {
+                output[i] = getLong(i);
+            } else {
+                output[i] = null;
+            }
         }
         return output;
     }
