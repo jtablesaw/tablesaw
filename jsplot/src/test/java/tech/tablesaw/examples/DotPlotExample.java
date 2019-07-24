@@ -37,9 +37,7 @@ public class DotPlotExample {
         bush.addColumns(year);
         bush.dropWhere(bush.intColumn("year").isIn((Number)2001, (Number) 2002));
         Table summary = bush.summarize("approval", AggregateFunctions.mean).by("who", "year");
-
-        System.out.println(summary.structure().printAll());
-
+        
         Layout layout2 = Layout.builder()
                 .title("Mean approval ratings by agency and year for 2001 and 2002")
                 .build();
