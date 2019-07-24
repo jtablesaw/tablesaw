@@ -3,6 +3,7 @@ package tech.tablesaw.plotly.traces;
 import com.google.common.base.Preconditions;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumericColumn;
@@ -67,7 +68,7 @@ public class ScatterTrace extends AbstractTrace {
 
     private final Fill fill;
     private final String fillColor;
-    private final double[] y;
+    private final Object[] y;
     private final Object[] x;
     private final String[] text;
     private final Mode mode;
@@ -105,6 +106,10 @@ public class ScatterTrace extends AbstractTrace {
         return new ScatterBuilder(x, y);
     }
 
+    public static ScatterBuilder builder(NumericColumn<? extends Number> x, CategoricalColumn<?> y) {
+        return new ScatterBuilder(x, y);
+    }
+
     public static ScatterBuilder builder(TimeColumn x, NumericColumn<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
@@ -136,8 +141,8 @@ public class ScatterTrace extends AbstractTrace {
         Map<String, Object> context = super.getContext();
         context.put("variableName", "trace" + i);
         context.put("mode", mode);
-        context.put("x", dataAsString(x));
-        if (y != null) {
+        if (x != null && y != null) {
+            context.put("x", dataAsString(x));
             context.put("y", dataAsString(y));
         }
 
@@ -161,7 +166,7 @@ public class ScatterTrace extends AbstractTrace {
             context.put("increasing", increasing);
         }
         if (decreasing != null) {
-            context.put("increasing", decreasing);
+            context.put("decreasing", decreasing);
         }
         if (yAxis != null) {
             context.put("yAxis", yAxis);
@@ -228,7 +233,7 @@ public class ScatterTrace extends AbstractTrace {
         private String type = "scatter";
         private Mode mode = Mode.MARKERS;
         private final Object[] x;
-        private double[] y;
+        private Object[] y;
         private String[] text;
         private Marker marker;
         private YAxis yAxis;
@@ -271,16 +276,23 @@ public class ScatterTrace extends AbstractTrace {
 
         private ScatterBuilder(double[] x, double[] y) {
             Double[] x1 = new Double[x.length];
+            Double[] y1 = new Double[y.length];
             for (int i = 0; i < x1.length; i++) {
                 x1[i] = x[i];
+                y1[i] = y[i];
             }
             this.x = x1;
-            this.y = y;
+            this.y = y1;
         }
 
         private ScatterBuilder(Column<?> x, NumericColumn<? extends Number> y) {
             this.x = x.asObjectArray();
-            this.y = y.asDoubleArray();
+            this.y = y.asObjectArray();
+        }
+
+        private ScatterBuilder(NumericColumn<?> x, CategoricalColumn<?> y) {
+            this.x = x.asObjectArray();
+            this.y = y.asObjectArray();
         }
 
         private ScatterBuilder(Column<?> x,
@@ -297,17 +309,17 @@ public class ScatterTrace extends AbstractTrace {
 
         private ScatterBuilder(DateColumn x, NumericColumn<? extends Number> y) {
             this.x = x.asObjectArray();
-            this.y = y.asDoubleArray();
+            this.y = y.asObjectArray();
         }
 
         private ScatterBuilder(DateTimeColumn x, NumericColumn<? extends Number> y) {
             this.x = x.asObjectArray();
-            this.y = y.asDoubleArray();
+            this.y = y.asObjectArray();
         }
 
         private ScatterBuilder(TimeColumn x, NumericColumn<? extends Number> y) {
             this.x = x.asObjectArray();
-            this.y = y.asDoubleArray();
+            this.y = y.asObjectArray();
         }
 
         public ScatterBuilder mode(Mode mode) {
