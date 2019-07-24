@@ -19,7 +19,7 @@ public class Utils {
         for (int i = 0; i < data.length; i++) {
             Object o = data[i];
             builder.append("'");
-            builder.append(String.valueOf(o));
+            builder.append(o);
             builder.append("'");
             if (i < data.length - 1) {
                 builder.append(",");
