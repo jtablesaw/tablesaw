@@ -3,11 +3,7 @@ package tech.tablesaw.plotly.traces;
 import com.google.common.base.Preconditions;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.HoverLabel;
 import tech.tablesaw.plotly.components.Line;
@@ -90,28 +86,12 @@ public class ScatterTrace extends AbstractTrace {
         return new ScatterBuilder(x, y);
     }
 
-    public static ScatterBuilder builder(DateColumn x, NumericColumn<? extends Number> y) {
-        return new ScatterBuilder(x, y);
-    }
-
-    public static ScatterBuilder builder(Column<?> x, NumericColumn<? extends Number> y) {
+    public static ScatterBuilder builder(Column<?> x, Column<?> y) {
         return new ScatterBuilder(x, y);
     }
 
     public static ScatterBuilder builder(Column<?> x, NumericColumn<? extends Number> open, NumericColumn<? extends Number> high, NumericColumn<? extends Number> low, NumericColumn<? extends Number> close) {
         return new ScatterBuilder(x, open, high, low, close);
-    }
-
-    public static ScatterBuilder builder(DateTimeColumn x, NumericColumn<? extends Number> y) {
-        return new ScatterBuilder(x, y);
-    }
-
-    public static ScatterBuilder builder(NumericColumn<? extends Number> x, CategoricalColumn<?> y) {
-        return new ScatterBuilder(x, y);
-    }
-
-    public static ScatterBuilder builder(TimeColumn x, NumericColumn<? extends Number> y) {
-        return new ScatterBuilder(x, y);
     }
 
     private ScatterTrace(ScatterBuilder builder) {
@@ -141,8 +121,10 @@ public class ScatterTrace extends AbstractTrace {
         Map<String, Object> context = super.getContext();
         context.put("variableName", "trace" + i);
         context.put("mode", mode);
-        if (x != null && y != null) {
+        if (x != null) {
             context.put("x", dataAsString(x));
+        }
+        if (y != null) {
             context.put("y", dataAsString(y));
         }
 
@@ -172,6 +154,7 @@ public class ScatterTrace extends AbstractTrace {
             context.put("yAxis", yAxis);
         }
         context.put("marker", marker);
+
         context.put("showlegend", showLegend);
         if (!fill.equals(DEFAULT_FILL)) {
             context.put("fill", fill);
@@ -189,6 +172,14 @@ public class ScatterTrace extends AbstractTrace {
             context.put("text", dataAsString(text));
         }
         return context;
+    }
+
+    /**
+     * Make sure we have x and y values
+     */
+    private boolean checkData() {
+        return x != null &&
+                (y != null || high != null);
     }
 
     @Override
@@ -285,12 +276,7 @@ public class ScatterTrace extends AbstractTrace {
             this.y = y1;
         }
 
-        private ScatterBuilder(Column<?> x, NumericColumn<? extends Number> y) {
-            this.x = x.asObjectArray();
-            this.y = y.asObjectArray();
-        }
-
-        private ScatterBuilder(NumericColumn<?> x, CategoricalColumn<?> y) {
+        private ScatterBuilder(Column<?> x, Column<?> y) {
             this.x = x.asObjectArray();
             this.y = y.asObjectArray();
         }
@@ -305,21 +291,6 @@ public class ScatterTrace extends AbstractTrace {
             this.high = high.asDoubleArray();
             this.low = low.asDoubleArray();
             this.close = close.asDoubleArray();
-        }
-
-        private ScatterBuilder(DateColumn x, NumericColumn<? extends Number> y) {
-            this.x = x.asObjectArray();
-            this.y = y.asObjectArray();
-        }
-
-        private ScatterBuilder(DateTimeColumn x, NumericColumn<? extends Number> y) {
-            this.x = x.asObjectArray();
-            this.y = y.asObjectArray();
-        }
-
-        private ScatterBuilder(TimeColumn x, NumericColumn<? extends Number> y) {
-            this.x = x.asObjectArray();
-            this.y = y.asObjectArray();
         }
 
         public ScatterBuilder mode(Mode mode) {
