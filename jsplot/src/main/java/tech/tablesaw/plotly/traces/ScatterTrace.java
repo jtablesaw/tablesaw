@@ -174,14 +174,6 @@ public class ScatterTrace extends AbstractTrace {
         return context;
     }
 
-    /**
-     * Make sure we have x and y values
-     */
-    private boolean checkData() {
-        return x != null &&
-                (y != null || high != null);
-    }
-
     @Override
     public String asJavascript(int i) {
         Writer writer = new StringWriter();
