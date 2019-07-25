@@ -62,6 +62,8 @@ public class QQPlot {
                 .title(title)
                 .xAxis(Axis.builder().title(xTitle).build())
                 .yAxis(Axis.builder().title(yTitle).build())
+                .height(700)
+                .width(900)
                 .build();
         return new Figure(layout, trace1, trace2);
     }
