@@ -17,6 +17,7 @@ package tech.tablesaw.table;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.common.collect.ImmutableListMultimap;
 import java.util.List;
 
 import org.apache.commons.math3.stat.StatUtils;
@@ -86,5 +87,21 @@ public class TableSliceGroupTest {
         TableSliceGroup group = StandardTableSliceGroup.create(table, "who");
         List<Table> tables = group.asTableList();
         assertEquals(6, tables.size());
+    }
+
+    @Test
+    public void aggregate() {
+        TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
+        Table aggregated = group.aggregate("approval", exaggerate);
+        assertEquals(aggregated.rowCount(), group.size());
+    }
+
+    @Test
+    public void aggregateWithMultipleColumns() {
+        table.addColumns(table.categoricalColumn("approval").copy().setName("approval2"));
+        TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
+
+        Table aggregated = group.aggregate(ImmutableListMultimap.of("approval", exaggerate, "approval2", exaggerate));
+        assertEquals(aggregated.rowCount(), group.size());
     }
 }
