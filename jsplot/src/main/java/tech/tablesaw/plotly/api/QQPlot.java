@@ -1,6 +1,7 @@
 package tech.tablesaw.plotly.api;
 
 import com.google.common.base.Preconditions;
+import org.apache.commons.math3.stat.StatUtils;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Axis;
@@ -43,7 +44,17 @@ public class QQPlot {
 
         Preconditions.checkArgument(xData.length != 0, "x Data array is empty");
         Preconditions.checkArgument(yData.length != 0, "x Data array is empty");
-        Preconditions.checkArgument(xData.length == yData.length, "Current implementation requires both arrays have the same length");
+
+        if (xData.length != yData.length) {
+            double[] interpolatedData;
+            if (xData.length < yData.length) {
+                interpolatedData = interpolate(yData, xData.length);
+                yData = interpolatedData;
+            } else {
+                interpolatedData = interpolate(xData, yData.length);
+                xData = interpolatedData;
+            }
+        }
 
         Arrays.sort(xData);
         Arrays.sort(yData);
@@ -51,13 +62,17 @@ public class QQPlot {
         double max = Math.max(xData[xData.length - 1], yData[yData.length - 1]);
         double[] line = {min, max};
 
+        // Draw the 45 degree line indicating equal distributions
         ScatterTrace trace1 = ScatterTrace.builder(line, line)
                 .mode(ScatterTrace.Mode.LINE)
                 .name("y = x")
                 .build();
+
+        // Draw the actual data points
         ScatterTrace trace2 = ScatterTrace.builder(xData, yData)
                 .name("distributions")
                 .build();
+
         Layout layout = Layout.builder()
                 .title(title)
                 .xAxis(Axis.builder().title(xTitle).build())
@@ -66,5 +81,13 @@ public class QQPlot {
                 .width(900)
                 .build();
         return new Figure(layout, trace1, trace2);
+    }
+
+    private static double[] interpolate(double[] source, int size) {
+        double[] interpolatedData = new double[size];
+        for (int i = 0; i < size; i++) {
+            interpolatedData[i] = StatUtils.percentile(source, i + 1 /(double) size);
+        }
+        return interpolatedData;
     }
 }

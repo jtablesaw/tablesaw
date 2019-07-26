@@ -14,6 +14,7 @@
 
 package tech.tablesaw.examples;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.QQPlot;
@@ -26,5 +27,10 @@ public class QQPlotExample {
     public static void main(String[] args) throws Exception {
         Table baseball = Table.read().csv("../data/baseball.csv");
         Plot.show(QQPlot.create("batting averages and On-base percent", baseball, "BA", "SLG"));
+
+        // example with differen sized arrays;
+        double[] first = new NormalDistribution().sample(100);
+        double[] second = new NormalDistribution().sample(200);
+        Plot.show(QQPlot.create("Test of different sized arrays", "short array", first, "long array", second));
     }
 }
