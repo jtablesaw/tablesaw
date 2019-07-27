@@ -11,36 +11,48 @@ import tech.tablesaw.plotly.traces.ScatterTrace;
 
 import java.util.Arrays;
 
-public class QQPlot {
+/**
+ *
+ * A Tukey Mean-Difference Plot (AKA a Bland-Altman plot) is a kind of scatter plot used frequently in medicine,
+ * biology and other fields, is used to visualize the differences between two quantitative measurements. In particular,
+ * it is often used to evaluate whether two tests produce 'the same' result.
+ *
+ * For two numeric arrays, a and b, the plot shows the mean for each pair of observations (a + b) / 2, as well as the
+ * differences between them: a - b.
+ *
+ * For more information:
+ * https://en.wikipedia.org/wiki/Bland%E2%80%93Altman_plot
+ */
+public class TukeyMeanDifferencePlot {
 
     /**
-     * Returns a figure containing a QQ Plot describing the differences between the distribution of values
-     * in the columns of interest
+     * Returns a figure containing a Tukey Mean-Difference Plot describing the differences between the data in two
+     * columns of interest
      * @param title         A title for the plot
+     * @param measure       The measure being compared on the plot (e.g "inches" or "height in inches"
      * @param table         The table containing the columns of interest
      * @param columnName1   The name of the first numeric column containing the data to plot
      * @param columnName2   The name of the second numeric column containing the data to plot
      * @return              A quantile plot
      */
-    public static Figure create(String title, Table table, String columnName1, String columnName2) {
+    public static Figure create(String title, String measure, Table table, String columnName1, String columnName2) {
 
         NumberColumn<?> xCol = table.nCol(columnName1);
         NumberColumn<?> yCol = table.nCol(columnName2);
 
-        return create(title, xCol.name(), xCol.asDoubleArray(), yCol.name(), yCol.asDoubleArray());
+        return create(title, measure, xCol.asDoubleArray(), yCol.asDoubleArray());
     }
 
     /**
      * Returns a figure containing a QQ Plot describing the differences between the distribution of values
      * in the columns of interest
      * @param title    A title for the plot
-     * @param xTitle   The name of the first numeric column containing the data to plot
+     * @param measure  The measure being compared on the plot (e.g "inches" or "height in inches"
      * @param xData    The data to plot on the x Axis
-     * @param yTitle   The name of the second numeric column containing the data to plot
      * @param yData    The data to plot on the y Axis
      * @return         A quantile plot
      */
-    public static Figure create(String title, String xTitle, double[] xData, String yTitle, double[] yData) {
+    public static Figure create(String title, String measure, double[] xData, double[] yData) {
 
         Preconditions.checkArgument(xData.length != 0, "x Data array is empty");
         Preconditions.checkArgument(yData.length != 0, "x Data array is empty");
@@ -58,27 +70,34 @@ public class QQPlot {
 
         Arrays.sort(xData);
         Arrays.sort(yData);
-        double min = Math.min(xData[0], yData[0]);
-        double max = Math.max(xData[xData.length - 1], yData[yData.length - 1]);
-        double[] line = {min, max};
 
-        // Draw the 45 degree line indicating equal distributions
-        ScatterTrace trace1 = ScatterTrace.builder(line, line)
+        double[] averagePoints = new double[xData.length];
+        double[] differencePoints = new double[xData.length];
+        for (int i = 0; i < xData.length; i++) {
+            averagePoints[i] = (xData[i] + yData[i]) /2.0;
+            differencePoints[i] = (xData[i] - yData[i]);
+        }
+
+        double xMin = StatUtils.min(xData);
+        double xMax = StatUtils.max(xData);
+        double[] zeroLineX = {xMin, xMax};
+        double[] zeroLineY = {0, 0};
+
+        // Draw the line indicating equal distributions (this is zero in this plot)
+        ScatterTrace trace1 = ScatterTrace.builder(zeroLineX, zeroLineY)
                 .mode(ScatterTrace.Mode.LINE)
                 .name("y = x")
                 .build();
 
         // Draw the actual data points
-        ScatterTrace trace2 = ScatterTrace.builder(xData, yData)
-                .name("distributions")
+        ScatterTrace trace2 = ScatterTrace.builder(averagePoints, differencePoints)
+                .name("mean x difference")
                 .build();
 
         Layout layout = Layout.builder()
                 .title(title)
-                .xAxis(Axis.builder()
-                        .title(xTitle)
-                        .build())
-                .yAxis(Axis.builder().title(yTitle).build())
+                .xAxis(Axis.builder().title("mean (" + measure + ")").build())
+                .yAxis(Axis.builder().title("difference (" + measure + ")").build())
                 .height(700)
                 .width(900)
                 .build();
