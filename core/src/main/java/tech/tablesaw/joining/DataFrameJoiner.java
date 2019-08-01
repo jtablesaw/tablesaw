@@ -276,11 +276,10 @@ public class DataFrameJoiner {
             }
 
             Table table2Rows = table2.where(rowBitMapMultiCol);
-            table2Rows.removeColumns(col2Names);
             if (outer && table2Rows.isEmpty()) {
                 withMissingLeftJoin(result, table1Rows);
             } else {
-                crossProduct(result, table1Rows, table2Rows);
+                crossProduct(result, table1Rows, table2Rows, col2Names);
             }
         }
         return result;
@@ -649,10 +648,13 @@ public class DataFrameJoiner {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void crossProduct(Table destination, Table table1, Table table2) {
+    private void crossProduct(Table destination, Table table1, Table table2, String[] col2Names) {
+        int table2RowCount = table2.rowCount();
+        // Remove join columns
+        table2.removeColumns(col2Names);
         for (int c = 0; c < table1.columnCount() + table2.columnCount(); c++) {
             for (int r1 = 0; r1 < table1.rowCount(); r1++) {
-                for (int r2 = 0; r2 < table2.rowCount(); r2++) {
+                for (int r2 = 0; r2 < table2RowCount; r2++) {
                     if (c < table1.columnCount()) {
                         Column t1Col = table1.column(c);
                         destination.column(c).append(t1Col, r1);
