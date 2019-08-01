@@ -4,6 +4,7 @@ import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.plotly.traces.Trace;
+import tech.tablesaw.plotly.event.EventHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -23,6 +24,7 @@ public class Figure {
 
     private final Trace[] data;
     private final Layout layout;
+    private final EventHandler[] eventHandlers;
 
     private final Map<String, Object> context = new HashMap<>();
 
@@ -31,11 +33,25 @@ public class Figure {
     public Figure(Layout layout, Trace... traces) {
         this.data = traces;
         this.layout = layout;
+        this.eventHandlers = null;
+    }
+
+    public Figure(Layout layout, EventHandler eventHandler, Trace... traces) {
+        this.data = traces;
+        this.layout = layout;
+        this.eventHandlers = new EventHandler[] {eventHandler};
+    }
+
+    public Figure(Layout layout, EventHandler[] eventHandlers, Trace... traces) {
+        this.data = traces;
+        this.layout = layout;
+        this.eventHandlers = eventHandlers;
     }
 
     public Figure(Trace... traces) {
         this.data = traces;
         this.layout = null;
+        this.eventHandlers = null;
     }
 
     public String divString(String divName) {
@@ -82,6 +98,7 @@ public class Figure {
         String figure = builder.toString();
         context.put("figure", figure);
         context.put("plotFunction", plotFunction(targetName));
+        context.put("eventHandlerFunction", eventHandlerFunction(targetName, divName));
     }
 
     private String plotFunction(String divName) {
@@ -110,6 +127,20 @@ public class Figure {
         }
 
         builder.append(");");
+        
+        return builder.toString();
+    }
+
+    private String eventHandlerFunction(String targetName, String divName) {
+        StringBuilder builder = new StringBuilder();
+        
+        if (eventHandlers != null) {
+            builder.append(System.lineSeparator());
+            for (int i=0; i < eventHandlers.length; i++) {
+                builder.append(eventHandlers[i].asJavascript(targetName, divName));
+            }
+            builder.append(System.lineSeparator());
+        }
 
         return builder.toString();
     }

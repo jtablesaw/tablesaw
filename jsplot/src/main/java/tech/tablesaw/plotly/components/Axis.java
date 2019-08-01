@@ -250,6 +250,8 @@ public class Axis extends Component {
     private final CategoryOrder categoryOrder;
 
     private final TickSettings tickSettings;
+    
+    private final float[] domain;
 
     public static AxisBuilder builder() {
         return new AxisBuilder();
@@ -287,6 +289,7 @@ public class Axis extends Component {
         constrainToward = builder.constrainToward;
         scaleRatio = builder.scaleRatio;
         categoryOrder = builder.categoryOrder;
+        domain = builder.domain;
     }
 
     public String asJavascript() {
@@ -350,6 +353,7 @@ public class Axis extends Component {
         if(showLine != DEFAULT_SHOW_LINE) context.put("showLine", showLine);
         if(zeroLine != DEFAULT_ZERO_LINE) context.put("zeroLine", zeroLine);
         if(showGrid != DEFAULT_SHOW_GRID) context.put("showGrid", showGrid);
+        if (domain != null) { context.put("domain", String.format("[%.2f, %.2f]", domain[0], domain[1])); }
         return context;
     }
 
@@ -391,6 +395,8 @@ public class Axis extends Component {
         private ScatterTrace.YAxis overlaying;
 
         private CategoryOrder categoryOrder;
+        
+        private float[] domain = null;
 
         private AxisBuilder() {}
 
@@ -411,6 +417,11 @@ public class Axis extends Component {
 
         public AxisBuilder categoryOrder(CategoryOrder categoryOrder) {
             this.categoryOrder = categoryOrder;
+            return this;
+        }
+
+        public AxisBuilder domain(float start, float end) {
+            this.domain = new float[]{start, end};
             return this;
         }
 
