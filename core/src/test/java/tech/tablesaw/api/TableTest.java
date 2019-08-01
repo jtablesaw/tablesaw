@@ -412,6 +412,17 @@ public class TableTest {
     }
 
     @Test
+    void testAppendRow() throws Exception {
+
+        Table table = Table.read().csv("../data/bush.csv");
+        int initialSize = table.rowCount();
+        Row row = table.appendRow();
+        int newSize = table.rowCount();
+        assertEquals(initialSize + 1, newSize);
+        assertEquals(newSize - 1, row.getRowNumber());
+    }
+
+    @Test
     void testAppendMultipleColumns() {
         DoubleColumn column =  DoubleColumn.create("e1");
         table.addColumns(column);
