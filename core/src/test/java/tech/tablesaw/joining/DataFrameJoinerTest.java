@@ -489,6 +489,37 @@ public class DataFrameJoinerTest {
     }
 
     @Test
+    public void innerJoinSingleColumn() {
+        Table joined = SP500.select("Date").joinOn("Date")
+            .inner(ONE_YEAR.select("Date"));
+        assertEquals(5, joined.rowCount());
+        assertEquals(1, joined.columnCount());
+    }
+
+    @Test
+    public void innerJoinSingleColumnOnRight() {
+        Table joined = SP500.joinOn("Date").inner(ONE_YEAR.select("Date"));
+        assertEquals(5, joined.rowCount());
+        assertEquals(2, joined.columnCount());
+    }
+
+    @Test
+    public void innerJoinMultipleColumnsAllColumnsInJoinKey() {
+        Table table1 = Table.create(
+            SP500.dateColumn("Date"),
+            SP500.dateColumn("Date").copy().setName("Date2")
+        );
+        Table table2 = Table.create(
+            ONE_YEAR.dateColumn("Date"),
+            ONE_YEAR.dateColumn("Date").copy().setName("Date2")
+        );
+
+        Table joined = table1.joinOn("Date", "Date2").inner(table2);
+        assertEquals(5, joined.rowCount());
+        assertEquals(2, joined.columnCount());
+    }
+
+    @Test
     public void innerJoinWithBoolean() {
         Table joined = DUPLICATE_COL_NAME_DOGS.joinOn("Good")
                 .inner(true, DUPLICATE_COL_NAME_DOGS.copy());
@@ -571,6 +602,13 @@ public class DataFrameJoinerTest {
         assertEquals(2, joined.column("Name").countMissing());
         assertEquals(8, joined.column("Feed").size());
         assertEquals(2, joined.column("Feed").countMissing());
+    }
+
+    @Test
+    public void fullOuterJoinColTwoOnlyJoinKeys() {
+        Table joined = ANIMAL_FEED.joinOn("Animal").fullOuter(ANIMAL_NAMES.select("Animal"));
+        assertEquals(2, joined.columnCount());
+        assertEquals(8, joined.rowCount());
     }
 
     @Test
