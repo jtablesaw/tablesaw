@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.IntColumn;
@@ -14,6 +13,7 @@ import tech.tablesaw.api.Table;
 
 
 @Tag("Slow")
+@Tag("Flakey")
 public class DataFrameJoinerPerformanceTest {
 
     private static final long SEED = 200L;

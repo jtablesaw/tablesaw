@@ -3,11 +3,10 @@ package tech.tablesaw.joining;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
+import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -61,6 +60,7 @@ public class DataFrameJoiner {
     private final Table table;
     private Column<?>[] joinColumns;
     private final String[] columnNames;
+    private final List<Integer> joinColumnIndexes;
     private AtomicInteger joinTableId = new AtomicInteger(2);
 
     /**
@@ -77,6 +77,11 @@ public class DataFrameJoiner {
             String colName = this.columnNames[i];
             this.joinColumns[i] = table.column(colName);
         }
+        this.joinColumnIndexes = getJoinIndexes(table, columnNames);
+    }
+
+    private List<Integer> getJoinIndexes(Table table, String[] columnNames) {
+        return Arrays.stream(columnNames).map(table::columnIndex).collect(Collectors.toList());
     }
 
     /**
@@ -183,16 +188,19 @@ public class DataFrameJoiner {
 
     private Table joinInternal(Table table1, Table table2, JoinType joinType, boolean allowDuplicates,
         String... col2Names) {
+        List<Integer> col2Indexes = getJoinIndexes(table2, col2Names);
+        Set<Integer> col2IndexSet = ImmutableSet.copyOf(col2Indexes);
         if (allowDuplicates) {
             renameColumnsWithDuplicateNames(table1, table2, col2Names);
         }
-        // Create a set of col2Indexes so they can be skipped in the cross product.
-        Set<Integer> col2Indexes = ImmutableSet.copyOf(colIndexes(table2, col2Names));
         Table result = emptyTableFromColumns(table1, table2, col2Names);
 
-        // Build a reverse index for every join column.
-        Map<Column<?>, Index> table1ColIndexMap = createColumnIndexMap(table1, columnNames);
-        Map<Column<?>, Index> table2ColIndexMap = createColumnIndexMap(table2, col2Names);
+
+        // Build a reverse index for every join column in both tables.
+        List<Index> table1Indexes = joinColumnIndexes.stream().map(index -> indexFor(table1, index))
+            .collect(Collectors.toList());
+        List<Index> table2Indexes = col2Indexes.stream().map(index -> indexFor(table2, index))
+            .collect(Collectors.toList());
 
         Selection table1DoneSelection = Selection.with();
         Selection table2DoneSelection = Selection.with();
@@ -203,13 +211,13 @@ public class DataFrameJoiner {
                 continue;
             }
 
-            Selection table1Rows = createMultiColSelection(table1, ri, table1ColIndexMap, table1.rowCount());
-            Selection table2Rows = createMultiColSelection(table1, ri, table2ColIndexMap, table2.rowCount());
+            Selection table1Rows = createMultiColSelection(table1, ri, table1Indexes, table1.rowCount());
+            Selection table2Rows = createMultiColSelection(table1, ri, table2Indexes, table2.rowCount());
 
             if (joinType != JoinType.INNER && table2Rows.isEmpty()) {
                 withMissingLeftJoin(result, table1.where(table1Rows));
             } else {
-                crossProduct(result, table1, table2, table1Rows, table2Rows, col2Indexes);
+                crossProduct(result, table1, table2, table1Rows, table2Rows, col2IndexSet);
             }
 
             table1DoneSelection = table1DoneSelection.or(table1Rows);
@@ -233,128 +241,106 @@ public class DataFrameJoiner {
         return result;
     }
 
-    private Map<Column<?>, Index> createColumnIndexMap(Table table, String[] colNames) {
-        Map<Column<?>, Index> columnIndexMap = new HashMap<>();
-        for (int i = 0; i < joinColumns.length; i++) {
-            Column<?> col = joinColumns[i];
-            String colName = colNames[i];
-            columnIndexMap.put(col, indexFor(table, colName, col));
-        }
-        return columnIndexMap;
-    }
-
-    private Index indexFor(Table table, String colName, Column<?> joinColumn) {
-        ColumnType type = joinColumn.type();
+    private Index indexFor(Table table, int colIndex) {
+        ColumnType type = table.column(colIndex).type();
         if (type instanceof DateColumnType) {
-            return new IntIndex(table.dateColumn(colName));
+            return new IntIndex(table.dateColumn(colIndex));
         }
         if (type instanceof DateTimeColumnType) {
-            return new LongIndex(table.dateTimeColumn(colName));
+            return new LongIndex(table.dateTimeColumn(colIndex));
         }
         if (type instanceof InstantColumnType) {
-            return new LongIndex(table.instantColumn(colName));
+            return new LongIndex(table.instantColumn(colIndex));
         }
         if (type instanceof TimeColumnType) {
-            return new IntIndex(table.timeColumn(colName));
+            return new IntIndex(table.timeColumn(colIndex));
         }
         if (type instanceof StringColumnType || type instanceof TextColumnType) {
-            return new StringIndex(table.stringColumn(colName));
+            return new StringIndex(table.stringColumn(colIndex));
         }
         if (type instanceof IntColumnType) {
-            return new IntIndex(table.intColumn(colName));
+            return new IntIndex(table.intColumn(colIndex));
         }
         if (type instanceof LongColumnType) {
-            return new LongIndex(table.longColumn(colName));
+            return new LongIndex(table.longColumn(colIndex));
         }
         if (type instanceof ShortColumnType) {
-            return new ShortIndex(table.shortColumn(colName));
+            return new ShortIndex(table.shortColumn(colIndex));
         }
         if (type instanceof BooleanColumnType) {
-            return new ByteIndex(table.booleanColumn(colName));
+            return new ByteIndex(table.booleanColumn(colIndex));
         }
         if (type instanceof DoubleColumnType) {
-            return new DoubleIndex(table.doubleColumn(colName));
+            return new DoubleIndex(table.doubleColumn(colIndex));
         }
         if (type instanceof FloatColumnType) {
-            return new FloatIndex(table.floatColumn(colName));
+            return new FloatIndex(table.floatColumn(colIndex));
         }
         throw new IllegalArgumentException(
-            "Joining attempted on unsupported column type " + joinColumn.type());
-    }
-
-    private List<Integer> colIndexes(Table table, String[] colNames) {
-        Set<String> colNamesSet = Arrays.stream(colNames).map(String::toLowerCase).collect(Collectors.toSet());
-        List<Integer> colIndexes = new ArrayList<>();
-        for (int i = 0; i < table.columnCount(); i++) {
-            if (colNamesSet.contains(table.column(i).name().toLowerCase())) {
-                colIndexes.add(i);
-            }
-        }
-        return colIndexes;
+            "Joining attempted on unsupported column type " + type);
     }
 
     private Selection selectionForColumn(
         Column<?> valueColumn,
-        Column<?> joinColumn,
         int rowIndex,
-        Map<Column<?>, Index> columnIndexMap) {
+        Index rawIndex) {
 
         ColumnType type = valueColumn.type();
         // relies on both arrays, columns, and col2Names,
         // having corresponding values at same index
         Selection selection = Selection.with();
         if (type instanceof DateColumnType) {
-            IntIndex index = (IntIndex) columnIndexMap.get(joinColumn);
+            IntIndex index = (IntIndex) rawIndex;
             DateColumn typedValueColumn = (DateColumn) valueColumn;
             int value = typedValueColumn.getIntInternal(rowIndex);
             selection = index.get(value);
         } else if (type instanceof TimeColumnType) {
-            IntIndex index = (IntIndex) columnIndexMap.get(joinColumn);
+            IntIndex index = (IntIndex) rawIndex;
             TimeColumn typedValueColumn = (TimeColumn) valueColumn;
             int value = typedValueColumn.getIntInternal(rowIndex);
             selection = index.get(value);
         } else if (type instanceof DateTimeColumnType) {
-            LongIndex index = (LongIndex) columnIndexMap.get(joinColumn);
+            LongIndex index = (LongIndex) rawIndex;
             DateTimeColumn typedValueColumn = (DateTimeColumn) valueColumn;
             long value = typedValueColumn.getLongInternal(rowIndex);
             selection = index.get(value);
         } else if (type instanceof InstantColumnType) {
-            LongIndex index = (LongIndex) columnIndexMap.get(joinColumn);
+            LongIndex index = (LongIndex) rawIndex;
             InstantColumn typedValueColumn = (InstantColumn) valueColumn;
             long value = typedValueColumn.getLongInternal(rowIndex);
             selection = index.get(value);
         } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
-            StringIndex index = (StringIndex) columnIndexMap.get(joinColumn);
+            StringIndex index = (StringIndex) rawIndex;
             StringColumn typedValueColumn = (StringColumn) valueColumn;
             String value = typedValueColumn.get(rowIndex);
             selection = index.get(value);
         } else if (type instanceof IntColumnType) {
-            IntIndex index = (IntIndex) columnIndexMap.get(joinColumn);
+            IntIndex index = (IntIndex) rawIndex;
             IntColumn typedValueColumn = (IntColumn) valueColumn;
             int value = typedValueColumn.getInt(rowIndex);
             selection = index.get(value);
         } else if (type instanceof LongColumnType) {
-            LongIndex index = (LongIndex) columnIndexMap.get(joinColumn);
+            LongIndex index = (LongIndex) rawIndex;
             LongColumn typedValueColumn = (LongColumn) valueColumn;
             long value = typedValueColumn.getLong(rowIndex);
             selection = index.get(value);
         } else if (type instanceof ShortColumnType) {
-            ShortIndex index = (ShortIndex) columnIndexMap.get(joinColumn);
+            ShortIndex index = (ShortIndex) rawIndex;
             ShortColumn typedValueColumn = (ShortColumn) valueColumn;
             short value = typedValueColumn.getShort(rowIndex);
             selection = index.get(value);
         } else if (type instanceof BooleanColumnType) {
-            ByteIndex index = (ByteIndex) columnIndexMap.get(joinColumn);
+            ByteIndex index = (ByteIndex) rawIndex;
             BooleanColumn typedValueColumn = (BooleanColumn) valueColumn;
             byte value = typedValueColumn.getByte(rowIndex);
             selection = index.get(value);
         } else if (type instanceof DoubleColumnType) {
-            DoubleIndex index = (DoubleIndex) columnIndexMap.get(joinColumn);
+            DoubleIndex index = (DoubleIndex) rawIndex;
             DoubleColumn typedValueColumn = (DoubleColumn) valueColumn;
             double value = typedValueColumn.getDouble(rowIndex);
             selection = index.get(value);
         } else if (type instanceof FloatColumnType) {
-            FloatIndex index = (FloatIndex) columnIndexMap.get(joinColumn);
+            FloatIndex index = (FloatIndex) rawIndex;
             FloatColumn typedValueColumn = (FloatColumn) valueColumn;
             float value = typedValueColumn.getFloat(rowIndex);
             selection = index.get(value);
@@ -366,15 +352,15 @@ public class DataFrameJoiner {
         return selection;
     }
 
-    private Selection createMultiColSelection(Table table1, int ri, Map<Column<?>, Index> colIndexMap, int size) {
+    private Selection createMultiColSelection(Table table1, int ri, List<Index> indexes, int size) {
         Selection multiColSelection = Selection.withRange(0, size);
-        for (Column<?> joinColumn : joinColumns) {
+        for (int i = 0; i < joinColumns.length; i++) {
             // Need to use the column from table1 that is the same column originally
             // defined for this DataFrameJoiner. Column names must be unique within the
             // same table, so use the original column's name to get the corresponding
             // column out of the table1 input Table.
-            Column<?> col = table1.column(joinColumn.name());
-            Selection oneColSelection = selectionForColumn(col, joinColumn, ri, colIndexMap);
+            Column<?> col = table1.column(joinColumns[i].name());
+            Selection oneColSelection = selectionForColumn(col, ri, indexes.get(i));
             multiColSelection = multiColSelection.and(oneColSelection);
         }
         return multiColSelection;
