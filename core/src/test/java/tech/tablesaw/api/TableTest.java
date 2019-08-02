@@ -146,6 +146,21 @@ public class TableTest {
         t.addColumns(c1);
         assertEquals(" Test " + LINE_END + " SC  |" + LINE_END + "------", t.print());
     }
+    
+    @Test
+    void appendPopulatedColumnToEmptyTable() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            table.addColumns(StringColumn.create("test").append("test"));
+        });
+    }
+
+    @Test
+    void appendEmptyColumnToPopulatedTable() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            table.doubleColumn("f1").append(23);
+            table.addColumns(StringColumn.create("test"));
+        });
+    }
 
     @Test
     void testDropDuplicateRows() throws Exception {
