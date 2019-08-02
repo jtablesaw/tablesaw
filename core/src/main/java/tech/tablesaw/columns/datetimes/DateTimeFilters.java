@@ -24,7 +24,7 @@ public interface DateTimeFilters extends TemporalFilters<LocalDateTime> {
     }
 
     default Selection isAfter(LocalDate value) {
-        return isAfter(value.atStartOfDay());
+        return isOnOrAfter(value.plusDays(1));
     }
 
     default Selection isOnOrAfter(LocalDate value) {
