@@ -1,9 +1,12 @@
 package tech.tablesaw.joining;
 
 import com.google.common.base.Joiner;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
 
 import java.util.Arrays;
@@ -633,6 +636,18 @@ public class DataFrameJoinerTest {
                 "T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear")));
         assertEquals(16, joined.columnCount());
         assertEquals(14, joined.rowCount());
+    }
+
+    @Test
+    void joiningShouldNotMutateColNamesOnOriginalTable() {
+        Table table1 = createSTUDENT();
+        Table table2 = createINSTRUCTOR();
+        List<String> originalColumns = table2.columns().stream().map(Column::name).collect(Collectors.toList());
+
+        table1.joinOn("Age").inner(true, table2);
+
+        List<String> newColumns = table2.columns().stream().map(Column::name).collect(Collectors.toList());
+        assertEquals(originalColumns, newColumns);
     }
 
     @Test

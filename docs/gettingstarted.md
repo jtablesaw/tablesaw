@@ -238,7 +238,7 @@ Of course, this is just the beginning of exploratory data analysis. You can also
 Often you'll work with specific columns in a table. Here are some useful methods:
 
 ```java
-table.columnNames();  			// returns all column names
+table.joinColumnNames();  			// returns all column names
 List<Column> = table.columns(); // returns all the columns in the table
 
 // removing columns

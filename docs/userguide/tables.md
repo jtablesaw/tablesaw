@@ -57,7 +57,7 @@ There are a number of ways to get familiar with a new dataset. Here are some of 
 
 *table.name()* returns its name, which defaults to the name of the file it was created from. You can change it if you like using *setName(aString).*
 
-*t.columnNames()* returns an array of column-name strings.
+*t.joinColumnNames()* returns an array of column-name strings.
 
 *t.structure()* returns a list of columns with their position and types:
 

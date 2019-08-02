@@ -13,7 +13,7 @@ import tech.tablesaw.api.Table;
 
 
 @Tag("Slow")
-@Tag("Flakey")
+@Tag("Flaky")
 public class DataFrameJoinerPerformanceTest {
 
     private static final long SEED = 200L;
