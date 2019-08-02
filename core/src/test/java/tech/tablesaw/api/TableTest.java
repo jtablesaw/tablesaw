@@ -413,13 +413,14 @@ public class TableTest {
 
     @Test
     void testAppendRow() throws Exception {
-
         Table table = Table.read().csv("../data/bush.csv");
-        int initialSize = table.rowCount();
-        Row row = table.appendRow();
-        int newSize = table.rowCount();
-        assertEquals(initialSize + 1, newSize);
-        assertEquals(newSize - 1, row.getRowNumber());
+        for (int i = 0; i < 2; i++) {
+            Row row = table.appendRow();
+            row.setString("who", "me");
+            row.setDate("date", LocalDate.now());
+            row.setInt("approval", 5);
+        }
+        assertEquals(5, table.intColumn("approval").get(table.rowCount() - 1));
     }
 
     @Test

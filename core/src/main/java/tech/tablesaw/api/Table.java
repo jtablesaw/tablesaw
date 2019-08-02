@@ -913,8 +913,17 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Appends an empty row to the this table and returns the row so the values can be set
-     * @return  this table
+     * Appends an empty row and returns a Row object indexed to the newly added row so values can be
+     * set.
+     *
+     * Intended usage:
+     *
+     *    for (int i = 0; i < 10; i++) {
+     *        Row row = table.appendRow();
+     *        row.setString("name", "Bob");
+     *        row.setFloat("IQ", 123.4f);
+     *        ...etc.
+     *    }
      */
     public Row appendRow() {
         for (final Column<?> column : columnList) {
