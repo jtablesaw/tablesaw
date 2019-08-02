@@ -918,7 +918,7 @@ public class Table extends Relation implements Iterable<Row> {
      *
      * Intended usage:
      *
-     *    for (int i = 0; i < 10; i++) {
+     *    for (int i = 0; ...) {
      *        Row row = table.appendRow();
      *        row.setString("name", "Bob");
      *        row.setFloat("IQ", 123.4f);
