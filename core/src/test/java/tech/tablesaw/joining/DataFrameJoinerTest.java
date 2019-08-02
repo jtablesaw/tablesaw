@@ -2,6 +2,7 @@ package tech.tablesaw.joining;
 
 import com.google.common.base.Joiner;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.selection.Selection;
