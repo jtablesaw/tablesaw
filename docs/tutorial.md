@@ -34,7 +34,7 @@ Note that the file is addressed relative to the current working directory. You m
 Often, the best way to start is to print the column names for reference:
 
 ```java
-tornadoes.joinColumnNames();
+tornadoes.columnNames();
 
 >>	Date, Time, State, State No, Scale, Injuries, Fatalities, Start Lat, Start Lon, 	Length, Width]
 ```

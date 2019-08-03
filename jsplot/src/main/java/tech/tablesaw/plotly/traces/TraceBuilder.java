@@ -18,7 +18,7 @@ public abstract class TraceBuilder {
      * Sets the legend group for this trace. Traces part of the same legend
      * group hide/show at the same time when toggling legend items.
      */
-    protected String legendGroup = " ";
+    protected String legendGroup = "";
 
     /**
      * Sets the opacity of the trace.

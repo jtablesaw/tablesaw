@@ -14,12 +14,13 @@
 
 package tech.tablesaw.io.string;
 
-import tech.tablesaw.table.Relation;
-import tech.tablesaw.util.StringUtils;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.stream.IntStream;
+
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.table.Relation;
+import tech.tablesaw.util.StringUtils;
 
 /**
  * A class that can pretty print a DataFrame to text for visualization in a console
@@ -28,6 +29,8 @@ import java.util.stream.IntStream;
  * under Apache 2 license
  */
 public class DataFramePrinter {
+
+    private final static String TOO_SHORT_COLUMN_MARKER = "?"; 
 
     private final int maxRows;
     private final OutputStream stream;
@@ -172,6 +175,10 @@ public class DataFramePrinter {
         return header;
     }
 
+    private String getDataToken(Column<?> col, int i) {
+        return col.size() > i ? col.getString(i) : TOO_SHORT_COLUMN_MARKER;
+    }
+
     /**
      * Returns the 2-D array of data tokens from the frame specified
      *
@@ -189,7 +196,8 @@ public class DataFramePrinter {
             int i;
             for (i = 0; i < Math.ceil((double) rowCount / 2); i++) {
                 for (int j = 0; j < colCount; j++) {
-                    data[i][j] = frame.getString(i, j);
+                    Column<?> col = frame.column(j);
+                    data[i][j] = getDataToken(col, i);
                 }
             }
             for (int j = 0; j < colCount; j++) {
@@ -197,20 +205,20 @@ public class DataFramePrinter {
             }
             for (++i; i <= rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
-                    data[i][j] = frame.getString(frame.rowCount() - maxRows + i - 1, j);
+                    Column<?> col = frame.column(j);
+                    data[i][j] = getDataToken(col, frame.rowCount() - maxRows + i - 1);
                 }
             }
         } else {
             data = new String[rowCount][colCount];
             for (int i = 0; i < rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
-                    String value = frame.getString(i, j);
+                    Column<?> col = frame.column(j);
+                    String value = getDataToken(col, i);
                     data[i][j] = value == null ? "" : value;
                 }
             }
         }
         return data;
     }
-
 }
-

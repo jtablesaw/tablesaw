@@ -14,12 +14,16 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.collect.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -31,15 +35,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.Lists;
+
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class TableTest {
 
@@ -145,6 +148,21 @@ public class TableTest {
         StringColumn c1 = StringColumn.create("SC");
         t.addColumns(c1);
         assertEquals(" Test " + LINE_END + " SC  |" + LINE_END + "------", t.print());
+    }
+    
+    @Test
+    void appendPopulatedColumnToEmptyTable() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            table.addColumns(StringColumn.create("test").append("test"));
+        });
+    }
+
+    @Test
+    void appendEmptyColumnToPopulatedTable() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            table.doubleColumn("f1").append(23);
+            table.addColumns(StringColumn.create("test"));
+        });
     }
 
     @Test
@@ -412,6 +430,18 @@ public class TableTest {
     }
 
     @Test
+    void testAppendRow() throws Exception {
+        Table table = Table.read().csv("../data/bush.csv");
+        for (int i = 0; i < 2; i++) {
+            Row row = table.appendRow();
+            row.setString("who", "me");
+            row.setDate("date", LocalDate.now());
+            row.setInt("approval", 5);
+        }
+        assertEquals(5, table.intColumn("approval").get(table.rowCount() - 1));
+    }
+
+    @Test
     void testAppendMultipleColumns() {
         DoubleColumn column =  DoubleColumn.create("e1");
         table.addColumns(column);
@@ -620,5 +650,19 @@ public class TableTest {
             result.set(r, sum);
         }
         return result;
+    }
+
+    @Test
+    public void testToStringColumnsWithVaryingSizes() {
+        IntColumn col11 = IntColumn.create("col1");
+        IntColumn col12 = IntColumn.create("col2");
+        Table t1 = Table.create("t1", col11, col12);
+        col11.append(1).append(2);
+        col12.append(1);
+        try {
+            assertNotNull(t1.toString());
+        } catch (Exception e) {
+            fail("toString shouldn't throw " + e);
+        }
     }
 }

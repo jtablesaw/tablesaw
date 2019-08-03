@@ -16,7 +16,7 @@ public abstract class AbstractTrace implements Trace {
 
     protected static final double DEFAULT_OPACITY = 1.0;
     protected static final Visibility DEFAULT_VISIBILITY = Visibility.TRUE;
-    protected static final boolean DEFAULT_SHOW_LEGEND = false;
+    protected static final boolean DEFAULT_SHOW_LEGEND = true;
 
     protected final PebbleEngine engine = TemplateUtils.getNewEngine();
 
@@ -121,10 +121,10 @@ public abstract class AbstractTrace implements Trace {
         Map<String, Object> context = new HashMap<>();
         context.put("type", type);
         context.put("name", name);
-        if (showLegend != DEFAULT_SHOW_LEGEND) {
-            context.put("showLegend", showLegend);
-        }
+        context.put("showLegend", showLegend);
+
         context.put("legendGroup", legendGroup);
+
         if (!visible.equals(DEFAULT_VISIBILITY)) {
             context.put("visible", visible);
         }

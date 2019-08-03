@@ -913,6 +913,26 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
+     * Appends an empty row and returns a Row object indexed to the newly added row so values can be
+     * set.
+     *
+     * Intended usage:
+     *
+     *    for (int i = 0; ...) {
+     *        Row row = table.appendRow();
+     *        row.setString("name", "Bob");
+     *        row.setFloat("IQ", 123.4f);
+     *        ...etc.
+     *    }
+     */
+    public Row appendRow() {
+        for (final Column<?> column : columnList) {
+            column.appendMissing();
+        }
+        return row(rowCount() - 1);
+    }
+
+    /**
      * Add all the columns of tableToConcatenate to this table
      * Note: The columns in the result must have unique names, when compared case insensitive
      * Note: Both tables must have the same number of rows

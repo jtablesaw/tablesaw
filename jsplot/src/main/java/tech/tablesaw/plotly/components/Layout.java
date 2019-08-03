@@ -21,7 +21,7 @@ public class Layout {
     private final static String DEFAULT_DECIMAL_SEPARATOR = ".";
     private final static String DEFAULT_THOUSANDS_SEPARATOR = ",";
     private final static boolean DEFAULT_AUTO_SIZE = false;
-    private final static boolean DEFAULT_SHOW_LEGEND = false;
+    private final static boolean DEFAULT_SHOW_LEGEND = true;
     private final static HoverMode DEFAULT_HOVER_MODE = HoverMode.FALSE;
     private final static DragMode DEFAULT_DRAG_MODE = DragMode.ZOOM;
     private final static int DEFAULT_HOVER_DISTANCE = 20;
@@ -261,7 +261,7 @@ public class Layout {
         if (!decimalSeparator.equals(DEFAULT_DECIMAL_SEPARATOR)) context.put("decimalSeparator", decimalSeparator);
         if (!thousandsSeparator.equals(DEFAULT_THOUSANDS_SEPARATOR)) context.put("thousandsSeparator", thousandsSeparator);
         if(!dragMode.equals(DEFAULT_DRAG_MODE)) context.put("dragmode", dragMode);
-        if (!showLegend == DEFAULT_SHOW_LEGEND) context.put("showlegend", showLegend);
+        context.put("showlegend", showLegend);
         if (!plotBgColor.equals(DEFAULT_PLOT_BG_COLOR)) context.put("plotbgcolor", plotBgColor);
         if (!paperBgColor.equals(DEFAULT_PAPER_BG_COLOR))context.put("paperbgcolor", paperBgColor);
         if (!barMode.equals(DEFAULT_BAR_MODE)) context.put("barMode", barMode);

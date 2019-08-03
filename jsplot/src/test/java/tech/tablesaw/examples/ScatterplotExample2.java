@@ -17,6 +17,7 @@ package tech.tablesaw.examples;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
@@ -37,9 +38,14 @@ public class ScatterplotExample2 {
                 .title("tornado start points")
                 .height(600)
                 .width(800)
+                .showLegend(false)
+                .yAxis(Axis.builder()
+                        .range(20, 60)
+                        .build())
                 .build();
         Trace trace = ScatterTrace.builder(x, y)
                 .marker(Marker.builder().size(1).build())
+                .name("lat/lon")
                 .build();
         Plot.show(new Figure(layout, trace));
 
