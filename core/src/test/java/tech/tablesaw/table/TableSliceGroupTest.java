@@ -28,6 +28,7 @@ import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class TableSliceGroupTest {
@@ -94,6 +95,18 @@ public class TableSliceGroupTest {
         TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
         Table aggregated = group.aggregate("approval", exaggerate);
         assertEquals(aggregated.rowCount(), group.size());
+    }
+
+    @Test
+    public void testCreateWithTextColumn() {
+        TextColumn whoText = table.stringColumn("who").asTextColumn();
+        whoText.setName("who text");
+        table.addColumns(whoText);
+        TableSliceGroup group1 = StandardTableSliceGroup.create(table, table.categoricalColumn("who text"));
+        TableSliceGroup group2 = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
+        Table aggregated1 = group1.aggregate("approval", exaggerate);
+        Table aggregated2 = group2.aggregate("approval", exaggerate);
+        assertEquals(aggregated1.rowCount(), aggregated2.rowCount());
     }
 
     @Test

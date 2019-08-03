@@ -382,6 +382,17 @@ public class TextColumnTest {
     }
 
     @Test
+    public void testAsStringColumn() throws Exception {
+        Table table = Table.read().csv("../data/first_names.csv");
+        StringColumn name = table.stringColumn("emma");
+        TextColumn name2 = name.asTextColumn();
+        StringColumn name3 = name2.asStringColumn();
+        for (int i = 0; i < table.rowCount(); i++) {
+            assertEquals(name.get(i), name3.get(i));
+        }
+    }
+
+    @Test
     public void testTrim() {
         String[] words = {" running ", " run run run "};
         TextColumn wordColumn = TextColumn.create("words", words);
@@ -425,6 +436,20 @@ public class TextColumnTest {
         StringColumn result = wordColumn.tokenizeAndSort();
         assertEquals(result.get(0), "Breaking Down Stop");
         assertEquals(result.get(1), "Backwards Writing");
+    }
+
+    @Test
+    void testSort() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+        TextColumn whoText = t.stringColumn("who").asTextColumn();
+        whoText.setName("who text");
+        t.addColumns(whoText);
+        Table t2 = t.copy();
+        t.sortAscendingOn("who text");
+        t2.sortAscendingOn("who");
+        for (int i = 0; i < t.rowCount(); i++) {
+            assertEquals(t.row(i).getString("who text"), t2.row(i).getString("who"));
+        }
     }
 
     @Test
