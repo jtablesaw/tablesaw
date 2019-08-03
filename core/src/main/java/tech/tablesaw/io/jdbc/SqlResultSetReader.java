@@ -16,6 +16,8 @@ package tech.tablesaw.io.jdbc;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+
+import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
@@ -117,6 +119,8 @@ public class SqlResultSetReader {
                 	appendToColumn(column, resultSet, resultSet.getFloat(i));
                 } else if (column instanceof DoubleColumn) {
                 	appendToColumn(column, resultSet, resultSet.getDouble(i));
+                } else if (column instanceof BooleanColumn) {
+                	appendToColumn(column, resultSet, resultSet.getBoolean(i));                
                 } else {
                     column.appendObj(resultSet.getObject(i));
                 }
