@@ -257,35 +257,25 @@ public class DataFrameJoiner {
         ColumnType type = table.column(colIndex).type();
         if (type instanceof DateColumnType) {
             return new IntIndex(table.dateColumn(colIndex));
-        }
-        if (type instanceof DateTimeColumnType) {
+        } else if (type instanceof DateTimeColumnType) {
             return new LongIndex(table.dateTimeColumn(colIndex));
-        }
-        if (type instanceof InstantColumnType) {
+        } else if (type instanceof InstantColumnType) {
             return new LongIndex(table.instantColumn(colIndex));
-        }
-        if (type instanceof TimeColumnType) {
+        } else if (type instanceof TimeColumnType) {
             return new IntIndex(table.timeColumn(colIndex));
-        }
-        if (type instanceof StringColumnType || type instanceof TextColumnType) {
+        } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
             return new StringIndex(table.stringColumn(colIndex));
-        }
-        if (type instanceof IntColumnType) {
+        } else if (type instanceof IntColumnType) {
             return new IntIndex(table.intColumn(colIndex));
-        }
-        if (type instanceof LongColumnType) {
+        } else if (type instanceof LongColumnType) {
             return new LongIndex(table.longColumn(colIndex));
-        }
-        if (type instanceof ShortColumnType) {
+        } else if (type instanceof ShortColumnType) {
             return new ShortIndex(table.shortColumn(colIndex));
-        }
-        if (type instanceof BooleanColumnType) {
+        } else if (type instanceof BooleanColumnType) {
             return new ByteIndex(table.booleanColumn(colIndex));
-        }
-        if (type instanceof DoubleColumnType) {
+        } else if (type instanceof DoubleColumnType) {
             return new DoubleIndex(table.doubleColumn(colIndex));
-        }
-        if (type instanceof FloatColumnType) {
+        } else if (type instanceof FloatColumnType) {
             return new FloatIndex(table.floatColumn(colIndex));
         }
         throw new IllegalArgumentException(

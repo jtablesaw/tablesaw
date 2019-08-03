@@ -22,7 +22,6 @@ public class DataFrameJoinerPerformanceTest {
         int[] filler = new int[table.rowCount()];
         Arrays.fill(filler, 1);
         IntColumn col = IntColumn.create("temp", filler);
-        ;
         for (int i = 0; i < numberColumnsToAdd; i++) {
             table.addColumns(col.copy().setName(prefix + "_appendColumn" + i));
         }

@@ -639,7 +639,7 @@ public class DataFrameJoinerTest {
     }
 
     @Test
-    void joiningShouldNotMutateColNamesOnOriginalTable() {
+    public void joiningShouldNotMutateColNamesOnOriginalTable() {
         Table table1 = createSTUDENT();
         Table table2 = createINSTRUCTOR();
         List<String> originalColumns = table2.columns().stream().map(Column::name).collect(Collectors.toList());
