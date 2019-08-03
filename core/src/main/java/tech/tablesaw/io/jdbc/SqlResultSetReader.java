@@ -108,21 +108,29 @@ public class SqlResultSetReader {
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 Column<?> column = table.column(i - 1); // subtract 1 because results sets originate at 1 not 0
                 if (column instanceof ShortColumn) {
-                    column.appendObj(resultSet.getShort(i));
+                	appendToColumn(column, resultSet, resultSet.getShort(i));
                 } else if (column instanceof IntColumn) {
-                    column.appendObj(resultSet.getInt(i));
+                	appendToColumn(column, resultSet, resultSet.getInt(i));
                 } else if (column instanceof LongColumn) {
-                    column.appendObj(resultSet.getLong(i));
+                	appendToColumn(column, resultSet, resultSet.getLong(i));
                 } else if (column instanceof FloatColumn) {
-                    column.appendObj(resultSet.getFloat(i));
+                	appendToColumn(column, resultSet, resultSet.getFloat(i));
                 } else if (column instanceof DoubleColumn) {
-                    column.appendObj(resultSet.getDouble(i));
+                	appendToColumn(column, resultSet, resultSet.getDouble(i));
                 } else {
                     column.appendObj(resultSet.getObject(i));
                 }
             }
         }
         return table;
+    }
+    
+    protected static void appendToColumn(Column<?> column, ResultSet resultSet, Object value) throws SQLException {
+    	if (resultSet.wasNull()) {
+    		column.appendMissing();
+    	} else {
+    		column.appendObj(value);
+    	}
     }
     
     protected static ColumnType getColumnType(int columnType, int scale, int precision) {
