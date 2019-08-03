@@ -251,7 +251,7 @@ public class DataFrameJoiner {
     }
 
     /**
-    Create a reverse index for a given column.
+     * Create a reverse index for a given column.
      */
     private Index indexFor(Table table, int colIndex) {
         ColumnType type = table.column(colIndex).type();
@@ -283,8 +283,8 @@ public class DataFrameJoiner {
     }
 
     /**
-    Given a reverse index find a selection of rows that have the same
-    value as the supplied column does in the given row index.
+     * Given a reverse index find a selection of rows that have the same
+     * value as the supplied column does in the given row index.
      */
     private Selection selectionForColumn(
         Column<?> valueColumn,
@@ -357,7 +357,7 @@ public class DataFrameJoiner {
     }
 
     /**
-    Create a big multicolumn selection for all join columns in the given table.
+     * Create a big multicolumn selection for all join columns in the given table.
      */
     private Selection createMultiColSelection(Table table1, int ri, List<Index> indexes, int selectionSize) {
         Selection multiColSelection = Selection.withRange(0, selectionSize);
