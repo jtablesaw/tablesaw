@@ -11,7 +11,7 @@ import java.util.function.DoublePredicate;
 
 public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> implements NumericColumn<T> {
 
-    protected NumberColumnFormatter printFormatter = new NumberColumnFormatter();
+    private NumberColumnFormatter printFormatter = new NumberColumnFormatter();
 
     protected Locale locale;
 
@@ -57,6 +57,10 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
 
     public void setPrintFormatter(final NumberColumnFormatter formatter) {
         this.printFormatter = formatter;
+    }
+
+    protected NumberColumnFormatter getPrintFormatter() {
+        return printFormatter;
     }
 
     /**

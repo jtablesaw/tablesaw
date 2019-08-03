@@ -66,7 +66,7 @@ public class TableTest {
         Table result = table.summarize("Injuries", mean, stdDev).by("State");
         assertEquals(49, result.rowCount());
         assertEquals(3, result.columnCount());
-        assertEquals("4.580805569368455", result.column(1).getString(0));
+        assertEquals("4.580805569368455", result.doubleColumn(1).getString(0));
     }
 
     @Test

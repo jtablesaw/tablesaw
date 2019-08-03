@@ -35,7 +35,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
 
     protected ShortColumn(final String name, ShortArrayList data) {
         super(ShortColumnType.instance(), name);
-        this.printFormatter = NumberColumnFormatter.ints();
+        setPrintFormatter(NumberColumnFormatter.ints());
         this.data = data;
     }
 
@@ -241,7 +241,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
         if (ShortColumnType.isMissingValue(value)) {
             return "";
         }
-        return String.valueOf(printFormatter.format(value));
+        return String.valueOf(getPrintFormatter().format(value));
     }
 
     @Override

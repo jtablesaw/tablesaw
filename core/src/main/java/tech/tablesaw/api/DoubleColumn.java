@@ -16,6 +16,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.fillers.DoubleRangeIterable;
 import tech.tablesaw.selection.Selection;
@@ -42,6 +43,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
 
     protected DoubleColumn(final String name, final DoubleArrayList data) {
         super(DoubleColumnType.instance(), name);
+        setPrintFormatter(NumberColumnFormatter.floatingPointDefault());
         this.data = data;
     }
 
@@ -51,7 +53,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         if (DoubleColumnType.isMissingValue(value)) {
             return "";
         }
-        return String.valueOf(printFormatter.format(value));
+        return String.valueOf(getPrintFormatter().format(value));
     }
 
     @Override
@@ -71,6 +73,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
 
     protected DoubleColumn(final String name) {
         super(DoubleColumnType.instance(), name);
+        setPrintFormatter(NumberColumnFormatter.floatingPointDefault());
         this.data = new DoubleArrayList(DEFAULT_ARRAY_SIZE);
     }
 

@@ -36,7 +36,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
 
     protected IntColumn(final String name, IntArrayList data) {
         super(IntColumnType.instance(), name);
-        this.printFormatter = NumberColumnFormatter.ints();
+        setPrintFormatter(NumberColumnFormatter.ints());
         this.data = data;
     }
 
@@ -272,7 +272,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
         if (IntColumnType.isMissingValue(value)) {
             return "";
         }
-        return String.valueOf(printFormatter.format(value));
+        return String.valueOf(getPrintFormatter().format(value));
     }
 
     @Override

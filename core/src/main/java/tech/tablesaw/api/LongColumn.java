@@ -38,7 +38,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
 
     private LongColumn(final String name, LongArrayList data) {
         super(LongColumnType.instance(), name);
-        this.printFormatter = NumberColumnFormatter.ints();
+        setPrintFormatter(NumberColumnFormatter.ints());
         this.data = data;
     }
 
@@ -87,7 +87,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         if (LongColumnType.isMissingValue(value)) {
             return "";
         }
-        return String.valueOf(printFormatter.format(value));
+        return String.valueOf(getPrintFormatter().format(value));
     }
 
     public static boolean valueIsMissing(long value) {

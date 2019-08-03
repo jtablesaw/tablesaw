@@ -51,12 +51,12 @@ public class HtmlWriterTest {
                 " </thead>" + LINE_END +
                 " <tbody>" + LINE_END +
                 "  <tr>" + LINE_END +
-                "   <td>1.0</td>" + LINE_END +
-                "   <td>1.0</td>" + LINE_END +
+                "   <td>1</td>" + LINE_END +
+                "   <td>1</td>" + LINE_END +
                 "  </tr>" + LINE_END +
                 "  <tr>" + LINE_END +
-                "   <td>2.0</td>" + LINE_END +
-                "   <td>2.0</td>" + LINE_END +
+                "   <td>2</td>" + LINE_END +
+                "   <td>2</td>" + LINE_END +
                 "  </tr>" + LINE_END +
                 "  <tr>" + LINE_END +
                 "   <td></td>" + LINE_END +
@@ -87,12 +87,12 @@ public class HtmlWriterTest {
                 " </thead>" + LINE_END +
                 " <tbody>" + LINE_END +
                 "  <tr class=\"even\">" + LINE_END +
-                "   <td>1.0</td>" + LINE_END +
-                "   <td>1.0</td>" + LINE_END +
+                "   <td>1</td>" + LINE_END +
+                "   <td>1</td>" + LINE_END +
                 "  </tr>" + LINE_END +
                 "  <tr class=\"odd\">" + LINE_END +
-                "   <td>2.0</td>" + LINE_END +
-                "   <td>2.0</td>" + LINE_END +
+                "   <td>2</td>" + LINE_END +
+                "   <td>2</td>" + LINE_END +
                 "  </tr>" + LINE_END +
                 "  <tr class=\"even\">" + LINE_END +
                 "   <td></td>" + LINE_END +

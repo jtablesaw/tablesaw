@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.numbers.FloatColumnType;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
@@ -34,6 +35,7 @@ public class FloatColumn extends NumberColumn<Float> {
 
     private FloatColumn(final String name, FloatArrayList data) {
         super(FloatColumnType.instance(), name);
+        setPrintFormatter(NumberColumnFormatter.floatingPointDefault());
         this.data = data;
     }
 
@@ -43,7 +45,7 @@ public class FloatColumn extends NumberColumn<Float> {
         if (FloatColumnType.isMissingValue(value)) {
             return "";
         }
-        return String.valueOf(printFormatter.format(value));
+        return String.valueOf(getPrintFormatter().format(value));
     }
 
 
