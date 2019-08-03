@@ -101,6 +101,14 @@ public class TestDb {
                 // No need to report an error.
                 // The table simply did not exist.
             }
+            
+            try {
+                // Drop the NullValues table.
+                stmt.execute("DROP TABLE NullValues");
+            } catch (SQLException ex) {
+                // No need to report an error.
+                // The table simply did not exist.
+            }
         } catch (SQLException ex) {
             System.out.println("ERROR: " + ex.getMessage());
             ex.printStackTrace();
@@ -390,5 +398,50 @@ public class TestDb {
         }
     }
 
+    /**
+     * The buildNullValues method creates the
+     * NullValues table and adds some rows to it.
+     */
+    public static void buildNullValuesTable(Connection conn) {
+        try {
+            // Get a Statement object.
+            Statement stmt = conn.createStatement();
+
+            // Create the table.
+            stmt.execute("CREATE TABLE NullValues (" +
+                    "StringValue CHAR(25), " +
+                    "PrimaryValue CHAR(10) NOT NULL PRIMARY KEY, " +
+                    "DoubleValue DOUBLE, " +
+                    "IntegerValue INTEGER, " +
+                    "ShortValue SMALLINT, " +
+                    "LongValue BIGINT, " +
+                    "FloatValue FLOAT, " +
+                    "BooleanValue Boolean" +
+                    ")");
+
+            // Insert row #1.
+            stmt.execute("INSERT INTO NullValues VALUES ( " +
+                    "'Non Null Description', " +
+                    "'001', " +
+                    "8.95, " +
+                    "1, " +
+                    "1, " +
+                    "1, " +
+                    "3.14, " +
+                    "TRUE )");
+
+            // Insert row #2.
+            stmt.execute("INSERT INTO NullValues (PrimaryValue, IntegerValue) VALUES ( " +
+                    "'002', " +
+                    "2 )");
+
+            // Insert row #3.
+            stmt.execute("INSERT INTO NullValues (StringValue, PrimaryValue) VALUES ( " +
+                    "'Non Null Description', " +
+                    "'003')");
+        } catch (SQLException ex) {
+            System.out.println("ERROR: " + ex.getMessage());
+        }
+    }
 
 }

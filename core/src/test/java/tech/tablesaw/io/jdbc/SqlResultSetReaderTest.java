@@ -65,6 +65,9 @@ public class SqlResultSetReaderTest {
         // Build the OracleNumbers table.
         TestDb.buildNumbersTable(conn);
         
+        // Build the NullValues table.
+        TestDb.buildNullValuesTable(conn);
+        
         try (Statement stmt = conn.createStatement()) {
             String sql;
 
@@ -106,6 +109,20 @@ public class SqlResultSetReaderTest {
                 assertTrue(numbers.column("NumFloat7_7").type() instanceof FloatColumnType);
                 assertTrue(numbers.column("NumDouble7_8").type() instanceof DoubleColumnType);
                 assertTrue(numbers.column("NumDouble7_16").type() instanceof DoubleColumnType);
+            }
+            
+            sql = "SELECT * FROM NullValues";
+            try (ResultSet rs = stmt.executeQuery(sql)) {
+                Table nullValues = SqlResultSetReader.read(rs);
+                assertEquals(8, nullValues.columnCount());
+                assertEquals(3, nullValues.rowCount());
+                assertEquals(2, nullValues.column("StringValue").removeMissing().size());
+                assertEquals(1, nullValues.column("DoubleValue").removeMissing().size());
+                assertEquals(2, nullValues.column("IntegerValue").removeMissing().size());
+                assertEquals(1, nullValues.column("ShortValue").removeMissing().size());
+                assertEquals(1, nullValues.column("LongValue").removeMissing().size());
+                assertEquals(1, nullValues.column("FloatValue").removeMissing().size());
+                assertEquals(1, nullValues.column("BooleanValue").removeMissing().size());
             }
 
         }
