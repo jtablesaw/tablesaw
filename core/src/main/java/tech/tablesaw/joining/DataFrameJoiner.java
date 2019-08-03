@@ -63,7 +63,6 @@ public class DataFrameJoiner {
 
     /**
      * Constructor.
-     *
      * @param table The table to join on.
      * @param joinColumnNames The join column names to join on.
      */
@@ -75,9 +74,7 @@ public class DataFrameJoiner {
 
     /**
      * Finds the index of the columns corresponding to the columnNames.
-     *
      * E.G. The column named "ID" is located at index 5 in table.
-     *
      * @param table the table that contains the columns.
      * @param columnNames the column names to find indexes of.
      * @return a list of column indexes within the table.
@@ -194,12 +191,11 @@ public class DataFrameJoiner {
      * @param table1 the table on the left side of the join.
      * @param table2 the table on the right side of the join.
      * @param joinType the type of join.
-     * @param allowDuplicates if {@code false} the join will fail if any columns other than the join column * have the
-     * same name if {@code true} the join will succeed and duplicate columns are renamed*
+     * @param allowDuplicates if {@code false} the join will fail if any columns other than the join column have the
+     * same name if {@code true} the join will succeed and duplicate columns are renamed
      * @param table2JoinColumnNames The names of the columns in table2 to join on.
      */
-    private Table joinInternal(Table table1, Table table2, JoinType joinType, boolean allowDuplicates,
-        String... table2JoinColumnNames) {
+    private Table joinInternal(Table table1, Table table2, JoinType joinType, boolean allowDuplicates, String... table2JoinColumnNames) {
         List<Integer> table2JoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
 
         Table result = Table.create(table1.name());
@@ -207,11 +203,8 @@ public class DataFrameJoiner {
         Set<Integer> resultIgnoreColIndexes = emptyTableFromColumns(result, table1, table2, joinType, allowDuplicates,
             table2JoinColumnIndexes);
 
-        // Build a reverse index for every join column in both tables.
-        List<Index> table1Indexes = joinColumnIndexes.stream().map(index -> indexFor(table1, index))
-            .collect(Collectors.toList());
-        List<Index> table2Indexes = table2JoinColumnIndexes.stream().map(index -> indexFor(table2, index))
-            .collect(Collectors.toList());
+        List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
+        List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
 
         Selection table1DoneSelection = Selection.with();
         Selection table2DoneSelection = Selection.with();
@@ -250,8 +243,15 @@ public class DataFrameJoiner {
         return result;
     }
 
-    /*
-    Create an reverse index for a given column.
+    /**
+     * Build a reverse index for every join column in the table.
+     */
+    private List<Index> buildIndexesForJoinColumns(List<Integer> joinColumnIndexes, Table table) {
+        return joinColumnIndexes.stream().map(c -> indexFor(table, c)).collect(Collectors.toList());
+    }
+
+    /**
+    Create a reverse index for a given column.
      */
     private Index indexFor(Table table, int colIndex) {
         ColumnType type = table.column(colIndex).type();
@@ -282,9 +282,9 @@ public class DataFrameJoiner {
             "Joining attempted on unsupported column type " + type);
     }
 
-    /*
+    /**
     Given a reverse index find a selection of rows that have the same
-    value as the the supplied column does in the given row index.
+    value as the supplied column does in the given row index.
      */
     private Selection selectionForColumn(
         Column<?> valueColumn,
@@ -356,7 +356,7 @@ public class DataFrameJoiner {
         return selection;
     }
 
-    /*
+    /**
     Create a big multicolumn selection for all join columns in the given table.
      */
     private Selection createMultiColSelection(Table table1, int ri, List<Index> indexes, int selectionSize) {
@@ -416,7 +416,6 @@ public class DataFrameJoiner {
         return joinInternal(table, table2, JoinType.FULL_OUTER, false, col2Name);
     }
 
-    /*
     /**
      * Joins to the given tables assuming that they have a column of the name we're joining on
      *
@@ -636,7 +635,7 @@ public class DataFrameJoiner {
     }
 
     /**
-     * Adds rows to destination for each row in table1, with the columns from table2 added as missing values.
+     * Adds rows to destination for each row in table1 with the columns from table2 added as missing values.
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void withMissingLeftJoin(Table destination, Table table1, Selection table1Rows,
@@ -659,7 +658,7 @@ public class DataFrameJoiner {
     }
 
     /**
-     * Adds rows to destination for each row in table2, with the columns from table1 added as missing values.
+     * Adds rows to destination for each row in table2 with the columns from table1 added as missing values.
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void withMissingRight(Table destination, int table1ColCount, Table table2, Selection table2Rows,
