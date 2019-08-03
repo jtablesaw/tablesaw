@@ -206,11 +206,11 @@ public class DataFrameJoiner {
         List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
         List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
 
-        Selection table1DoneSelection = Selection.with();
-        Selection table2DoneSelection = Selection.with();
+        Selection table1DoneRows = Selection.with();
+        Selection table2DoneRows = Selection.with();
         for (Row row : table1) {
             int ri = row.getRowNumber();
-            if (table1DoneSelection.contains(ri)) {
+            if (table1DoneRows.contains(ri)) {
                 // Already processed a selection of table1 that contained this row.
                 continue;
             }
@@ -224,11 +224,11 @@ public class DataFrameJoiner {
                 crossProduct(result, table1, table2, table1Rows, table2Rows, resultIgnoreColIndexes);
             }
 
-            table1DoneSelection = table1DoneSelection.or(table1Rows);
+            table1DoneRows = table1DoneRows.or(table1Rows);
             if (joinType == JoinType.FULL_OUTER || joinType == JoinType.RIGHT_OUTER) {
                 // Update done rows in table2 for full Outer.
-                table2DoneSelection = table2DoneSelection.or(table2Rows);
-            } else if (table1DoneSelection.size() == table1.rowCount()) {
+                table2DoneRows = table2DoneRows.or(table2Rows);
+            } else if (table1DoneRows.size() == table1.rowCount()) {
                 // Processed all the rows in table1 exit early.
                 result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
                 return result;
@@ -236,7 +236,7 @@ public class DataFrameJoiner {
         }
 
         // Add all rows from table2 that were not handled already.
-        Selection table2Rows = table2DoneSelection.flip(0, table2.rowCount());
+        Selection table2Rows = table2DoneRows.flip(0, table2.rowCount());
         withMissingRight(result, table1.columnCount(), table2, table2Rows, joinType, table2JoinColumnIndexes,
             resultIgnoreColIndexes);
         result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
