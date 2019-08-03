@@ -226,7 +226,7 @@ public class DataFrameJoiner {
             Selection table2Rows = createMultiColSelection(table1, ri, table2Indexes, table2.rowCount());
 
             if ((joinType == JoinType.LEFT_OUTER || joinType == JoinType.FULL_OUTER) && table2Rows.isEmpty()) {
-                withMissingLeftJoin(result, table1.where(table1Rows), resultIgnoreColIndexes);
+                withMissingLeftJoin(result, table1, table1Rows, resultIgnoreColIndexes);
             } else {
                 crossProduct(result, table1, table2, table1Rows, table2Rows, resultIgnoreColIndexes);
             }
@@ -243,9 +243,8 @@ public class DataFrameJoiner {
         }
 
         // Add all rows from table2 that were not handled already.
-        Selection table2OnlySelection = table2DoneSelection.flip(0, table2.rowCount());
-        Table table2OnlyRows = table2.where(table2OnlySelection);
-        withMissingRight(result, table1.columnCount(), table2OnlyRows, joinType, table2JoinColumnIndexes,
+        Selection table2Rows = table2DoneSelection.flip(0, table2.rowCount());
+        withMissingRight(result, table1.columnCount(), table2, table2Rows, joinType, table2JoinColumnIndexes,
             resultIgnoreColIndexes);
         result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
         return result;
@@ -650,16 +649,19 @@ public class DataFrameJoiner {
      * Adds rows to destination for each row in table1, with the columns from table2 added as missing values.
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void withMissingLeftJoin(Table destination, Table table1, Set<Integer> ignoreColumns) {
+    private void withMissingLeftJoin(Table destination, Table table1, Selection table1Rows,
+        Set<Integer> ignoreColumns) {
         for (int c = 0; c < destination.columnCount(); c++) {
             if (ignoreColumns.contains(c)) {
                 continue;
             }
             if (c < table1.columnCount()) {
                 Column t1Col = table1.column(c);
-                destination.column(c).append(t1Col);
+                for (int index : table1Rows) {
+                    destination.column(c).append(t1Col, index);
+                }
             } else {
-                for (int r1 = 0; r1 < table1.rowCount(); r1++) {
+                for (int r1 = 0; r1 < table1Rows.size(); r1++) {
                     destination.column(c).appendMissing();
                 }
             }
@@ -670,28 +672,32 @@ public class DataFrameJoiner {
      * Adds rows to destination for each row in table2, with the columns from table1 added as missing values.
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void withMissingRight(Table destination, int table1ColCount, Table table2,
-        JoinType joinType, List<Integer> col2Indexes, Set<Integer> skipColumns) {
+    private void withMissingRight(Table destination, int table1ColCount, Table table2, Selection table2Rows,
+        JoinType joinType, List<Integer> col2Indexes, Set<Integer> ignoreColumns) {
 
         // Add index data from table2 into join column positions in table one.
         if (joinType == JoinType.FULL_OUTER) {
             for (int i = 0; i < col2Indexes.size(); i++) {
                 Column t2Col = table2.column(col2Indexes.get(i));
-                destination.column(joinColumnIndexes.get(i)).append(t2Col);
+                for (int index : table2Rows) {
+                    destination.column(joinColumnIndexes.get(i)).append(t2Col, index);
+                }
             }
         }
 
         for (int c = 0; c < destination.columnCount(); c++) {
-            if (skipColumns.contains(c) || joinColumnIndexes.contains(c)) {
+            if (ignoreColumns.contains(c) || joinColumnIndexes.contains(c)) {
                 continue;
             }
             if (c < table1ColCount) {
-                for (int r1 = 0; r1 < table2.rowCount(); r1++) {
+                for (int r1 = 0; r1 < table2Rows.size(); r1++) {
                     destination.column(c).appendMissing();
                 }
             } else {
                 Column t2Col = table2.column(c - table1ColCount);
-                destination.column(c).append(t2Col);
+                for (int index : table2Rows) {
+                    destination.column(c).append(t2Col, index);
+                }
             }
         }
     }
