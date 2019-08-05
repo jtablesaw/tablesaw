@@ -14,57 +14,46 @@ import tech.tablesaw.plotly.traces.ScatterTrace;
 
 public class DotPlotExample {
 
-    public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
 
-        Table bush = Table.read().csv("../data/bush.csv");
+    Table bush = Table.read().csv("../data/bush.csv");
 
-        NumberColumn<?> x = bush.nCol("approval");
-        CategoricalColumn<?> y = bush.stringColumn("who");
+    NumberColumn<?> x = bush.nCol("approval");
+    CategoricalColumn<?> y = bush.stringColumn("who");
 
-        Layout layout = Layout.builder()
-                .title("Approval ratings by agency")
-                .build();
+    Layout layout = Layout.builder().title("Approval ratings by agency").build();
 
-        ScatterTrace trace = ScatterTrace.builder(x, y)
-                .mode(ScatterTrace.Mode.MARKERS)
-                .build();
-        Plot.show(new Figure(layout, trace));
+    ScatterTrace trace = ScatterTrace.builder(x, y).mode(ScatterTrace.Mode.MARKERS).build();
+    Plot.show(new Figure(layout, trace));
 
+    // A more complex example involving two traces
+    IntColumn year = bush.dateColumn("date").year();
+    year.setName("year");
+    bush.addColumns(year);
+    bush.dropWhere(bush.intColumn("year").isIn((Number) 2001, (Number) 2002));
+    Table summary = bush.summarize("approval", AggregateFunctions.mean).by("who", "year");
 
-        // A more complex example involving two traces
-        IntColumn year = bush.dateColumn("date").year();
-        year.setName("year");
-        bush.addColumns(year);
-        bush.dropWhere(bush.intColumn("year").isIn((Number)2001, (Number) 2002));
-        Table summary = bush.summarize("approval", AggregateFunctions.mean).by("who", "year");
-        
-        Layout layout2 = Layout.builder()
-                .title("Mean approval ratings by agency and year for 2001 and 2002")
-                .build();
+    Layout layout2 =
+        Layout.builder()
+            .title("Mean approval ratings by agency and year for 2001 and 2002")
+            .build();
 
-        Table year1 = summary.where(summary.intColumn("year").isEqualTo(2001));
-        Table year2 = summary.where(summary.intColumn("year").isEqualTo(2002));
-        ScatterTrace trace2 = ScatterTrace.builder(year1.nCol("Mean [approval]"), year1.stringColumn("who"))
-                .name("2001")
-                .mode(ScatterTrace.Mode.MARKERS)
-                .marker(Marker.builder()
-                        .symbol(Symbol.DIAMOND)
-                        .color("red")
-                        .size(10)
-                        .build())
-                .build();
+    Table year1 = summary.where(summary.intColumn("year").isEqualTo(2001));
+    Table year2 = summary.where(summary.intColumn("year").isEqualTo(2002));
+    ScatterTrace trace2 =
+        ScatterTrace.builder(year1.nCol("Mean [approval]"), year1.stringColumn("who"))
+            .name("2001")
+            .mode(ScatterTrace.Mode.MARKERS)
+            .marker(Marker.builder().symbol(Symbol.DIAMOND).color("red").size(10).build())
+            .build();
 
-        ScatterTrace trace3 = ScatterTrace.builder(year2.nCol("Mean [approval]"), year2.stringColumn("who"))
-                .name("2002")
-                .mode(ScatterTrace.Mode.MARKERS)
-                .marker(Marker.builder()
-                        .symbol(Symbol.STAR)
-                        .size(10)
-                        .color("blue")
-                        .build())
-                .build();
+    ScatterTrace trace3 =
+        ScatterTrace.builder(year2.nCol("Mean [approval]"), year2.stringColumn("who"))
+            .name("2002")
+            .mode(ScatterTrace.Mode.MARKERS)
+            .marker(Marker.builder().symbol(Symbol.STAR).size(10).color("blue").build())
+            .build();
 
-        Plot.show(new Figure(layout2, trace2, trace3));
-
-    }
+    Plot.show(new Figure(layout2, trace2, trace3));
+  }
 }

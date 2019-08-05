@@ -14,88 +14,85 @@
 
 package tech.tablesaw.io;
 
+import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
-
-import com.google.common.io.Files;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvWriteOptions;
 import tech.tablesaw.io.csv.CsvWriter;
 
 public class DataFrameWriter {
 
-    private final WriterRegistry registry;
-    private final Table table;
+  private final WriterRegistry registry;
+  private final Table table;
 
-    public DataFrameWriter(WriterRegistry registry, Table table) {
-        this.registry = registry;
-        this.table = table;
+  public DataFrameWriter(WriterRegistry registry, Table table) {
+    this.registry = registry;
+    this.table = table;
+  }
+
+  public void toFile(String file) throws IOException {
+    toFile(new File(file));
+  }
+
+  public void toFile(File file) throws IOException {
+    String extension = Files.getFileExtension(file.getCanonicalPath());
+    DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
+    dataWriter.write(table, new Destination(file));
+  }
+
+  public void toStream(OutputStream stream, String extension) throws IOException {
+    DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
+    dataWriter.write(table, new Destination(stream));
+  }
+
+  public void toWriter(Writer writer, String extension) throws IOException {
+    DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
+    dataWriter.write(table, new Destination(writer));
+  }
+
+  public <T extends WriteOptions> void usingOptions(T options) throws IOException {
+    DataWriter<T> dataWriter = registry.getWriterForOptions(options);
+    dataWriter.write(table, options);
+  }
+
+  public String toString(String extension) {
+    StringWriter writer = new StringWriter();
+    DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
+    try {
+      dataWriter.write(table, new Destination(writer));
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
     }
+    return writer.toString();
+  }
 
-    public void toFile(String file) throws IOException {
-        toFile(new File(file));
-    }
+  // legacy methods left for backwards compatibility
 
-    public void toFile(File file) throws IOException {
-        String extension = Files.getFileExtension(file.getCanonicalPath());
-        DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
-        dataWriter.write(table, new Destination(file));
-    }
+  public void csv(String file) throws IOException {
+    CsvWriteOptions options = CsvWriteOptions.builder(file).build();
+    new CsvWriter().write(table, options);
+  }
 
-    public void toStream(OutputStream stream, String extension) throws IOException {
-        DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
-        dataWriter.write(table, new Destination(stream));
-    }
+  public void csv(File file) throws IOException {
+    CsvWriteOptions options = CsvWriteOptions.builder(file).build();
+    new CsvWriter().write(table, options);
+  }
 
-    public void toWriter(Writer writer, String extension) throws IOException {
-        DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
-        dataWriter.write(table, new Destination(writer));
-    }
- 
-    public <T extends WriteOptions> void usingOptions(T options) throws IOException {
-        DataWriter<T> dataWriter = registry.getWriterForOptions(options);
-        dataWriter.write(table, options);
-    }
+  public void csv(CsvWriteOptions options) {
+    new CsvWriter().write(table, options);
+  }
 
-    public String toString(String extension) {
-        StringWriter writer = new StringWriter();
-        DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
-        try {
-            dataWriter.write(table, new Destination(writer));
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        return writer.toString();
-    }
+  public void csv(OutputStream stream) {
+    CsvWriteOptions options = CsvWriteOptions.builder(stream).build();
+    new CsvWriter().write(table, options);
+  }
 
-    // legacy methods left for backwards compatibility
-
-    public void csv(String file) throws IOException {
-        CsvWriteOptions options = CsvWriteOptions.builder(file).build();
-        new CsvWriter().write(table, options);
-    }
-
-    public void csv(File file) throws IOException {
-        CsvWriteOptions options = CsvWriteOptions.builder(file).build();
-        new CsvWriter().write(table, options);
-    }
-
-    public void csv(CsvWriteOptions options) {
-        new CsvWriter().write(table, options);
-    }
-
-    public void csv(OutputStream stream) {
-        CsvWriteOptions options = CsvWriteOptions.builder(stream).build();
-        new CsvWriter().write(table, options);
-    }
-
-    public void csv(Writer writer) {
-        CsvWriteOptions options = CsvWriteOptions.builder(writer).build();
-        new CsvWriter().write(table, options);
-    }
-
+  public void csv(Writer writer) {
+    CsvWriteOptions options = CsvWriteOptions.builder(writer).build();
+    new CsvWriter().write(table, options);
+  }
 }

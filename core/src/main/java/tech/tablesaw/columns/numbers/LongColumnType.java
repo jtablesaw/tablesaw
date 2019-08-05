@@ -7,41 +7,42 @@ import tech.tablesaw.io.ReadOptions;
 
 public class LongColumnType extends AbstractColumnType {
 
-    public static final LongParser DEFAULT_PARSER = new LongParser(ColumnType.LONG);
+  public static final LongParser DEFAULT_PARSER = new LongParser(ColumnType.LONG);
 
-    private static final int BYTE_SIZE = 8;
+  private static final int BYTE_SIZE = 8;
 
-    private static LongColumnType INSTANCE;
+  private static LongColumnType INSTANCE;
 
-    private LongColumnType(int byteSize, String name, String printerFriendlyName) {
-        super(byteSize, name, printerFriendlyName);
+  private LongColumnType(int byteSize, String name, String printerFriendlyName) {
+    super(byteSize, name, printerFriendlyName);
+  }
+
+  public static LongColumnType instance() {
+    if (INSTANCE == null) {
+      INSTANCE = new LongColumnType(BYTE_SIZE, "LONG", "Long");
     }
+    return INSTANCE;
+  }
 
-    public static LongColumnType instance() {
-        if (INSTANCE == null) {
-            INSTANCE = new LongColumnType(BYTE_SIZE, "LONG", "Long");
-        }
-        return INSTANCE;
-    }
-    @Override
-    public LongColumn create(String name) {
-        return LongColumn.create(name);
-    }
+  @Override
+  public LongColumn create(String name) {
+    return LongColumn.create(name);
+  }
 
-    public LongParser defaultParser() {
-        return DEFAULT_PARSER;
-    }
+  public LongParser defaultParser() {
+    return DEFAULT_PARSER;
+  }
 
-    @Override
-    public LongParser customParser(ReadOptions options) {
-        return new LongParser(this, options);
-    }
+  @Override
+  public LongParser customParser(ReadOptions options) {
+    return new LongParser(this, options);
+  }
 
-    public static boolean isMissingValue(long value) {
-        return value == missingValueIndicator();
-    }
+  public static boolean isMissingValue(long value) {
+    return value == missingValueIndicator();
+  }
 
-    public static long missingValueIndicator() {
-        return Long.MIN_VALUE;
-    }
+  public static long missingValueIndicator() {
+    return Long.MIN_VALUE;
+  }
 }

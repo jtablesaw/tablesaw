@@ -19,11 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableListMultimap;
 import java.util.List;
-
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
@@ -33,88 +31,91 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class TableSliceGroupTest {
 
-    private static NumericAggregateFunction exaggerate = new NumericAggregateFunction("exageration") {
+  private static NumericAggregateFunction exaggerate =
+      new NumericAggregateFunction("exageration") {
 
         @Override
         public Double summarize(NumericColumn<?> data) {
-            return StatUtils.max(data.asDoubleArray()) + 1000;
+          return StatUtils.max(data.asDoubleArray()) + 1000;
         }
-    };
+      };
 
-    private Table table;
+  private Table table;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+  @BeforeEach
+  public void setUp() throws Exception {
+    table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+  }
+
+  @Test
+  public void testViewGroupCreation() {
+
+    TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
+    assertEquals(6, group.size());
+    List<TableSlice> viewList = group.getSlices();
+
+    int count = 0;
+    for (TableSlice view : viewList) {
+      count += view.rowCount();
     }
+    assertEquals(table.rowCount(), count);
+  }
 
-    @Test
-    public void testViewGroupCreation() {
+  @Test
+  public void testViewTwoColumn() {
+    TableSliceGroup group =
+        StandardTableSliceGroup.create(
+            table, table.categoricalColumn("who"), table.categoricalColumn("approval"));
+    List<TableSlice> viewList = group.getSlices();
 
-        TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
-        assertEquals(6, group.size());
-        List<TableSlice> viewList = group.getSlices();
-
-        int count = 0;
-        for (TableSlice view : viewList) {
-            count += view.rowCount();
-        }
-        assertEquals(table.rowCount(), count);
+    int count = 0;
+    for (TableSlice view : viewList) {
+      count += view.rowCount();
     }
+    assertEquals(table.rowCount(), count);
+  }
 
-    @Test
-    public void testViewTwoColumn() {
-        TableSliceGroup group = StandardTableSliceGroup.create(table,
-                table.categoricalColumn("who"),
-                table.categoricalColumn("approval"));
-        List<TableSlice> viewList = group.getSlices();
+  @Test
+  public void testCustomFunction() {
+    Table exaggeration = table.summarize("approval", exaggerate).by("who");
+    StringColumn group = exaggeration.stringColumn(0);
+    assertTrue(group.contains("fox"));
+  }
 
-        int count = 0;
-        for (TableSlice view : viewList) {
-            count += view.rowCount();
-        }
-        assertEquals(table.rowCount(), count);
-    }
+  @Test
+  public void asTableList() {
+    TableSliceGroup group = StandardTableSliceGroup.create(table, "who");
+    List<Table> tables = group.asTableList();
+    assertEquals(6, tables.size());
+  }
 
-    @Test
-    public void testCustomFunction() {
-        Table exaggeration = table.summarize("approval", exaggerate).by("who");
-        StringColumn group = exaggeration.stringColumn(0);
-        assertTrue(group.contains("fox"));
-    }
+  @Test
+  public void aggregate() {
+    TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
+    Table aggregated = group.aggregate("approval", exaggerate);
+    assertEquals(aggregated.rowCount(), group.size());
+  }
 
-    @Test
-    public void asTableList() {
-        TableSliceGroup group = StandardTableSliceGroup.create(table, "who");
-        List<Table> tables = group.asTableList();
-        assertEquals(6, tables.size());
-    }
+  @Test
+  public void testCreateWithTextColumn() {
+    TextColumn whoText = table.stringColumn("who").asTextColumn();
+    whoText.setName("who text");
+    table.addColumns(whoText);
+    TableSliceGroup group1 =
+        StandardTableSliceGroup.create(table, table.categoricalColumn("who text"));
+    TableSliceGroup group2 = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
+    Table aggregated1 = group1.aggregate("approval", exaggerate);
+    Table aggregated2 = group2.aggregate("approval", exaggerate);
+    assertEquals(aggregated1.rowCount(), aggregated2.rowCount());
+  }
 
-    @Test
-    public void aggregate() {
-        TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
-        Table aggregated = group.aggregate("approval", exaggerate);
-        assertEquals(aggregated.rowCount(), group.size());
-    }
+  @Test
+  public void aggregateWithMultipleColumns() {
+    table.addColumns(table.categoricalColumn("approval").copy().setName("approval2"));
+    TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
 
-    @Test
-    public void testCreateWithTextColumn() {
-        TextColumn whoText = table.stringColumn("who").asTextColumn();
-        whoText.setName("who text");
-        table.addColumns(whoText);
-        TableSliceGroup group1 = StandardTableSliceGroup.create(table, table.categoricalColumn("who text"));
-        TableSliceGroup group2 = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
-        Table aggregated1 = group1.aggregate("approval", exaggerate);
-        Table aggregated2 = group2.aggregate("approval", exaggerate);
-        assertEquals(aggregated1.rowCount(), aggregated2.rowCount());
-    }
-
-    @Test
-    public void aggregateWithMultipleColumns() {
-        table.addColumns(table.categoricalColumn("approval").copy().setName("approval2"));
-        TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
-
-        Table aggregated = group.aggregate(ImmutableListMultimap.of("approval", exaggerate, "approval2", exaggerate));
-        assertEquals(aggregated.rowCount(), group.size());
-    }
+    Table aggregated =
+        group.aggregate(ImmutableListMultimap.of("approval", exaggerate, "approval2", exaggerate));
+    assertEquals(aggregated.rowCount(), group.size());
+  }
 }

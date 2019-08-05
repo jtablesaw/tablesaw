@@ -15,55 +15,52 @@
 package tech.tablesaw.index;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * An index for four-byte integer and Date columns
- */
+/** An index for four-byte integer and Date columns */
 public class StringIndex implements Index {
 
-    private final Map<String, IntArrayList> index;
+  private final Map<String, IntArrayList> index;
 
-    public StringIndex(StringColumn column) {
-        int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
-        Map<String, IntArrayList> tempMap = new HashMap<>(sizeEstimate);
-        for (int i = 0; i < column.size(); i++) {
-            String value = column.get(i);
-            IntArrayList recordIds = tempMap.get(value);
-            if (recordIds == null) {
-                recordIds = new IntArrayList();
-                recordIds.add(i);
-                tempMap.put(value, recordIds);
-            } else {
-                recordIds.add(i);
-            }
-        }
-        index = new HashMap<>(tempMap);
+  public StringIndex(StringColumn column) {
+    int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
+    Map<String, IntArrayList> tempMap = new HashMap<>(sizeEstimate);
+    for (int i = 0; i < column.size(); i++) {
+      String value = column.get(i);
+      IntArrayList recordIds = tempMap.get(value);
+      if (recordIds == null) {
+        recordIds = new IntArrayList();
+        recordIds.add(i);
+        tempMap.put(value, recordIds);
+      } else {
+        recordIds.add(i);
+      }
     }
+    index = new HashMap<>(tempMap);
+  }
 
-    private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-        for (int i : tableKeys) {
-            selection.add(i);
-        }
+  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
+    for (int i : tableKeys) {
+      selection.add(i);
     }
+  }
 
-    /**
-     * Returns a bitmap containing row numbers of all cells matching the given int
-     *
-     * @param value This is a 'key' from the index perspective, meaning it is a value from the standpoint of the column
-     */
-    public Selection get(String value) {
-        Selection selection = new BitmapBackedSelection();
-        IntArrayList list = index.get(value);
-        if (list != null) {
-            addAllToSelection(list, selection);
-        }
-        return selection;
+  /**
+   * Returns a bitmap containing row numbers of all cells matching the given int
+   *
+   * @param value This is a 'key' from the index perspective, meaning it is a value from the
+   *     standpoint of the column
+   */
+  public Selection get(String value) {
+    Selection selection = new BitmapBackedSelection();
+    IntArrayList list = index.get(value);
+    if (list != null) {
+      addAllToSelection(list, selection);
     }
-
+    return selection;
+  }
 }

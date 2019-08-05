@@ -20,21 +20,18 @@ import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.PieTrace;
 
-/**
- * Basic sample pie chart
- */
+/** Basic sample pie chart */
 public class PieExample {
 
-    public static void main(String[] args) throws Exception {
-        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+  public static void main(String[] args) throws Exception {
+    Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
 
-        Table t2 = table.countBy(table.categoricalColumn("Scale"));
+    Table t2 = table.countBy(table.categoricalColumn("Scale"));
 
-        PieTrace trace = PieTrace.builder(
-                t2.categoricalColumn("Category"),
-                t2.numberColumn("Count")).build();
-        Layout layout = Layout.builder().title("Total fatalities by scale").build();
+    PieTrace trace =
+        PieTrace.builder(t2.categoricalColumn("Category"), t2.numberColumn("Count")).build();
+    Layout layout = Layout.builder().title("Total fatalities by scale").build();
 
-        Plot.show(new Figure(layout, trace));
-    }
+    Plot.show(new Figure(layout, trace));
+  }
 }

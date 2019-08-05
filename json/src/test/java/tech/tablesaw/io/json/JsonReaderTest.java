@@ -17,41 +17,42 @@ package tech.tablesaw.io.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 
 public class JsonReaderTest {
 
-    @Test
-    public void arrayOfArraysWithHeader() {
-	String json = "[[\"Date\",\"Value\"],[1453438800000,-2.1448117025014],[1454043600000,-2.9763153817574],[1454648400000,-2.9545283436391]]";
-	Table table = Table.read().string(json, "json");
-        assertEquals(2, table.columnCount());
-        assertEquals(3, table.rowCount());
-        assertEquals("Date", table.column(0).name());
-        assertEquals("Value", table.column(1).name());
-        assertEquals(ColumnType.LONG, table.columnTypes()[0]);
-    }
+  @Test
+  public void arrayOfArraysWithHeader() {
+    String json =
+        "[[\"Date\",\"Value\"],[1453438800000,-2.1448117025014],[1454043600000,-2.9763153817574],[1454648400000,-2.9545283436391]]";
+    Table table = Table.read().string(json, "json");
+    assertEquals(2, table.columnCount());
+    assertEquals(3, table.rowCount());
+    assertEquals("Date", table.column(0).name());
+    assertEquals("Value", table.column(1).name());
+    assertEquals(ColumnType.LONG, table.columnTypes()[0]);
+  }
 
-    @Test
-    public void arrayOfArraysNoHeader() {
-	String json = "[[1453438800000,-2.1448117025014],[1454043600000,-2.9763153817574],[1454648400000,-2.9545283436391]]";
-	Table table = Table.read().string(json, "json");
-        assertEquals(2, table.columnCount());
-        assertEquals(3, table.rowCount());
-        assertEquals(ColumnType.LONG, table.columnTypes()[0]);
-    }
+  @Test
+  public void arrayOfArraysNoHeader() {
+    String json =
+        "[[1453438800000,-2.1448117025014],[1454043600000,-2.9763153817574],[1454648400000,-2.9545283436391]]";
+    Table table = Table.read().string(json, "json");
+    assertEquals(2, table.columnCount());
+    assertEquals(3, table.rowCount());
+    assertEquals(ColumnType.LONG, table.columnTypes()[0]);
+  }
 
-    @Test
-    public void arrayOfNestedObjects() {
-	String json = "[{\"a\":1453438800000,\"b\":{\"c\":-2.1448117025014}},{\"a\":1454043600000,\"b\":{\"c\":-2.9763153817574}},{\"a\":1454648400000,\"b\":{\"c\":-2.9545283436391}}]";
-	Table table = Table.read().string(json, "json");
-        assertEquals(2, table.columnCount());
-        assertEquals(3, table.rowCount());
-        assertEquals("a", table.column(0).name());
-        assertEquals("b.c", table.column(1).name());
-        assertEquals(ColumnType.LONG, table.columnTypes()[0]);
-    }
-
+  @Test
+  public void arrayOfNestedObjects() {
+    String json =
+        "[{\"a\":1453438800000,\"b\":{\"c\":-2.1448117025014}},{\"a\":1454043600000,\"b\":{\"c\":-2.9763153817574}},{\"a\":1454648400000,\"b\":{\"c\":-2.9545283436391}}]";
+    Table table = Table.read().string(json, "json");
+    assertEquals(2, table.columnCount());
+    assertEquals(3, table.rowCount());
+    assertEquals("a", table.column(0).name());
+    assertEquals("b.c", table.column(1).name());
+    assertEquals(ColumnType.LONG, table.columnTypes()[0]);
+  }
 }

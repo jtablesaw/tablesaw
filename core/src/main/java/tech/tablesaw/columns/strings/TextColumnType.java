@@ -7,34 +7,33 @@ import tech.tablesaw.io.ReadOptions;
 
 public class TextColumnType extends AbstractColumnType {
 
-    public static final int BYTE_SIZE = 4;
-    public static final StringParser DEFAULT_PARSER = new StringParser(ColumnType.STRING);
+  public static final int BYTE_SIZE = 4;
+  public static final StringParser DEFAULT_PARSER = new StringParser(ColumnType.STRING);
 
-    private static TextColumnType INSTANCE;
+  private static TextColumnType INSTANCE;
 
-    private TextColumnType(int byteSize, String name, String printerFriendlyName) {
-        super(byteSize, name, printerFriendlyName);
+  private TextColumnType(int byteSize, String name, String printerFriendlyName) {
+    super(byteSize, name, printerFriendlyName);
+  }
+
+  public static TextColumnType instance() {
+    if (INSTANCE == null) {
+      INSTANCE = new TextColumnType(BYTE_SIZE, "TEXT", "Text");
     }
+    return INSTANCE;
+  }
 
-    public static TextColumnType instance() {
-        if (INSTANCE == null) {
-            INSTANCE = new TextColumnType(BYTE_SIZE, "TEXT", "Text");
-        }
-        return INSTANCE;
-    }
+  @Override
+  public TextColumn create(String name) {
+    return TextColumn.create(name);
+  }
 
-    @Override
-    public TextColumn create(String name) {
-        return TextColumn.create(name);
-    }
+  @Override
+  public StringParser customParser(ReadOptions options) {
+    return new StringParser(this, options);
+  }
 
-    @Override
-    public StringParser customParser(ReadOptions options) {
-        return new StringParser(this, options);
-    }
-
-    public static String missingValueIndicator() {
-        return "";
-    }
-
+  public static String missingValueIndicator() {
+    return "";
+  }
 }

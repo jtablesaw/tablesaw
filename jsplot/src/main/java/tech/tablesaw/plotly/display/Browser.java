@@ -7,20 +7,19 @@ import java.net.URI;
 
 public class Browser {
 
-    public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
 
-        if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().browse(new URI("http://www.example.com"));
-        }
+    if (Desktop.isDesktopSupported()) {
+      Desktop.getDesktop().browse(new URI("http://www.example.com"));
     }
+  }
 
-    public void browse(File file) throws IOException {
-        if (Desktop.isDesktopSupported()) {
+  public void browse(File file) throws IOException {
+    if (Desktop.isDesktopSupported()) {
 
-            Desktop.getDesktop().browse(file.toURI());
-        }
-        else {
-            throw new UnsupportedOperationException("Browser not supported.");
-        }
+      Desktop.getDesktop().browse(file.toURI());
+    } else {
+      throw new UnsupportedOperationException("Browser not supported.");
     }
+  }
 }

@@ -14,6 +14,12 @@
 
 package tech.tablesaw.io.html;
 
+import static java.lang.Double.NaN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
@@ -21,130 +27,196 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import static java.lang.Double.NaN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class HtmlWriterTest {
 
-    private static final String LINE_END = System.lineSeparator();
+  private static final String LINE_END = System.lineSeparator();
 
-    private double[] v1 = {1, 2, NaN};
-    private double[] v2 = {1, 2, NaN};
-    private Table table = Table.create("t",
-            DoubleColumn.create("v", v1),
-            DoubleColumn.create("v2", v2)
-    );
+  private double[] v1 = {1, 2, NaN};
+  private double[] v2 = {1, 2, NaN};
+  private Table table =
+      Table.create("t", DoubleColumn.create("v", v1), DoubleColumn.create("v2", v2));
 
-    @Test
-    public void basic() {
-        String output = table.write().toString("html");
-        assertEquals("<table>" + LINE_END +
-                " <thead>" + LINE_END +
-                "  <tr>" + LINE_END +
-                "   <th>v</th>" + LINE_END +
-                "   <th>v2</th>" + LINE_END +
-                "  </tr>" + LINE_END +
-                " </thead>" + LINE_END +
-                " <tbody>" + LINE_END +
-                "  <tr>" + LINE_END +
-                "   <td>1</td>" + LINE_END +
-                "   <td>1</td>" + LINE_END +
-                "  </tr>" + LINE_END +
-                "  <tr>" + LINE_END +
-                "   <td>2</td>" + LINE_END +
-                "   <td>2</td>" + LINE_END +
-                "  </tr>" + LINE_END +
-                "  <tr>" + LINE_END +
-                "   <td></td>" + LINE_END +
-                "   <td></td>" + LINE_END +
-                "  </tr>" + LINE_END +
-                " </tbody>" + LINE_END +
-                "</table>", output);
-    }
+  @Test
+  public void basic() {
+    String output = table.write().toString("html");
+    assertEquals(
+        "<table>"
+            + LINE_END
+            + " <thead>"
+            + LINE_END
+            + "  <tr>"
+            + LINE_END
+            + "   <th>v</th>"
+            + LINE_END
+            + "   <th>v2</th>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + " </thead>"
+            + LINE_END
+            + " <tbody>"
+            + LINE_END
+            + "  <tr>"
+            + LINE_END
+            + "   <td>1</td>"
+            + LINE_END
+            + "   <td>1</td>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + "  <tr>"
+            + LINE_END
+            + "   <td>2</td>"
+            + LINE_END
+            + "   <td>2</td>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + "  <tr>"
+            + LINE_END
+            + "   <td></td>"
+            + LINE_END
+            + "   <td></td>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + " </tbody>"
+            + LINE_END
+            + "</table>",
+        output);
+  }
 
-    @Test
-    public void alternatingRows() throws IOException {
-        OutputStream baos = new ByteArrayOutputStream();
-        ElementCreator elementCreator = (elementName, column, row) -> {
-            Element element = new Element(elementName);
-            if (elementName.equals("tr") && row != null) {
-                return element.addClass(row % 2 == 0 ? "even" : "odd");
-            }
-            return element;
+  @Test
+  public void alternatingRows() throws IOException {
+    OutputStream baos = new ByteArrayOutputStream();
+    ElementCreator elementCreator =
+        (elementName, column, row) -> {
+          Element element = new Element(elementName);
+          if (elementName.equals("tr") && row != null) {
+            return element.addClass(row % 2 == 0 ? "even" : "odd");
+          }
+          return element;
         };
-        table.write().usingOptions(HtmlWriteOptions.builder(baos).elementCreator(elementCreator).build());
-        String output = baos.toString();
-        assertEquals("<table>" + LINE_END +
-                " <thead>" + LINE_END +
-                "  <tr>" + LINE_END +
-                "   <th>v</th>" + LINE_END +
-                "   <th>v2</th>" + LINE_END +
-                "  </tr>" + LINE_END +
-                " </thead>" + LINE_END +
-                " <tbody>" + LINE_END +
-                "  <tr class=\"even\">" + LINE_END +
-                "   <td>1</td>" + LINE_END +
-                "   <td>1</td>" + LINE_END +
-                "  </tr>" + LINE_END +
-                "  <tr class=\"odd\">" + LINE_END +
-                "   <td>2</td>" + LINE_END +
-                "   <td>2</td>" + LINE_END +
-                "  </tr>" + LINE_END +
-                "  <tr class=\"even\">" + LINE_END +
-                "   <td></td>" + LINE_END +
-                "   <td></td>" + LINE_END +
-                "  </tr>" + LINE_END +
-                " </tbody>" + LINE_END +
-                "</table>", output);
-    }
+    table
+        .write()
+        .usingOptions(HtmlWriteOptions.builder(baos).elementCreator(elementCreator).build());
+    String output = baos.toString();
+    assertEquals(
+        "<table>"
+            + LINE_END
+            + " <thead>"
+            + LINE_END
+            + "  <tr>"
+            + LINE_END
+            + "   <th>v</th>"
+            + LINE_END
+            + "   <th>v2</th>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + " </thead>"
+            + LINE_END
+            + " <tbody>"
+            + LINE_END
+            + "  <tr class=\"even\">"
+            + LINE_END
+            + "   <td>1</td>"
+            + LINE_END
+            + "   <td>1</td>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + "  <tr class=\"odd\">"
+            + LINE_END
+            + "   <td>2</td>"
+            + LINE_END
+            + "   <td>2</td>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + "  <tr class=\"even\">"
+            + LINE_END
+            + "   <td></td>"
+            + LINE_END
+            + "   <td></td>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + " </tbody>"
+            + LINE_END
+            + "</table>",
+        output);
+  }
 
-    @Test
-    public void noEscape() throws IOException {
-        String[] data = {"<p>foo</p>"};
-        Table table = Table.create("t", StringColumn.create("data", data));
+  @Test
+  public void noEscape() throws IOException {
+    String[] data = {"<p>foo</p>"};
+    Table table = Table.create("t", StringColumn.create("data", data));
 
-        OutputStream baos = new ByteArrayOutputStream();
+    OutputStream baos = new ByteArrayOutputStream();
 
-        table.write().usingOptions(HtmlWriteOptions.builder(baos).escapeText(false).build());
-        String output = baos.toString();
-        assertEquals("<table>" + LINE_END +
-                " <thead>" + LINE_END +
-                "  <tr>" + LINE_END +
-                "   <th>data</th>" + LINE_END +
-                "  </tr>" + LINE_END +
-                " </thead>" + LINE_END +
-                " <tbody>" + LINE_END +
-                "  <tr>" + LINE_END +
-                "   <td><p>foo</p></td>" + LINE_END +
-                "  </tr>" + LINE_END +
-                " </tbody>" + LINE_END +
-                "</table>", output);
-    }
-    @Test
-    public void escape() throws IOException {
-        String[] data = {"<p>foo</p>"};
-        Table table = Table.create("t", StringColumn.create("data", data));
+    table.write().usingOptions(HtmlWriteOptions.builder(baos).escapeText(false).build());
+    String output = baos.toString();
+    assertEquals(
+        "<table>"
+            + LINE_END
+            + " <thead>"
+            + LINE_END
+            + "  <tr>"
+            + LINE_END
+            + "   <th>data</th>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + " </thead>"
+            + LINE_END
+            + " <tbody>"
+            + LINE_END
+            + "  <tr>"
+            + LINE_END
+            + "   <td><p>foo</p></td>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + " </tbody>"
+            + LINE_END
+            + "</table>",
+        output);
+  }
 
-        OutputStream baos = new ByteArrayOutputStream();
+  @Test
+  public void escape() throws IOException {
+    String[] data = {"<p>foo</p>"};
+    Table table = Table.create("t", StringColumn.create("data", data));
 
-        table.write().usingOptions(HtmlWriteOptions.builder(baos).build());
-        String output = baos.toString();
-        assertEquals("<table>" + LINE_END +
-                " <thead>" + LINE_END +
-                "  <tr>" + LINE_END +
-                "   <th>data</th>" + LINE_END +
-                "  </tr>" + LINE_END +
-                " </thead>" + LINE_END +
-                " <tbody>" + LINE_END +
-                "  <tr>" + LINE_END +
-                "   <td>&lt;p&gt;foo&lt;/p&gt;</td>" + LINE_END +
-                "  </tr>" + LINE_END +
-                " </tbody>" + LINE_END +
-                "</table>", output);
-    }
+    OutputStream baos = new ByteArrayOutputStream();
 
+    table.write().usingOptions(HtmlWriteOptions.builder(baos).build());
+    String output = baos.toString();
+    assertEquals(
+        "<table>"
+            + LINE_END
+            + " <thead>"
+            + LINE_END
+            + "  <tr>"
+            + LINE_END
+            + "   <th>data</th>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + " </thead>"
+            + LINE_END
+            + " <tbody>"
+            + LINE_END
+            + "  <tr>"
+            + LINE_END
+            + "   <td>&lt;p&gt;foo&lt;/p&gt;</td>"
+            + LINE_END
+            + "  </tr>"
+            + LINE_END
+            + " </tbody>"
+            + LINE_END
+            + "</table>",
+        output);
+  }
 }

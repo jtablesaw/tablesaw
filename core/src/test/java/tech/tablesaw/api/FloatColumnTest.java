@@ -21,31 +21,31 @@ import org.junit.jupiter.api.Test;
 
 public class FloatColumnTest {
 
-    @Test
-    public void testAppendFloat() {
-        final FloatColumn floatColumn = FloatColumn.create("floats");
-        final Float floatValue = 2.5f;
-        floatColumn.append(floatValue);
-        assertEquals(floatValue, floatColumn.get(0));
-    }
+  @Test
+  public void testAppendFloat() {
+    final FloatColumn floatColumn = FloatColumn.create("floats");
+    final Float floatValue = 2.5f;
+    floatColumn.append(floatValue);
+    assertEquals(floatValue, floatColumn.get(0));
+  }
 
-    @Test
-    public void testAppendFloatObject() {
-        final FloatColumn floatColumn = FloatColumn.create("floats");
-        final Float floatObject = 2.5f;
-        floatColumn.append(floatObject);
-        assertEquals(floatObject, floatColumn.get(0));
-    }
+  @Test
+  public void testAppendFloatObject() {
+    final FloatColumn floatColumn = FloatColumn.create("floats");
+    final Float floatObject = 2.5f;
+    floatColumn.append(floatObject);
+    assertEquals(floatObject, floatColumn.get(0));
+  }
 
-    @Test
-    public void testMapToDouble() {
-        FloatColumn column = FloatColumn.create("testing");
-        column.append(1.0f);
-        column.append(2.0f);
-        column.append(3.0f);
+  @Test
+  public void testMapToDouble() {
+    FloatColumn column = FloatColumn.create("testing");
+    column.append(1.0f);
+    column.append(2.0f);
+    column.append(3.0f);
 
-        DoubleColumn actual = column.mapToDoubleColumn("doubles", (x) -> 2.0 * x);
+    DoubleColumn actual = column.mapToDoubleColumn("doubles", (x) -> 2.0 * x);
 
-        assertArrayEquals(new double[]{2.0, 4.0, 6.0}, actual.asDoubleArray());
-    }
+    assertArrayEquals(new double[] {2.0, 4.0, 6.0}, actual.asDoubleArray());
+  }
 }

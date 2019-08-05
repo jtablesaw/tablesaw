@@ -5,20 +5,20 @@ import tech.tablesaw.api.ColumnType;
 
 abstract class BooleanNumericFunction extends AggregateFunction<BooleanColumn, Double> {
 
-    public BooleanNumericFunction(String functionName) {
-        super(functionName);
-    }
+  public BooleanNumericFunction(String functionName) {
+    super(functionName);
+  }
 
-    @Override
-    abstract public Double summarize(BooleanColumn column);
+  @Override
+  public abstract Double summarize(BooleanColumn column);
 
-    @Override
-    public boolean isCompatibleColumn(ColumnType type) {
-        return type.equals(ColumnType.BOOLEAN);
-    }
+  @Override
+  public boolean isCompatibleColumn(ColumnType type) {
+    return type.equals(ColumnType.BOOLEAN);
+  }
 
-    @Override
-    public ColumnType returnType() {
-        return null;
-    }
+  @Override
+  public ColumnType returnType() {
+    return null;
+  }
 }

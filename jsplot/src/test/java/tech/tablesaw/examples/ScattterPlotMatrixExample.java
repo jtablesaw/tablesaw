@@ -13,6 +13,8 @@
  */
 package tech.tablesaw.examples;
 
+import java.util.ArrayList;
+import java.util.List;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
@@ -23,54 +25,42 @@ import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.plotly.traces.Trace;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Renders a scatter plot matrix for the first 6 numeric columns in the tornado dataset
- */
+/** Renders a scatter plot matrix for the first 6 numeric columns in the tornado dataset */
 public class ScattterPlotMatrixExample {
 
-    public static void main(String[] args) throws Exception {
-        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv").sampleN(500);
+  public static void main(String[] args) throws Exception {
+    Table table = Table.read().csv("../data/tornadoes_1950-2014.csv").sampleN(500);
 
-        List<NumericColumn<?>> columns = table.numericColumns().subList(0, 6);
-        List<Trace> traceList = new ArrayList<>();
-        int count = 1;
-        for (int i = 0; i < columns.size(); i++) {
-            for (NumericColumn<?> column : columns) {
-                Trace t = ScatterTrace.builder(
-                        column.asDoubleArray(),
-                        columns.get(i).asDoubleArray())
-                        .xAxis("x" + count)
-                        .yAxis("y" + count)
-                        .name(columns.get(i).name() + " x " + column.name())
-                        .marker(Marker.builder()
-                                .size(3)
-                                .opacity(.5)
-                                .build())
-                        .build();
-
-                traceList.add(t);
-                count++;
-            }
-        }
-        Trace[] traces = traceList.toArray(new Trace[0]);
-
-        Grid grid = Grid.builder()
-                .columns(columns.size())
-                .rows(columns.size())
-                .pattern(Grid.Pattern.INDEPENDENT)
-                .xSide(Grid.XSide.BOTTOM)
+    List<NumericColumn<?>> columns = table.numericColumns().subList(0, 6);
+    List<Trace> traceList = new ArrayList<>();
+    int count = 1;
+    for (int i = 0; i < columns.size(); i++) {
+      for (NumericColumn<?> column : columns) {
+        Trace t =
+            ScatterTrace.builder(column.asDoubleArray(), columns.get(i).asDoubleArray())
+                .xAxis("x" + count)
+                .yAxis("y" + count)
+                .name(columns.get(i).name() + " x " + column.name())
+                .marker(Marker.builder().size(3).opacity(.5).build())
                 .build();
 
-        Layout layout = Layout.builder()
-                .title("Scatter Plot Matrix")
-                .width(1100)
-                .height(1100)
-                .grid(grid)
-                .build();
-
-        Plot.show(new Figure(layout, traces));
+        traceList.add(t);
+        count++;
+      }
     }
+    Trace[] traces = traceList.toArray(new Trace[0]);
+
+    Grid grid =
+        Grid.builder()
+            .columns(columns.size())
+            .rows(columns.size())
+            .pattern(Grid.Pattern.INDEPENDENT)
+            .xSide(Grid.XSide.BOTTOM)
+            .build();
+
+    Layout layout =
+        Layout.builder().title("Scatter Plot Matrix").width(1100).height(1100).grid(grid).build();
+
+    Plot.show(new Figure(layout, traces));
+  }
 }

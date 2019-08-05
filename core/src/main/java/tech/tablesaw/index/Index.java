@@ -1,4 +1,3 @@
 package tech.tablesaw.index;
 
-public interface Index {
-}
+public interface Index {}

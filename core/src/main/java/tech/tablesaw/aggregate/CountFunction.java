@@ -5,20 +5,20 @@ import tech.tablesaw.columns.Column;
 
 abstract class CountFunction extends AggregateFunction<Column<?>, Integer> {
 
-    public CountFunction(String functionName) {
-        super(functionName);
-    }
+  public CountFunction(String functionName) {
+    super(functionName);
+  }
 
-    @Override
-    abstract public Integer summarize(Column<?> column);
+  @Override
+  public abstract Integer summarize(Column<?> column);
 
-    @Override
-    public boolean isCompatibleColumn(ColumnType type) {
-        return true;
-    }
+  @Override
+  public boolean isCompatibleColumn(ColumnType type) {
+    return true;
+  }
 
-    @Override
-    public ColumnType returnType() {
-        return ColumnType.DOUBLE;
-    }
+  @Override
+  public ColumnType returnType() {
+    return ColumnType.DOUBLE;
+  }
 }

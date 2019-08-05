@@ -14,34 +14,33 @@
 
 package tech.tablesaw.io;
 
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.columns.dates.DateParser;
-import tech.tablesaw.columns.datetimes.DateTimeParser;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.columns.dates.DateParser;
+import tech.tablesaw.columns.datetimes.DateTimeParser;
 
 public class TypeUtilsTest {
 
-    @Test
-    public void testDateFormaterWithLocaleEN() {
-        String anotherDate = "12-May-2015";
-        LocalDate result = LocalDate.parse(anotherDate, DateParser.DEFAULT_FORMATTER.withLocale(Locale.ENGLISH));
-        assertNotNull(result);
-    }
+  @Test
+  public void testDateFormaterWithLocaleEN() {
+    String anotherDate = "12-May-2015";
+    LocalDate result =
+        LocalDate.parse(anotherDate, DateParser.DEFAULT_FORMATTER.withLocale(Locale.ENGLISH));
+    assertNotNull(result);
+  }
 
-    @Test
-    public void testDateFormater() {
-        final DateTimeFormatter dtTimef8 =
-                DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");
+  @Test
+  public void testDateFormater() {
+    final DateTimeFormatter dtTimef8 = DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");
 
-        String anotherDate = "10/2/2016 8:18:03 AM";
-        dtTimef8.parse(anotherDate);
-        LocalDateTime result = LocalDateTime.parse(anotherDate, DateTimeParser.DEFAULT_FORMATTER);
-        assertNotNull(result);
-    }
+    String anotherDate = "10/2/2016 8:18:03 AM";
+    dtTimef8.parse(anotherDate);
+    LocalDateTime result = LocalDateTime.parse(anotherDate, DateTimeParser.DEFAULT_FORMATTER);
+    assertNotNull(result);
+  }
 }

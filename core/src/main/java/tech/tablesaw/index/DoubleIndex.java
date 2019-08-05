@@ -22,85 +22,85 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/**
- * An index for double-precision 64-bit IEEE 754 floating point columns.
- */
+/** An index for double-precision 64-bit IEEE 754 floating point columns. */
 public class DoubleIndex implements Index {
 
-    private final Double2ObjectAVLTreeMap<IntArrayList> index;
+  private final Double2ObjectAVLTreeMap<IntArrayList> index;
 
-    public DoubleIndex(DoubleColumn column) {
-        int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
-        Double2ObjectOpenHashMap<IntArrayList> tempMap = new Double2ObjectOpenHashMap<>(sizeEstimate);
-        for (int i = 0; i < column.size(); i++) {
-            double value = column.getDouble(i);
-            IntArrayList recordIds = tempMap.get(value);
-            if (recordIds == null) {
-                recordIds = new IntArrayList();
-                recordIds.add(i);
-                tempMap.trim();
-                tempMap.put(value, recordIds);
-            } else {
-                recordIds.add(i);
-            }
-        }
-        index = new Double2ObjectAVLTreeMap<>(tempMap);
+  public DoubleIndex(DoubleColumn column) {
+    int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
+    Double2ObjectOpenHashMap<IntArrayList> tempMap = new Double2ObjectOpenHashMap<>(sizeEstimate);
+    for (int i = 0; i < column.size(); i++) {
+      double value = column.getDouble(i);
+      IntArrayList recordIds = tempMap.get(value);
+      if (recordIds == null) {
+        recordIds = new IntArrayList();
+        recordIds.add(i);
+        tempMap.trim();
+        tempMap.put(value, recordIds);
+      } else {
+        recordIds.add(i);
+      }
     }
+    index = new Double2ObjectAVLTreeMap<>(tempMap);
+  }
 
-    private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-        for (int i : tableKeys) {
-            selection.add(i);
-        }
+  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
+    for (int i : tableKeys) {
+      selection.add(i);
     }
+  }
 
-    /**
-     * Returns a bitmap containing row numbers of all cells matching the given int
-     *
-     * @param value This is a 'key' from the index perspective, meaning it is a value from the standpoint of the column
-     */
-    public Selection get(double value) {
-        Selection selection = new BitmapBackedSelection();
-        IntArrayList list = index.get(value);
-        if (list != null) {
-            addAllToSelection(list, selection);
-        }
-        return selection;
+  /**
+   * Returns a bitmap containing row numbers of all cells matching the given int
+   *
+   * @param value This is a 'key' from the index perspective, meaning it is a value from the
+   *     standpoint of the column
+   */
+  public Selection get(double value) {
+    Selection selection = new BitmapBackedSelection();
+    IntArrayList list = index.get(value);
+    if (list != null) {
+      addAllToSelection(list, selection);
     }
+    return selection;
+  }
 
-    public Selection atLeast(double value) {
-        Selection selection = new BitmapBackedSelection();
-        Double2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
-        for (IntArrayList keys : tail.values()) {
-            addAllToSelection(keys, selection);
-        }
-        return selection;
+  public Selection atLeast(double value) {
+    Selection selection = new BitmapBackedSelection();
+    Double2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
+    for (IntArrayList keys : tail.values()) {
+      addAllToSelection(keys, selection);
     }
+    return selection;
+  }
 
-    public Selection greaterThan(double value) {
-        Selection selection = new BitmapBackedSelection();
-        Double2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 0.000001);
-        for (IntArrayList keys : tail.values()) {
-            addAllToSelection(keys, selection);
-        }
-        return selection;
+  public Selection greaterThan(double value) {
+    Selection selection = new BitmapBackedSelection();
+    Double2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 0.000001);
+    for (IntArrayList keys : tail.values()) {
+      addAllToSelection(keys, selection);
     }
+    return selection;
+  }
 
-    public Selection atMost(double value) {
-        Selection selection = new BitmapBackedSelection();
-        Double2ObjectSortedMap<IntArrayList> head = index.headMap(value + 0.000001);  // we add 1 to get values equal
-        // to the arg
-        for (IntArrayList keys : head.values()) {
-            addAllToSelection(keys, selection);
-        }
-        return selection;
+  public Selection atMost(double value) {
+    Selection selection = new BitmapBackedSelection();
+    Double2ObjectSortedMap<IntArrayList> head =
+        index.headMap(value + 0.000001); // we add 1 to get values equal
+    // to the arg
+    for (IntArrayList keys : head.values()) {
+      addAllToSelection(keys, selection);
     }
+    return selection;
+  }
 
-    public Selection lessThan(double value) {
-        Selection selection = new BitmapBackedSelection();
-        Double2ObjectSortedMap<IntArrayList> head = index.headMap(value);
-        for (IntArrayList keys : head.values()) {
-            addAllToSelection(keys, selection);
-        }
-        return selection;
+  public Selection lessThan(double value) {
+    Selection selection = new BitmapBackedSelection();
+    Double2ObjectSortedMap<IntArrayList> head = index.headMap(value);
+    for (IntArrayList keys : head.values()) {
+      addAllToSelection(keys, selection);
     }
+    return selection;
+  }
 }

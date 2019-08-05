@@ -18,7 +18,7 @@ import tech.tablesaw.filtering.predicates.BytePredicate;
 
 public interface BooleanColumnUtils {
 
-    BytePredicate isMissing = i -> i == BooleanColumnType.MISSING_VALUE;
+  BytePredicate isMissing = i -> i == BooleanColumnType.MISSING_VALUE;
 
-    BytePredicate isNotMissing = i -> i != BooleanColumnType.MISSING_VALUE;
+  BytePredicate isNotMissing = i -> i != BooleanColumnType.MISSING_VALUE;
 }

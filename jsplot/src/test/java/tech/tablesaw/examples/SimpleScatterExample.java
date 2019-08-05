@@ -19,15 +19,16 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.ScatterPlot;
 
 /**
- * Basic plot example showing use of the classes in the api package. These classes make it easy to create a quick
- * plot for data exploration. See the MarkerOptionsExample for various customized versions of this plot.
+ * Basic plot example showing use of the classes in the api package. These classes make it easy to
+ * create a quick plot for data exploration. See the MarkerOptionsExample for various customized
+ * versions of this plot.
  */
 public class SimpleScatterExample {
 
-    public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
 
-        Table baseball = Table.read().csv("../data/baseball.csv");
+    Table baseball = Table.read().csv("../data/baseball.csv");
 
-        Plot.show(ScatterPlot.create("Wins vs BA", baseball, "BA", "W"));
-    }
+    Plot.show(ScatterPlot.create("Wins vs BA", baseball, "BA", "W"));
+  }
 }
