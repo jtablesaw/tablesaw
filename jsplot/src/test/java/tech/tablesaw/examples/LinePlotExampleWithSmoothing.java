@@ -22,29 +22,23 @@ import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 
-/**
- *
- */
+/** */
 public class LinePlotExampleWithSmoothing {
 
-    public static void main(String[] args) throws Exception {
-        Table robberies = Table.read().csv("../data/boston-robberies.csv");
-        NumberColumn<?> x = robberies.nCol("Record");
-        NumberColumn<?> y = robberies.nCol("Robberies");
+  public static void main(String[] args) throws Exception {
+    Table robberies = Table.read().csv("../data/boston-robberies.csv");
+    NumberColumn<?> x = robberies.nCol("Record");
+    NumberColumn<?> y = robberies.nCol("Robberies");
 
-        Layout layout = Layout.builder()
-                .title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975")
-                .build();
+    Layout layout =
+        Layout.builder().title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975").build();
 
-        ScatterTrace trace = ScatterTrace.builder(x, y)
-                .mode(ScatterTrace.Mode.LINE)
-                .line(Line.builder()
-                        .shape(Line.Shape.SPLINE)
-                        .smoothing(1.2)
-                        .build())
-                .build();
+    ScatterTrace trace =
+        ScatterTrace.builder(x, y)
+            .mode(ScatterTrace.Mode.LINE)
+            .line(Line.builder().shape(Line.Shape.SPLINE).smoothing(1.2).build())
+            .build();
 
-        Plot.show(new Figure(layout, trace));
-
-    }
+    Plot.show(new Figure(layout, trace));
+  }
 }

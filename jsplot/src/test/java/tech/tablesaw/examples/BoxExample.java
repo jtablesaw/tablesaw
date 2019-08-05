@@ -21,19 +21,18 @@ import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.BoxTrace;
 
 /**
- * Basic sample box plot. It shows the distribution of the number of people injured in tornadoes, broken out
- * by the scale of the Tornado.
+ * Basic sample box plot. It shows the distribution of the number of people injured in tornadoes,
+ * broken out by the scale of the Tornado.
  */
 public class BoxExample {
 
-    public static void main(String[] args) throws Exception {
-        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+  public static void main(String[] args) throws Exception {
+    Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
 
-        Layout layout = Layout.builder().title("Tornado Injuries by Scale").build();
+    Layout layout = Layout.builder().title("Tornado Injuries by Scale").build();
 
-        BoxTrace trace = BoxTrace.builder(
-                table.categoricalColumn("scale"),
-                table.nCol("injuries")).build();
-        Plot.show(new Figure(layout, trace));
-    }
+    BoxTrace trace =
+        BoxTrace.builder(table.categoricalColumn("scale"), table.nCol("injuries")).build();
+    Plot.show(new Figure(layout, trace));
+  }
 }

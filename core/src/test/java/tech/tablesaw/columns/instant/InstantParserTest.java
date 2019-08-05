@@ -1,15 +1,13 @@
 package tech.tablesaw.columns.instant;
 
-import java.time.Instant;
-
-import org.junit.jupiter.api.Test;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.InstantColumn;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.Instant;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.InstantColumn;
 
 public class InstantParserTest {
 
@@ -24,7 +22,7 @@ public class InstantParserTest {
   @Test
   public void unformattedString() {
     Instant instant = Instant.parse("2019-05-31T03:45:04.021Z");
-    InstantColumn col = InstantColumn.create("instantCol", new Instant[] { instant });
+    InstantColumn col = InstantColumn.create("instantCol", new Instant[] {instant});
     assertEquals(instant, parser.parse(col.getUnformattedString(0)));
   }
 
@@ -33,5 +31,4 @@ public class InstantParserTest {
     assertFalse(parser.canParse("foobar"));
     assertTrue(parser.canParse(Instant.now().toString()));
   }
-
 }

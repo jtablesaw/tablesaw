@@ -20,11 +20,11 @@ import java.util.function.Supplier;
 
 public interface DateFillers<T> {
 
-    T fillWith(Iterator<LocalDate> iterator);
+  T fillWith(Iterator<LocalDate> iterator);
 
-    default T fillWith(final Iterable<LocalDate> iterable) {
-        return fillWith(iterable.iterator());
-    }
+  default T fillWith(final Iterable<LocalDate> iterable) {
+    return fillWith(iterable.iterator());
+  }
 
-    T fillWith(Supplier<LocalDate> supplier);
+  T fillWith(Supplier<LocalDate> supplier);
 }

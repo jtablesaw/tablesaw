@@ -19,22 +19,25 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.TukeyMeanDifferencePlot;
 
-/**
- *  Illustrates how to create a quantile plot for visualizing a distribution
- */
+/** Illustrates how to create a quantile plot for visualizing a distribution */
 public class TukeyMeanDistributionPlotExample {
 
-    public static void main(String[] args) throws Exception {
-        Table baseball = Table.read().csv("../data/baseball.csv");
-        Table nl = baseball.where(baseball.stringColumn("league").isEqualTo("NL"));
-        Table al = baseball.where(baseball.stringColumn("league").isEqualTo("AL"));
-        Plot.show(TukeyMeanDifferencePlot.create("Wins NL vs AL", "wins",
-                nl.intColumn("W").asDoubleArray(),
-                al.intColumn("W").asDoubleArray()));
+  public static void main(String[] args) throws Exception {
+    Table baseball = Table.read().csv("../data/baseball.csv");
+    Table nl = baseball.where(baseball.stringColumn("league").isEqualTo("NL"));
+    Table al = baseball.where(baseball.stringColumn("league").isEqualTo("AL"));
+    Plot.show(
+        TukeyMeanDifferencePlot.create(
+            "Wins NL vs AL",
+            "wins",
+            nl.intColumn("W").asDoubleArray(),
+            al.intColumn("W").asDoubleArray()));
 
-        // example with difference sized arrays;
-        double[] first = new NormalDistribution().sample(100);
-        double[] second = new NormalDistribution().sample(200);
-        Plot.show(TukeyMeanDifferencePlot.create("Test of different sized arrays", "random data", first, second));
-    }
+    // example with difference sized arrays;
+    double[] first = new NormalDistribution().sample(100);
+    double[] second = new NormalDistribution().sample(200);
+    Plot.show(
+        TukeyMeanDifferencePlot.create(
+            "Test of different sized arrays", "random data", first, second));
+  }
 }

@@ -18,10 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalTime;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
@@ -29,41 +27,41 @@ import tech.tablesaw.api.TimeColumn;
 
 public class DateMapFunctionsTest {
 
-    private DateColumn column1;
+  private DateColumn column1;
 
-    @BeforeEach
-    public void setUp() {
-        Table table = Table.create("Test");
-        column1 = DateColumn.create("Game date");
-        table.addColumns(column1);
-    }
+  @BeforeEach
+  public void setUp() {
+    Table table = Table.create("Test");
+    column1 = DateColumn.create("Game date");
+    table.addColumns(column1);
+  }
 
-    @Test
-    public void testAtTimeColumn() {
-        column1.appendCell("2013-10-23");
-        column1.appendCell("12/24/1924");
-        column1.appendCell("12-May-2015");
-        column1.appendCell("14-Jan-2015");
+  @Test
+  public void testAtTimeColumn() {
+    column1.appendCell("2013-10-23");
+    column1.appendCell("12/24/1924");
+    column1.appendCell("12-May-2015");
+    column1.appendCell("14-Jan-2015");
 
-        TimeColumn timeColumn = TimeColumn.create("times");
-        timeColumn.append(LocalTime.NOON);
-        timeColumn.append(LocalTime.NOON);
-        timeColumn.append(LocalTime.NOON);
-        timeColumn.append(LocalTime.NOON);
-        DateTimeColumn dateTimes = column1.atTime(timeColumn);
-        assertNotNull(dateTimes);
-        assertTrue(dateTimes.get(0).toLocalTime().equals(LocalTime.NOON));
-    }
+    TimeColumn timeColumn = TimeColumn.create("times");
+    timeColumn.append(LocalTime.NOON);
+    timeColumn.append(LocalTime.NOON);
+    timeColumn.append(LocalTime.NOON);
+    timeColumn.append(LocalTime.NOON);
+    DateTimeColumn dateTimes = column1.atTime(timeColumn);
+    assertNotNull(dateTimes);
+    assertTrue(dateTimes.get(0).toLocalTime().equals(LocalTime.NOON));
+  }
 
-    @Test
-    public void testAtTime() {
-        column1.appendCell("2013-10-23");
-        column1.appendCell("12/24/1924");
-        column1.appendCell("12-May-2015");
-        column1.appendCell("14-Jan-2015");
+  @Test
+  public void testAtTime() {
+    column1.appendCell("2013-10-23");
+    column1.appendCell("12/24/1924");
+    column1.appendCell("12-May-2015");
+    column1.appendCell("14-Jan-2015");
 
-        DateTimeColumn dateTimes = column1.atTime(LocalTime.NOON);
-        assertNotNull(dateTimes);
-        assertTrue(dateTimes.get(0).toLocalTime().equals(LocalTime.NOON));
-    }
+    DateTimeColumn dateTimes = column1.atTime(LocalTime.NOON);
+    assertNotNull(dateTimes);
+    assertTrue(dateTimes.get(0).toLocalTime().equals(LocalTime.NOON));
+  }
 }

@@ -15,19 +15,15 @@
 package tech.tablesaw.sorting.comparators;
 
 import it.unimi.dsi.fastutil.longs.LongComparator;
-
 import javax.annotation.concurrent.Immutable;
 
-/**
- * A comparator for long primitives for sorting in descending order
- */
+/** A comparator for long primitives for sorting in descending order */
 @Immutable
 public final class DescendingLongComparator {
 
-    private static final LongComparator reverseLongComparator = (o2, o1) -> (Long.compare(o1, o2));
+  private static final LongComparator reverseLongComparator = (o2, o1) -> (Long.compare(o1, o2));
 
-    public static LongComparator instance() {
-        return reverseLongComparator;
-    }
-
+  public static LongComparator instance() {
+    return reverseLongComparator;
+  }
 }

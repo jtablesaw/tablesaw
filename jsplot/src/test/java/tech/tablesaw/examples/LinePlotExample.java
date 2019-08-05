@@ -21,22 +21,17 @@ import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 
-/**
- *
- */
+/** */
 public class LinePlotExample {
 
-    public static void main(String[] args) throws Exception {
-        Table robberies = Table.read().csv("../data/boston-robberies.csv");
-        NumberColumn<?> x = robberies.nCol("Record");
-        NumberColumn<?> y = robberies.nCol("Robberies");
+  public static void main(String[] args) throws Exception {
+    Table robberies = Table.read().csv("../data/boston-robberies.csv");
+    NumberColumn<?> x = robberies.nCol("Record");
+    NumberColumn<?> y = robberies.nCol("Robberies");
 
-        Layout layout = Layout.builder()
-                .title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975")
-                .build();
-        ScatterTrace trace = ScatterTrace.builder(x, y)
-                .mode(ScatterTrace.Mode.LINE)
-                .build();
-        Plot.show(new Figure(layout, trace));
-    }
+    Layout layout =
+        Layout.builder().title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975").build();
+    ScatterTrace trace = ScatterTrace.builder(x, y).mode(ScatterTrace.Mode.LINE).build();
+    Plot.show(new Figure(layout, trace));
+  }
 }

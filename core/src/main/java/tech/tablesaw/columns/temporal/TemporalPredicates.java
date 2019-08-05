@@ -14,28 +14,32 @@
 
 package tech.tablesaw.columns.temporal;
 
+import java.util.function.LongPredicate;
 import tech.tablesaw.columns.instant.InstantColumnType;
 import tech.tablesaw.filtering.predicates.LongBiPredicate;
 
-import java.util.function.LongPredicate;
-
 public class TemporalPredicates {
 
-    public static final LongPredicate isMissing = i -> i == InstantColumnType.missingValueIndicator();
+  public static final LongPredicate isMissing = i -> i == InstantColumnType.missingValueIndicator();
 
-    public static final LongPredicate isNotMissing = i -> i != InstantColumnType.missingValueIndicator();
+  public static final LongPredicate isNotMissing =
+      i -> i != InstantColumnType.missingValueIndicator();
 
-    public static final LongBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
+  public static final LongBiPredicate isGreaterThan =
+      (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
 
-    public static final LongBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) ->
-            valueToTest >= valueToCompareAgainst;
+  public static final LongBiPredicate isGreaterThanOrEqualTo =
+      (valueToTest, valueToCompareAgainst) -> valueToTest >= valueToCompareAgainst;
 
-    public static final LongBiPredicate isLessThan = (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
+  public static final LongBiPredicate isLessThan =
+      (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
 
-    public static final LongBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
+  public static final LongBiPredicate isLessThanOrEqualTo =
+      (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
 
-    public static final LongBiPredicate isEqualTo = (long valueToTest, long valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
+  public static final LongBiPredicate isEqualTo =
+      (long valueToTest, long valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
 
-    public static final LongBiPredicate isNotEqualTo = (long valueToTest, long valueToCompareAgainst) -> valueToTest != valueToCompareAgainst;
-
+  public static final LongBiPredicate isNotEqualTo =
+      (long valueToTest, long valueToCompareAgainst) -> valueToTest != valueToCompareAgainst;
 }

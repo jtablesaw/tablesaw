@@ -13,6 +13,7 @@
  */
 package tech.tablesaw.examples;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
@@ -21,30 +22,37 @@ import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.HistogramTrace;
 import tech.tablesaw.plotly.traces.Trace;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
- * Renders a 2 (row) by 4 (col) grid of histograms, one for each of the 8 numeric columns in the tornadoes dataset
+ * Renders a 2 (row) by 4 (col) grid of histograms, one for each of the 8 numeric columns in the
+ * tornadoes dataset
  */
 public class SubplotExample {
 
-    public static void main(String[] args) throws Exception {
-        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        AtomicInteger order = new AtomicInteger(0);
-        Trace[] traces = table.numericColumns().stream().map(f -> {
-            int i = order.incrementAndGet();
-            return HistogramTrace.builder(f.asDoubleArray()).name(f.name()).xAxis("x"+i).yAxis("y"+i).build();
-        }).toArray(Trace[]::new);
+  public static void main(String[] args) throws Exception {
+    Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+    AtomicInteger order = new AtomicInteger(0);
+    Trace[] traces =
+        table.numericColumns().stream()
+            .map(
+                f -> {
+                  int i = order.incrementAndGet();
+                  return HistogramTrace.builder(f.asDoubleArray())
+                      .name(f.name())
+                      .xAxis("x" + i)
+                      .yAxis("y" + i)
+                      .build();
+                })
+            .toArray(Trace[]::new);
 
-        int columns = 2;
-        Grid grid = Grid.builder().columns(columns).rows(traces.length / columns).pattern(Grid.Pattern.INDEPENDENT).build();
-        Layout layout = Layout.builder()
-                .title("Subplot")
-                .width(1000)
-                .height(700)
-                .grid(grid)
-                .build();
+    int columns = 2;
+    Grid grid =
+        Grid.builder()
+            .columns(columns)
+            .rows(traces.length / columns)
+            .pattern(Grid.Pattern.INDEPENDENT)
+            .build();
+    Layout layout = Layout.builder().title("Subplot").width(1000).height(700).grid(grid).build();
 
-        Plot.show(new Figure(layout, traces));
-    }
+    Plot.show(new Figure(layout, traces));
+  }
 }

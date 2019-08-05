@@ -14,28 +14,26 @@
 
 package tech.tablesaw.util;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.table.TableSliceGroup;
 
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class DoubleArraysTest {
 
-    @Test
-    public void testTo2dArray() throws Exception {
-        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        TableSliceGroup tableSliceGroup = table.splitOn("Scale");
-        int columnNuumber = table.columnIndex("Injuries");
-        DoubleArrays.to2dArray(tableSliceGroup, columnNuumber);
-    }
+  @Test
+  public void testTo2dArray() throws Exception {
+    Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+    TableSliceGroup tableSliceGroup = table.splitOn("Scale");
+    int columnNuumber = table.columnIndex("Injuries");
+    DoubleArrays.to2dArray(tableSliceGroup, columnNuumber);
+  }
 
-    @Test
-    public void testToN() {
-        double[] array = {0, 1, 2};
-        assertTrue(Arrays.equals(array, DoubleArrays.toN(3)));
-    }
-
+  @Test
+  public void testToN() {
+    double[] array = {0, 1, 2};
+    assertTrue(Arrays.equals(array, DoubleArrays.toN(3)));
+  }
 }

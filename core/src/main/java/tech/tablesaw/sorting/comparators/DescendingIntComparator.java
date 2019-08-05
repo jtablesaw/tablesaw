@@ -15,19 +15,15 @@
 package tech.tablesaw.sorting.comparators;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
-
 import javax.annotation.concurrent.Immutable;
 
-/**
- * A Comparator for sorting int primitives in descending order
- */
+/** A Comparator for sorting int primitives in descending order */
 @Immutable
 public final class DescendingIntComparator {
 
-    private static final IntComparator reverseIntComparator = (o2, o1) -> (Integer.compare(o1, o2));
+  private static final IntComparator reverseIntComparator = (o2, o1) -> (Integer.compare(o1, o2));
 
-    public static IntComparator instance() {
-        return reverseIntComparator;
-    }
-
+  public static IntComparator instance() {
+    return reverseIntComparator;
+  }
 }

@@ -16,22 +16,19 @@ package tech.tablesaw.examples;
 
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.examples.AbstractExample;
 
-/**
- * Usage example using a Tornado data set
- */
+/** Usage example using a Tornado data set */
 public class TextExample extends AbstractExample {
 
-    private static final String[] words1 = {"one", "two words"};
-    private static final StringColumn stringColumn1 = StringColumn.create("words", words1);
+  private static final String[] words1 = {"one", "two words"};
+  private static final StringColumn stringColumn1 = StringColumn.create("words", words1);
 
-    public static void main(String[] args) {
-        countWords(stringColumn1);
-    }
+  public static void main(String[] args) {
+    countWords(stringColumn1);
+  }
 
-    private static void countWords(StringColumn sc) {
-        DoubleColumn nc = sc.countTokens(" ");
-        out("Word count: " + nc.sum());
-    }
+  private static void countWords(StringColumn sc) {
+    DoubleColumn nc = sc.countTokens(" ");
+    out("Word count: " + nc.sum());
+  }
 }

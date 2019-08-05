@@ -16,16 +16,15 @@ package tech.tablesaw.columns.booleans;
 
 import it.unimi.dsi.fastutil.booleans.BooleanIterable;
 import it.unimi.dsi.fastutil.booleans.BooleanIterator;
-
 import java.util.function.Supplier;
 
 public interface BooleanFillers<T> {
 
-    T fillWith(BooleanIterator iterator);
+  T fillWith(BooleanIterator iterator);
 
-    default T fillWith(final BooleanIterable iterable) {
-        return fillWith(iterable.iterator());
-    }
+  default T fillWith(final BooleanIterable iterable) {
+    return fillWith(iterable.iterator());
+  }
 
-    T fillWith(Supplier<Boolean> supplier);
+  T fillWith(Supplier<Boolean> supplier);
 }

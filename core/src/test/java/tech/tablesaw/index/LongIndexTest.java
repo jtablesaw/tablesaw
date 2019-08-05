@@ -14,6 +14,8 @@
 
 package tech.tablesaw.index;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DateTimeColumn;
@@ -22,57 +24,56 @@ import tech.tablesaw.columns.datetimes.DateTimePredicates;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-/**
- *
- */
+/** */
 public class LongIndexTest {
 
-    private LongIndex index;
-    private Table table;
+  private LongIndex index;
+  private Table table;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
-        DateTimeColumn midnights = table.dateColumn("date").atStartOfDay();
-        midnights.setName("Midnights");
-        table.addColumns(midnights);
-        index = new LongIndex(table.dateTimeColumn("Midnights"));
-    }
+  @BeforeEach
+  public void setUp() throws Exception {
+    table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+    DateTimeColumn midnights = table.dateColumn("date").atStartOfDay();
+    midnights.setName("Midnights");
+    table.addColumns(midnights);
+    index = new LongIndex(table.dateTimeColumn("Midnights"));
+  }
 
-    @Test
-    public void testGet() {
-        Selection fromCol = table.dateTimeColumn("Midnights").eval(DateTimePredicates.isEqualTo, 71);
-        Selection fromIdx = index.get(71);
-        assertEquals(fromCol, fromIdx);
-    }
+  @Test
+  public void testGet() {
+    Selection fromCol = table.dateTimeColumn("Midnights").eval(DateTimePredicates.isEqualTo, 71);
+    Selection fromIdx = index.get(71);
+    assertEquals(fromCol, fromIdx);
+  }
 
-    @Test
-    public void testGTE() {
-        Selection fromCol = table.dateTimeColumn("Midnights").eval(DateTimePredicates.isGreaterThanOrEqualTo, 71);
-        Selection fromIdx = index.atLeast(71);
-        assertEquals(fromCol, fromIdx);
-    }
+  @Test
+  public void testGTE() {
+    Selection fromCol =
+        table.dateTimeColumn("Midnights").eval(DateTimePredicates.isGreaterThanOrEqualTo, 71);
+    Selection fromIdx = index.atLeast(71);
+    assertEquals(fromCol, fromIdx);
+  }
 
-    @Test
-    public void testLTE() {
-        Selection fromCol = table.dateTimeColumn("Midnights").eval(DateTimePredicates.isLessThanOrEqualTo, 71);
-        Selection fromIdx = index.atMost(71);
-        assertEquals(fromCol, fromIdx);
-    }
+  @Test
+  public void testLTE() {
+    Selection fromCol =
+        table.dateTimeColumn("Midnights").eval(DateTimePredicates.isLessThanOrEqualTo, 71);
+    Selection fromIdx = index.atMost(71);
+    assertEquals(fromCol, fromIdx);
+  }
 
-    @Test
-    public void testLT() {
-        Selection fromCol = table.dateTimeColumn("Midnights").eval(DateTimePredicates.isLessThan, 71);
-        Selection fromIdx = index.lessThan(71);
-        assertEquals(fromCol, fromIdx);
-    }
+  @Test
+  public void testLT() {
+    Selection fromCol = table.dateTimeColumn("Midnights").eval(DateTimePredicates.isLessThan, 71);
+    Selection fromIdx = index.lessThan(71);
+    assertEquals(fromCol, fromIdx);
+  }
 
-    @Test
-    public void testGT() {
-        Selection fromCol = table.dateTimeColumn("Midnights").eval(DateTimePredicates.isGreaterThan, 71);
-        Selection fromIdx = index.greaterThan(71);
-        assertEquals(fromCol, fromIdx);
-    }
+  @Test
+  public void testGT() {
+    Selection fromCol =
+        table.dateTimeColumn("Midnights").eval(DateTimePredicates.isGreaterThan, 71);
+    Selection fromIdx = index.greaterThan(71);
+    assertEquals(fromCol, fromIdx);
+  }
 }

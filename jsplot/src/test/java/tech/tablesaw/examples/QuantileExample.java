@@ -18,13 +18,11 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.QuantilePlot;
 
-/**
- *  Illustrates how to create a quantile plot for visualizing a distribution
- */
+/** Illustrates how to create a quantile plot for visualizing a distribution */
 public class QuantileExample {
 
-    public static void main(String[] args) throws Exception {
-        Table baseball = Table.read().csv("../data/baseball.csv");
-        Plot.show(QuantilePlot.create("Distribution of team batting averages", baseball, "BA"));
-    }
+  public static void main(String[] args) throws Exception {
+    Table baseball = Table.read().csv("../data/baseball.csv");
+    Plot.show(QuantilePlot.create("Distribution of team batting averages", baseball, "BA"));
+  }
 }
