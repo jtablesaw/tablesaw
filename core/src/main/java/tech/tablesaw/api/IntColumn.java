@@ -49,11 +49,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
   public static IntColumn create(final String name, final Integer[] arr) {
     IntColumn newColumn = IntColumn.create(name, 0);
     for (Integer integer : arr) {
-      if (integer == null) {
-        newColumn.appendMissing();
-      } else {
         newColumn.append(integer);
-      }
     }
     return newColumn;
   }
