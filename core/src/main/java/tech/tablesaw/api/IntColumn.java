@@ -11,19 +11,18 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.IntColumnType;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.selection.Selection;
-
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.Selection;
 
 public class IntColumn extends NumberColumn<Integer> implements CategoricalColumn<Integer> {
 
@@ -49,7 +48,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
   public static IntColumn create(final String name, final Integer[] arr) {
     IntColumn newColumn = IntColumn.create(name, 0);
     for (Integer integer : arr) {
-        newColumn.append(integer);
+      newColumn.append(integer);
     }
     return newColumn;
   }
@@ -97,9 +96,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     data.clear();
   }
 
-  /**
-   * @deprecated use IntColumnType.isMissingValue(value) instead
-   **/
+  /** @deprecated use IntColumnType.isMissingValue(value) instead */
   public static boolean valueIsMissing(int value) {
     return IntColumnType.isMissingValue(value);
   }

@@ -22,18 +22,6 @@ import it.unimi.dsi.fastutil.longs.LongComparator;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.instant.InstantColumnFormatter;
-import tech.tablesaw.columns.instant.InstantColumnType;
-import tech.tablesaw.columns.instant.InstantMapFunctions;
-import tech.tablesaw.columns.instant.PackedInstant;
-import tech.tablesaw.columns.temporal.TemporalFillers;
-import tech.tablesaw.columns.temporal.TemporalFilters;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingLongComparator;
-
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -52,6 +40,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.instant.InstantColumnFormatter;
+import tech.tablesaw.columns.instant.InstantColumnType;
+import tech.tablesaw.columns.instant.InstantMapFunctions;
+import tech.tablesaw.columns.instant.PackedInstant;
+import tech.tablesaw.columns.temporal.TemporalFillers;
+import tech.tablesaw.columns.temporal.TemporalFilters;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 /** A column in a table that contains long-integer encoded (packed) local date-time values */
 public class InstantColumn extends AbstractColumn<Instant>
@@ -106,9 +105,7 @@ public class InstantColumn extends AbstractColumn<Instant>
     return column;
   }
 
-  /**
-   * @deprecated Use InstantColumnType.isMissingValue(long) instead
-   */
+  /** @deprecated Use InstantColumnType.isMissingValue(long) instead */
   public static boolean valueIsMissing(long value) {
     return InstantColumnType.isMissingValue(value);
   }

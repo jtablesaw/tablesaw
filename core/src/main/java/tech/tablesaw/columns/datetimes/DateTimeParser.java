@@ -18,7 +18,7 @@ public class DateTimeParser extends AbstractColumnParser<LocalDateTime> {
   private static final DateTimeFormatter dtTimef2 =
       DateTimeFormatter.ofPattern(
           "yyyy-MM-dd HH:mm:ss.S"); // 2014-07-09 13:03:44.7 (as above, but without leading 0 in
-                                    // millis
+                                    // millis)
   private static final DateTimeFormatter dtTimef4 =
       DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm"); // 09-Jul-2014 13:03
   private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;

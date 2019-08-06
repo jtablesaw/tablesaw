@@ -3,7 +3,6 @@ package tech.tablesaw.examples;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.plotly.Plot;
-import tech.tablesaw.plotly.api.AreaPlot;
 import tech.tablesaw.plotly.api.CandlestickPlot;
 import tech.tablesaw.plotly.api.LinePlot;
 import tech.tablesaw.plotly.api.OHLCPlot;

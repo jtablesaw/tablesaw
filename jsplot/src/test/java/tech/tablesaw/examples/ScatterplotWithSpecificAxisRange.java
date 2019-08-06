@@ -24,9 +24,7 @@ import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.plotly.traces.Trace;
 
-/**
- * Create a scatter plot with an explicit range for an axis (the y axis, here)
- **/
+/** Create a scatter plot with an explicit range for an axis (the y axis, here) */
 public class ScatterplotWithSpecificAxisRange {
 
   public static void main(String[] args) throws Exception {

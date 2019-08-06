@@ -111,7 +111,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public static DoubleColumn create(final String name, final List<Number> numberList) {
     DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
     for (Number number : numberList) {
-        newColumn.append(number);
+      newColumn.append(number);
     }
     return newColumn;
   }
@@ -119,7 +119,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public static DoubleColumn create(final String name, final Number[] numbers) {
     DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
     for (Number number : numbers) {
-        newColumn.append(number);
+      newColumn.append(number);
     }
     return newColumn;
   }

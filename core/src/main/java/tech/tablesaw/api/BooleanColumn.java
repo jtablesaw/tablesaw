@@ -14,6 +14,8 @@
 
 package tech.tablesaw.api;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import it.unimi.dsi.fastutil.booleans.BooleanIterable;
 import it.unimi.dsi.fastutil.booleans.BooleanIterator;
 import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
@@ -28,6 +30,15 @@ import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
 import it.unimi.dsi.fastutil.bytes.ByteSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -39,18 +50,6 @@ import tech.tablesaw.columns.booleans.BooleanMapUtils;
 import tech.tablesaw.filtering.predicates.BytePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /** A column in a base table that contains float values */
 public class BooleanColumn extends AbstractColumn<Boolean>
@@ -74,9 +73,7 @@ public class BooleanColumn extends AbstractColumn<Boolean>
     data = values;
   }
 
-  /**
-   * @deprecated Use BooleanColumnType.isMissingValue(byte) instead
-   */
+  /** @deprecated Use BooleanColumnType.isMissingValue(byte) instead */
   public static boolean valueIsMissing(byte b) {
     return BooleanColumnType.isMissingValue(b);
   }
