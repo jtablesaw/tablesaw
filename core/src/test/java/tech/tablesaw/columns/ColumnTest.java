@@ -30,6 +30,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -137,6 +138,31 @@ public class ColumnTest {
     assertTrue(dc3.contains(1.0));
     assertTrue(dc3.contains(-4.0));
     assertTrue(dc3.contains(-1.0));
+  }
+
+  @Test
+  public void testSetMissingTo() {
+    Double[] d1 = {1d, null, -1d};
+    Integer[] i1 = {2, null, 3};
+    String[] s1 = {"a", null, "C"};
+    LocalDate[] dt1 = {LocalDate.now(), null, LocalDate.now()};
+
+    DoubleColumn dc1 = DoubleColumn.create("t1", d1);
+    IntColumn ic1 = IntColumn.create("t2", i1);
+    StringColumn sc1 = StringColumn.create("t3", s1);
+    DateColumn dtc1 = DateColumn.create("t4", dt1);
+
+    dc1.setMissingTo(-34.2);
+    assertTrue(dc1.contains(-34.2));
+
+    ic1.setMissingTo(-34);
+    assertTrue(ic1.contains(-34));
+
+    sc1.setMissingTo("missing");
+    assertTrue(sc1.contains("missing"));
+
+    dtc1.setMissingTo(LocalDate.of(2001, 1, 1));
+    assertTrue(dtc1.contains(LocalDate.of(2001, 1, 1)));
   }
 
   @Test

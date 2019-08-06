@@ -117,11 +117,15 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   }
 
   public static DoubleColumn create(final String name, final Number[] numbers) {
-    final double[] doubles = new double[numbers.length];
-    for (int i = 0; i < numbers.length; i++) {
-      doubles[i] = numbers[i].doubleValue();
+    DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
+    for (Number number : numbers) {
+      if (number == null) {
+        newColumn.appendMissing();
+      } else {
+        newColumn.append(number.doubleValue());
+      }
     }
-    return new DoubleColumn(name, new DoubleArrayList(doubles));
+    return newColumn;
   }
 
   public static DoubleColumn create(final String name, final int initialSize) {

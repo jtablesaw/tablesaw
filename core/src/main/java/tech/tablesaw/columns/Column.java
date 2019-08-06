@@ -350,6 +350,20 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   Column<T> setMissing(int i);
 
   /**
+   * Sets the value of any missing data in the column to newValue and returns the same column
+   * @param newValue  the value to be used for all missing data in this column
+   * @return  the column updated
+   */
+  default Column<T> setMissingTo(T newValue) {
+    for (int i = 0; i < size(); i++) {
+      if (isMissing(i)) {
+        set(i, newValue);
+      }
+    }
+    return this;
+  }
+
+  /**
    * Returns a new Column of the same type with only those rows satisfying the predicate
    *
    * @param test the predicate
