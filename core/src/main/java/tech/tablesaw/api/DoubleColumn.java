@@ -109,19 +109,19 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   }
 
   public static DoubleColumn create(final String name, final List<Number> numberList) {
-    final double[] doubles = new double[numberList.size()];
-    for (int i = 0; i < numberList.size(); i++) {
-      doubles[i] = numberList.get(i).doubleValue();
+    DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
+    for (Number number : numberList) {
+        newColumn.append(number);
     }
-    return new DoubleColumn(name, new DoubleArrayList(doubles));
+    return newColumn;
   }
 
   public static DoubleColumn create(final String name, final Number[] numbers) {
-    final double[] doubles = new double[numbers.length];
-    for (int i = 0; i < numbers.length; i++) {
-      doubles[i] = numbers[i].doubleValue();
+    DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
+    for (Number number : numbers) {
+        newColumn.append(number);
     }
-    return new DoubleColumn(name, new DoubleArrayList(doubles));
+    return newColumn;
   }
 
   public static DoubleColumn create(final String name, final int initialSize) {
@@ -241,12 +241,20 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
 
   @Override
   public DoubleColumn append(Double val) {
-    this.append(val.doubleValue());
+    if (val == null) {
+      appendMissing();
+    } else {
+      append(val.doubleValue());
+    }
     return this;
   }
 
-  public DoubleColumn append(Integer val) {
-    this.append(val.doubleValue());
+  public DoubleColumn append(Number val) {
+    if (val == null) {
+      appendMissing();
+    } else {
+      append(val.doubleValue());
+    }
     return this;
   }
 

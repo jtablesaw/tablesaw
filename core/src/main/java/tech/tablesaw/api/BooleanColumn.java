@@ -289,7 +289,7 @@ public class BooleanColumn extends AbstractColumn<Boolean>
   @Override
   public BooleanColumn append(Boolean b) {
     if (b == null) {
-      data.add(BooleanColumnType.MISSING_VALUE);
+      appendMissing();
     } else if (b) {
       data.add(BooleanColumnType.BYTE_TRUE);
     } else {

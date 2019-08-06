@@ -46,6 +46,14 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     return new IntColumn(name, new IntArrayList(arr));
   }
 
+  public static IntColumn create(final String name, final Integer[] arr) {
+    IntColumn newColumn = IntColumn.create(name, 0);
+    for (Integer integer : arr) {
+        newColumn.append(integer);
+    }
+    return newColumn;
+  }
+
   public static IntColumn create(final String name, final int initialSize) {
     IntColumn column = new IntColumn(name, new IntArrayList(initialSize));
     for (int i = 0; i < initialSize; i++) {
@@ -184,7 +192,11 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
   }
 
   public IntColumn append(Integer val) {
-    this.append(val.intValue());
+    if (val == null) {
+      appendMissing();
+    } else {
+      append(val.intValue());
+    }
     return this;
   }
 

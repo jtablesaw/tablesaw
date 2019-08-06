@@ -173,7 +173,11 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   }
 
   public ShortColumn append(Short val) {
-    this.append(val.shortValue());
+    if (val == null) {
+      appendMissing();
+    } else {
+      append(val.shortValue());
+    }
     return this;
   }
 
