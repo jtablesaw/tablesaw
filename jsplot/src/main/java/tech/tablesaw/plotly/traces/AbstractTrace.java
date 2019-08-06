@@ -15,7 +15,6 @@ public abstract class AbstractTrace implements Trace {
 
   protected static final double DEFAULT_OPACITY = 1.0;
   protected static final Visibility DEFAULT_VISIBILITY = Visibility.TRUE;
-  protected static final boolean DEFAULT_SHOW_LEGEND = true;
 
   protected final PebbleEngine engine = TemplateUtils.getNewEngine();
 
@@ -41,7 +40,7 @@ public abstract class AbstractTrace implements Trace {
   private final Visibility visible;
 
   /** Determines whether or not an item corresponding to this trace is shown in the legend. */
-  private final boolean showLegend;
+  private final Boolean showLegend;
 
   /**
    * Sets the legend group for this trace. Traces part of the same legend group hide/show at the
@@ -112,7 +111,9 @@ public abstract class AbstractTrace implements Trace {
     Map<String, Object> context = new HashMap<>();
     context.put("type", type);
     context.put("name", name);
-    context.put("showLegend", showLegend);
+    if (showLegend != null) {
+      context.put("showLegend", showLegend);
+    }
 
     context.put("legendGroup", legendGroup);
 

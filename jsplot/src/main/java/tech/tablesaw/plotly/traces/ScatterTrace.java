@@ -68,7 +68,6 @@ public class ScatterTrace extends AbstractTrace {
   private final String[] text;
   private final Mode mode;
   private final HoverLabel hoverLabel;
-  private final boolean showLegend;
   private final Marker marker;
   private final Line line;
   private final YAxis yAxis;
@@ -106,7 +105,6 @@ public class ScatterTrace extends AbstractTrace {
     this.text = builder.text;
     this.marker = builder.marker;
     this.hoverLabel = builder.hoverLabel;
-    this.showLegend = builder.showLegend;
     this.line = builder.line;
     this.fill = builder.fill;
     this.fillColor = builder.fillColor;
@@ -157,9 +155,9 @@ public class ScatterTrace extends AbstractTrace {
     if (yAxis != null) {
       context.put("yAxis", yAxis);
     }
+
     context.put("marker", marker);
 
-    context.put("showlegend", showLegend);
     if (!fill.equals(DEFAULT_FILL)) {
       context.put("fill", fill);
     }

@@ -24,8 +24,10 @@ import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.plotly.traces.Trace;
 
-/** */
-public class ScatterplotExample2 {
+/**
+ * Create a scatter plot with an explicit range for an axis (the y axis, here)
+ **/
+public class ScatterplotWithSpecificAxisRange {
 
   public static void main(String[] args) throws Exception {
     Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
@@ -37,7 +39,6 @@ public class ScatterplotExample2 {
             .title("tornado start points")
             .height(600)
             .width(800)
-            .showLegend(false)
             .yAxis(Axis.builder().range(20, 60).build())
             .build();
     Trace trace =

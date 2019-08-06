@@ -9,7 +9,7 @@ public abstract class TraceBuilder {
   protected AbstractTrace.Visibility visible = AbstractTrace.DEFAULT_VISIBILITY;
 
   /** Determines whether or not an item corresponding to this trace is shown in the legend. */
-  protected boolean showLegend = AbstractTrace.DEFAULT_SHOW_LEGEND;
+  protected Boolean showLegend = null;
 
   /**
    * Sets the legend group for this trace. Traces part of the same legend group hide/show at the

@@ -20,7 +20,6 @@ public class Layout {
   private static final String DEFAULT_DECIMAL_SEPARATOR = ".";
   private static final String DEFAULT_THOUSANDS_SEPARATOR = ",";
   private static final boolean DEFAULT_AUTO_SIZE = false;
-  private static final boolean DEFAULT_SHOW_LEGEND = true;
   private static final HoverMode DEFAULT_HOVER_MODE = HoverMode.FALSE;
   private static final DragMode DEFAULT_DRAG_MODE = DragMode.ZOOM;
   private static final int DEFAULT_HOVER_DISTANCE = 20;
@@ -115,7 +114,7 @@ public class Layout {
 
   /**
    * Determines whether or not a layout width or height that has been left undefined by the user is
-   * initialized on each relayout. Note that, regardless of this attribute, an undefined layout
+   * initialized on each re-layout. Note that, regardless of this attribute, an undefined layout
    * width or height is always initialized on the first call to plot.
    */
   private final boolean autoSize;
@@ -142,7 +141,7 @@ public class Layout {
   private final String thousandsSeparator;
 
   /** Determines whether or not a legend is drawn. */
-  private final boolean showLegend;
+  private final Boolean showLegend;
 
   /** Determines the mode of hover interactions. */
   private final HoverMode hoverMode;
@@ -237,7 +236,9 @@ public class Layout {
     if (!thousandsSeparator.equals(DEFAULT_THOUSANDS_SEPARATOR))
       context.put("thousandsSeparator", thousandsSeparator);
     if (!dragMode.equals(DEFAULT_DRAG_MODE)) context.put("dragmode", dragMode);
-    context.put("showlegend", showLegend);
+    if (showLegend != null) {
+      context.put("showlegend", showLegend);
+    }
     if (!plotBgColor.equals(DEFAULT_PLOT_BG_COLOR)) context.put("plotbgcolor", plotBgColor);
     if (!paperBgColor.equals(DEFAULT_PAPER_BG_COLOR)) context.put("paperbgcolor", paperBgColor);
     if (!barMode.equals(DEFAULT_BAR_MODE)) context.put("barMode", barMode);
@@ -323,7 +324,7 @@ public class Layout {
     private final String thousandsSeparator = DEFAULT_THOUSANDS_SEPARATOR;
 
     /** Determines whether or not a legend is drawn. */
-    private boolean showLegend = DEFAULT_SHOW_LEGEND;
+    private Boolean showLegend = null;
 
     /** Determines the mode of hover interactions. */
     private HoverMode hoverMode = DEFAULT_HOVER_MODE;

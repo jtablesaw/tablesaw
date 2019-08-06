@@ -31,7 +31,8 @@ public class AreaPlot {
   }
 
   public static Figure create(String title, Table table, String xCol, String yCol) {
-    Layout layout = Layout.builder(title, xCol, yCol).showLegend(true).build();
+    Layout layout = Layout.builder(title, xCol, yCol)
+            .build();
     ScatterTrace trace =
         ScatterTrace.builder(table.numberColumn(xCol), table.numberColumn(yCol))
             .mode(ScatterTrace.Mode.LINE)
