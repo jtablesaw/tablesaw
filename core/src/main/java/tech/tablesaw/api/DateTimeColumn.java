@@ -22,18 +22,6 @@ import it.unimi.dsi.fastutil.longs.LongComparator;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
-import tech.tablesaw.columns.datetimes.DateTimeColumnType;
-import tech.tablesaw.columns.datetimes.DateTimeFilters;
-import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.columns.temporal.TemporalFillers;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingLongComparator;
-
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -53,6 +41,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
+import tech.tablesaw.columns.datetimes.DateTimeFilters;
+import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.temporal.TemporalFillers;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 /** A column in a table that contains long-integer encoded (packed) local date-time values */
 public class DateTimeColumn extends AbstractColumn<LocalDateTime>
@@ -124,9 +123,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     return column;
   }
 
-  /**
-   * @deprecated Use DateTimeColumnType.isMissingValue(int) instead
-   */
+  /** @deprecated Use DateTimeColumnType.isMissingValue(int) instead */
   public static boolean valueIsMissing(long value) {
     return DateTimeColumnType.isMissingValue(value);
   }

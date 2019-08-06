@@ -1,12 +1,11 @@
 package tech.tablesaw.columns.times;
 
+import java.time.LocalTime;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.io.ReadOptions;
-
-import java.time.LocalTime;
 
 public class TimeColumnType extends AbstractColumnType {
 
@@ -27,11 +26,11 @@ public class TimeColumnType extends AbstractColumnType {
     return INSTANCE;
   }
 
-    public static boolean isMissingValue(int i) {
-        return i == missingValueIndicator();
-    }
+  public static boolean isMissingValue(int i) {
+    return i == missingValueIndicator();
+  }
 
-    @Override
+  @Override
   public TimeColumn create(String name) {
     return TimeColumn.create(name);
   }

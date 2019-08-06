@@ -42,13 +42,17 @@
             </build>
         </profile>
     </profiles>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
-            
+            <plugin>
+                <groupId>com.coveo</groupId>
+                <artifactId>fmt-maven-plugin</artifactId>
+            </plugin>            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -72,10 +76,10 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            
+            </plugin>            
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>io.pebbletemplates</groupId>

@@ -10,19 +10,18 @@ import it.unimi.dsi.fastutil.shorts.ShortComparator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
-import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.columns.numbers.ShortColumnType;
-import tech.tablesaw.selection.Selection;
-
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.columns.numbers.ShortColumnType;
+import tech.tablesaw.selection.Selection;
 
 public class ShortColumn extends NumberColumn<Short> implements CategoricalColumn<Short> {
 
@@ -63,9 +62,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     return create(name);
   }
 
-  /**
-   * @deprecated Use ShortColumnType.isMissingValue(int value) instead
-   **/
+  /** @deprecated Use ShortColumnType.isMissingValue(int value) instead */
   public static boolean valueIsMissing(int value) {
     return ShortColumnType.isMissingValue(value);
   }

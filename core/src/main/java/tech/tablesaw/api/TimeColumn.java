@@ -14,6 +14,9 @@
 
 package tech.tablesaw.api;
 
+import static tech.tablesaw.columns.DateAndTimePredicates.isMissing;
+import static tech.tablesaw.columns.DateAndTimePredicates.isNotMissing;
+
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
@@ -21,18 +24,6 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.times.PackedLocalTime;
-import tech.tablesaw.columns.times.TimeColumnFormatter;
-import tech.tablesaw.columns.times.TimeColumnType;
-import tech.tablesaw.columns.times.TimeFillers;
-import tech.tablesaw.columns.times.TimeFilters;
-import tech.tablesaw.columns.times.TimeMapFunctions;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingIntComparator;
-
 import java.nio.ByteBuffer;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -45,9 +36,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static tech.tablesaw.columns.DateAndTimePredicates.isMissing;
-import static tech.tablesaw.columns.DateAndTimePredicates.isNotMissing;
+import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.times.PackedLocalTime;
+import tech.tablesaw.columns.times.TimeColumnFormatter;
+import tech.tablesaw.columns.times.TimeColumnType;
+import tech.tablesaw.columns.times.TimeFillers;
+import tech.tablesaw.columns.times.TimeFilters;
+import tech.tablesaw.columns.times.TimeMapFunctions;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
 /** A column in a base table that contains float values */
 public class TimeColumn extends AbstractColumn<LocalTime>
@@ -79,9 +78,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-    /**
-     * @deprecated Use TimeColumnType.isMissingValue() instead
-     */
+  /** @deprecated Use TimeColumnType.isMissingValue() instead */
   public static boolean valueIsMissing(int i) {
     return TimeColumnType.isMissingValue(i);
   }

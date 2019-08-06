@@ -11,13 +11,6 @@ import it.unimi.dsi.fastutil.longs.LongListIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.LongColumnType;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.selection.Selection;
-
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -26,6 +19,12 @@ import java.util.Iterator;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.LongColumnType;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.Selection;
 
 public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<Long> {
 
@@ -90,9 +89,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     return String.valueOf(getPrintFormatter().format(value));
   }
 
-    /**
-     * @deprecated Use LongColumnType.isMissingValue(value) instead
-     */
+  /** @deprecated Use LongColumnType.isMissingValue(value) instead */
   public static boolean valueIsMissing(long value) {
     return LongColumnType.isMissingValue(value);
   }
@@ -218,9 +215,8 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     return new LongColumn(name(), data.clone());
   }
 
-  public long[]
-      asLongArray() { // TODO: Need to figure out how to handle NaN -> Maybe just use a list with
-                      // nulls?
+  public long[] asLongArray() {
+    // TODO: Need to figure out how to handle NaN -> Maybe just use a list with nulls?
     final long[] result = new long[size()];
     for (int i = 0; i < size(); i++) {
       result[i] = getLong(i);

@@ -23,11 +23,11 @@ public class StringColumnType extends AbstractColumnType {
     return INSTANCE;
   }
 
-    public static boolean isMissingValue(String string) {
-        return missingValueIndicator().equals(string);
-    }
+  public static boolean isMissingValue(String string) {
+    return missingValueIndicator().equals(string);
+  }
 
-    @Override
+  @Override
   public StringColumn create(String name) {
     return StringColumn.create(name);
   }
