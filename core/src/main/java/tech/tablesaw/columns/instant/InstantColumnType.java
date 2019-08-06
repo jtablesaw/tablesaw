@@ -25,6 +25,10 @@ public class InstantColumnType extends AbstractColumnType {
     return INSTANCE;
   }
 
+  public static boolean isMissingValue(long value) {
+    return value == missingValueIndicator();
+  }
+
   @Override
   public InstantColumn create(String name) {
     return InstantColumn.create(name);

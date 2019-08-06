@@ -21,6 +21,18 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.dates.DateColumnFormatter;
+import tech.tablesaw.columns.dates.DateColumnType;
+import tech.tablesaw.columns.dates.DateFillers;
+import tech.tablesaw.columns.dates.DateFilters;
+import tech.tablesaw.columns.dates.DateMapFunctions;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.comparators.DescendingIntComparator;
+
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -35,17 +47,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.DateColumnFormatter;
-import tech.tablesaw.columns.dates.DateColumnType;
-import tech.tablesaw.columns.dates.DateFillers;
-import tech.tablesaw.columns.dates.DateFilters;
-import tech.tablesaw.columns.dates.DateMapFunctions;
-import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
 /** A column in a base table that contains float values */
 public class DateColumn extends AbstractColumn<LocalDate>
@@ -410,8 +411,11 @@ public class DateColumn extends AbstractColumn<LocalDate>
     return table;
   }
 
-  public static boolean valueIsMissing(int i) {
-    return i == DateColumnType.missingValueIndicator();
+  /**
+   * @deprecated Use DateColumnType.isMissingValue(int) instead
+   */
+    public static boolean valueIsMissing(int i) {
+        return DateColumnType.isMissingValue(i);
   }
 
   /** Returns the count of missing values in this column */

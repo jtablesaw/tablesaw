@@ -16,15 +16,6 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -38,6 +29,16 @@ import tech.tablesaw.columns.strings.StringMapFunctions;
 import tech.tablesaw.columns.strings.StringReduceUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * A column that contains String values. They are assumed to be 'categorical' rather than free-form
@@ -62,8 +63,11 @@ public class StringColumn extends AbstractColumn<String>
         return f1.compareTo(f2);
       };
 
+    /**
+     * @deprecated Use StringColumnType.isMissingValue(int value) instead
+     **/
   public static boolean valueIsMissing(String string) {
-    return StringColumnType.missingValueIndicator().equals(string);
+    return StringColumnType.isMissingValue(string);
   }
 
   @Override

@@ -11,18 +11,19 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import java.nio.ByteBuffer;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.function.DoublePredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.Selection;
+
+import java.nio.ByteBuffer;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.function.DoublePredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class IntColumn extends NumberColumn<Integer> implements CategoricalColumn<Integer> {
 
@@ -88,8 +89,11 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     data.clear();
   }
 
+  /**
+   * @deprecated use IntColumnType.isMissingValue(value) instead
+   **/
   public static boolean valueIsMissing(int value) {
-    return value == IntColumnType.missingValueIndicator();
+    return IntColumnType.isMissingValue(value);
   }
 
   @Override

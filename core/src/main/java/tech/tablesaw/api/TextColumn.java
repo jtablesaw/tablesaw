@@ -17,13 +17,6 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -34,6 +27,14 @@ import tech.tablesaw.columns.strings.StringReduceUtils;
 import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A column that contains String values. They are assumed to be free-form text. For categorical
@@ -82,8 +83,11 @@ public class TextColumn extends AbstractColumn<String>
     }
   }
 
+    /**
+     * @deprecated Use TextColumnType.isMissingValue(string) instead
+     */
   public static boolean valueIsMissing(String string) {
-    return TextColumnType.missingValueIndicator().equals(string);
+    return TextColumnType.isMissingValue(string);
   }
 
   @Override

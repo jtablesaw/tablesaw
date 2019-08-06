@@ -42,4 +42,8 @@ public class BooleanColumnType extends AbstractColumnType {
   public static byte missingValueIndicator() {
     return Byte.MIN_VALUE;
   }
+
+  public static boolean isMissingValue(byte value) {
+    return value == missingValueIndicator();
+  }
 }

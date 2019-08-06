@@ -39,4 +39,8 @@ public class DateTimeColumnType extends AbstractColumnType {
   public static long missingValueIndicator() {
     return Long.MIN_VALUE;
   }
+
+  public static boolean isMissingValue(long value) {
+      return value == missingValueIndicator();
+  }
 }

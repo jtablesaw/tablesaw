@@ -1,11 +1,12 @@
 package tech.tablesaw.columns.dates;
 
-import java.time.LocalDate;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.io.ReadOptions;
+
+import java.time.LocalDate;
 
 public class DateColumnType extends AbstractColumnType {
 
@@ -37,5 +38,9 @@ public class DateColumnType extends AbstractColumnType {
 
   public static int missingValueIndicator() {
     return Integer.MIN_VALUE;
+  }
+
+  public static boolean isMissingValue(int i) {
+    return i == missingValueIndicator();
   }
 }
