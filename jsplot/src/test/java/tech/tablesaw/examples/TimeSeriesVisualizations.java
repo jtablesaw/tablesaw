@@ -30,10 +30,6 @@ public class TimeSeriesVisualizations {
         LinePlot.create(
             "Boston Robberies by month: Jan 1966-Oct 1975", robberies, "Record", "Robberies"));
 
-    Plot.show(
-        AreaPlot.create(
-            "Boston Robberies by month: Jan 1966-Oct 1975", robberies, "Record", "Robberies"));
-
     Layout layout =
         Layout.builder("Boston Robberies by month: Jan 1966-Oct 1975", "year", "robberies").build();
 
