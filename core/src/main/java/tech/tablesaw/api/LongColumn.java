@@ -195,7 +195,11 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   }
 
   public LongColumn append(Long val) {
-    this.append(val.longValue());
+    if (val == null) {
+      appendMissing();
+    } else {
+      append(val.longValue());
+    }
     return this;
   }
 

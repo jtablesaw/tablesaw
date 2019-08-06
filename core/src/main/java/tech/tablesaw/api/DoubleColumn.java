@@ -249,12 +249,20 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
 
   @Override
   public DoubleColumn append(Double val) {
-    this.append(val.doubleValue());
+    if (val == null) {
+      appendMissing();
+    } else {
+      append(val.doubleValue());
+    }
     return this;
   }
 
   public DoubleColumn append(Integer val) {
-    this.append(val.doubleValue());
+    if (val == null) {
+      appendMissing();
+    } else {
+      append(val.doubleValue());
+    }
     return this;
   }
 

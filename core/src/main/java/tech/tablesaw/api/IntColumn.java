@@ -196,7 +196,11 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
   }
 
   public IntColumn append(Integer val) {
-    this.append(val.intValue());
+    if (val == null) {
+      appendMissing();
+    } else {
+      append(val.intValue());
+    }
     return this;
   }
 

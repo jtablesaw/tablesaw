@@ -171,7 +171,11 @@ public class FloatColumn extends NumberColumn<Float> {
   }
 
   public FloatColumn append(Float val) {
-    this.append(val.floatValue());
+    if (val == null) {
+      appendMissing();
+    } else {
+      append(val.floatValue());
+    }
     return this;
   }
 
