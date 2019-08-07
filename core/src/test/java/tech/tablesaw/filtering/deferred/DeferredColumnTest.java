@@ -13,7 +13,7 @@ class DeferredColumnTest {
 
   @Test
   void testExecution() throws Exception {
-      Table table = Table.read().csv("../data/Bush.csv");
+      Table table = Table.read().csv("../data/bush.csv");
       BooleanColumn b = BooleanColumn.create("test", new BitmapBackedSelection().addRange(0, table.rowCount()), table.rowCount()).setName("b");
       assertTrue(b.get(0));
       table.addColumns(b);
