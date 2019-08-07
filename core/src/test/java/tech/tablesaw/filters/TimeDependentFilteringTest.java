@@ -126,7 +126,7 @@ public class TimeDependentFilteringTest {
           // this is an error
           fail("There are no event dates");
         } else { // Get the first event for the current patient and createFromCsv a date range
-                 // around it
+          // around it
           LocalDate date = eventDates.get(0);
           result.addRange(
               Range.closed(

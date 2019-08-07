@@ -1,16 +1,12 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.longs.LongComparator;
 import it.unimi.dsi.fastutil.longs.LongListIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -527,12 +523,15 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
    */
   @Override
   public IntColumn asIntColumn() {
-    IntArrayList values = new IntArrayList();
-    for (long f : data) {
-      values.add((int) f);
+    IntColumn result = IntColumn.create(name());
+    for (long d : data) {
+      if (LongColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((int) d);
+      }
     }
-    values.trim();
-    return IntColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -553,12 +552,15 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
    */
   @Override
   public ShortColumn asShortColumn() {
-    ShortArrayList values = new ShortArrayList();
-    for (long f : data) {
-      values.add((short) f);
+    ShortColumn result = ShortColumn.create(name());
+    for (long d : data) {
+      if (LongColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((short) d);
+      }
     }
-    values.trim();
-    return ShortColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -577,12 +579,15 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
    */
   @Override
   public FloatColumn asFloatColumn() {
-    FloatArrayList values = new FloatArrayList();
+    FloatColumn result = FloatColumn.create(name());
     for (long d : data) {
-      values.add(d);
+      if (LongColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
     }
-    values.trim();
-    return FloatColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -601,11 +606,14 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
    */
   @Override
   public DoubleColumn asDoubleColumn() {
-    DoubleArrayList values = new DoubleArrayList();
+    DoubleColumn result = DoubleColumn.create(name());
     for (long d : data) {
-      values.add(d);
+      if (LongColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
     }
-    values.trim();
-    return DoubleColumn.create(this.name(), values.elements());
+    return result;
   }
 }

@@ -1,9 +1,6 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
@@ -474,12 +471,15 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
    */
   @Override
   public LongColumn asLongColumn() {
-    LongArrayList values = new LongArrayList();
-    for (int f : data) {
-      values.add(f);
+    LongColumn result = LongColumn.create(name());
+    for (short d : data) {
+      if (ShortColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
     }
-    values.trim();
-    return LongColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -499,12 +499,15 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
    */
   @Override
   public FloatColumn asFloatColumn() {
-    FloatArrayList values = new FloatArrayList();
-    for (int d : data) {
-      values.add(d);
+    FloatColumn result = FloatColumn.create(name());
+    for (short d : data) {
+      if (ShortColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
     }
-    values.trim();
-    return FloatColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -524,11 +527,27 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
    */
   @Override
   public DoubleColumn asDoubleColumn() {
-    DoubleArrayList values = new DoubleArrayList();
-    for (int d : data) {
-      values.add(d);
+    DoubleColumn result = DoubleColumn.create(name());
+    for (short d : data) {
+      if (ShortColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
     }
-    values.trim();
-    return DoubleColumn.create(this.name(), values.elements());
+    return result;
+  }
+
+  @Override
+  public IntColumn asIntColumn() {
+    IntColumn result = IntColumn.create(name());
+    for (short d : data) {
+      if (ShortColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
+    }
+    return result;
   }
 }

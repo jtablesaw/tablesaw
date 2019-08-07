@@ -1,16 +1,12 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -486,12 +482,15 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
    */
   @Override
   public LongColumn asLongColumn() {
-    LongArrayList values = new LongArrayList();
-    for (int f : data) {
-      values.add(f);
+    LongColumn result = LongColumn.create(name());
+    for (int d : data) {
+      if (IntColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
     }
-    values.trim();
-    return LongColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -511,12 +510,15 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
    */
   @Override
   public FloatColumn asFloatColumn() {
-    FloatArrayList values = new FloatArrayList();
+    FloatColumn result = FloatColumn.create(name());
     for (int d : data) {
-      values.add(d);
+      if (IntColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
     }
-    values.trim();
-    return FloatColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -536,12 +538,15 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
    */
   @Override
   public DoubleColumn asDoubleColumn() {
-    DoubleArrayList values = new DoubleArrayList();
+    DoubleColumn result = DoubleColumn.create(name());
     for (int d : data) {
-      values.add(d);
+      if (IntColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
     }
-    values.trim();
-    return DoubleColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -562,12 +567,15 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
    */
   @Override
   public ShortColumn asShortColumn() {
-    ShortArrayList values = new ShortArrayList();
-    for (int f : data) {
-      values.add((short) f);
+    ShortColumn result = ShortColumn.create(name());
+    for (int d : data) {
+      if (IntColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((short) d);
+      }
     }
-    values.trim();
-    return ShortColumn.create(this.name(), values.elements());
+    return result;
   }
 
   public IntColumn setMissing(int r) {
