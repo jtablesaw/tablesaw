@@ -704,7 +704,8 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   public Table where(Function<Table, Selection> selection) {
-    Table newTable = this.emptyCopy(this.rowCount());
+    Table tempTable = where(selection.apply(this));
+    Table newTable = tempTable.emptyCopy(tempTable.rowCount());
     Rows.copyRowsToTable(selection.apply(this), this, newTable);
     return newTable;
   }

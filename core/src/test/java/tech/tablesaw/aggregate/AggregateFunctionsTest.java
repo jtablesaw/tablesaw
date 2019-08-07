@@ -36,6 +36,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.proportionTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.standardDeviation;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.filtering.deferred.QueryHelper.*;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,6 +81,29 @@ public class AggregateFunctionsTest {
   }
 
   @Test
+  public void testHaving() {
+    StringColumn byColumn = table.dateColumn("date").yearQuarter();
+    Table result =
+            table.summarize("approval", mean, AggregateFunctions.count)
+                    .groupBy(byColumn)
+                    .having(num("Mean [approval]").isGreaterThan(60));
+    assertEquals(7, result.rowCount());
+    System.out.println(result);
+
+    result =
+            table.summarize("approval", mean, AggregateFunctions.count)
+                    .by(byColumn);
+    assertEquals(13, result.rowCount());
+    System.out.println(result);
+
+    result =
+            table.summarize("approval", mean, AggregateFunctions.count)
+                    .groupBy(byColumn).apply();
+    assertEquals(13, result.rowCount());
+    System.out.println(result);
+  }
+
+  @Test
   public void testBooleanAggregateFunctions() {
     boolean[] values = {true, false};
     BooleanColumn bc = BooleanColumn.create("test", values);
@@ -105,6 +129,7 @@ public class AggregateFunctionsTest {
     Summarizer function = table.summarize("approval", mean, stdDev);
     Table result = function.by("Group", 10);
     assertEquals(32, result.rowCount());
+    System.out.println(result.printAll());
   }
 
   @Test

@@ -18,11 +18,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.SelectionTableSliceGroup;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
@@ -38,6 +40,7 @@ import tech.tablesaw.table.TableSliceGroup;
  */
 public class Summarizer {
 
+  private String[] groupColumnNames = new String[0];
   private final Table original;
   private final Table temp;
   private final List<String> summarizedColumns = new ArrayList<>();
@@ -149,12 +152,6 @@ public class Summarizer {
     return summarize(group);
   }
 
-  private boolean tableDoesNotContain(String columnName, Table table) {
-    List<String> upperCase =
-        table.columnNames().stream().map(String::toUpperCase).collect(Collectors.toList());
-    return !upperCase.contains(columnName.toUpperCase());
-  }
-
   public Table by(CategoricalColumn<?>... columns) {
     for (Column<?> c : columns) {
       if (!temp.containsColumn(c)) {
@@ -176,30 +173,100 @@ public class Summarizer {
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
   public Table apply() {
+
+    if (groupColumnNames.length > 0) {
+      TableSliceGroup group = StandardTableSliceGroup.create(temp, groupColumnNames);
+      return summarize(group);
+    } else {
+      List<Table> results = new ArrayList<>();
+      ArrayListMultimap<String, AggregateFunction<?, ?>> reductionMultimap =
+          getAggregateFunctionMultimap();
+
+      for (String name : reductionMultimap.keys()) {
+        List<AggregateFunction<?, ?>> reductions = reductionMultimap.get(name);
+        Table table = TableSliceGroup.summaryTableName(temp);
+        for (AggregateFunction function : reductions) {
+          Column column = temp.column(name);
+          Object result = function.summarize(column);
+          ColumnType type = function.returnType();
+          Column newColumn =
+              type.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
+          if (result instanceof Number) {
+            Number number = (Number) result;
+            newColumn.append(number.doubleValue());
+          } else {
+            newColumn.append(result);
+          }
+          table.addColumns(newColumn);
+        }
+        results.add(table);
+      }
+      return (combineTables(results));
+    }
+  }
+
+  public Table having(Function<Table, Selection> selection) {
+    Preconditions.checkState(groupColumnNames.length > 0,
+            "Cannot perform having() on summary that has not been grouped first");
+    TableSliceGroup group = StandardTableSliceGroup.create(temp, groupColumnNames);
+    return summarizeForHaving(group, selection);
+  }
+
+  public Summarizer groupBy(CategoricalColumn<?>... columns) {
+    groupColumnNames = new String[columns.length];
+    for (int i = 0; i < columns.length; i++) {
+      Column<?> c = columns[i];
+      if (!temp.containsColumn(c)) {
+        temp.addColumns(c);
+        groupColumnNames[i] = c.name();
+      }
+    }
+    return this;
+  }
+
+  public Summarizer groupBy(String... columnNames) {
+    for (String columnName : columnNames) {
+      if (tableDoesNotContain(columnName, temp)) {
+        temp.addColumns(original.column(columnName));
+      }
+    }
+    groupColumnNames = columnNames;
+    return this;
+  }
+
+  public Summarizer groupBy(String groupNameTemplate, int step) {
+    TableSliceGroup group = SelectionTableSliceGroup.create(temp, groupNameTemplate, step);
+
+    //TODO THIS IS BROKEN, FIX
+    //return summarize(group);
+
+    return this;
+  }
+
+
+  /**
+   * Associates the columns to be summarized with the functions that match their type. All valid
+   * combinations are used
+   *
+   * @param group              A table slice group
+   * @param selectionFunction  Function that provides the filter for the having clause
+   * @return A table containing a row of summarized data for each group in the table slice group
+   */
+  private Table summarizeForHaving(TableSliceGroup group, Function<Table, Selection> selectionFunction) {
     List<Table> results = new ArrayList<>();
+
     ArrayListMultimap<String, AggregateFunction<?, ?>> reductionMultimap =
         getAggregateFunctionMultimap();
 
     for (String name : reductionMultimap.keys()) {
       List<AggregateFunction<?, ?>> reductions = reductionMultimap.get(name);
-      Table table = TableSliceGroup.summaryTableName(temp);
-      for (AggregateFunction function : reductions) {
-        Column column = temp.column(name);
-        Object result = function.summarize(column);
-        ColumnType type = function.returnType();
-        Column newColumn =
-            type.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
-        if (result instanceof Number) {
-          Number number = (Number) result;
-          newColumn.append(number.doubleValue());
-        } else {
-          newColumn.append(result);
-        }
-        table.addColumns(newColumn);
+      Table groupTable = group.aggregate(name, reductions.toArray(new AggregateFunction<?, ?>[0]));
+      groupTable = groupTable.where(selectionFunction);
+      if (!groupTable.isEmpty()) {
+        results.add(groupTable);
       }
-      results.add(table);
     }
-    return (combineTables(results));
+    return combineTables(results);
   }
 
   /**
@@ -259,5 +326,11 @@ public class Summarizer {
       }
     }
     return result;
+  }
+
+  private boolean tableDoesNotContain(String columnName, Table table) {
+    List<String> upperCase =
+            table.columnNames().stream().map(String::toUpperCase).collect(Collectors.toList());
+    return !upperCase.contains(columnName.toUpperCase());
   }
 }
