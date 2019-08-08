@@ -32,6 +32,7 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -47,7 +48,7 @@ import tech.tablesaw.sorting.comparators.DescendingIntComparator;
  * A tabular data structure like a table in a relational database, but not formally implementing the
  * relational algebra
  */
-public abstract class Relation {
+public abstract class Relation implements Iterable<Row> {
 
   public abstract Relation addColumns(Column<?>... cols);
 

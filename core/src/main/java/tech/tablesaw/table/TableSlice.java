@@ -17,9 +17,11 @@ package tech.tablesaw.table;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -31,7 +33,7 @@ import tech.tablesaw.selection.Selection;
  *
  * <p>A TableSlice is only good until the structure of the underlying table changes.
  */
-public class TableSlice extends Relation implements IntIterable {
+public class TableSlice extends Relation {
 
   private final Selection selection;
   private String name;
@@ -165,30 +167,23 @@ public class TableSlice extends Relation implements IntIterable {
   }
 
   /**
-   * Returns a 0 based int iterator for use with, for example, get(). When it returns 0 for the
-   * first row, get will transform that to the 0th row in the selection, which may not be the 0th
-   * row in the underlying table.
+   * Iterate of a copy of the table.
    */
   @Override
-  public IntIterator iterator() {
+  public Iterator<Row> iterator() {
 
-    return new IntIterator() {
+    return new Iterator<Row>() {
 
-      private int i = 0;
-
-      @Override
-      public int nextInt() {
-        return i++;
-      }
+      private final Row row = new Row(TableSlice.this.asTable());
 
       @Override
-      public int skip(int k) {
-        return i + k;
+      public Row next() {
+        return row.next();
       }
 
       @Override
       public boolean hasNext() {
-        return i < rowCount();
+        return row.hasNext();
       }
     };
   }
