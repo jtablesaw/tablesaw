@@ -107,6 +107,9 @@ public class MultiPlotExample {
     String page = makePage(figure1, figure2, divName1, divName2);
 
     // 8. Write the string to a file
+    // uncomment to try
+
+/*
     File outputFile = Paths.get("multiplot.html").toFile();
     try {
       try (FileWriter fileWriter = new FileWriter(outputFile)) {
@@ -115,8 +118,11 @@ public class MultiPlotExample {
     } catch (IOException e) {
       e.printStackTrace();
     }
+*/
 
     // 9. Open the default desktop Web browser on the file so you can see it
-    new Browser().browse(outputFile);
+    // uncomment to try
+
+    //new Browser().browse(outputFile);
   }
 }
