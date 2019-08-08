@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class SelectionTest {
+class SelectionTest {
 
   @Test
-  public void with() {
+  void with() {
     Selection selection = Selection.with(42, 53, 111);
     assertTrue(selection.contains(42));
     assertTrue(selection.contains(53));
@@ -21,7 +21,7 @@ public class SelectionTest {
   }
 
   @Test
-  public void withoutRange() {
+  void withoutRange() {
     Selection selection = Selection.withoutRange(0, 130, 42, 53);
     assertFalse(selection.contains(42));
     assertFalse(selection.contains(43));
@@ -33,7 +33,7 @@ public class SelectionTest {
   }
 
   @Test
-  public void withRange() {
+  void withRange() {
     Selection selection = Selection.withRange(42, 53);
     assertTrue(selection.contains(42));
     assertTrue(selection.contains(43));
@@ -45,14 +45,14 @@ public class SelectionTest {
   }
 
   @Test
-  public void toArray() {
+  void toArray() {
     Selection selection = Selection.with(42, 53, 111);
     int[] expected = {42, 53, 111};
     assertArrayEquals(expected, selection.toArray());
   }
 
   @Test
-  public void add() {
+  void add() {
     Selection selection = Selection.with(42, 53, 111);
     assertTrue(selection.contains(42));
     assertFalse(selection.contains(43));
@@ -60,7 +60,7 @@ public class SelectionTest {
   }
 
   @Test
-  public void addRange() {
+  void addRange() {
     Selection selection = Selection.with(42, 53, 111);
     assertTrue(selection.contains(42));
     assertFalse(selection.contains(43));
@@ -71,13 +71,13 @@ public class SelectionTest {
   }
 
   @Test
-  public void size() {
+  void size() {
     Selection selection = Selection.with(42, 53, 111);
     assertEquals(3, selection.size());
   }
 
   @Test
-  public void and() {
+  void and() {
     Selection selection = Selection.with(42, 53, 111);
     Selection selection2 = Selection.with(11, 133, 53, 112);
     Selection selection3 = selection.and(selection2);
@@ -86,7 +86,7 @@ public class SelectionTest {
   }
 
   @Test
-  public void or() {
+  void or() {
     Selection selection = Selection.with(42, 53, 111);
     Selection selection2 = Selection.with(11, 133, 53, 112);
     Selection selection3 = selection.or(selection2);
@@ -97,7 +97,7 @@ public class SelectionTest {
   }
 
   @Test
-  public void andNot() {
+  void andNot() {
     Selection selection = Selection.with(42, 53, 111);
     Selection selection2 = Selection.with(11, 133, 53, 112);
     Selection selection3 = selection.andNot(selection2);
@@ -108,7 +108,7 @@ public class SelectionTest {
   }
 
   @Test
-  public void isEmpty() {
+  void isEmpty() {
     Selection selection = Selection.with();
     assertTrue(selection.isEmpty());
 
@@ -117,7 +117,7 @@ public class SelectionTest {
   }
 
   @Test
-  public void clear() {
+  void clear() {
     Selection selection1 = Selection.with(42, 53, 111);
     assertFalse(selection1.isEmpty());
 
@@ -126,14 +126,14 @@ public class SelectionTest {
   }
 
   @Test
-  public void get() {
+  void get() {
     Selection selection = Selection.with(42, 53, 111);
     assertEquals(42, selection.get(0));
     assertEquals(53, selection.get(1));
   }
 
   @Test
-  public void remove() {
+  void remove() {
     Selection selection = Selection.with(42, 53, 111);
     assertTrue(selection.contains(53));
 
@@ -143,7 +143,7 @@ public class SelectionTest {
   }
 
   @Test
-  public void flip() {
+  void flip() {
     Selection selection = Selection.with(42, 53, 111);
     assertTrue(selection.contains(53));
     assertTrue(selection.contains(42));

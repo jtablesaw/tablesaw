@@ -1,9 +1,9 @@
 package tech.tablesaw.columns.temporal;
 
-import static tech.tablesaw.columns.temporal.TemporalPredicates.isMissing;
-import static tech.tablesaw.columns.temporal.TemporalPredicates.isNotMissing;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.*;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
+import java.time.Instant;
 import java.time.temporal.Temporal;
 import java.util.function.BiPredicate;
 import java.util.function.LongPredicate;
@@ -77,6 +77,14 @@ public interface TemporalFilters<T extends Temporal> extends Column<T> {
   default Selection isBetweenIncluding(long lowPackedDateTime, long highPackedDateTime) {
     return eval(PackedInstant::isOnOrAfter, lowPackedDateTime)
         .and(eval(PackedInstant::isOnOrBefore, highPackedDateTime));
+  }
+
+  default Selection isAfter(Instant value) {
+    return eval(isGreaterThan, PackedInstant.pack(value));
+  }
+
+  default Selection isBefore(Instant value) {
+    return eval(isLessThan, PackedInstant.pack(value));
   }
 
   @Override
