@@ -1,4 +1,4 @@
-package tech.tablesaw.filtering.deferred;
+package tech.tablesaw.filtering;
 
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
@@ -7,7 +7,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.BitmapBackedSelection;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static tech.tablesaw.filtering.deferred.QueryHelper.*;
+import static tech.tablesaw.api.QuerySupport.*;
 
 class DeferredColumnTest {
 
@@ -23,16 +23,16 @@ class DeferredColumnTest {
       t = table.where(stringColumn("who").isNotEqualTo("fox"));
       assertNotEquals(t.stringColumn("who").get(10), "fox");
 
-      t = table.where(numberColumn("approval").isLessThan(55));
+      t = table.where(num("approval").isLessThan(55));
       assertTrue(t.intColumn("approval").get(10) < 55);
 
-      t = table.where(dateColumn("date").isInApril());
+      t = table.where(date("date").isInApril());
       assertEquals(4, t.dateColumn("date").get(10).getMonthValue());
 
       t = table.where(not(dateColumn("date").isInApril()));
       assertFalse(t.dateColumn("date").monthValue().contains(4));
 
-      t = table.where(dateColumn("date").isInApril());
+      t = table.where(date("date").isInApril());
       assertEquals(4, t.dateColumn("date").get(10).getMonthValue());
   }
 

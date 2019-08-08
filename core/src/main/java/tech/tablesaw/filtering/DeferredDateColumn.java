@@ -1,4 +1,4 @@
-package tech.tablesaw.filtering.deferred;
+package tech.tablesaw.filtering;
 
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;

@@ -1,4 +1,4 @@
-package tech.tablesaw.filtering.deferred;
+package tech.tablesaw.filtering;
 
 public class DeferredInstantColumn extends DeferredColumn {
 
