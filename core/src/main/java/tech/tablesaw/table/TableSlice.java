@@ -76,7 +76,7 @@ public class TableSlice extends Relation implements IntIterable {
   public List<Column<?>> columns() {
     List<Column<?>> columns = new ArrayList<>();
     for (int i = 0; i < columnCount(); i++) {
-      columns.add(entireColumn(i));
+      columns.add(column(i));
     }
     return columns;
   }
@@ -140,8 +140,8 @@ public class TableSlice extends Relation implements IntIterable {
 
   public Table asTable() {
     Table table = Table.create(this.name());
-    for (Column<?> column : columns()) {
-      table.addColumns(column.where(selection));
+    for (Column<?> column : this.columns()) {
+      table.addColumns(column);
     }
     return table;
   }

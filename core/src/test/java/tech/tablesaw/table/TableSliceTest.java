@@ -53,7 +53,7 @@ public class TableSliceTest {
   @Test
   public void columns() {
     TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
-    assertEquals(source.columns(), slice.columns());
+    assertEquals(source.columns().get(0).size(), slice.columns().get(0).size());
   }
 
   @Test
