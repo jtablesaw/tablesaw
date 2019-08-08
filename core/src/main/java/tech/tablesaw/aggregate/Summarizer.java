@@ -206,8 +206,9 @@ public class Summarizer {
   }
 
   public Table having(Function<Table, Selection> selection) {
-    Preconditions.checkState(groupColumnNames.length > 0,
-            "Cannot perform having() on summary that has not been grouped first");
+    Preconditions.checkState(
+        groupColumnNames.length > 0,
+        "Cannot perform having() on summary that has not been grouped first");
     TableSliceGroup group = StandardTableSliceGroup.create(temp, groupColumnNames);
     return summarizeForHaving(group, selection);
   }
@@ -237,22 +238,22 @@ public class Summarizer {
   public Summarizer groupBy(String groupNameTemplate, int step) {
     TableSliceGroup group = SelectionTableSliceGroup.create(temp, groupNameTemplate, step);
 
-    //TODO THIS IS BROKEN, FIX
-    //return summarize(group);
+    // TODO THIS IS BROKEN, FIX
+    // return summarize(group);
 
     return this;
   }
-
 
   /**
    * Associates the columns to be summarized with the functions that match their type. All valid
    * combinations are used
    *
-   * @param group              A table slice group
-   * @param selectionFunction  Function that provides the filter for the having clause
+   * @param group A table slice group
+   * @param selectionFunction Function that provides the filter for the having clause
    * @return A table containing a row of summarized data for each group in the table slice group
    */
-  private Table summarizeForHaving(TableSliceGroup group, Function<Table, Selection> selectionFunction) {
+  private Table summarizeForHaving(
+      TableSliceGroup group, Function<Table, Selection> selectionFunction) {
     List<Table> results = new ArrayList<>();
 
     ArrayListMultimap<String, AggregateFunction<?, ?>> reductionMultimap =
@@ -330,7 +331,7 @@ public class Summarizer {
 
   private boolean tableDoesNotContain(String columnName, Table table) {
     List<String> upperCase =
-            table.columnNames().stream().map(String::toUpperCase).collect(Collectors.toList());
+        table.columnNames().stream().map(String::toUpperCase).collect(Collectors.toList());
     return !upperCase.contains(columnName.toUpperCase());
   }
 }
