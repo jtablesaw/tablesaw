@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import tech.tablesaw.aggregate.AggregateFunction;
@@ -699,6 +700,12 @@ public class Table extends Relation implements Iterable<Row> {
   public Table where(Selection selection) {
     Table newTable = this.emptyCopy(selection.size());
     Rows.copyRowsToTable(selection, this, newTable);
+    return newTable;
+  }
+
+  public Table where(Function<Table, Selection> selection) {
+    Table newTable = this.emptyCopy(this.rowCount());
+    Rows.copyRowsToTable(selection.apply(this), this, newTable);
     return newTable;
   }
 
