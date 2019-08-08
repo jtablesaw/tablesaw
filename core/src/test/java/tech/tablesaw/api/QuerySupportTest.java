@@ -21,9 +21,10 @@ public class QuerySupportTest {
   public void test1() {
     Table result =
         t.where(
-            all(stringColumn("who").startsWith("f"),
-                    dateColumn("date").isInYear(2002),
-                        numberColumn("approval").isLessThan(75)));
+            all(
+                stringColumn("who").startsWith("f"),
+                dateColumn("date").isInYear(2002),
+                numberColumn("approval").isLessThan(75)));
 
     assertTrue(result.getString(0, "who").startsWith("f"));
   }

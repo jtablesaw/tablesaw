@@ -24,16 +24,11 @@ import tech.tablesaw.selection.Selection;
 public class SelectionTableSliceGroup extends TableSliceGroup {
 
   public static SelectionTableSliceGroup create(
-          Table original,
-          String subTableNameTemplate,
-          int step) {
+      Table original, String subTableNameTemplate, int step) {
     return new SelectionTableSliceGroup(original, subTableNameTemplate, step);
   }
 
-  private SelectionTableSliceGroup(
-          Table original,
-          String subTableNameTemplate,
-          int step) {
+  private SelectionTableSliceGroup(Table original, String subTableNameTemplate, int step) {
     super(original);
     List<Selection> selections = new ArrayList<>();
     for (int i = 0; i < original.rowCount() - step; i += step) {

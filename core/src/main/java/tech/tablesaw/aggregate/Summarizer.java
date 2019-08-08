@@ -168,13 +168,15 @@ public class Summarizer {
   }
 
   /**
-   * Returns a summary of the records grouped into subsets of the same size, in the order they appear
+   * Returns a summary of the records grouped into subsets of the same size, in the order they
+   * appear
    *
-   * All groups have the same number of records. If the final group has fewer than step records it is dropped.
+   * <p>All groups have the same number of records. If the final group has fewer than step records
+   * it is dropped.
    *
    * @deprecated Use by(step) instead.
    * @param groupNameTemplate a prefix for the group name
-   * @param step              the number or records to include in each group
+   * @param step the number or records to include in each group
    */
   @Deprecated
   public Table by(String groupNameTemplate, int step) {
@@ -198,15 +200,18 @@ public class Summarizer {
     TableSliceGroup group = StandardTableSliceGroup.create(temp, groupColumn);
     Table t = summarize(group);
 
-    //remove the last row if it has no value, that means it didn't have enough records for a full step
+    // remove the last row if it has no value, that means it didn't have enough records for a full
+    // step
     t = removeLastRowIfMissingGroup(groupColumn, t);
     return t;
   }
 
   /**
-   * Returns a summary of the records grouped into subsets of the same size, in the order they appear
+   * Returns a summary of the records grouped into subsets of the same size, in the order they
+   * appear
    *
-   * All groups have the same number of records. If the final group has fewer than step records it is dropped.
+   * <p>All groups have the same number of records. If the final group has fewer than step records
+   * it is dropped.
    *
    * @param step the number or records to include in each group
    */
@@ -266,7 +271,8 @@ public class Summarizer {
       TableSliceGroup group = StandardTableSliceGroup.create(temp, groupColumn);
       Table t = summarizeForHaving(group, selection);
 
-      //remove the last row if it has no value, that means it didn't have enough records for a full step
+      // remove the last row if it has no value, that means it didn't have enough records for a full
+      // step
       t = removeLastRowIfMissingGroup(groupColumn, t);
 
       t.column(GROUP_COL_TEMP_NAME).setName("Group");
@@ -275,7 +281,7 @@ public class Summarizer {
     } else {
       TableSliceGroup group = StandardTableSliceGroup.create(temp, groupColumnNames);
       return summarizeForHaving(group, selection);
-      }
+    }
   }
 
   public Summarizer groupBy(CategoricalColumn<?>... columns) {
@@ -303,7 +309,7 @@ public class Summarizer {
   public Summarizer groupBy(int step) {
     IntColumn groupColumn = assignToGroupsByStep(step);
 
-    groupColumnNames = new String[]{GROUP_COL_TEMP_NAME};
+    groupColumnNames = new String[] {GROUP_COL_TEMP_NAME};
 
     return this;
   }
@@ -338,12 +344,14 @@ public class Summarizer {
     IntColumn groupColumn = IntColumn.create(GROUP_COL_TEMP_NAME, temp.rowCount());
     temp.addColumns(groupColumn);
     AtomicInteger groupId = new AtomicInteger(1);
-    temp.stepWithRows(rows -> {
-      int id = groupId.getAndIncrement();
-      for (Row row : rows) {
-        groupColumn.set(row.getRowNumber(), id);
-      }
-    }, step);
+    temp.stepWithRows(
+        rows -> {
+          int id = groupId.getAndIncrement();
+          for (Row row : rows) {
+            groupColumn.set(row.getRowNumber(), id);
+          }
+        },
+        step);
     return groupColumn;
   }
 

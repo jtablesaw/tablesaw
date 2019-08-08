@@ -54,7 +54,10 @@ import tech.tablesaw.selection.Selection;
 
 /** A column in a base table that contains float values */
 public class BooleanColumn extends AbstractColumn<Boolean>
-    implements BooleanMapUtils, CategoricalColumn<Boolean>, BooleanFillers<BooleanColumn>, BooleanFilters {
+    implements BooleanMapUtils,
+        CategoricalColumn<Boolean>,
+        BooleanFillers<BooleanColumn>,
+        BooleanFilters {
 
   private final ByteComparator descendingByteComparator = (o1, o2) -> Byte.compare(o2, o1);
 

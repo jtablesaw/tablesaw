@@ -5,13 +5,13 @@ import tech.tablesaw.selection.Selection;
 
 public interface BooleanFilters {
 
-    Selection isFalse();
+  Selection isFalse();
 
-    Selection isTrue();
+  Selection isTrue();
 
-    Selection isEqualTo(BooleanColumn other);
+  Selection isEqualTo(BooleanColumn other);
 
-    Selection isMissing();
+  Selection isMissing();
 
-    Selection isNotMissing();
+  Selection isNotMissing();
 }

@@ -12,6 +12,9 @@
     <artifactId>tablesaw-core</artifactId>
 
     <packaging>jar</packaging>
+    <properties>
+        <doclint>none</doclint>
+    </properties>
 
     <profiles>
         <profile>
@@ -27,6 +30,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <quiet>true</quiet>
                             <additionalOptions>-Xdoclint:none</additionalOptions>
                             <additionalJOption>-Xdoclint:none</additionalJOption>
                         </configuration>
