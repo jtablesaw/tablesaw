@@ -87,6 +87,10 @@ public interface TemporalFilters<T extends Temporal> extends Column<T> {
     return eval(isLessThan, PackedInstant.pack(value));
   }
 
+  default Selection isEqualTo(Instant value) {
+    return eval(isEqualTo, PackedInstant.pack(value));
+  }
+
   @Override
   default Selection isMissing() {
     return eval(isMissing);

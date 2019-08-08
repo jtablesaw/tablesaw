@@ -41,6 +41,11 @@ class InstantColumnTest {
   }
 
   @Test
+  void isEqualTo() {
+    assertEquals(2, instanceColumn.isEqualTo(afterInst).get(0));
+  }
+
+  @Test
   void isMissing() {
     assertEquals(3, instanceColumn.isMissing().get(0));
   }
