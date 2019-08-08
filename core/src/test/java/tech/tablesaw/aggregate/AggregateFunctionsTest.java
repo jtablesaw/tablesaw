@@ -36,6 +36,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.proportionTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.standardDeviation;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.api.QuerySupport.num;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,17 +51,17 @@ import tech.tablesaw.table.SelectionTableSliceGroup;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
 
-public class AggregateFunctionsTest {
+class AggregateFunctionsTest {
 
   private Table table;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
   }
 
   @Test
-  public void testGroupMean() {
+  void testGroupMean() {
     StringColumn byColumn = table.stringColumn("who");
     TableSliceGroup group = StandardTableSliceGroup.create(table, byColumn);
     Table result = group.aggregate("approval", mean, stdDev);
@@ -72,7 +73,7 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testDateMin() {
+  void testDateMin() {
     StringColumn byColumn = table.dateColumn("date").yearQuarter();
     Table result = table.summarize("approval", "date", mean, earliestDate).by(byColumn);
     assertEquals(3, result.columnCount());
@@ -80,7 +81,31 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testBooleanAggregateFunctions() {
+  void testHaving() {
+    StringColumn byColumn = table.dateColumn("date").yearQuarter();
+    Table result =
+        table
+            .summarize("approval", mean, AggregateFunctions.count)
+            .groupBy(byColumn)
+            .having(num("Mean [approval]").isGreaterThan(60));
+    assertEquals(7, result.rowCount());
+
+    result = table.summarize("approval", mean, AggregateFunctions.count).by(byColumn);
+    assertEquals(13, result.rowCount());
+  }
+
+  @Test
+  void testGroupBy() {
+    StringColumn byColumn = table.dateColumn("date").yearQuarter();
+    Table result = table.summarize("approval", mean, AggregateFunctions.count).by(byColumn);
+    assertEquals(13, result.rowCount());
+
+    result = table.summarize("approval", mean, AggregateFunctions.count).groupBy(byColumn).apply();
+    assertEquals(13, result.rowCount());
+  }
+
+  @Test
+  void testBooleanAggregateFunctions() {
     boolean[] values = {true, false};
     BooleanColumn bc = BooleanColumn.create("test", values);
     assertTrue(anyTrue.summarize(bc));
@@ -89,26 +114,40 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testGroupMean2() {
+  void testGroupMean2() {
     Table result = table.summarize("approval", mean, stdDev).apply();
     assertEquals(2, result.columnCount());
   }
 
   @Test
-  public void testApplyWithNonNumericResults() {
+  void testApplyWithNonNumericResults() {
     Table result = table.summarize("date", earliestDate, latestDate).apply();
     assertEquals(2, result.columnCount());
   }
 
   @Test
-  public void testGroupMean3() {
+  void testGroupMean3() {
     Summarizer function = table.summarize("approval", mean, stdDev);
     Table result = function.by("Group", 10);
     assertEquals(32, result.rowCount());
   }
 
   @Test
-  public void testGroupMean4() {
+  void testGroupMean3a() {
+    Summarizer function = table.summarize("approval", mean, stdDev);
+    Table result = function.by(10);
+    assertEquals(32, result.rowCount());
+  }
+
+  @Test
+  void testGroupMean3b() {
+    Summarizer function = table.summarize("approval", mean, stdDev);
+    Table result = function.groupBy(10).having(num("mean [approval]").isGreaterThan(60));
+    assertEquals(21, result.rowCount());
+  }
+
+  @Test
+  void testGroupMean4() {
     table.addColumns(table.numberColumn("approval").cube());
     table.column(3).setName("cubed");
     Table result = table.summarize("approval", "cubed", mean, stdDev).apply();
@@ -116,7 +155,7 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testGroupMeanByStep() {
+  void testGroupMeanByStep() {
     TableSliceGroup group = SelectionTableSliceGroup.create(table, "Step", 5);
     Table result = group.aggregate("approval", mean, stdDev);
     assertEquals(3, result.columnCount());
@@ -125,7 +164,7 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testSummaryWithACalculatedColumn() {
+  void testSummaryWithACalculatedColumn() {
     Summarizer summarizer = new Summarizer(table, table.dateColumn("date").year(), mean);
     Table t = summarizer.apply();
     double avg = t.doubleColumn(0).get(0);
@@ -133,7 +172,7 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void test2ColumnGroupMean() {
+  void test2ColumnGroupMean() {
     StringColumn byColumn1 = table.stringColumn("who");
     DateColumn byColumn2 = table.dateColumn("date");
     Table result = table.summarize("approval", mean, sum).by(byColumn1, byColumn2);
@@ -144,7 +183,7 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testComplexSummarizing() {
+  void testComplexSummarizing() {
     table.addColumns(table.numberColumn("approval").cube());
     table.column(3).setName("cubed");
     StringColumn byColumn1 = table.stringColumn("who");
@@ -156,7 +195,7 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testMultipleColumnTypes() {
+  void testMultipleColumnTypes() {
 
     boolean[] args = {true, false, true, false};
     BooleanColumn booleanColumn = BooleanColumn.create("b", args);
@@ -172,7 +211,7 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testMultipleColumnTypesWithApply() {
+  void testMultipleColumnTypesWithApply() {
 
     boolean[] args = {true, false, true, false};
     BooleanColumn booleanColumn = BooleanColumn.create("b", args);
@@ -190,7 +229,7 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testBooleanFunctions() {
+  void testBooleanFunctions() {
     BooleanColumn c = BooleanColumn.create("test");
     c.append(true);
     c.appendCell("");
@@ -205,7 +244,7 @@ public class AggregateFunctionsTest {
   }
 
   @Test
-  public void testPercentileFunctions() {
+  void testPercentileFunctions() {
     double[] values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     DoubleColumn c = DoubleColumn.create("test", values);
     c.appendCell("");

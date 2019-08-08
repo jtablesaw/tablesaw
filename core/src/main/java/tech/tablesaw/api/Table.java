@@ -16,6 +16,7 @@ package tech.tablesaw.api;
 
 import static java.util.stream.Collectors.toList;
 import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
+import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 import com.google.common.base.Preconditions;
@@ -704,9 +705,14 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   public Table where(Function<Table, Selection> selection) {
-    Table newTable = this.emptyCopy(this.rowCount());
+    Table tempTable = where(selection.apply(this));
+    Table newTable = tempTable.emptyCopy(tempTable.rowCount());
     Rows.copyRowsToTable(selection.apply(this), this, newTable);
     return newTable;
+  }
+
+  public Table dropWhere(Function<Table, Selection> selection) {
+    return where(not(selection));
   }
 
   public Table dropWhere(Selection selection) {
