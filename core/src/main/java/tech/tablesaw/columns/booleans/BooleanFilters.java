@@ -5,9 +5,9 @@ import tech.tablesaw.selection.Selection;
 
 public interface BooleanFilters {
 
-    public Selection isFalse();
+    Selection isFalse();
 
-    public Selection isTrue();
+    Selection isTrue();
 
     Selection isEqualTo(BooleanColumn other);
 

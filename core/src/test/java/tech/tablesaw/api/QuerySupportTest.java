@@ -3,11 +3,12 @@ package tech.tablesaw.api;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.api.QuerySupport.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class QueryHelperTest {
+public class QuerySupportTest {
 
   private Table t;
 
@@ -20,27 +21,25 @@ public class QueryHelperTest {
   public void test1() {
     Table result =
         t.where(
-            t.stringColumn("who")
-                .startsWith("f")
-                .and(
-                    t.dateColumn("date")
-                        .isInYear(2002)
-                        .and(t.numberColumn("approval").isLessThan(75))));
+            all(stringColumn("who").startsWith("f"),
+                    dateColumn("date").isInYear(2002),
+                        numberColumn("approval").isLessThan(75)));
+
     assertTrue(result.getString(0, "who").startsWith("f"));
   }
 
   @Test
   public void test3() {
-    Table result = t.where(t.stringColumn("who").isIn("fox"));
+    Table result = t.where(stringColumn("who").isIn("fox"));
     assertEquals("fox", result.getString(0, "who"));
 
-    result = t.where(t.stringColumn("who").isNotIn("fox", "zogby"));
+    result = t.where(stringColumn("who").isNotIn("fox", "zogby"));
     assertFalse(result.getString(0, "who").startsWith("f"));
   }
 
   @Test
   public void test2() {
-    Table result = t.where(t.stringColumn("who").startsWith("f"));
+    Table result = t.where(stringColumn("who").startsWith("f"));
 
     assertTrue(result.getString(0, "who").startsWith("f"));
   }
