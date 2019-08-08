@@ -194,6 +194,31 @@ public interface NumberMapFunctions {
     return newColumn;
   }
 
+  default DoubleColumn power(NumericColumn<?> powerColumn) {
+    DoubleColumn result = DoubleColumn.create(name() + "[pow]", size());
+    for (int i = 0; i < size(); i++) {
+      if (isMissing(i) || (powerColumn.isMissing(i))) {
+        result.setMissing(i);
+      } else {
+        result.set(i, Math.pow(getDouble(i), powerColumn.getDouble(i)));
+      }
+    }
+    return result;
+  }
+
+  /** Returns a NumberColumn with the reciprocal (1/n) for each value n in this column */
+  default DoubleColumn reciprocal() {
+    DoubleColumn result = DoubleColumn.create(name() + "[1/n]", size());
+    for (int i = 0; i < size(); i++) {
+      if (isMissing(i)) {
+        result.setMissing(i);
+      } else {
+        result.set(i, 1 / getDouble(i));
+      }
+    }
+    return result;
+  }
+
   /** Returns a NumberColumn with the square of each value in this column */
   default DoubleColumn square() {
     DoubleColumn newColumn = power(2);
@@ -372,4 +397,6 @@ public interface NumberMapFunctions {
   }
 
   double getDouble(int i);
+
+  boolean isMissing(int rowNumber);
 }
