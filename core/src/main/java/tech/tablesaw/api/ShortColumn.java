@@ -60,6 +60,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   }
 
   /** @deprecated Use ShortColumnType.isMissingValue(int value) instead */
+  @Deprecated
   public static boolean valueIsMissing(int value) {
     return ShortColumnType.isMissingValue(value);
   }

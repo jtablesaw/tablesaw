@@ -63,6 +63,7 @@ public class StringColumn extends AbstractColumn<String>
       };
 
   /** @deprecated Use StringColumnType.isMissingValue(int value) instead */
+  @Deprecated
   public static boolean valueIsMissing(String string) {
     return StringColumnType.isMissingValue(string);
   }
