@@ -18,7 +18,9 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoricalColumn;
@@ -32,6 +34,7 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -47,7 +50,7 @@ import tech.tablesaw.sorting.comparators.DescendingIntComparator;
  * A tabular data structure like a table in a relational database, but not formally implementing the
  * relational algebra
  */
-public abstract class Relation {
+public abstract class Relation implements Iterable<Row> {
 
   public abstract Relation addColumns(Column<?>... cols);
 
@@ -529,4 +532,54 @@ public abstract class Relation {
   public boolean containsColumn(Column<?> column) {
     return columns().contains(column);
   }
+
+  /**
+   * Maps the supplied functions across all rows in the table appending the results to a new DoubleColumn.
+   *
+   * If you do not want the supplied function applied to rows with missing values you can supply a
+   * list of columns to check for missing values. For each row, it will check for a missing value in any of the
+   * listed columns. If there is a missing value a missing value will be appended to the results, otherwise
+   * the result of the function will be appended.
+   *
+   *
+   * @param name The name of the new column.
+   * @param function to map a table row to a double.
+   * @param skipIfMissingColNames the column names to check for missing values. If any of the
+   * columns contain a missing value (for a particular row) a missing value will be appended.
+   * @return DoubleColumn with the results appended.
+   */
+  public DoubleColumn mapToDoubleColumn(String name, Function<? super Row, ? extends Double> function, String... skipIfMissingColNames) {
+    return (DoubleColumn) mapToTypeInternal(DoubleColumn.create(name, rowCount()), function, skipIfMissingColNames);
+  }
+
+  private <T> Column<T> mapToTypeInternal(Column<T> destination,
+    Function<? super Row, ? extends T> function, String[] skipIfMissingColNames) {
+    List<Column<?>> checkMissingCols = Arrays.stream(skipIfMissingColNames).map(this::column).collect(Collectors.toList());
+    Iterator<Row> rowIterator = iterator();
+    int i = 0;
+    while(rowIterator.hasNext()) {
+      Row row = rowIterator.next();
+      if(isMissing(checkMissingCols, i)) {
+        destination.setMissing(i);
+      } else {
+        destination.set(i, function.apply(row));
+      }
+      i++;
+    }
+    return destination;
+  }
+
+  /**
+   * Checks every cell for the supplied list of columns and row index.
+   * If any cell contains missing data then return true;
+   */
+  private boolean isMissing(List<Column<?>> cols, int rowIndex) {
+    for (Column<?> col : cols) {
+      if (col.isMissing(rowIndex)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

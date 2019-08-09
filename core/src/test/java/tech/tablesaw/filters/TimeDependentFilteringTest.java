@@ -33,6 +33,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.PackedLocalDate;
@@ -113,11 +114,11 @@ public class TimeDependentFilteringTest {
       List<LocalDate> eventDates = new ArrayList<>();
 
       // iterate an individual table and find the rows where concept matches the target concept
-      for (int row : patientTable) {
+      for (Row row : patientTable) {
         StringColumn concepts = patientTable.stringColumn("concept");
         DateColumn dates = patientTable.dateColumn("date");
-        if (concepts.get(row).equals(conceptZ)) {
-          eventDates.add(dates.get(row));
+        if(row.getString("concept").equals(conceptZ)) {
+          eventDates.add(row.getDate("date"));
         }
       }
 
