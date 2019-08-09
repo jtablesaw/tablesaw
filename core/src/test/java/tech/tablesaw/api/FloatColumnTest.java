@@ -36,16 +36,4 @@ public class FloatColumnTest {
     floatColumn.append(floatObject);
     assertEquals(floatObject, floatColumn.get(0));
   }
-
-  @Test
-  public void testMapToDouble() {
-    FloatColumn column = FloatColumn.create("testing");
-    column.append(1.0f);
-    column.append(2.0f);
-    column.append(3.0f);
-
-    DoubleColumn actual = column.mapToDoubleColumn("doubles", (x) -> 2.0 * x);
-
-    assertArrayEquals(new double[] {2.0, 4.0, 6.0}, actual.asDoubleArray());
-  }
 }
