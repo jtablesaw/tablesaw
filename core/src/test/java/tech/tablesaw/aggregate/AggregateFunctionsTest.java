@@ -142,6 +142,13 @@ class AggregateFunctionsTest {
   @Test
   void testGroupMean3b() {
     Summarizer function = table.summarize("approval", mean, stdDev);
+    Table result = function.groupBy(10).apply();
+    assertEquals(32, result.rowCount());
+  }
+
+  @Test
+  void testGroupMean3c() {
+    Summarizer function = table.summarize("approval", mean, stdDev);
     Table result = function.groupBy(10).having(num("mean [approval]").isGreaterThan(60));
     assertEquals(21, result.rowCount());
   }
