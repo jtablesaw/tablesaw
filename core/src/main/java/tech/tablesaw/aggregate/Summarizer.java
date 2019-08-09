@@ -18,7 +18,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import tech.tablesaw.api.CategoricalColumn;
@@ -33,6 +32,8 @@ import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
 
+import static tech.tablesaw.api.QuerySupport.numberColumn;
+
 /**
  * Summarizes the data in a table, by applying functions to a subset of its columns.
  *
@@ -46,7 +47,7 @@ public class Summarizer {
 
   private String[] groupColumnNames = new String[0];
   private final Table original;
-  private final Table temp;
+  private Table temp;
   private final List<String> summarizedColumns = new ArrayList<>();
   private final AggregateFunction<?, ?>[] reductions;
   private static final String GROUP_COL_TEMP_NAME = "_temp_group_col_";
@@ -198,12 +199,7 @@ public class Summarizer {
 
   private Table getSummaryTable(IntColumn groupColumn) {
     TableSliceGroup group = StandardTableSliceGroup.create(temp, groupColumn);
-    Table t = summarize(group);
-
-    // remove the last row if it has no value, that means it didn't have enough records for a full
-    // step
-    t = removeLastRowIfMissingGroup(groupColumn, t);
-    return t;
+    return summarize(group);
   }
 
   /**
@@ -269,15 +265,7 @@ public class Summarizer {
     if (groupColumnNames[0].equals(GROUP_COL_TEMP_NAME)) {
       IntColumn groupColumn = temp.intColumn(GROUP_COL_TEMP_NAME);
       TableSliceGroup group = StandardTableSliceGroup.create(temp, groupColumn);
-      Table t = summarizeForHaving(group, selection);
-
-      // remove the last row if it has no value, that means it didn't have enough records for a full
-      // step
-      t = removeLastRowIfMissingGroup(groupColumn, t);
-
-      t.column(GROUP_COL_TEMP_NAME).setName("Group");
-      return t;
-
+      return summarizeForHaving(group, selection);
     } else {
       TableSliceGroup group = StandardTableSliceGroup.create(temp, groupColumnNames);
       return summarizeForHaving(group, selection);
@@ -308,7 +296,9 @@ public class Summarizer {
 
   public Summarizer groupBy(int step) {
     IntColumn groupColumn = assignToGroupsByStep(step);
-
+    if (tableDoesNotContain(groupColumn.name(), temp)) {
+      temp.addColumns(groupColumn);
+    }
     groupColumnNames = new String[] {GROUP_COL_TEMP_NAME};
 
     return this;
@@ -343,15 +333,28 @@ public class Summarizer {
   private IntColumn assignToGroupsByStep(int step) {
     IntColumn groupColumn = IntColumn.create(GROUP_COL_TEMP_NAME, temp.rowCount());
     temp.addColumns(groupColumn);
-    AtomicInteger groupId = new AtomicInteger(1);
-    temp.stepWithRows(
-        rows -> {
-          int id = groupId.getAndIncrement();
-          for (Row row : rows) {
-            groupColumn.set(row.getRowNumber(), id);
-          }
-        },
-        step);
+
+    int groupId = 1;
+    int withinGroupCount = 0;
+    Row row = new Row(temp);
+
+    while(row.hasNext()) {
+      row.next();
+      if (withinGroupCount < step) {
+        withinGroupCount++;
+        groupColumn.set(row.getRowNumber(), groupId);
+      } else {
+        groupId++;
+        groupColumn.set(row.getRowNumber(), groupId);
+        withinGroupCount = 1;
+      }
+    }
+    int lastGroupSize =
+            temp.where(numberColumn(GROUP_COL_TEMP_NAME).isEqualTo(groupId)).rowCount();
+    if (lastGroupSize < step) {
+      temp = temp.dropWhere(numberColumn(GROUP_COL_TEMP_NAME).isEqualTo(groupId));
+    }
+    temp.addColumns(IntColumn.indexColumn("index", temp.rowCount(), 1));
     return groupColumn;
   }
 
