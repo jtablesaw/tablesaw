@@ -12,22 +12,22 @@ public class DeferredBooleanColumn extends DeferredColumn {
   }
 
   public Function<Table, Selection> isFalse() {
-    return table -> table.booleanColumn(getColumnName()).isFalse();
+    return table -> table.booleanColumn(name()).isFalse();
   }
 
   public Function<Table, Selection> isTrue() {
-    return table -> table.booleanColumn(getColumnName()).isTrue();
+    return table -> table.booleanColumn(name()).isTrue();
   }
 
   public Function<Table, Selection> isEqualTo(BooleanColumn other) {
-    return table -> table.booleanColumn(getColumnName()).isEqualTo(other);
+    return table -> table.booleanColumn(name()).isEqualTo(other);
   }
 
   public Function<Table, Selection> isMissing() {
-    return table -> table.booleanColumn(getColumnName()).isMissing();
+    return table -> table.booleanColumn(name()).isMissing();
   }
 
   public Function<Table, Selection> isNotMissing() {
-    return table -> table.booleanColumn(getColumnName()).isNotMissing();
+    return table -> table.booleanColumn(name()).isNotMissing();
   }
 }

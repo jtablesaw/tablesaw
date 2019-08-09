@@ -8,7 +8,7 @@ public class DeferredColumn {
     this.columnName = columnName;
   }
 
-  public String getColumnName() {
+  public String name() {
     return columnName;
   }
 }

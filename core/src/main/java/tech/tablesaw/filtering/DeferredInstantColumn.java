@@ -12,22 +12,22 @@ public class DeferredInstantColumn extends DeferredColumn {
   }
 
   public Function<Table, Selection> isEqualTo(Instant value) {
-    return table -> table.instantColumn(getColumnName()).isEqualTo(value);
+    return table -> table.instantColumn(name()).isEqualTo(value);
   }
 
   public Function<Table, Selection> isMissing() {
-    return table -> table.instantColumn(getColumnName()).isMissing();
+    return table -> table.instantColumn(name()).isMissing();
   }
 
   public Function<Table, Selection> isNotMissing() {
-    return table -> table.instantColumn(getColumnName()).isNotMissing();
+    return table -> table.instantColumn(name()).isNotMissing();
   }
 
   public Function<Table, Selection> isAfter(Instant value) {
-    return table -> table.instantColumn(getColumnName()).isAfter(value);
+    return table -> table.instantColumn(name()).isAfter(value);
   }
 
   public Function<Table, Selection> isBefore(Instant value) {
-    return table -> table.instantColumn(getColumnName()).isBefore(value);
+    return table -> table.instantColumn(name()).isBefore(value);
   }
 }

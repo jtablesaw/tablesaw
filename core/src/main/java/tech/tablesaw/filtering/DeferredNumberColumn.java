@@ -13,102 +13,102 @@ public class DeferredNumberColumn extends DeferredColumn {
   }
 
   public Function<Table, Selection> isEqualTo(NumberColumn<?> other) {
-    return table -> table.numberColumn(getColumnName()).isEqualTo(other);
+    return table -> table.numberColumn(name()).isEqualTo(other);
   }
 
   public Function<Table, Selection> isEqualTo(double other) {
-    return table -> table.numberColumn(getColumnName()).isEqualTo(other);
+    return table -> table.numberColumn(name()).isEqualTo(other);
   }
 
   public Function<Table, Selection> isBetweenExclusive(double start, double end) {
-    return table -> table.numberColumn(getColumnName()).isBetweenExclusive(start, end);
+    return table -> table.numberColumn(name()).isBetweenExclusive(start, end);
   }
 
   public Function<Table, Selection> isBetweenInclusive(double start, double end) {
-    return table -> table.numberColumn(getColumnName()).isBetweenInclusive(start, end);
+    return table -> table.numberColumn(name()).isBetweenInclusive(start, end);
   }
 
   public Function<Table, Selection> isGreaterThan(double f) {
-    return table -> table.numberColumn(getColumnName()).isGreaterThan(f);
+    return table -> table.numberColumn(name()).isGreaterThan(f);
   }
 
   public Function<Table, Selection> isGreaterThanOrEqualTo(double f) {
-    return table -> table.numberColumn(getColumnName()).isGreaterThanOrEqualTo(f);
+    return table -> table.numberColumn(name()).isGreaterThanOrEqualTo(f);
   }
 
   public Function<Table, Selection> isLessThan(double f) {
-    return table -> table.numberColumn(getColumnName()).isLessThan(f);
+    return table -> table.numberColumn(name()).isLessThan(f);
   }
 
   public Function<Table, Selection> isLessThanOrEqualTo(double f) {
-    return table -> table.numberColumn(getColumnName()).isLessThanOrEqualTo(f);
+    return table -> table.numberColumn(name()).isLessThanOrEqualTo(f);
   }
 
   public Function<Table, Selection> isIn(Number... numbers) {
-    return table -> table.numberColumn(getColumnName()).isIn(numbers);
+    return table -> table.numberColumn(name()).isIn(numbers);
   }
 
   public Function<Table, Selection> isIn(double... doubles) {
-    return table -> table.numberColumn(getColumnName()).isIn(doubles);
+    return table -> table.numberColumn(name()).isIn(doubles);
   }
 
   public Function<Table, Selection> isNotIn(Number... numbers) {
-    return table -> table.numberColumn(getColumnName()).isNotIn(numbers);
+    return table -> table.numberColumn(name()).isNotIn(numbers);
   }
 
   public Function<Table, Selection> isNotIn(double... doubles) {
-    return table -> table.numberColumn(getColumnName()).isNotIn(doubles);
+    return table -> table.numberColumn(name()).isNotIn(doubles);
   }
 
   public Function<Table, Selection> isZero() {
-    return table -> table.numberColumn(getColumnName()).isZero();
+    return table -> table.numberColumn(name()).isZero();
   }
 
   public Function<Table, Selection> isPositive() {
-    return table -> table.numberColumn(getColumnName()).isPositive();
+    return table -> table.numberColumn(name()).isPositive();
   }
 
   public Function<Table, Selection> isNegative() {
-    return table -> table.numberColumn(getColumnName()).isNegative();
+    return table -> table.numberColumn(name()).isNegative();
   }
 
   public Function<Table, Selection> isNonNegative() {
-    return table -> table.numberColumn(getColumnName()).isNonNegative();
+    return table -> table.numberColumn(name()).isNonNegative();
   }
 
   public Function<Table, Selection> isCloseTo(Number target, Number margin) {
-    return table -> table.numberColumn(getColumnName()).isCloseTo(target, margin);
+    return table -> table.numberColumn(name()).isCloseTo(target, margin);
   }
 
   public Function<Table, Selection> isMissing() {
-    return table -> table.numberColumn(getColumnName()).isMissing();
+    return table -> table.numberColumn(name()).isMissing();
   }
 
   public Function<Table, Selection> isNotMissing() {
-    return table -> table.numberColumn(getColumnName()).isNotMissing();
+    return table -> table.numberColumn(name()).isNotMissing();
   }
 
   public Function<Table, Selection> isGreaterThan(NumericColumn<?> d) {
-    return table -> table.numberColumn(getColumnName()).isGreaterThan(d);
+    return table -> table.numberColumn(name()).isGreaterThan(d);
   }
 
   public Function<Table, Selection> isGreaterThanOrEqualTo(NumericColumn<?> d) {
-    return table -> table.numberColumn(getColumnName()).isGreaterThanOrEqualTo(d);
+    return table -> table.numberColumn(name()).isGreaterThanOrEqualTo(d);
   }
 
   public Function<Table, Selection> isEqualTo(NumericColumn<?> d) {
-    return table -> table.numberColumn(getColumnName()).isEqualTo(d);
+    return table -> table.numberColumn(name()).isEqualTo(d);
   }
 
   public Function<Table, Selection> isNotEqualTo(NumericColumn<?> d) {
-    return table -> table.numberColumn(getColumnName()).isNotEqualTo(d);
+    return table -> table.numberColumn(name()).isNotEqualTo(d);
   }
 
   public Function<Table, Selection> isLessThan(NumericColumn<?> d) {
-    return table -> table.numberColumn(getColumnName()).isLessThan(d);
+    return table -> table.numberColumn(name()).isLessThan(d);
   }
 
   public Function<Table, Selection> isLessThanOrEqualTo(NumericColumn<?> d) {
-    return table -> table.numberColumn(getColumnName()).isLessThanOrEqualTo(d);
+    return table -> table.numberColumn(name()).isLessThanOrEqualTo(d);
   }
 }
