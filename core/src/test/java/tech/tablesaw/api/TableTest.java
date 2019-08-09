@@ -685,27 +685,4 @@ public class TableTest {
       fail("toString shouldn't throw " + e);
     }
   }
-
-  @Test
-  public void testMapToDouble() throws IOException {
-    Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
-
-    DoubleColumn doubleColumn = table.mapToDoubleColumn("mappedColumn",
-      r -> r.getInt("approval") * 1.0);
-
-    assertEquals("mappedColumn", doubleColumn.name());
-    assertArrayEquals(table.intColumn("approval").asDoubleArray(), doubleColumn.asDoubleArray());
-  }
-
-  @Test
-  public void testMapToDoubleWithMissingRowsSkipped() throws IOException {
-    IntColumn col11 = IntColumn.create("col1", new int[]{1, 2, 3, IntColumnType.missingValueIndicator()});
-    IntColumn col2 = IntColumn.create("col2", new int[]{1, 1, 1, 1});
-    Table t1 = Table.create("t1", col11, col2);
-
-    DoubleColumn doubleColumn = t1.mapToDoubleColumn("mappedColumn",
-      r -> r.getInt("col1") + r.getInt("col2") * 1.0, "col1", "col2");
-
-    assertArrayEquals(new double[]{2, 3, 4, DoubleColumnType.missingValueIndicator()}, doubleColumn.asDoubleArray());
-  }
 }
