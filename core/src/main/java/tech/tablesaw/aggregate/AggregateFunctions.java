@@ -203,6 +203,17 @@ public class AggregateFunctions {
         }
       };
 
+  /** A function that calculates the coefficient of variation (stdDev/mean) of the values in the column */
+  public static final NumericAggregateFunction cv =
+      new NumericAggregateFunction("CV") {
+
+        @Override
+        public Double summarize(NumericColumn<?> column) {
+          double[] col = removeMissing(column);
+          return Math.sqrt(StatUtils.variance(col)) / StatUtils.mean(col);
+        }
+      };
+
   /** A function that calculates the sum of the values in the column param */
   public static final NumericAggregateFunction sum =
       new NumericAggregateFunction("Sum") {
