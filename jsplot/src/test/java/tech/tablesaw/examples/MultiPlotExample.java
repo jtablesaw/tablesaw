@@ -1,16 +1,11 @@
 package tech.tablesaw.examples;
 
-//import java.io.File;
-//import java.io.FileWriter;
-//import java.io.IOException;
-//import java.nio.file.Paths;
 import java.util.List;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-//import tech.tablesaw.plotly.display.Browser;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.plotly.traces.Trace;
 
@@ -109,20 +104,20 @@ public class MultiPlotExample {
     // 8. Write the string to a file
     // uncomment to try (see imports also)
 
-/*
-    File outputFile = Paths.get("multiplot.html").toFile();
-    try {
-      try (FileWriter fileWriter = new FileWriter(outputFile)) {
-        fileWriter.write(page);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-*/
+    /*
+        File outputFile = Paths.get("multiplot.html").toFile();
+        try {
+          try (FileWriter fileWriter = new FileWriter(outputFile)) {
+            fileWriter.write(page);
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+    */
 
     // 9. Open the default desktop Web browser on the file so you can see it
     // uncomment to try
 
-    //new Browser().browse(outputFile);
+    // new Browser().browse(outputFile);
   }
 }

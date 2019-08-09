@@ -12,7 +12,7 @@ public class DeferredNumberColumn extends DeferredColumn {
     super(columnName);
   }
 
-  public Function<Table, Selection> isEqualTo(NumberColumn other) {
+  public Function<Table, Selection> isEqualTo(NumberColumn<?> other) {
     return table -> table.numberColumn(getColumnName()).isEqualTo(other);
   }
 
