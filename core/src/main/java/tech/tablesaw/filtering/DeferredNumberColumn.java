@@ -16,6 +16,10 @@ public class DeferredNumberColumn extends DeferredColumn {
     return table -> table.numberColumn(getColumnName()).isEqualTo(other);
   }
 
+  public Function<Table, Selection> isEqualTo(double other) {
+    return table -> table.numberColumn(getColumnName()).isEqualTo(other);
+  }
+
   public Function<Table, Selection> isBetweenExclusive(double start, double end) {
     return table -> table.numberColumn(getColumnName()).isBetweenExclusive(start, end);
   }
