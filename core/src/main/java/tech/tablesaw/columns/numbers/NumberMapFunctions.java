@@ -101,6 +101,7 @@ public interface NumberMapFunctions {
       throw new IllegalArgumentException("The columns must have the same number of elements");
 
     DoubleColumn result = DoubleColumn.create(name() + " * " + column2.name(), col1Size);
+
     for (int r = 0; r < col1Size; r++) {
       result.set(r, multiply(getDouble(r), column2.getDouble(r)));
     }
@@ -197,11 +198,7 @@ public interface NumberMapFunctions {
   default DoubleColumn power(NumericColumn<?> powerColumn) {
     DoubleColumn result = DoubleColumn.create(name() + "[pow]", size());
     for (int i = 0; i < size(); i++) {
-      if (isMissing(i) || (powerColumn.isMissing(i))) {
-        result.setMissing(i);
-      } else {
-        result.set(i, Math.pow(getDouble(i), powerColumn.getDouble(i)));
-      }
+      result.set(i, Math.pow(getDouble(i), powerColumn.getDouble(i)));
     }
     return result;
   }
