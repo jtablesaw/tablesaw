@@ -39,9 +39,13 @@ public class Row implements Iterator<Row> {
   private int rowNumber;
 
   public Row(Table table) {
+    this(table, -1);
+  }
+
+  public Row(Table table, int rowNumber) {
     this.table = table;
     columnNames = table.columnNames().toArray(new String[0]);
-    rowNumber = -1;
+    this.rowNumber = rowNumber;
     for (Column<?> column : table.columns()) {
       if (column instanceof DoubleColumn) {
         doubleColumnMap.put(column.name(), (DoubleColumn) column);

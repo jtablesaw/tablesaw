@@ -318,17 +318,14 @@ for (Row row : table) {
 There are better ways, however. Another approach lets you skip the iteration and just provide a Consumer for each row.
 
 ```java
-// Create a consumer as an object or lambda (show below)
-Consumer<Row> doable = row -> {
-    if (row.getRowNumber() < 5) {
-        System.out.println("On "
-                           + row.getDate("date")
-                           + ": "
-                           + row.getDouble("approval"));
-    }
-};
-// apply the lambda
-table.doWithRows(doable);
+table.stream().forEach(row -> {
+  if (row.getRowNumber() < 5) {
+    System.out.println("On "
+                     + row.getDate("date")
+                     + ": "
+                     + row.getDouble("approval"));
+  }
+});
 ```
 
 If you need to process more than one row at a time, there are several methods to help. 
@@ -336,13 +333,11 @@ If you need to process more than one row at a time, there are several methods to
 ```java
 // work with a sliding window of rows
 // for example 0, 1, and 2, then 1, 2, and 3. etc.
-table.rollWithRows(consumer, 3);		
+table.stream(3).forEach(consumer);
 
 // work with a shifting window of rows
 // for example rows 0 through 4, then 5 through 9, etc.
-table.stepWithRows(consumer, 5);		
-
-table.doWithRowPairs(Pairs)	// easy syntax for working with each pair of rows
+table.steppingStream(5).forEach(consumer);
 ```
 
 See [Rows](https://jtablesaw.github.io/tablesaw/userguide/rows) for more information and other options. 
