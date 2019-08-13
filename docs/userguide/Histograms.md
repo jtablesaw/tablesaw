@@ -24,7 +24,7 @@ We also take a histogram of sizes, after setting any sizes of 0 square feet to "
 
 ```java
 NumberColumn sqft = property.numberColumn("sq__ft");
-sqft.set(sqft.isEqualTo(0), NumberColumn.MISSING_VALUE);
+sqft.set(sqft.isEqualTo(0), DoubleColumnType.missingValueIndicator());
 
 Plot.show(Histogram.create("Distribution of property sizes", property, "sq__ft"));
 ```
