@@ -469,6 +469,19 @@ public class NumberColumnTest {
   }
 
   @Test
+  public void testCountUniqueWithMissing() {
+    IntColumn ints = IntColumn.create("ints");
+    ints.append(1);
+    ints.append(2);
+    ints.append(3);
+    ints.appendMissing();
+
+    assertEquals(3, ints.countUnique());
+    assertEquals(3, ints.unique().size());
+  }
+
+
+  @Test
   public void testUnique() {
     DoubleColumn doubles = DoubleColumn.create("doubles");
     double[] uniques = {0.0f, 0.00000001f, -0.000001f, 92923.29340f, 24252, 23442f, 2252, 2342f};

@@ -663,4 +663,30 @@ class StringColumnTest {
     assertEquals(0, col.countUnique(), "Wrong number of unique values after Column.clear");
     assertEquals(0, col.countMissing(), "Wrong number of missing values after Column.clear");
   }
+
+  @Test
+  public void countUniqueWithDuplicates() {
+    StringColumn col = StringColumn.create("col1");
+    col.append("1");
+    col.append("1");
+    col.append("2");
+    col.append("2");
+    col.append("3");
+
+    assertEquals(3, col.countUnique());
+    assertEquals(3, col.unique().size());
+    assertEquals(3, col.asStringColumn().unique().size());
+  }
+
+  @Test
+  public void countUniqueWithMissing() {
+    StringColumn col1 = StringColumn.create("col1");
+    col1.append("1");
+    col1.append("2");
+    col1.append("3");
+    col1.appendMissing();
+
+    assertEquals(3, col1.countUnique());
+    assertEquals(3, col1.unique().size());
+  }
 }
