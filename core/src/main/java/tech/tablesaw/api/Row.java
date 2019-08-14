@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.table.TableSlice;
 
 public class Row implements Iterator<Row> {
 
-  private final Table table;
+  private final TableSlice tableSlice;
   private final String[] columnNames;
   private final Map<String, DateColumn> dateColumnMap =
       new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -42,11 +43,19 @@ public class Row implements Iterator<Row> {
     this(table, -1);
   }
 
+  public Row(TableSlice tableSlice) {
+    this(tableSlice, -1);
+  }
+
   public Row(Table table, int rowNumber) {
-    this.table = table;
-    columnNames = table.columnNames().toArray(new String[0]);
+    this(new TableSlice(table), rowNumber);
+  }
+
+  public Row(TableSlice tableSlice, int rowNumber) {
+    this.tableSlice = tableSlice;
+    columnNames = tableSlice.columnNames().toArray(new String[0]);
     this.rowNumber = rowNumber;
-    for (Column<?> column : table.columns()) {
+    for (Column<?> column : tableSlice.getTable().columns()) {
       if (column instanceof DoubleColumn) {
         doubleColumnMap.put(column.name(), (DoubleColumn) column);
       }
@@ -92,12 +101,12 @@ public class Row implements Iterator<Row> {
   }
 
   public int columnCount() {
-    return table.columnCount();
+    return tableSlice.columnCount();
   }
 
   /** Returns a list containing the names of each column in the row */
   public List<String> columnNames() {
-    return table.columnNames();
+    return tableSlice.columnNames();
   }
 
   public Boolean getBoolean(int columnIndex) {
@@ -105,15 +114,15 @@ public class Row implements Iterator<Row> {
   }
 
   public Boolean getBoolean(String columnName) {
-    return booleanColumnMap.get(columnName).get(rowNumber);
+    return booleanColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
   public LocalDate getDate(String columnName) {
-    return dateColumnMap.get(columnName).get(rowNumber);
+    return dateColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
   public LocalDate getDate(int columnIndex) {
-    return dateColumnMap.get(columnNames[columnIndex]).get(rowNumber);
+    return dateColumnMap.get(columnNames[columnIndex]).get(getIndex(rowNumber));
   }
 
   public LocalDateTime getDateTime(int columnIndex) {
@@ -121,7 +130,7 @@ public class Row implements Iterator<Row> {
   }
 
   public LocalDateTime getDateTime(String columnName) {
-    return ((DateTimeColumn) columnMap.get(columnName)).get(rowNumber);
+    return ((DateTimeColumn) columnMap.get(columnName)).get(getIndex(rowNumber));
   }
 
   public Instant getInstant(int columnIndex) {
@@ -129,7 +138,7 @@ public class Row implements Iterator<Row> {
   }
 
   public Instant getInstant(String columnName) {
-    return ((InstantColumn) columnMap.get(columnName)).get(rowNumber);
+    return ((InstantColumn) columnMap.get(columnName)).get(getIndex(rowNumber));
   }
 
   public double getDouble(int columnIndex) {
@@ -137,7 +146,7 @@ public class Row implements Iterator<Row> {
   }
 
   public double getDouble(String columnName) {
-    return doubleColumnMap.get(columnName).getDouble(rowNumber);
+    return doubleColumnMap.get(columnName).getDouble(getIndex(rowNumber));
   }
 
   public float getFloat(int columnIndex) {
@@ -145,7 +154,7 @@ public class Row implements Iterator<Row> {
   }
 
   public float getFloat(String columnName) {
-    return floatColumnMap.get(columnName).getFloat(rowNumber);
+    return floatColumnMap.get(columnName).getFloat(getIndex(rowNumber));
   }
 
   public int getInt(int columnIndex) {
@@ -153,7 +162,7 @@ public class Row implements Iterator<Row> {
   }
 
   public int getInt(String columnName) {
-    return intColumnMap.get(columnName).getInt(rowNumber);
+    return intColumnMap.get(columnName).getInt(getIndex(rowNumber));
   }
 
   public long getLong(int columnIndex) {
@@ -161,39 +170,39 @@ public class Row implements Iterator<Row> {
   }
 
   public long getLong(String columnName) {
-    return longColumnMap.get(columnName).getLong(rowNumber);
+    return longColumnMap.get(columnName).getLong(getIndex(rowNumber));
   }
 
   public Object getObject(String columnName) {
-    return columnMap.get(columnName).get(rowNumber);
+    return columnMap.get(columnName).get(getIndex(rowNumber));
   }
 
   public Object getObject(int columnIndex) {
-    return columnMap.get(columnNames[columnIndex]).get(rowNumber);
+    return columnMap.get(columnNames[columnIndex]).get(getIndex(rowNumber));
   }
 
   public int getPackedDate(String columnName) {
-    return dateColumnMap.get(columnName).getIntInternal(rowNumber);
+    return dateColumnMap.get(columnName).getIntInternal(getIndex(rowNumber));
   }
 
   public int getPackedDate(int columnIndex) {
-    return dateColumnMap.get(columnNames[columnIndex]).getIntInternal(rowNumber);
+    return dateColumnMap.get(columnNames[columnIndex]).getIntInternal(getIndex(rowNumber));
   }
 
   public long getPackedDateTime(String columnName) {
-    return dateTimeColumnMap.get(columnName).getLongInternal(rowNumber);
+    return dateTimeColumnMap.get(columnName).getLongInternal(getIndex(rowNumber));
   }
 
   public long getPackedDateTime(int columnIndex) {
-    return dateTimeColumnMap.get(columnNames[columnIndex]).getLongInternal(rowNumber);
+    return dateTimeColumnMap.get(columnNames[columnIndex]).getLongInternal(getIndex(rowNumber));
   }
 
   public int getPackedTime(String columnName) {
-    return timeColumnMap.get(columnName).getIntInternal(rowNumber);
+    return timeColumnMap.get(columnName).getIntInternal(getIndex(rowNumber));
   }
 
   public int getPackedTime(int columnIndex) {
-    return timeColumnMap.get(columnNames[columnIndex]).getIntInternal(rowNumber);
+    return timeColumnMap.get(columnNames[columnIndex]).getIntInternal(getIndex(rowNumber));
   }
 
   public short getShort(int columnIndex) {
@@ -209,11 +218,11 @@ public class Row implements Iterator<Row> {
   }
 
   public short getShort(String columnName) {
-    return shortColumnMap.get(columnName).getShort(rowNumber);
+    return shortColumnMap.get(columnName).getShort(getIndex(rowNumber));
   }
 
   public String getText(String columnName) {
-    return stringColumnMap.get(columnName).get(rowNumber);
+    return stringColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
   public String getText(int columnIndex) {
@@ -221,20 +230,20 @@ public class Row implements Iterator<Row> {
   }
 
   public LocalTime getTime(String columnName) {
-    return timeColumnMap.get(columnName).get(rowNumber);
+    return timeColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
   public LocalTime getTime(int columnIndex) {
-    return timeColumnMap.get(columnNames[columnIndex]).get(rowNumber);
+    return timeColumnMap.get(columnNames[columnIndex]).get(getIndex(rowNumber));
   }
 
   public String getString(String columnName) {
-    return stringColumnMap.get(columnName).get(rowNumber);
+    return stringColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
   @Override
   public boolean hasNext() {
-    return rowNumber < table.rowCount() - 1;
+    return rowNumber < this.tableSlice.rowCount() - 1;
   }
 
   @Override
@@ -248,7 +257,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setBoolean(String columnName, boolean value) {
-    booleanColumnMap.get(columnName).set(rowNumber, value);
+    booleanColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setDate(int columnIndex, LocalDate value) {
@@ -256,7 +265,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setDate(String columnName, LocalDate value) {
-    dateColumnMap.get(columnName).set(rowNumber, value);
+    dateColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setDateTime(int columnIndex, LocalDateTime value) {
@@ -264,7 +273,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setDateTime(String columnName, LocalDateTime value) {
-    dateTimeColumnMap.get(columnName).set(rowNumber, value);
+    dateTimeColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setInstant(int columnIndex, Instant value) {
@@ -272,7 +281,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setInstant(String columnName, Instant value) {
-    instantColumnMap.get(columnName).set(rowNumber, value);
+    instantColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setDouble(int columnIndex, double value) {
@@ -280,7 +289,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setDouble(String columnName, double value) {
-    doubleColumnMap.get(columnName).set(rowNumber, value);
+    doubleColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setFloat(int columnIndex, float value) {
@@ -288,7 +297,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setFloat(String columnName, float value) {
-    floatColumnMap.get(columnName).set(rowNumber, value);
+    floatColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setInt(int columnIndex, int value) {
@@ -296,7 +305,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setInt(String columnName, int value) {
-    intColumnMap.get(columnName).set(rowNumber, value);
+    intColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setLong(int columnIndex, long value) {
@@ -304,7 +313,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setLong(String columnName, long value) {
-    longColumnMap.get(columnName).set(rowNumber, value);
+    longColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setShort(int columnIndex, short value) {
@@ -312,7 +321,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setShort(String columnName, short value) {
-    shortColumnMap.get(columnName).set(rowNumber, value);
+    shortColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setString(int columnIndex, String value) {
@@ -320,7 +329,7 @@ public class Row implements Iterator<Row> {
   }
 
   public void setString(String columnName, String value) {
-    stringColumnMap.get(columnName).set(rowNumber, value);
+    stringColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setText(int columnIndex, String value) {
@@ -328,16 +337,20 @@ public class Row implements Iterator<Row> {
   }
 
   public void setText(String columnName, String value) {
-    stringColumnMap.get(columnName).set(rowNumber, value);
+    stringColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
   public void setTime(int columnIndex, LocalTime value) {
     setTime(columnNames[columnIndex], value);
   }
 
+  private int getIndex(int rowNumber) {
+    return tableSlice.mappedRowNumber(rowNumber);
+  }
+
   @Override
   public String toString() {
-    Table t = table.emptyCopy();
+    Table t = tableSlice.getTable().emptyCopy();
     if (getRowNumber() == -1) {
       return "";
     }

@@ -1,5 +1,6 @@
 package tech.tablesaw.table;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -8,12 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
+import com.google.common.collect.Streams;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.Sort;
+import tech.tablesaw.sorting.Sort.Order;
 
 public class TableSliceTest {
 
@@ -156,4 +163,143 @@ public class TableSliceTest {
     TableSlice slice = new TableSlice(source, Selection.with(2));
     assertEquals(58.0, slice.reduce("approval", sum), 0.0001);
   }
+
+  @Test
+  public void reduceNoSelection() throws Exception {
+    source = Table.read().csv("../data/bush.csv");
+    TableSlice slice = new TableSlice(source);
+    assertEquals(20957.0, slice.reduce("approval", sum), 0.0001);
+  }
+
+  @Test
+  public void iterateOverRowsWithSelection() {
+    IntColumn rowNumbers = IntColumn.create("originalRowNumber",
+      IntStream.range(0, source.rowCount()).toArray());
+    source.addColumns(rowNumbers);
+
+    TableSlice tableSlice = new TableSlice(source, Selection.with(3, 4));
+
+    int count = 0;
+    for (Row row : tableSlice) {
+      assertEquals(count + 3, row.getInt(3));
+      count++;
+    }
+    assertEquals(count, 2);
+  }
+
+  @Test
+  public void iterateOverRowsWithSort() {
+    Selection selection = Selection.withRange(0, 5);
+    TableSlice tableSlice = new TableSlice(source, selection);
+    tableSlice.sortOn(Sort.on("approval", Order.ASCEND));
+
+    Integer[] expected = new Integer[]{52, 52, 53, 53, 58};
+    Integer[] actual = Streams.stream(tableSlice).map(r -> r.getInt("approval")).toArray(Integer[]::new);
+
+    assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  public void firstWithSort() {
+    Selection selection = Selection.withRange(0, 5);
+    TableSlice tableSlice = new TableSlice(source, selection);
+    tableSlice.sortOn(Sort.on("approval", Order.ASCEND));
+
+    double[] expected = new double[]{52.0, 52.0, 53.0, 53.0, 58.0};
+    double[] actual = tableSlice.first(5).intColumn("approval").asDoubleArray();
+
+    assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  public void firstWithMultipleSortCriteria() {
+    TableSlice tableSlice = new TableSlice(source);
+    tableSlice.sortOn(Sort.on("who", Order.DESCEND).next("approval", Order.DESCEND));
+
+    double[] expected = new double[]{82.0, 82.0, 81.0};
+    double[] actual = tableSlice.first(3).intColumn("approval").asDoubleArray();
+
+    assertArrayEquals(expected, actual);
+  }
+
+
+  @Test
+  public void columnWithSort() {
+    Selection selection = Selection.withRange(0, 5);
+    TableSlice tableSlice = new TableSlice(source, selection);
+    tableSlice.sortOn(Sort.on("approval", Order.ASCEND));
+
+    double[] expected = new double[]{52.0, 52.0, 53.0, 53.0, 58.0};
+    double[] actual = ((IntColumn) tableSlice.column("approval")).asDoubleArray();
+
+    assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  public void columnNoSortNoSelection() {
+    TableSlice tableSlice = new TableSlice(source);
+    assertEquals(tableSlice.column("approval").asList(),
+      source.column("approval").asList());
+  }
+
+  @Test
+  public void rowCountWithSort() {
+    Selection selection = Selection.with(0, 1);
+    TableSlice tableSlice = new TableSlice(source, selection);
+    assertEquals(2, tableSlice.rowCount());
+    tableSlice.removeSelection();
+    assertEquals(source.rowCount(), tableSlice.rowCount());
+  }
+
+  @Test
+  public void removeSort() {
+    Selection selection = Selection.withRange(0, 5);
+    TableSlice tableSlice = new TableSlice(source, selection);
+    tableSlice.sortOn(Sort.on("approval", Order.ASCEND));
+    tableSlice.removeSort();
+
+    double[] expected = new double[]{53.0, 53.0, 58.0, 52.0, 52.0};
+    double[] actual = ((IntColumn) tableSlice.column("approval")).asDoubleArray();
+
+    assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  public void rowNumberIteratorWithSort() {
+    Selection selection = Selection.withRange(0, 5);
+    TableSlice tableSlice = new TableSlice(source, selection);
+    tableSlice.sortOn(Sort.on("approval", Order.ASCEND));
+
+    Integer[] expected = new Integer[]{52, 52, 53, 53, 58};
+    Integer[] actual =  Streams.stream(tableSlice.sourceRowNumberIterator())
+      .map(i -> source.column("approval").get(i)).toArray(Integer[]::new);
+
+    assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  public void rowNumberIteratorWithSelection() {
+    Selection selection = Selection.withRange(0, 5);
+    TableSlice tableSlice = new TableSlice(source, selection);
+
+    Integer[] expected = new Integer[]{53, 53, 58, 52, 52};
+    Integer[] actual =  Streams.stream(tableSlice.sourceRowNumberIterator())
+      .map(i -> source.column("approval").get(i)).toArray(Integer[]::new);
+
+    assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  public void rowNumberIteratorWithNoSelection() {
+    TableSlice tableSlice = new TableSlice(source);
+
+    Integer[] expected = new Integer[]{53, 53, 58, 52, 52};
+    Integer[] actual =  Streams.stream(tableSlice.sourceRowNumberIterator())
+      .map(i -> source.column("approval").get(i)).limit(5)
+      .toArray(Integer[]::new);
+
+    assertArrayEquals(expected, actual);
+  }
+
+
 }
