@@ -117,7 +117,7 @@ public class TimeDependentFilteringTest {
       for (Row row : patientTable) {
         StringColumn concepts = patientTable.stringColumn("concept");
         DateColumn dates = patientTable.dateColumn("date");
-        if(row.getString("concept").equals(conceptZ)) {
+        if (row.getString("concept").equals(conceptZ)) {
           eventDates.add(row.getDate("date"));
         }
       }

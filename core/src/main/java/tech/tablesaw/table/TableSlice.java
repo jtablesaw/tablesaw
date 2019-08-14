@@ -14,7 +14,6 @@
 
 package tech.tablesaw.table;
 
-import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -166,9 +165,7 @@ public class TableSlice extends Relation {
     return function.summarize(column.where(selection));
   }
 
-  /**
-   * Iterate of a copy of the table.
-   */
+  /** Iterate of a copy of the table. */
   @Override
   public Iterator<Row> iterator() {
 
