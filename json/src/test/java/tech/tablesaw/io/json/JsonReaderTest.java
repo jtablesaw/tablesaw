@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
 
 public class JsonReaderTest {
@@ -32,6 +33,7 @@ public class JsonReaderTest {
     assertEquals("Date", table.column(0).name());
     assertEquals("Value", table.column(1).name());
     assertEquals(ColumnType.LONG, table.columnTypes()[0]);
+    assertEquals(1453438800000L, table.column("Date").get(0));
   }
 
   @Test
@@ -55,4 +57,25 @@ public class JsonReaderTest {
     assertEquals("b.c", table.column(1).name());
     assertEquals(ColumnType.LONG, table.columnTypes()[0]);
   }
+
+  @Test
+  public void arrayOfRowsWithIncompleteIndexes() {
+    String json = "[" +
+      "{\"A\" : \"123\", \"B\" : \"456\"}," +
+      "{\"B\" : \"789\", \"C\" : \"123\"}" +
+      "]";
+
+    Table expected = Table.create(
+      IntColumn.create("A", new int[]{123, Integer.MIN_VALUE}),
+      IntColumn.create("B", new int[]{456, 789}),
+      IntColumn.create("C", new int[]{Integer.MIN_VALUE, 123})
+    );
+    Table actual = Table.read().string(json, "json");
+
+    assertEquals(ColumnType.INTEGER, actual.columnTypes()[0]);
+    assertEquals(expected.column("A").asList(), actual.column("A").asList());
+    assertEquals(expected.column("B").asList(), actual.column("B").asList());
+    assertEquals(expected.column("C").asList(), actual.column("C").asList());
+  }
+
 }
