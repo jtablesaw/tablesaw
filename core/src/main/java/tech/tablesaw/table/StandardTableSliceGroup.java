@@ -56,6 +56,14 @@ public class StandardTableSliceGroup extends TableSliceGroup {
   }
 
   /**
+   * Returns a viewGroup splitting the original table on the given columns. The named columns must
+   * be CategoricalColumns
+   */
+  public static StandardTableSliceGroup create(Table original, CategoricalColumn<?>... columns) {
+    return new StandardTableSliceGroup(original, columns);
+  }
+
+  /**
    * Splits the sourceTable table into sub-tables, grouping on the columns whose names are given in splitColumnNames
    */
   private void splitOn(String... columnNames) {
