@@ -203,7 +203,10 @@ public class AggregateFunctions {
         }
       };
 
-  /** A function that calculates the coefficient of variation (stdDev/mean) of the values in the column */
+  /**
+   * A function that calculates the coefficient of variation (stdDev/mean) of the values in the
+   * column
+   */
   public static final NumericAggregateFunction cv =
       new NumericAggregateFunction("CV") {
 

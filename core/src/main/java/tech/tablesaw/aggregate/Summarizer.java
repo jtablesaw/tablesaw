@@ -14,6 +14,8 @@
 
 package tech.tablesaw.aggregate;
 
+import static tech.tablesaw.api.QuerySupport.numberColumn;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import java.util.ArrayList;
@@ -31,8 +33,6 @@ import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
-
-import static tech.tablesaw.api.QuerySupport.numberColumn;
 
 /**
  * Summarizes the data in a table, by applying functions to a subset of its columns.
@@ -338,7 +338,7 @@ public class Summarizer {
     int withinGroupCount = 0;
     Row row = new Row(temp);
 
-    while(row.hasNext()) {
+    while (row.hasNext()) {
       row.next();
       if (withinGroupCount < step) {
         withinGroupCount++;
@@ -349,8 +349,7 @@ public class Summarizer {
         withinGroupCount = 1;
       }
     }
-    int lastGroupSize =
-            temp.where(numberColumn(GROUP_COL_TEMP_NAME).isEqualTo(groupId)).rowCount();
+    int lastGroupSize = temp.where(numberColumn(GROUP_COL_TEMP_NAME).isEqualTo(groupId)).rowCount();
     if (lastGroupSize < step) {
       temp = temp.dropWhere(numberColumn(GROUP_COL_TEMP_NAME).isEqualTo(groupId));
     }
