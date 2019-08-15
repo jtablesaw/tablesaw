@@ -14,13 +14,4 @@ public abstract class NumberingFunction
 
   @Override
   public abstract NumericColumn<Integer> apply(Column<? extends Comparable<?>> inputWindow);
-
-  @Override
-  public ColumnType returnType(ColumnType inputColumnType) {
-    return ColumnType.INTEGER;
-  }
-
-  public @Override String toString() {
-    return functionName();
-  }
 }

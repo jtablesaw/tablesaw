@@ -3,11 +3,15 @@ package tech.tablesaw.analytic;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.Column;
 
 final public class ArgumentList {
   // Throws if a column with the same name is registered
@@ -59,12 +63,33 @@ final public class ArgumentList {
     return sb.toString();
   }
 
+  /**
+   * @return an ordered list of new columns this analytic query will generate.
+   */
+  List<Column<?>> createEmptyDestinationColumns(int rowCount) {
+    List<Column<?>> newColumns = new ArrayList<>();
+    for(String toColumn : newColumnNames) {
+      FunctionCall<? extends AnalyticFunctionMetaData> functionCall = Stream.of(
+        aggregateFunctions.get(toColumn),
+        numberingFunctions.get(toColumn)
+      ).filter(java.util.Objects::nonNull).findFirst().get();
+      ColumnType type = functionCall.function.returnType();
+      Column<?> resultColumn = type.create(toColumn);
+      newColumns.add(resultColumn);
+
+      for (int i = 0; i < rowCount; i++) {
+        resultColumn.appendMissing();
+      }
+    }
+    return newColumns;
+  }
+
   @Override
   public String toString() {
     return toSqlString("?");
   }
 
-  static class FunctionCall<T> {
+  static class FunctionCall<T extends AnalyticFunctionMetaData> {
     private final String fromColumn;
     private final String toColumn;
     private final T function;

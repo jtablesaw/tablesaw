@@ -2,6 +2,7 @@ package tech.tablesaw.analytic;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import tech.tablesaw.table.TableSlice;
 
 /**
  * Simple Data class capturing the start and end of the window.
@@ -26,7 +27,8 @@ final public class WindowFrame {
   // TODO make this package private
   enum WindowGrowthType {
     FIXED,
-    GROWING,
+    FIXED_START,
+    FIXED_END,
     SLIDING;
   }
 
@@ -68,17 +70,17 @@ final public class WindowFrame {
    * Throw if invalid combination
    */
   private void validateWindow() {
-    String errorMsg = "Invalid Window: " + this.toString() +'.';
+    String errorMsg = "Invalid Window: " + this.toString() + '.';
     // If bounds are the same they both must either be preceding or following.
     if (this.frameEnd == this.frameStart) {
       Preconditions.checkArgument(
         frameStart == WindowBoundTypes.PRECEDING
           || frameStart == WindowBoundTypes.FOLLOWING, errorMsg);
-      // When the bounds are both preceding the lef boun shi
-      if(this.frameStart == WindowBoundTypes.PRECEDING) {
-        Preconditions.checkArgument(frameStartShift > frameEndShift,
-          errorMsg + " The number preceding at start of the window '" + frameStartShift
-          + "' must be greater than the number preceding at the end of the window '" + frameEndShift + "'");
+      // When the bounds are both preceding the lef bound should be greater than
+      if (this.frameStart == WindowBoundTypes.PRECEDING) {
+        Preconditions.checkArgument(frameStartShift < frameEndShift,
+          errorMsg + " The number preceding at start of the window '" + Math.abs(frameStartShift)
+            + "' must be greater than the number preceding at the end of the window '" + Math.abs(frameEndShift) + "'");
       } else {
         Preconditions.checkArgument(frameEndShift > frameStartShift,
           errorMsg + " The number following at start of the window '" + frameStartShift
@@ -93,12 +95,15 @@ final public class WindowFrame {
     if (frameStart == WindowBoundTypes.UNBOUNDED_PRECEDING && frameEnd == WindowBoundTypes.UNBOUNDED_FOLLOWING) {
       return WindowGrowthType.FIXED;
     } else if (
-      (frameStart == WindowBoundTypes.PRECEDING || frameStart == WindowBoundTypes.FOLLOWING)
+      (frameStart == WindowBoundTypes.PRECEDING || frameStart == WindowBoundTypes.FOLLOWING || frameStart == WindowBoundTypes.CURRENT_ROW)
         &&
-        (frameEnd == WindowBoundTypes.PRECEDING || frameEnd == WindowBoundTypes.FOLLOWING)) {
+        (frameEnd == WindowBoundTypes.PRECEDING || frameEnd == WindowBoundTypes.FOLLOWING || frameEnd == WindowBoundTypes.CURRENT_ROW)) {
       return WindowGrowthType.SLIDING;
     }
-    return WindowGrowthType.GROWING;
+    if (frameStart == WindowBoundTypes.UNBOUNDED_PRECEDING) {
+      return WindowGrowthType.FIXED_START;
+    }
+    return WindowGrowthType.FIXED_END;
   }
 
 
@@ -122,16 +127,16 @@ final public class WindowFrame {
 
   public String toSqlString() {
     String formatedStart = frameStart.toString();
-    if(frameStart ==  WindowBoundTypes.PRECEDING || frameStart == WindowBoundTypes.FOLLOWING) {
+    if (frameStart == WindowBoundTypes.PRECEDING || frameStart == WindowBoundTypes.FOLLOWING) {
       formatedStart = Math.abs(frameStartShift) + " " + formatedStart;
     }
 
     String formattedRightBound = frameEnd.toString();
-    if(frameEnd ==  WindowBoundTypes.PRECEDING || frameEnd == WindowBoundTypes.FOLLOWING) {
+    if (frameEnd == WindowBoundTypes.PRECEDING || frameEnd == WindowBoundTypes.FOLLOWING) {
       formattedRightBound = Math.abs(frameEndShift) + " " + formattedRightBound;
     }
 
-    return  "ROWS BETWEEN " + formatedStart + " AND " + formattedRightBound;
+    return "ROWS BETWEEN " + formatedStart + " AND " + formattedRightBound;
   }
 
   @Override
@@ -152,7 +157,7 @@ final public class WindowFrame {
     Builder setStartPreceding(int nRows) {
       Preconditions.checkArgument(nRows > 0);
       this.frameStart = WindowBoundTypes.PRECEDING;
-      this.frameStartShift = nRows;
+      this.frameStartShift = nRows * -1;
       return this;
     }
 
@@ -171,7 +176,7 @@ final public class WindowFrame {
     Builder setEndPreceding(int nRows) {
       Preconditions.checkArgument(nRows > 0);
       this.frameEnd = WindowBoundTypes.PRECEDING;
-      this.frameEndShift = nRows;
+      this.frameEndShift = nRows * -1;
       return this;
     }
 

@@ -4,6 +4,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -65,6 +66,14 @@ final public class AnalyticQuery {
 
   public List<Consumer<Iterable<Row>>> getConsumers() {
     return consumers;
+  }
+
+  public ArgumentList getArgumentList() {
+    return  argumentList;
+  }
+
+  public LinkedHashSet<String> getPartitionColumns() {
+    return windowSpecification.getPartitionColumns();
   }
 
   public Optional<Sort> getSort() {

@@ -122,7 +122,5 @@ class ArgumentListTest {
     );
 
     assertTrue(thrown.getMessage().contains("Cannot stage a column while another is staged"));
-
   }
-
 }

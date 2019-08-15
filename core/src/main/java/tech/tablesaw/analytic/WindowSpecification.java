@@ -13,12 +13,12 @@ import tech.tablesaw.analytic.AnalyticQuery.Order;
 final public class WindowSpecification {
 
   private final String windowName;
-  private final LinkedHashSet<String> partitioning;
+  private final LinkedHashSet<String> partitionColumns;
   private final List<OrderPair> ordering;
 
-  private WindowSpecification(String windowName, LinkedHashSet<String> partitioning, List<OrderPair> ordering) {
+  private WindowSpecification(String windowName, LinkedHashSet<String> partitionColumns, List<OrderPair> ordering) {
     this.windowName = windowName;
-    this.partitioning = partitioning;
+    this.partitionColumns = partitionColumns;
     this.ordering = ordering;
   }
 
@@ -28,9 +28,9 @@ final public class WindowSpecification {
 
   public String toSqlString() {
     StringBuilder sb = new StringBuilder();
-    if (!partitioning.isEmpty()) {
+    if (!partitionColumns.isEmpty()) {
       sb.append("PARTITION BY ");
-      sb.append(String.join(", ", partitioning));
+      sb.append(String.join(", ", partitionColumns));
       sb.append(System.lineSeparator());
     }
     if (!ordering.isEmpty()) {
@@ -41,7 +41,7 @@ final public class WindowSpecification {
   }
 
   public boolean isEmpty() {
-    return partitioning.isEmpty() && ordering.isEmpty();
+    return partitionColumns.isEmpty() && ordering.isEmpty();
   }
 
   @Override
@@ -53,8 +53,8 @@ final public class WindowSpecification {
     return windowName;
   }
 
-  public LinkedHashSet<String> getPartitioning() {
-    return partitioning;
+  public LinkedHashSet<String> getPartitionColumns() {
+    return partitionColumns;
   }
 
   public List<OrderPair> getOrdering() {
@@ -69,13 +69,13 @@ final public class WindowSpecification {
       return false;
     WindowSpecification that = (WindowSpecification) o;
     return Objects.equal(windowName, that.windowName) &&
-      Objects.equal(partitioning, that.partitioning) &&
+      Objects.equal(partitionColumns, that.partitionColumns) &&
       Objects.equal(ordering, that.ordering);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(windowName, partitioning, ordering);
+    return Objects.hashCode(windowName, partitionColumns, ordering);
   }
 
   public static class OrderPair {

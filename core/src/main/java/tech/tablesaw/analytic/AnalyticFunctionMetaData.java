@@ -5,8 +5,8 @@ import tech.tablesaw.api.ColumnType;
 /**
  *  Base class for an Analytic Function.
  */
- interface AnalyticFunction {
+ interface AnalyticFunctionMetaData {
   String functionName();
-  ColumnType returnType(ColumnType inputColumnType);
+  ColumnType returnType();
   boolean isCompatibleColumn(ColumnType type);
 }

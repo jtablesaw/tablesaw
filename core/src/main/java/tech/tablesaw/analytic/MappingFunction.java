@@ -16,6 +16,6 @@ import tech.tablesaw.columns.Column;
  * @param <T> the output Column type type. E.G. DoubleColumn.
  * @param <R> the output Column type type. E.G. DoubleColumn.
  */
-public interface MappingFunction<T extends Column<?>, R extends Column<?>> extends AnalyticFunction {
+public interface MappingFunction<T extends Column<?>, R extends Column<?>> {
   R apply(T inputWindow);
 }

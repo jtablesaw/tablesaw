@@ -31,9 +31,9 @@ class WindowFrameTest {
     String expectedString = "ROWS BETWEEN 5 PRECEDING AND 2 PRECEDING";
 
     assertEquals(WindowBoundTypes.PRECEDING, frame.getFrameStart());
-    assertEquals(5, frame.getFrameStartShift());
+    assertEquals(-5, frame.getFrameStartShift());
     assertEquals(WindowBoundTypes.PRECEDING, frame.getFrameEnd());
-    assertEquals(2, frame.getFrameEndShift());
+    assertEquals(-2, frame.getFrameEndShift());
     assertEquals(expectedString, frame.toSqlString());
   }
 
@@ -132,11 +132,19 @@ class WindowFrameTest {
   }
 
   @Test
-  public void windowGrowthTypeGrowing() {
+  public void windowGrowthTypeFixedStart() {
+    WindowGrowthType growthType = WindowFrame.builder()
+      .setEndFollowing(10)
+      .build().windowGrowthType();
+    assertEquals(growthType, WindowGrowthType.FIXED_START);
+  }
+
+  @Test
+  public void windowGrothTypeFixedEnd() {
     WindowGrowthType growthType = WindowFrame.builder()
       .setStartFollowing(10)
       .build().windowGrowthType();
-    assertEquals(growthType, WindowGrowthType.GROWING);
+    assertEquals(growthType, WindowGrowthType.FIXED_END);
   }
 
   @Test
@@ -144,6 +152,15 @@ class WindowFrameTest {
     WindowGrowthType growthType = WindowFrame.builder()
       .setStartPreceding(5)
       .setEndFollowing(5)
+      .build().windowGrowthType();
+    assertEquals(growthType, WindowGrowthType.SLIDING);
+  }
+
+  @Test
+  public void windowGrowthTypeSlidingWithCurrentRow() {
+    WindowGrowthType growthType = WindowFrame.builder()
+      .setStartPreceding(5)
+      .setEnndCurrentRow()
       .build().windowGrowthType();
     assertEquals(growthType, WindowGrowthType.SLIDING);
   }

@@ -29,12 +29,16 @@ package tech.tablesaw.analytic;
  * @param <T> The input type
  * @param <R> The output type
  */
-public interface AggregateFunction<T, R> extends AnalyticFunction {
+public interface AggregateFunction<T, R> {
 
-  void setWindow(Iterable<T> window);
+  void removeLeftMost();
+  void addRightMost(T value);
+  void addRightMostMissing();
 
-  void shiftLeft();
-  void shiftRight(T newValue);
+  default void addAllRightMost(Iterable<T> newValues) {
+    newValues.forEach(this::addRightMost);
+  }
+
   R getValue();
 }
 
