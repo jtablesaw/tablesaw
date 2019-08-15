@@ -16,19 +16,25 @@ package tech.tablesaw.table;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/** A group of tables formed by performing splitting operations on an original table */
+/**
+ * A group of tables formed by performing splitting operations on an original table
+ */
 public class StandardTableSliceGroup extends TableSliceGroup {
 
   private StandardTableSliceGroup(Table original, CategoricalColumn<?>... columns) {
     super(original, splitColumnNames(columns));
-    setSourceTable(getSourceTable().sortOn(getSplitColumnNames()));
+    setSourceTable(getSourceTable());
     splitOn(getSplitColumnNames());
   }
 
@@ -41,8 +47,8 @@ public class StandardTableSliceGroup extends TableSliceGroup {
   }
 
   /**
-   * Returns a viewGroup splitting the original table on the given columns. The named columns must
-   * be CategoricalColumns
+   * Returns a viewGroup splitting the original table on the given columns. The named columns must be
+   * CategoricalColumns
    */
   public static StandardTableSliceGroup create(Table original, String... columnsNames) {
     List<CategoricalColumn<?>> columns = original.categoricalColumns(columnsNames);
@@ -50,64 +56,64 @@ public class StandardTableSliceGroup extends TableSliceGroup {
   }
 
   /**
-   * Returns a viewGroup splitting the original table on the given columns. The named columns must
-   * be CategoricalColumns
+   * Splits the sourceTable table into sub-tables, grouping on the columns whose names are given in splitColumnNames
    */
-  public static StandardTableSliceGroup create(Table original, CategoricalColumn<?>... columns) {
-    return new StandardTableSliceGroup(original, columns);
+  private void splitOn(String... columnNames) {
+    Map<ByteArray, Selection> selectionMap = new LinkedHashMap<>();
+    Map<ByteArray, String> sliceNameMap = new HashMap<>();
+    List<Column<?>> splitColumns = getSourceTable().columns(columnNames);
+    int byteSize = getByteSize(splitColumns);
+
+    for (int i = 0; i < getSourceTable().rowCount(); i++) {
+      StringBuilder stringKey = new StringBuilder();
+      ByteBuffer byteBuffer = ByteBuffer.allocate(byteSize);
+      int count = 0;
+      for (Column<?> col : splitColumns) {
+        stringKey.append(col.getString(i));
+        if(count < splitColumns.size() - 1) {
+          stringKey.append(SPLIT_STRING);
+        }
+        byteBuffer.put(col.asBytes(i));
+        count++;
+      }
+      // Add to the matching selection.
+      ByteArray byteArray = new ByteArray(byteBuffer.array());
+      Selection selection = selectionMap.getOrDefault(byteArray, new BitmapBackedSelection());
+      selection.add(i);
+      selectionMap.put(byteArray, selection);
+      sliceNameMap.put(byteArray, stringKey.toString());
+    }
+
+    // Add all slices
+    for (Entry<ByteArray, Selection> entry : selectionMap.entrySet()) {
+      TableSlice slice = new TableSlice(getSourceTable(), entry.getValue());
+      slice.setName(sliceNameMap.get(entry.getKey()));
+      addSlice(slice);
+    }
   }
 
   /**
-   * Splits the sourceTable table into sub-tables, grouping on the columns whose names are given in
-   * splitColumnNames
+   * Wrapper class for a byte[] that implements equals and hashcode.
    */
-  private void splitOn(String... columnNames) {
-
-    List<Column<?>> columns = getSourceTable().columns(columnNames);
-    int byteSize = getByteSize(columns);
-
-    byte[] currentKey = null;
-    String currentStringKey = null;
-    TableSlice view;
-
-    Selection selection = new BitmapBackedSelection();
-
-    for (int row = 0; row < getSourceTable().rowCount(); row++) {
-
-      ByteBuffer byteBuffer = ByteBuffer.allocate(byteSize);
-      String newStringKey = "";
-
-      for (int col = 0; col < columnNames.length; col++) {
-        if (col > 0) {
-          newStringKey = newStringKey + SPLIT_STRING;
-        }
-
-        Column<?> c = getSourceTable().column(columnNames[col]);
-        String groupKey = getSourceTable().getUnformatted(row, getSourceTable().columnIndex(c));
-        newStringKey = newStringKey + groupKey;
-        byteBuffer.put(c.asBytes(row));
-      }
-      byte[] newKey = byteBuffer.array();
-      if (row == 0) {
-        currentKey = newKey;
-        currentStringKey = newStringKey;
-      }
-      if (!Arrays.equals(newKey, currentKey)) {
-        currentKey = newKey;
-        view = new TableSlice(getSourceTable(), selection);
-        view.setName(currentStringKey);
-        currentStringKey = newStringKey;
-        addSlice(view);
-        selection = new BitmapBackedSelection();
-        selection.add(row);
-      } else {
-        selection.add(row);
-      }
+  private static class ByteArray {
+    final byte[] bytes;
+    ByteArray(byte[] bytes) {
+      this.bytes = bytes;
     }
-    if (!selection.isEmpty()) {
-      view = new TableSlice(getSourceTable(), selection);
-      view.setName(currentStringKey);
-      addSlice(view);
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o)
+        return true;
+      if (o == null || getClass() != o.getClass())
+        return false;
+      ByteArray byteArray = (ByteArray) o;
+      return Arrays.equals(bytes, byteArray.bytes);
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(bytes);
     }
   }
 }
