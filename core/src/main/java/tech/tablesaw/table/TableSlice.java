@@ -14,29 +14,40 @@
 
 package tech.tablesaw.table;
 
-import it.unimi.dsi.fastutil.ints.IntIterator;
+import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.PrimitiveIterator;
+import java.util.stream.IntStream;
+import javax.annotation.Nullable;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.Sort;
+import tech.tablesaw.sorting.SortUtils;
+import tech.tablesaw.sorting.comparators.IntComparatorChain;
 
 /**
  * A TableSlice is a facade around a Relation that acts as a filter. Requests for data are forwarded
- * to the underlying table.
+ * to the underlying table. A TableSlice can be sorted independently of the underlying table.
  *
  * <p>A TableSlice is only good until the structure of the underlying table changes.
  */
 public class TableSlice extends Relation {
 
-  private final Selection selection;
-  private String name;
   private final Table table;
+  private String name;
+  @Nullable
+  private Selection selection;
+  @Nullable
+  private int[] sortOrder = null;
 
   /**
    * Returns a new View constructed from the given table, containing only the rows represented by
@@ -48,19 +59,29 @@ public class TableSlice extends Relation {
     this.table = table;
   }
 
+  /**
+   * Returns a new view constructed from the given table. The view can be sorted independently of the table.
+   */
+  public TableSlice(Table table) {
+    this.name = table.name();
+    this.selection = null;
+    this.table = table;
+  }
+
   @Override
   public Column<?> column(int columnIndex) {
-    return table.column(columnIndex).where(selection);
+    Column<?> col = table.column(columnIndex);
+    if (isSorted()) {
+      return col.subset(sortOrder);
+    } else if(hasSelection()) {
+      return col.where(selection);
+    }
+    return col;
   }
 
   @Override
   public Column<?> column(String columnName) {
-    return table.column(columnName).where(selection);
-  }
-
-  /** Returns the entire column of the source table, unfiltered */
-  private Column<?> entireColumn(int columnIndex) {
-    return table.column(columnIndex);
+    return column(table.columnIndex(columnName));
   }
 
   @Override
@@ -70,7 +91,10 @@ public class TableSlice extends Relation {
 
   @Override
   public int rowCount() {
-    return selection.size();
+    if(hasSelection()) {
+      return selection.size();
+    }
+    return table.rowCount();
   }
 
   @Override
@@ -89,7 +113,7 @@ public class TableSlice extends Relation {
 
   @Override
   public Object get(int r, int c) {
-    return table.get(selection.get(r), c);
+    return table.get(mappedRowNumber(r), c);
   }
 
   @Override
@@ -97,10 +121,26 @@ public class TableSlice extends Relation {
     return name;
   }
 
+  public Table getTable() {
+    return table;
+  }
+
   /** Clears all rows from this View, leaving the structure in place */
   @Override
   public void clear() {
-    selection.clear();
+    sortOrder = null;
+    selection = Selection.with();
+  }
+
+  /** Removes the sort from this View.*/
+  public void removeSort() {
+    this.sortOrder = null;
+  }
+
+  /** Removes the selection from this view, leaving it with the same number of rows
+   * as the underlying source table. */
+  public void removeSelection() {
+    this.selection = null;
   }
 
   @Override
@@ -122,15 +162,15 @@ public class TableSlice extends Relation {
 
   @Override
   public Table first(int nRows) {
-    Selection newMap = new BitmapBackedSelection();
     int count = 0;
-    IntIterator it = intIterator();
+    PrimitiveIterator.OfInt it = sourceRowNumberIterator();
+    Table copy = table.emptyCopy();
     while (it.hasNext() && count < nRows) {
       int row = it.nextInt();
-      newMap.add(row);
+      copy.addRow(table.row(row));
       count++;
     }
-    return table.where(newMap);
+    return copy;
   }
 
   @Override
@@ -147,8 +187,20 @@ public class TableSlice extends Relation {
     return table;
   }
 
-  private IntIterator intIterator() {
-    return selection.iterator();
+  /**
+   * IntIterator of source table row numbers that are present in this view. This can be used to
+   * in combination with the source table to iterate over the cells of a column
+   * in a sorted order without copying the column.
+   *
+   * @return an int iterator of row numbers in the source table that are present in this view.
+   */
+  public PrimitiveIterator.OfInt sourceRowNumberIterator() {
+    if(this.isSorted()) {
+      return Arrays.stream(sortOrder).iterator();
+    } else if (this.hasSelection()) {
+      return selection.iterator();
+    }
+    return Selection.withRange(0, table.rowCount()).iterator();
   }
 
   /**
@@ -162,16 +214,22 @@ public class TableSlice extends Relation {
    */
   public double reduce(String numberColumnName, NumericAggregateFunction function) {
     NumberColumn<?> column = table.numberColumn(numberColumnName);
-    return function.summarize(column.where(selection));
+    if(hasSelection()) {
+      return function.summarize(column.where(selection));
+    }
+    return function.summarize(column);
   }
 
-  /** Iterate of a copy of the table. */
+  /**
+   * Iterate over the underlying rows in the source table. If you set one of the
+   * rows while iterating it will change the row in the source table.
+   */
   @Override
   public Iterator<Row> iterator() {
 
     return new Iterator<Row>() {
 
-      private final Row row = new Row(TableSlice.this.asTable());
+      private final Row row = new Row(TableSlice.this);
 
       @Override
       public Row next() {
@@ -183,5 +241,54 @@ public class TableSlice extends Relation {
         return row.hasNext();
       }
     };
+  }
+
+  private boolean hasSelection() {
+    return selection != null;
+  }
+
+  private boolean isSorted() {
+    return sortOrder != null;
+  }
+
+  /**
+   * Maps the view row number to the row number on the underlying source table.
+   *
+   * @param rowNumber the row number in the view.
+   * @return the matching row number in the underlying table.
+   */
+  public int mappedRowNumber(int rowNumber) {
+    if (isSorted()) {
+      return sortOrder[rowNumber];
+    } else if (hasSelection()) {
+      return selection.get(rowNumber);
+    }
+    return rowNumber;
+  }
+
+  /**
+   * Sort the TableSlice independently from the underlying table.
+   */
+  public void sortOn(Sort key) {
+    Preconditions.checkArgument(!key.isEmpty());
+    if (key.size() == 1) {
+      IntComparator comparator = SortUtils.getComparator(table, key);
+      this.sortOrder =  sortOn(comparator);
+    } else {
+      IntComparatorChain chain = SortUtils.getChain(table, key);
+      this.sortOrder = sortOn(chain);
+    }
+  }
+
+  /** Returns an array of integers representing the source table indexes in sorted order.*/
+  private int[] sortOn(IntComparator rowComparator) {
+    int[] newRows;
+    if(hasSelection()) {
+      newRows = this.selection.toArray();
+    } else {
+      newRows = IntStream.range(0, table.rowCount()).toArray();
+    }
+    IntArrays.parallelQuickSort(newRows, rowComparator);
+    return newRows;
   }
 }

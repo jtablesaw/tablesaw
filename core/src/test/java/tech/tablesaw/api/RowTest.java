@@ -1,5 +1,6 @@
 package tech.tablesaw.api;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.tablesaw.api.ColumnType.BOOLEAN;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
@@ -12,6 +13,7 @@ import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.STRING;
 import static tech.tablesaw.api.ColumnType.TEXT;
 
+import com.google.common.collect.Streams;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -19,6 +21,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.Sort;
+import tech.tablesaw.sorting.Sort.Order;
+import tech.tablesaw.table.TableSlice;
 
 /** TODO All the methods on this class should be tested carefully */
 public class RowTest {
@@ -576,5 +582,49 @@ public class RowTest {
       row.setTime("Time", dttm_add5);
       assertEquals(dttm_add5, row.getTime("Time"));
     }
+  }
+
+  @Test
+  public void iterationWithSelection() throws IOException {
+    Table table = Table.read().csv("../data/bush.csv");
+    int[] sourceIndex = new int[]{10, 20, 30};
+    Row row = new Row(new TableSlice(table, Selection.with(10, 20, 30)), -1);
+
+    int count = 0;
+    while(row.hasNext()) {
+      row.next();
+      LocalDate date = table.dateColumn("date").get(sourceIndex[row.getRowNumber()]);
+      assertEquals(date, row.getDate(0));
+      assertEquals(date, row.getDate("date"));
+      count++;
+    }
+    assertEquals(3, count);
+  }
+
+  @Test
+  public void setWithSelectionSortOrder() throws IOException {
+    Table table = Table.read().csv("../data/bush.csv");
+    int[] sourceIndex = new int[]{3, 6};
+    Row row = new Row(new TableSlice(table, Selection.with(3, 6)));
+
+    while(row.hasNext()) {
+      row.next();
+      Integer rowVal = table.intColumn(1).get(sourceIndex[row.getRowNumber()]);
+      row.setInt(1, rowVal + 1);
+      assertEquals(rowVal + 1, table.get(sourceIndex[row.getRowNumber()], 1));
+    }
+  }
+
+  @Test
+  public void iterationWithSelectionAndOrder() throws IOException {
+    Table table = Table.read().csv("../data/bush.csv");
+    TableSlice tableSlice = new TableSlice(table, Selection.withRange(0, 5));
+    tableSlice.sortOn(Sort.on("approval", Order.ASCEND));
+
+    Row row = new Row(tableSlice);
+    Integer[] expected = new Integer[]{52, 52, 53, 53, 58};
+    Integer[] actual = Streams.stream(row).map(r -> r.getInt("approval")).toArray(Integer[]::new);
+
+    assertArrayEquals(expected, actual);
   }
 }
