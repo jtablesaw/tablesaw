@@ -484,4 +484,17 @@ public class TextColumnTest {
     assertEquals("foo bam", result.get(0));
     assertEquals("bar bam", result.get(1));
   }
+
+  @Test
+  public void testCountUnique() {
+    TextColumn col1 = TextColumn.create("col1");
+    col1.append("1");
+    col1.append("1");
+    col1.append("2");
+    col1.appendMissing();
+
+    assertEquals(3, col1.countUnique());
+    assertEquals(3, col1.unique().size());
+  }
+
 }

@@ -156,9 +156,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public DoubleColumn unique() {
     final DoubleSet doubles = new DoubleOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        doubles.add(getDouble(i));
-      }
+      doubles.add(getDouble(i));
     }
     final DoubleColumn column = DoubleColumn.create(name() + " Unique values");
     doubles.forEach((DoubleConsumer) column::append);
@@ -373,9 +371,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public int countUnique() {
     DoubleSet uniqueElements = new DoubleOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        uniqueElements.add(getDouble(i));
-      }
+      uniqueElements.add(getDouble(i));
     }
     return uniqueElements.size();
   }

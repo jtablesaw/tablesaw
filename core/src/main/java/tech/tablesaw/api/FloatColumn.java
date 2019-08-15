@@ -97,9 +97,7 @@ public class FloatColumn extends NumberColumn<Float> {
   public FloatColumn unique() {
     final FloatSet values = new FloatOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        values.add(getFloat(i));
-      }
+      values.add(getFloat(i));
     }
     final FloatColumn column = FloatColumn.create(name() + " Unique values");
     for (float value : values) {
@@ -257,9 +255,7 @@ public class FloatColumn extends NumberColumn<Float> {
   public int countUnique() {
     FloatSet uniqueElements = new FloatOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        uniqueElements.add(getFloat(i));
-      }
+      uniqueElements.add(getFloat(i));
     }
     return uniqueElements.size();
   }

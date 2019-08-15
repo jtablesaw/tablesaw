@@ -116,9 +116,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
   public IntColumn unique() {
     final IntSet values = new IntOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        values.add(getInt(i));
-      }
+      values.add(getInt(i));
     }
     final IntColumn column = IntColumn.create(name() + " Unique values");
     for (int value : values) {
@@ -290,9 +288,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
   public int countUnique() {
     IntSet uniqueElements = new IntOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissingValue(getInt(i))) {
-        uniqueElements.add(getInt(i));
-      }
+      uniqueElements.add(getInt(i));
     }
     return uniqueElements.size();
   }

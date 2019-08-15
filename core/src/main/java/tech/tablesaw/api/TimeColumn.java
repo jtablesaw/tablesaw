@@ -339,7 +339,6 @@ public class TimeColumn extends AbstractColumn<LocalTime>
   @Override
   public int countUnique() {
     IntOpenHashSet hashSet = new IntOpenHashSet(data);
-    hashSet.remove(TimeColumnType.missingValueIndicator());
     return hashSet.size();
   }
 
