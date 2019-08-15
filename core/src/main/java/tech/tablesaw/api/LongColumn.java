@@ -119,9 +119,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   public LongColumn unique() {
     final LongSet values = new LongOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        values.add(getLong(i));
-      }
+      values.add(getLong(i));
     }
     final LongColumn column = LongColumn.create(name() + " Unique values");
     for (long value : values) {
@@ -311,9 +309,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   public int countUnique() {
     LongSet uniqueElements = new LongOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissingValue(getLong(i))) {
-        uniqueElements.add(getLong(i));
-      }
+      uniqueElements.add(getLong(i));
     }
     return uniqueElements.size();
   }

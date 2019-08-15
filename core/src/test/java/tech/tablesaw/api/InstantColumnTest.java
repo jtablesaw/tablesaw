@@ -56,4 +56,15 @@ class InstantColumnTest {
     assertEquals(1, instanceColumn.isNotMissing().get(1));
     assertEquals(2, instanceColumn.isNotMissing().get(2));
   }
+
+  @Test
+  public void testCountUnique() {
+    InstantColumn column1 = InstantColumn.create("instants");
+    column1.append(baselineInst);
+    column1.append(baselineInst);
+    column1.append(afterInst);
+    column1.appendMissing();
+
+    assertEquals(3, column1.countUnique());
+  }
 }

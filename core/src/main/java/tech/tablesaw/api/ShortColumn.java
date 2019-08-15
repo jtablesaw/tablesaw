@@ -97,9 +97,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   public ShortColumn unique() {
     final ShortSet values = new ShortOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        values.add(getShort(i));
-      }
+      values.add(getShort(i));
     }
     final ShortColumn column = ShortColumn.create(name() + " Unique values");
 
@@ -272,10 +270,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   public int countUnique() {
     ShortSet uniqueElements = new ShortOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      short val = getShort(i);
-      if (!isMissingValue(val)) {
-        uniqueElements.add(val);
-      }
+      uniqueElements.add(getShort(i));
     }
     return uniqueElements.size();
   }

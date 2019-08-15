@@ -682,11 +682,11 @@ class StringColumnTest {
   public void countUniqueWithMissing() {
     StringColumn col1 = StringColumn.create("col1");
     col1.append("1");
+    col1.append("1");
     col1.append("2");
-    col1.append("3");
     col1.appendMissing();
 
-    assertEquals(4, col1.countUnique());
-    assertEquals(4, col1.unique().size());
+    assertEquals(3, col1.countUnique());
+    assertEquals(3, col1.unique().size());
   }
 }
