@@ -45,6 +45,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.booleans.BooleanColumnUtils;
 import tech.tablesaw.columns.booleans.BooleanFillers;
+import tech.tablesaw.columns.booleans.BooleanFilters;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
 import tech.tablesaw.columns.booleans.BooleanMapUtils;
 import tech.tablesaw.filtering.predicates.BytePredicate;
@@ -53,7 +54,10 @@ import tech.tablesaw.selection.Selection;
 
 /** A column in a base table that contains float values */
 public class BooleanColumn extends AbstractColumn<Boolean>
-    implements BooleanMapUtils, CategoricalColumn<Boolean>, BooleanFillers<BooleanColumn> {
+    implements BooleanMapUtils,
+        CategoricalColumn<Boolean>,
+        BooleanFillers<BooleanColumn>,
+        BooleanFilters {
 
   private final ByteComparator descendingByteComparator = (o1, o2) -> Byte.compare(o2, o1);
 
@@ -74,6 +78,7 @@ public class BooleanColumn extends AbstractColumn<Boolean>
   }
 
   /** @deprecated Use BooleanColumnType.isMissingValue(byte) instead */
+  @Deprecated
   public static boolean valueIsMissing(byte b) {
     return BooleanColumnType.isMissingValue(b);
   }

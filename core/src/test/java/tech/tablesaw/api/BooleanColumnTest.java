@@ -179,8 +179,9 @@ public class BooleanColumnTest {
 
   @Test
   public void testCountUnique() {
+    column.appendMissing();
     int result = column.countUnique();
-    assertEquals(2, result);
+    assertEquals(3, result);
   }
 
   @Test

@@ -211,7 +211,19 @@ public class TimeColumnTest {
   public void countUnique() {
     fillLargerColumn();
     column1.appendInternal(TimeColumnType.missingValueIndicator());
-    assertEquals(10, column1.countUnique());
+    assertEquals(11, column1.countUnique());
+  }
+
+  @Test
+  public void basicCountUnique() {
+    TimeColumn column1 = TimeColumn.create("time");
+    column1.append(LocalTime.of(18, 4, 4));
+    column1.append(LocalTime.of(18, 4, 4));
+    column1.append(LocalTime.of(20, 4, 4));
+    column1.appendMissing();
+
+    assertEquals(3, column1.countUnique());
+    assertEquals(3, column1.unique().size());
   }
 
   @Test

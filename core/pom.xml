@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -11,6 +12,9 @@
     <artifactId>tablesaw-core</artifactId>
 
     <packaging>jar</packaging>
+    <properties>
+        <doclint>none</doclint>
+    </properties>
 
     <profiles>
         <profile>
@@ -25,6 +29,11 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <quiet>true</quiet>
+                            <additionalOptions>-Xdoclint:none</additionalOptions>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -126,7 +135,7 @@
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-data</artifactId>
-            <version>1.5.2 </version>
+            <version>1.5.2</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
@@ -167,7 +176,7 @@
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
-            <version>1.5.2 </version>
+            <version>1.5.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

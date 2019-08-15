@@ -17,6 +17,7 @@ package tech.tablesaw;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.api.QuerySupport.numberColumn;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +53,15 @@ public class TableFilteringTest {
   @Test
   public void testReject() {
     Table result = table.dropWhere(table.numberColumn("approval").isLessThan(70));
+    ShortColumn a = result.shortColumn("approval");
+    for (double v : a) {
+      assertFalse(v < 70);
+    }
+  }
+
+  @Test
+  public void testReject2() {
+    Table result = table.dropWhere(numberColumn("approval").isLessThan(70));
     ShortColumn a = result.shortColumn("approval");
     for (double v : a) {
       assertFalse(v < 70);

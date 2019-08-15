@@ -173,4 +173,14 @@ public class DateColumnTest {
         sorted.dateColumn("Date").asList().stream().sorted().collect(Collectors.toList()),
         sorted.dateColumn("Date").asList());
   }
+
+  @Test
+  public void testCountUnique() {
+    column1.append(LocalDate.of(2000, 1, 1));
+    column1.append(LocalDate.of(2000, 1, 1));
+    column1.append(LocalDate.of(2000, 2, 1));
+    column1.appendMissing();
+
+    assertEquals(3, column1.countUnique());
+  }
 }

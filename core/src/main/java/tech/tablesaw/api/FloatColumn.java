@@ -1,16 +1,12 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
 import it.unimi.dsi.fastutil.floats.FloatComparator;
 import it.unimi.dsi.fastutil.floats.FloatListIterator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -101,9 +97,7 @@ public class FloatColumn extends NumberColumn<Float> {
   public FloatColumn unique() {
     final FloatSet values = new FloatOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        values.add(getFloat(i));
-      }
+      values.add(getFloat(i));
     }
     final FloatColumn column = FloatColumn.create(name() + " Unique values");
     for (float value : values) {
@@ -261,9 +255,7 @@ public class FloatColumn extends NumberColumn<Float> {
   public int countUnique() {
     FloatSet uniqueElements = new FloatOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        uniqueElements.add(getFloat(i));
-      }
+      uniqueElements.add(getFloat(i));
     }
     return uniqueElements.size();
   }
@@ -460,12 +452,15 @@ public class FloatColumn extends NumberColumn<Float> {
    */
   @Override
   public LongColumn asLongColumn() {
-    LongArrayList values = new LongArrayList();
-    for (float f : data) {
-      values.add((long) f);
+    LongColumn result = LongColumn.create(name());
+    for (float d : data) {
+      if (FloatColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((long) d);
+      }
     }
-    values.trim();
-    return LongColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -487,12 +482,15 @@ public class FloatColumn extends NumberColumn<Float> {
    */
   @Override
   public IntColumn asIntColumn() {
-    IntArrayList values = new IntArrayList();
+    IntColumn result = IntColumn.create(name());
     for (float d : data) {
-      values.add((int) d);
+      if (FloatColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((int) d);
+      }
     }
-    values.trim();
-    return IntColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -514,12 +512,15 @@ public class FloatColumn extends NumberColumn<Float> {
    */
   @Override
   public ShortColumn asShortColumn() {
-    ShortArrayList values = new ShortArrayList();
+    ShortColumn result = ShortColumn.create(name());
     for (float d : data) {
-      values.add((short) d);
+      if (FloatColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((short) d);
+      }
     }
-    values.trim();
-    return ShortColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -531,11 +532,14 @@ public class FloatColumn extends NumberColumn<Float> {
    */
   @Override
   public DoubleColumn asDoubleColumn() {
-    DoubleArrayList values = new DoubleArrayList();
+    DoubleColumn result = DoubleColumn.create(name());
     for (float d : data) {
-      values.add(d);
+      if (FloatColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append(d);
+      }
     }
-    values.trim();
-    return DoubleColumn.create(this.name(), values.elements());
+    return result;
   }
 }

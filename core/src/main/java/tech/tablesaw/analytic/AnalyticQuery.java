@@ -92,6 +92,14 @@ final public class AnalyticQuery {
     return Optional.of(sort);
   }
 
+  public WindowSpecification getWindowSpecification() {
+    return windowSpecification;
+  }
+
+  public WindowFrame getWindowFrame() {
+    return windowFrame;
+  }
+
   public String toSqlString() {
     StringBuilder sb = new StringBuilder();
     if (!argumentList.getNewColumnNames().isEmpty()) {
@@ -292,7 +300,7 @@ final public class AnalyticQuery {
     @Override
     public AddAnalyticFunctions andPreceding(int nRows) {
       this.frameBuilder.setEndPreceding(nRows);
-      return null;
+      return this;
     }
 
     @Override

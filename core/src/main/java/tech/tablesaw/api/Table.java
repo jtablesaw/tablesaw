@@ -16,6 +16,7 @@ package tech.tablesaw.api;
 
 import static java.util.stream.Collectors.toList;
 import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
+import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 import com.google.common.base.Preconditions;
@@ -31,6 +32,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import tech.tablesaw.aggregate.AggregateFunction;
@@ -702,6 +704,17 @@ public class Table extends Relation implements Iterable<Row> {
     return newTable;
   }
 
+  public Table where(Function<Table, Selection> selection) {
+    Table tempTable = where(selection.apply(this));
+    Table newTable = tempTable.emptyCopy(tempTable.rowCount());
+    Rows.copyRowsToTable(selection.apply(this), this, newTable);
+    return newTable;
+  }
+
+  public Table dropWhere(Function<Table, Selection> selection) {
+    return where(not(selection));
+  }
+
   public Table dropWhere(Selection selection) {
     Selection opposite = new BitmapBackedSelection();
     opposite.addRange(0, rowCount());
@@ -1056,8 +1069,84 @@ public class Table extends Relation implements Iterable<Row> {
     };
   }
 
+  /**
+   * Iterates over rolling sets of rows. I.e. 0 to n-1, 1 to n, 2 to n+1, etc.
+   *
+   * @param n the number of rows to return for each iteration
+   */
+  public Iterator<Row[]> rollingIterator(int n) {
+
+    return new Iterator<Row[]>() {
+
+      private int currRow = 0;
+
+      @Override
+      public Row[] next() {
+        Row[] rows = new Row[n];
+        for (int i = 0; i < n; i++) {
+          rows[i] = new Row(Table.this, currRow + i);
+        }
+        currRow++;
+        return rows;
+      }
+
+      @Override
+      public boolean hasNext() {
+        return currRow + n <= rowCount();
+      }
+    };
+  }
+
+  /**
+   * Streams over stepped sets of rows. I.e. 0 to n-1, n to 2n-1, 2n to 3n-1, etc. Only returns full
+   * sets of rows.
+   *
+   * @param n the number of rows to return for each iteration
+   */
+  public Iterator<Row[]> steppingIterator(int n) {
+
+    return new Iterator<Row[]>() {
+
+      private int currRow = 0;
+
+      @Override
+      public Row[] next() {
+        Row[] rows = new Row[n];
+        for (int i = 0; i < n; i++) {
+          rows[i] = new Row(Table.this, currRow + i);
+        }
+        currRow += n;
+        return rows;
+      }
+
+      @Override
+      public boolean hasNext() {
+        return currRow + n <= rowCount();
+      }
+    };
+  }
+
   public Stream<Row> stream() {
     return Streams.stream(iterator());
+  }
+
+  /**
+   * Streams over stepped sets of rows. I.e. 0 to n-1, n to 2n-1, 2n to 3n-1, etc. Only returns full
+   * sets of rows.
+   *
+   * @param n the number of rows to return for each iteration
+   */
+  public Stream<Row[]> steppingStream(int n) {
+    return Streams.stream(steppingIterator(n));
+  }
+
+  /**
+   * Streams over rolling sets of rows. I.e. 0 to n-1, 1 to n, 2 to n+1, etc.
+   *
+   * @param n the number of rows to return for each iteration
+   */
+  public Stream<Row[]> rollingStream(int n) {
+    return Streams.stream(rollingIterator(n));
   }
 
   /**
@@ -1065,6 +1154,7 @@ public class Table extends Relation implements Iterable<Row> {
    *
    * @deprecated use {@code stream().forEach}
    */
+  @Deprecated
   public void doWithRows(Consumer<Row> doable) {
     stream().forEach(doable);
   }
@@ -1074,84 +1164,36 @@ public class Table extends Relation implements Iterable<Row> {
    *
    * @deprecated use {@code stream().anyMatch}
    */
+  @Deprecated
   public boolean detect(Predicate<Row> predicate) {
     return stream().anyMatch(predicate);
   }
 
-  /** Applies the operation in {@code rowConsumer} to every series of n rows in the table */
+  /** @deprecated use steppingStream(n).forEach(rowConsumer) */
+  @Deprecated
   public void stepWithRows(Consumer<Row[]> rowConsumer, int n) {
-    if (isEmpty()) {
-      return;
-    }
-    Row[] rows = new Row[n];
-    for (int i = 0; i < n; i++) {
-      rows[i] = new Row(this);
-    }
-
-    int max = rowCount() / n;
-
-    for (int i = 0; i < max; i++) { // 0, 1
-      for (int r = 1; r <= n; r++) {
-        int row = i * n + r - 1;
-        rows[r - 1].at(row);
-      }
-      rowConsumer.accept(rows);
-    }
+    steppingStream(n).forEach(rowConsumer);
   }
 
-  /** Applies the function in {@code pairs} to each consecutive pairs of rows in the table */
+  /** @deprecated use stream(2).forEach(rowConsumer) */
+  @Deprecated
   public void doWithRows(Pairs pairs) {
-    if (isEmpty()) {
-      return;
-    }
-    Row row1 = new Row(this);
-    Row row2 = new Row(this);
-    int max = rowCount();
-    for (int i = 1; i < max; i++) {
-      row1.at(i - 1);
-      row2.at(i);
-      pairs.doWithPair(row1, row2);
-    }
+    rollingStream(2).forEach(rows -> pairs.doWithPair(rows[0], rows[1]));
   }
 
-  /** Applies the function in {@code pairConsumer} to each consecutive pairs of rows in the table */
+  /** @deprecated use stream(2).forEach(rowConsumer) */
+  @Deprecated
   public void doWithRowPairs(Consumer<RowPair> pairConsumer) {
-    if (isEmpty()) {
-      return;
-    }
-    Row row1 = new Row(this);
-    Row row2 = new Row(this);
-    RowPair pair = new RowPair(row1, row2);
-    int max = rowCount();
-    for (int i = 1; i < max; i++) {
-      row1.at(i - 1);
-      row2.at(i);
-      pairConsumer.accept(pair);
-    }
+    rollingStream(2).forEach(rows -> pairConsumer.accept(new RowPair(rows[0], rows[1])));
   }
 
-  /**
-   * Applies the function in {@code rowConsumer} to each group of contiguous rows of size n in the
-   * table This can be used, for example, to calculate a running average of in rows
-   */
+  /** @deprecated use stream(n).forEach(rowConsumer) */
+  @Deprecated
   public void rollWithRows(Consumer<Row[]> rowConsumer, int n) {
-    if (isEmpty()) {
-      return;
-    }
-    Row[] rows = new Row[n];
-    for (int i = 0; i < n; i++) {
-      rows[i] = new Row(this);
-    }
-
-    int max = rowCount() - (n - 2);
-    for (int i = 1; i < max; i++) {
-      for (int r = 0; r < n; r++) {
-        rows[r].at(i + r - 1);
-      }
-      rowConsumer.accept(rows);
-    }
+    rollingStream(n).forEach(rowConsumer);
   }
 
+  @Deprecated
   public static class RowPair {
     private final Row first;
     private final Row second;
@@ -1170,6 +1212,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
   }
 
+  @Deprecated
   interface Pairs {
 
     void doWithPair(Row row1, Row row2);

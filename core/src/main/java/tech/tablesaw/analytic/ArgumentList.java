@@ -90,13 +90,25 @@ final public class ArgumentList {
   }
 
   static class FunctionCall<T extends AnalyticFunctionMetaData> {
-    private final String fromColumn;
-    private final String toColumn;
+    private final String sourceColumnName;
+    private final String destinationColumnName;
     private final T function;
 
-    public FunctionCall(String fromColumn, String toColumn, T function) {
-      this.fromColumn = fromColumn;
-      this.toColumn = toColumn;
+    public String getSourceColumnName() {
+      return sourceColumnName;
+    }
+
+    public String getDestinationColumnName() {
+      return destinationColumnName;
+    }
+
+    public T getFunction() {
+      return function;
+    }
+
+    public FunctionCall(String sourceColumnName, String destinationColumnName, T function) {
+      this.sourceColumnName = sourceColumnName;
+      this.destinationColumnName = destinationColumnName;
       this.function = function;
     }
 
@@ -110,7 +122,7 @@ final public class ArgumentList {
       if (!windowName.isEmpty()) {
         over = " OVER " + windowName;
       }
-      return function.toString() + '(' + fromColumn + ")" + over + " AS " + toColumn;
+      return function.toString() + '(' + sourceColumnName + ")" + over + " AS " + destinationColumnName;
     }
 
     @Override
@@ -120,14 +132,14 @@ final public class ArgumentList {
       if (o == null || getClass() != o.getClass())
         return false;
       FunctionCall<?> that = (FunctionCall<?>) o;
-      return Objects.equal(fromColumn, that.fromColumn) &&
-        Objects.equal(toColumn, that.toColumn) &&
+      return Objects.equal(sourceColumnName, that.sourceColumnName) &&
+        Objects.equal(destinationColumnName, that.destinationColumnName) &&
         Objects.equal(function, that.function);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hashCode(fromColumn, toColumn, function);
+      return Objects.hashCode(sourceColumnName, destinationColumnName, function);
     }
   }
 

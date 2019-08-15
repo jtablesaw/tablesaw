@@ -88,4 +88,14 @@ public class DateTimeColumnTest {
     col.appendCell(null);
     assertNull(col.get(0));
   }
+
+  @Test
+  public void testCountUnique() {
+    column1.append(LocalDateTime.of(2000, 1, 1, 0, 0));
+    column1.append(LocalDateTime.of(2000, 1, 1, 0, 0));
+    column1.append(LocalDateTime.of(2000, 2, 1, 0, 0));
+    column1.appendMissing();
+
+    assertEquals(3, column1.countUnique());
+  }
 }

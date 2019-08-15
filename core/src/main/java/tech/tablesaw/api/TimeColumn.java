@@ -79,6 +79,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
   }
 
   /** @deprecated Use TimeColumnType.isMissingValue() instead */
+  @Deprecated
   public static boolean valueIsMissing(int i) {
     return TimeColumnType.isMissingValue(i);
   }
@@ -338,7 +339,6 @@ public class TimeColumn extends AbstractColumn<LocalTime>
   @Override
   public int countUnique() {
     IntOpenHashSet hashSet = new IntOpenHashSet(data);
-    hashSet.remove(TimeColumnType.missingValueIndicator());
     return hashSet.size();
   }
 

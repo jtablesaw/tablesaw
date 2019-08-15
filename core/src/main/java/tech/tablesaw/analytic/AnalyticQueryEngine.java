@@ -1,12 +1,13 @@
 package tech.tablesaw.analytic;
 
+import com.google.common.collect.ImmutableList;
+import tech.tablesaw.analytic.ArgumentList.FunctionCall;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.table.StandardTableSliceGroup;
-import tech.tablesaw.table.TableSliceGroup;
+import tech.tablesaw.table.TableSlice;
 
 /**
- * First version operates on table slices.
+ * Executes AnalyticQueries.
  */
 public class AnalyticQueryEngine {
   private final AnalyticQuery query;
@@ -23,7 +24,32 @@ public class AnalyticQueryEngine {
 
   public Table execute() {
     addColumns();
-    return null;
+    partition().forEach(this::processSlice);
+    return destination;
+  }
+
+  private void processSlice(TableSlice slice) {
+    System.out.println(slice.first(10));
+    orderBy(slice);
+    for(String toColumn : query.getArgumentList().getAggregateFunctions().keySet()) {
+      FunctionCall<AnalyticAggregateFunctions> functionCall = query.getArgumentList()
+        .getAggregateFunctions().get(toColumn);
+
+      AnalyticAggregateFunctions aggregateFunction = functionCall.getFunction();
+      Column<?> sourceColumn = query.getTable().column(functionCall.getSourceColumnName());
+      validateColumn(aggregateFunction, sourceColumn);
+
+      Column<?> destinationColumn = destination.column(functionCall.getDestinationColumnName());
+      new WindowSlider(query.getWindowFrame(), aggregateFunction, slice, sourceColumn, destinationColumn)
+        .process();
+    }
+  }
+
+  private void validateColumn(AnalyticFunctionMetaData function, Column<?> sourceColumn) {
+    if(!function.isCompatibleColumn(sourceColumn.type())) {
+      throw new IllegalArgumentException("Function: " + function.functionName()
+        + " Is not compatible with column type: " + sourceColumn.type());
+    }
   }
 
   private void addColumns() {
@@ -31,19 +57,16 @@ public class AnalyticQueryEngine {
       .createEmptyDestinationColumns(query.getTable().rowCount()).toArray(new Column[0]));
   }
 
-  private TableSliceGroup partition(Table table, AnalyticQuery query) {
+  private Iterable<TableSlice> partition() {
     if(query.getPartitionColumns().isEmpty()) {
-      // TODO Change TableSliceGroup so you can get a TableSliceGroup with a single slice.
-      return StandardTableSliceGroup.create(table, "");
+      return ImmutableList.of(new TableSlice(query.getTable()));
     }
-    return table.splitOn(query.getPartitionColumns().toArray(new String[0]));
+    return query.getTable().splitOn(query.getPartitionColumns().toArray(new String[0]));
   }
 
-  private TableSliceGroup orderBy(TableSliceGroup tableSliceGroup, AnalyticQuery query) {
-    if(!query.getSort().isPresent()) {
-      return tableSliceGroup;
+  private void orderBy(TableSlice tableSlice) {
+    if(query.getSort().isPresent()) {
+      tableSlice.sortOn(query.getSort().get());
     }
-    // TODO sort each table slice.
-    return tableSliceGroup;
   }
 }

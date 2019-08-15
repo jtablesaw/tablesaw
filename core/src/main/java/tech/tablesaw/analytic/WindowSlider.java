@@ -1,31 +1,41 @@
 package tech.tablesaw.analytic;
 
 import java.util.function.Function;
+import tech.tablesaw.analytic.ArgumentList.FunctionCall;
 import tech.tablesaw.analytic.WindowFrame.WindowGrowthType;
-import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.table.TableSlice;
 
 class WindowSlider {
-  WindowFrame windowFrame;
+  private final WindowFrame windowFrame;
   @SuppressWarnings({"unchecked", "rawtypes"})
-  AggregateFunction function;
+  private final AnalyticAggregateFunctions functionContainer;
+  private final AggregateFunction function;
   // TODO change to table slice
-  Table table;
-  String sourceColumnName;
+  private final TableSlice slice;
   @SuppressWarnings({"unchecked", "rawtypes"})
-  Column destination;
+  private final Column<?> sourceColumn;
+  private final Column destinationColumn;
 
+  WindowSlider(WindowFrame windowFrame,  AnalyticAggregateFunctions func, TableSlice slice,
+    Column<?> sourceColumn, Column destinationColumn) {
+    this.windowFrame = windowFrame;
+    this.functionContainer = func;
+    this.function = func.getImplementation(windowFrame.windowGrowthType());
+    this.slice = slice;
+    this.destinationColumn = destinationColumn;
+    this.sourceColumn = sourceColumn;
+  }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   void process() {
-    validateColumn();
 
     int leftBound = getInitialStartIndex();
     int rightBound = getInitialEndIndex();
-    initWindow();
+    initWindow(sourceColumn);
 
-    for (int i = 0; i < table.rowCount(); i++) {
-      destination.set( getMappedRowNumber(i), function.getValue());
+    for (int i = 0; i < slice.rowCount(); i++) {
+      destinationColumn.set(slice.mappedRowNumber(i), function.getValue());
 
       int newLeftBound = slideLeftStrategy().apply(leftBound);
       if(newLeftBound > leftBound && inTableRange(newLeftBound)) {
@@ -35,66 +45,37 @@ class WindowSlider {
 
       int newRightBound = slideRightStrategy().apply(rightBound);
       if(newRightBound > rightBound && inTableRange(newRightBound)) {
-        if(isMissing(newRightBound)) {
+        if(isMissing(sourceColumn, newRightBound)) {
           function.addRightMostMissing();
         } else {
-          function.addRightMost(get(newRightBound));
+          Object value = get(sourceColumn, newRightBound);
+          function.addRightMost(value);
         }
       }
       rightBound = newRightBound;
     }
   }
 
-  private int mirrorIndex(int index) {
-    return table.rowCount() - 1 - index;
-  }
-
-
   @SuppressWarnings({"unchecked", "rawtypes"})
-  private void initWindow() {
+  private void initWindow(Column<?> sourceColumn) {
     int leftBound = Math.max(getInitialStartIndex(), 0);
-    int rightBound = Math.min(getInitialEndIndex(), table.rowCount() - 1);
+    int rightBound = Math.min(getInitialEndIndex(), slice.rowCount() - 1);
     for (int i = leftBound; i <= rightBound; i++) {
-      function.addRightMost(get(i));
+      function.addRightMost(get(sourceColumn, i));
     }
   }
 
-  private void validateColumn() {
-    if(!function.isCompatibleColumn(getSourceColumn().type())) {
-      throw new IllegalArgumentException("Function: " + function.functionName()
-        + " Is not compatible with column type: " + getSourceColumn().type());
-    }
-  }
-
-  // TODO use mapped row number.
-  private Object get(int rowNumber)  {
-    return getSourceColumn().get(rowNumber);
+  private Object get(Column<?> sourceColumn, int rowNumberInSlice)  {
+    return sourceColumn.get(slice.mappedRowNumber(rowNumberInSlice));
   }
 
   // TODO use mapped row number
-  private boolean isMissing(int rowNumber)  {
-    return getSourceColumn().isMissing(rowNumber);
-  }
-
-  //TODO use mapped row number for that table slice.
-  private int getMappedRowNumber(int rowNumber) {
-    return rowNumber;
+  private boolean isMissing(Column<?> sourceColumn, int rowNumberInSlice)  {
+    return sourceColumn.isMissing(slice.mappedRowNumber(rowNumberInSlice));
   }
 
   private boolean inTableRange(int rowNumber) {
-    return rowNumber >= 0 && rowNumber < table.rowCount();
-  }
-
-  private Column getSourceColumn() {
-    // TODO call on the column using the mapped index with tableSlice.
-    return table.column(sourceColumnName);
-  }
-
-  private Function<Integer, Integer> iterationStrategy() {
-    if(this.windowFrame.windowGrowthType() == WindowGrowthType.FIXED_END) {
-      return i -> i -1;
-    }
-    return i -> i +1;
+    return rowNumber >= 0 && rowNumber < slice.rowCount();
   }
 
   private Function<Integer, Integer> slideLeftStrategy() {
@@ -137,7 +118,7 @@ class WindowSlider {
     switch (this.windowFrame.windowGrowthType()) {
       case FIXED:
       case FIXED_END:
-        return table.rowCount() - 1;
+        return slice.rowCount() - 1;
       case FIXED_START:
       case SLIDING:
         return this.windowFrame.getFrameEndShift();
@@ -149,7 +130,6 @@ class WindowSlider {
     if(value == 0) {
       return value;
     }
-
     if(value < 0) {
       return value - 1;
     }

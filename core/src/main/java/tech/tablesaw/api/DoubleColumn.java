@@ -8,10 +8,6 @@ import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleListIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
-import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
@@ -160,9 +156,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public DoubleColumn unique() {
     final DoubleSet doubles = new DoubleOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        doubles.add(getDouble(i));
-      }
+      doubles.add(getDouble(i));
     }
     final DoubleColumn column = DoubleColumn.create(name() + " Unique values");
     doubles.forEach((DoubleConsumer) column::append);
@@ -377,9 +371,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public int countUnique() {
     DoubleSet uniqueElements = new DoubleOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      if (!isMissing(i)) {
-        uniqueElements.add(getDouble(i));
-      }
+      uniqueElements.add(getDouble(i));
     }
     return uniqueElements.size();
   }
@@ -598,12 +590,15 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
    */
   @Override
   public LongColumn asLongColumn() {
-    LongArrayList values = new LongArrayList();
+    LongColumn result = LongColumn.create(name());
     for (double d : data) {
-      values.add((long) d);
+      if (DoubleColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((long) d);
+      }
     }
-    values.trim();
-    return LongColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -625,12 +620,15 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
    */
   @Override
   public IntColumn asIntColumn() {
-    IntArrayList values = new IntArrayList();
+    IntColumn result = IntColumn.create(name());
     for (double d : data) {
-      values.add((int) d);
+      if (DoubleColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((int) d);
+      }
     }
-    values.trim();
-    return IntColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -652,12 +650,15 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
    */
   @Override
   public ShortColumn asShortColumn() {
-    ShortArrayList values = new ShortArrayList();
+    ShortColumn result = ShortColumn.create(name());
     for (double d : data) {
-      values.add((short) d);
+      if (DoubleColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((short) d);
+      }
     }
-    values.trim();
-    return ShortColumn.create(this.name(), values.elements());
+    return result;
   }
 
   /**
@@ -679,11 +680,14 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
    */
   @Override
   public FloatColumn asFloatColumn() {
-    FloatArrayList values = new FloatArrayList();
+    FloatColumn result = FloatColumn.create(name());
     for (double d : data) {
-      values.add((float) d);
+      if (DoubleColumnType.isMissingValue(d)) {
+        result.appendMissing();
+      } else {
+        result.append((float) d);
+      }
     }
-    values.trim();
-    return FloatColumn.create(this.name(), values.elements());
+    return result;
   }
 }

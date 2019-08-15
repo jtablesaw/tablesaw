@@ -11,8 +11,12 @@
   <artifactId>tablesaw-excel</artifactId>
 
   <packaging>jar</packaging>
+    <properties>
+        <doclint>none</doclint>
+    </properties>
 
-  <profiles>
+
+    <profiles>
     <profile>
       <id>release</id>
       <activation>
@@ -25,6 +29,11 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
+              <configuration>
+                  <quiet>true</quiet>
+                  <additionalOptions>-Xdoclint:none</additionalOptions>
+                  <additionalJOption>-Xdoclint:none</additionalJOption>
+              </configuration>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>

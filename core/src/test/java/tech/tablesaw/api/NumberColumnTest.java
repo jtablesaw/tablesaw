@@ -455,7 +455,7 @@ public class NumberColumnTest {
     for (double unique : uniques) {
       doubles.append(unique);
     }
-    assertEquals(uniques.length, doubles.countUnique());
+    assertEquals(uniques.length + 1, doubles.countUnique());
 
     doubles.clear();
     double[] notUniques = {
@@ -467,6 +467,69 @@ public class NumberColumnTest {
     }
     assertEquals(notUniques.length - 1, doubles.countUnique());
   }
+
+  @Test
+  public void testCountUniqueDouble() {
+    DoubleColumn doubles = DoubleColumn.create("doubles");
+    doubles.append(1.0);
+    doubles.append(1.0);
+    doubles.append(2.0);
+    doubles.appendMissing();
+
+    assertEquals(3, doubles.countUnique());
+    assertEquals(3, doubles.unique().size());
+  }
+
+  @Test
+  public void testCountUniqueFloat() {
+    FloatColumn floats = FloatColumn.create("floats");
+    floats.append(1f);
+    floats.append(1f);
+    floats.append(2f);
+    floats.appendMissing();
+
+    assertEquals(3, floats.countUnique());
+    assertEquals(3, floats.unique().size());
+  }
+
+  @Test
+  public void testCountUniqueInteger() {
+    IntColumn ints = IntColumn.create("ints");
+    ints.append(1);
+    ints.append(1);
+    ints.append(2);
+    ints.appendMissing();
+
+    assertEquals(3, ints.countUnique());
+    assertEquals(3, ints.unique().size());
+  }
+
+  @Test
+  public void testCountUniqueLong() {
+    LongColumn longs = LongColumn.create("longs");
+    longs.append(1L);
+    longs.append(1L);
+    longs.append(2L);
+    longs.appendMissing();
+
+    assertEquals(3, longs.countUnique());
+    assertEquals(3, longs.unique().size());
+  }
+
+  @Test
+  public void testCountUniqueShort() {
+    ShortColumn shorts = ShortColumn.create("doubles");
+    shorts.append((short) 1);
+    shorts.append((short) 1);
+    shorts.append((short) 2);
+    shorts.appendMissing();
+
+    assertEquals(3, shorts.countUnique());
+    assertEquals(3, shorts.unique().size());
+  }
+
+
+
 
   @Test
   public void testUnique() {
