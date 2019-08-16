@@ -1,6 +1,7 @@
 package tech.tablesaw.analytic;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import tech.tablesaw.analytic.AnalyticQuerySteps.StartStep;
 import tech.tablesaw.analytic.AnalyticQuerySteps.WindowEndOptionOne;
 import tech.tablesaw.analytic.AnalyticQuerySteps.WindowEndOptionTwo;
 import tech.tablesaw.analytic.AnalyticQuerySteps.WindowStart;
+import tech.tablesaw.analytic.WindowFrame.WindowGrowthType;
 import tech.tablesaw.analytic.WindowSpecification.OrderPair;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
@@ -142,20 +144,20 @@ final public class AnalyticQuery {
     }
 
     @Override
-    public NameStep rowNumber(String columnName) {
-      argumentsListBuilder.stageFunction(columnName, AnalyticNumberingFunctions.ROW_NUMBER);
+    public NameStep rowNumber() {
+      argumentsListBuilder.stageFunction(AnalyticNumberingFunctions.ROW_NUMBER);
       return this;
     }
 
     @Override
-    public NameStep rank(String columnName) {
-      argumentsListBuilder.stageFunction(columnName, AnalyticNumberingFunctions.RANK);
+    public NameStep rank() {
+      argumentsListBuilder.stageFunction(AnalyticNumberingFunctions.RANK);
       return this;
     }
 
     @Override
-    public NameStep denseRank(String columnName) {
-      argumentsListBuilder.stageFunction(columnName, AnalyticNumberingFunctions.DENSE_RANK);
+    public NameStep denseRank() {
+      argumentsListBuilder.stageFunction(AnalyticNumberingFunctions.DENSE_RANK);
       return this;
     }
 
@@ -329,11 +331,25 @@ final public class AnalyticQuery {
 
     @Override
     public AnalyticQuery build() {
+      WindowSpecification windowSpecification = this.windowSpecificationBuilder.build();
+      ArgumentList argumentList = this.argumentsListBuilder.build();
+      WindowFrame windowFrame = this.frameBuilder.build();
+
+      // Must have an orderby to specify numbering function.
+      if(!argumentList.getNumberingFunctions().isEmpty() && windowSpecification.getOrdering().isEmpty()) {
+        throw new IllegalArgumentException("Cannot specify a numbering function without OrderBy");
+      }
+
+      // Cannot specify a numbering function with a window frame.
+      if(!argumentList.getNumberingFunctions().isEmpty() && windowFrame.windowGrowthType() != WindowGrowthType.FIXED) {
+        throw new IllegalArgumentException("Cannot specify a numbering function with a Window Frame");
+      }
+
       return new AnalyticQuery(
         this.table,
-        this.windowSpecificationBuilder.build(),
-        this.frameBuilder.build(),
-        this.argumentsListBuilder.build(),
+        windowSpecification,
+        windowFrame,
+        argumentList,
         this.consumers
       );
     }

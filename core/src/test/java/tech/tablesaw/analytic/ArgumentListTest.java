@@ -45,25 +45,25 @@ class ArgumentListTest {
   @Test
   public void stageUnstageNumbering() {
     ArgumentList argumentList = ArgumentList.builder()
-      .stageFunction("col1", AnalyticNumberingFunctions.RANK)
+      .stageFunction(AnalyticNumberingFunctions.RANK)
       .unStageFunction("col1Rank")
-      .stageFunction("col1", AnalyticNumberingFunctions.DENSE_RANK)
+      .stageFunction(AnalyticNumberingFunctions.DENSE_RANK)
       .unStageFunction("col1DenseRank")
       .build();
 
     assertEquals(0, argumentList.getAggregateFunctions().size());
     assertEquals(ImmutableList.of("col1Rank", "col1DenseRank"), argumentList.getNewColumnNames());
     assertEquals(ImmutableMap.of("col1Rank",
-      new FunctionCall<>("col1", "col1Rank", AnalyticNumberingFunctions.RANK),
+      new FunctionCall<>("", "col1Rank", AnalyticNumberingFunctions.RANK),
       "col1DenseRank",
-      new FunctionCall<>("col1", "col1DenseRank", AnalyticNumberingFunctions.DENSE_RANK)
+      new FunctionCall<>("", "col1DenseRank", AnalyticNumberingFunctions.DENSE_RANK)
     ), argumentList.getNumberingFunctions());
   }
 
   @Test
   public void stageUnstageBothTypes() {
     ArgumentList argumentList = ArgumentList.builder()
-      .stageFunction("col1", AnalyticNumberingFunctions.RANK)
+      .stageFunction(AnalyticNumberingFunctions.RANK)
       .unStageFunction("col1Rank")
       .stageFunction("col1", AnalyticAggregateFunctions.MAX)
       .unStageFunction("col1Max")
@@ -76,11 +76,11 @@ class ArgumentListTest {
       argumentList.getAggregateFunctions());
 
     assertEquals(ImmutableMap.of("col1Rank",
-      new FunctionCall<>("col1", "col1Rank", AnalyticNumberingFunctions.RANK)),
+      new FunctionCall<>("", "col1Rank", AnalyticNumberingFunctions.RANK)),
       argumentList.getNumberingFunctions());
 
 
-    String expected = "RANK(col1) OVER w AS col1Rank,"
+    String expected = "RANK() OVER w AS col1Rank,"
       + System.lineSeparator()
       + "MAX(col1) OVER w AS col1Max";
 

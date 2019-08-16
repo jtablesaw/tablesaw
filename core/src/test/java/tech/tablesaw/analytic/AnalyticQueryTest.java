@@ -21,12 +21,12 @@ class AnalyticQueryTest {
       .partitionBy("product", "region")
       .orderBy("sales", ASC)
       .rowsBetween().unboundedPreceding().andUnBoundedFollowing()
-      .rank("sales").as("salesRank")
+      .rank().as("salesRank")
       .build();
 
     String expected = "SELECT"
       + System.lineSeparator()
-      + "RANK(sales) OVER w1 AS salesRank"
+      + "RANK() OVER w1 AS salesRank"
       + System.lineSeparator()
       + "FROM table1"
       + System.lineSeparator()

@@ -10,12 +10,10 @@ public interface AnalyticQuerySteps {
 
   interface AnalyticFunctions {
 
-    // Numbering Functions for Convenience.
-    NameStep rowNumber(String columnName);
-    // Requries order in SQL
-    NameStep rank(String columnName);
-    // Requires order in SQL
-    NameStep denseRank(String columnName);
+    // Require Order.
+    NameStep rowNumber();
+    NameStep rank();
+    NameStep denseRank();
 
     // Regular Analytic Aggregates for Convenience.
     NameStep sum(String columnName);

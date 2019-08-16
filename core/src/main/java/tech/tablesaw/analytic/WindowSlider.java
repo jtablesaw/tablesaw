@@ -1,24 +1,23 @@
 package tech.tablesaw.analytic;
 
 import java.util.function.Function;
-import tech.tablesaw.analytic.ArgumentList.FunctionCall;
-import tech.tablesaw.analytic.WindowFrame.WindowGrowthType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
 
 class WindowSlider {
   private final WindowFrame windowFrame;
-  @SuppressWarnings({"unchecked", "rawtypes"})
   private final AnalyticAggregateFunctions functionContainer;
+  @SuppressWarnings({"unchecked", "rawtypes"})
   private final AggregateFunction function;
   // TODO change to table slice
   private final TableSlice slice;
   @SuppressWarnings({"unchecked", "rawtypes"})
   private final Column<?> sourceColumn;
+  @SuppressWarnings({"unchecked", "rawtypes"})
   private final Column destinationColumn;
 
   WindowSlider(WindowFrame windowFrame,  AnalyticAggregateFunctions func, TableSlice slice,
-    Column<?> sourceColumn, Column destinationColumn) {
+    Column<?> sourceColumn, Column<?> destinationColumn) {
     this.windowFrame = windowFrame;
     this.functionContainer = func;
     this.function = func.getImplementation(windowFrame.windowGrowthType());
@@ -29,11 +28,9 @@ class WindowSlider {
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   void process() {
-
-    int leftBound = getInitialStartIndex();
-    int rightBound = getInitialEndIndex();
     initWindow(sourceColumn);
-
+    int leftBound = getInitialStartIndex() -1;
+    int rightBound = getInitialEndIndex();
     for (int i = 0; i < slice.rowCount(); i++) {
       destinationColumn.set(slice.mappedRowNumber(i), function.getValue());
 
@@ -48,8 +45,7 @@ class WindowSlider {
         if(isMissing(sourceColumn, newRightBound)) {
           function.addRightMostMissing();
         } else {
-          Object value = get(sourceColumn, newRightBound);
-          function.addRightMost(value);
+          function.addRightMost(get(sourceColumn, newRightBound));
         }
       }
       rightBound = newRightBound;
@@ -61,7 +57,11 @@ class WindowSlider {
     int leftBound = Math.max(getInitialStartIndex(), 0);
     int rightBound = Math.min(getInitialEndIndex(), slice.rowCount() - 1);
     for (int i = leftBound; i <= rightBound; i++) {
-      function.addRightMost(get(sourceColumn, i));
+      if(isMissing(sourceColumn, i)) {
+        function.addRightMostMissing();
+      } else {
+        function.addRightMost(get(sourceColumn, i));
+      }
     }
   }
 
@@ -69,7 +69,6 @@ class WindowSlider {
     return sourceColumn.get(slice.mappedRowNumber(rowNumberInSlice));
   }
 
-  // TODO use mapped row number
   private boolean isMissing(Column<?> sourceColumn, int rowNumberInSlice)  {
     return sourceColumn.isMissing(slice.mappedRowNumber(rowNumberInSlice));
   }
@@ -109,7 +108,7 @@ class WindowSlider {
         return 0;
       case FIXED_END:
       case SLIDING:
-        return increase(this.windowFrame.getFrameStartShift());
+          return this.windowFrame.getFrameStartShift();
     }
     throw new RuntimeException("Unrecognized growthType: " + this.windowFrame.windowGrowthType());
   }
@@ -125,15 +124,4 @@ class WindowSlider {
     }
     throw new RuntimeException("Unrecognized growthType: " + this.windowFrame.windowGrowthType());
   }
-
-  private int increase(int value) {
-    if(value == 0) {
-      return value;
-    }
-    if(value < 0) {
-      return value - 1;
-    }
-    return value +1;
-  }
-
 }

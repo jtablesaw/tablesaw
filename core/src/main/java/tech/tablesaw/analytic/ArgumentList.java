@@ -170,11 +170,10 @@ final public class ArgumentList {
       return this;
     }
 
-    Builder stageFunction(String fromColumn, AnalyticNumberingFunctions function) {
+    Builder stageFunction(AnalyticNumberingFunctions function) {
       checkNothingStaged();
-      Preconditions.checkNotNull(fromColumn);
       Preconditions.checkNotNull(function);
-      this.stagedFromColumn = fromColumn;
+      this.stagedFromColumn = "NUMBERING_FUNCTION_PLACEHOLDER";
       this.stagedNumberingFunction = function;
       return this;
     }
@@ -198,7 +197,7 @@ final public class ArgumentList {
       if (stagedNumberingFunction != null) {
         Preconditions.checkNotNull(stagedNumberingFunction);
         this.numberingFunctions.put(toColumn, new FunctionCall<>(
-            this.stagedFromColumn, toColumn, this.stagedNumberingFunction
+            "", toColumn, this.stagedNumberingFunction
           )
         );
       } else {

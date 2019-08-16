@@ -135,7 +135,8 @@ final public class WindowSpecification {
     }
 
     Builder setPartitionColumns(List<String> columns) {
-      Preconditions.checkArgument(columns.size() > 0);
+      // TODO do we want this?
+      // Preconditions.checkArgument(columns.size() > 0);
       this.partitioning.clear();
       this.partitioning.addAll(columns);
       // TODO add actual duplicate columns to the error message.

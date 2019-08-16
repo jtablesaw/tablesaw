@@ -1,24 +1,22 @@
 package tech.tablesaw.analytic;
 
+import java.util.function.Supplier;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.columns.Column;
 
 enum AnalyticNumberingFunctions implements AnalyticFunctionMetaData {
 
-  ROW_NUMBER(Implementations.rowNumber),
-  RANK(Implementations.rank),
-  DENSE_RANK(Implementations.denseRank);
+  ROW_NUMBER(Implementations::rowNumber),
+  RANK(Implementations::rank),
+  DENSE_RANK(Implementations::denseRank);
 
-  private final NumberingFunction implementation;
+  private final Supplier<NumberingFunction> supplier;
 
-  AnalyticNumberingFunctions(NumberingFunction implementation) {
-    this.implementation = implementation;
+  AnalyticNumberingFunctions(Supplier<NumberingFunction> supplier) {
+    this.supplier = supplier;
   }
 
   public NumberingFunction getImplementation() {
-    return implementation;
+    return supplier.get();
   }
 
   public @Override
@@ -47,32 +45,69 @@ enum AnalyticNumberingFunctions implements AnalyticFunctionMetaData {
    */
   static class Implementations {
 
-    static final NumberingFunction rowNumber = new NumberingFunction() {
+    static final NumberingFunction rowNumber() {
 
-      @Override
-      public NumericColumn<Integer> apply(Column<? extends Comparable<?>> inputWindow) {
-        IntColumn destination = IntColumn.create("destination", inputWindow.size());
-        for (int i = 0; i < inputWindow.size(); i++) {
-          destination.set(i, i + 1);
+      return new NumberingFunction() {
+        private int count = 0;
+
+        @Override
+        void addEqualRow() {
+          count++;
         }
-        return destination;
-      }
-    };
 
-    public static final NumberingFunction rank = new NumberingFunction() {
+        @Override
+        void addNextRow() {
+          count++;
+        }
 
-      @Override
-      public NumericColumn<Integer> apply(Column<? extends Comparable<?>> inputWindow) {
-        throw new UnsupportedOperationException();
-      }
-    };
+        @Override
+        int getValue() {
+          return count;
+        }
+      };
+    }
 
-    public static final NumberingFunction denseRank = new NumberingFunction() {
+    static final NumberingFunction denseRank() {
+      return new NumberingFunction() {
+        private int rank = 0;
 
-      @Override
-      public NumericColumn<Integer> apply(Column<? extends Comparable<?>> inputWindow) {
-        throw new UnsupportedOperationException();
-      }
-    };
+        @Override
+        void addNextRow() {
+          rank++;
+        }
+
+        @Override
+        void addEqualRow() {}
+
+        @Override
+        int getValue() {
+          return rank;
+        }
+      };
+    }
+
+    static final NumberingFunction rank() {
+
+      return new NumberingFunction() {
+        private int rank = 0;
+        private int numInPrevRank = 1;
+
+        @Override
+        void addEqualRow() {
+          numInPrevRank++;
+        }
+
+        @Override
+        void addNextRow() {
+          rank = rank + numInPrevRank;
+          numInPrevRank = 1;
+        }
+
+        @Override
+        int getValue() {
+          return rank;
+        }
+      };
+    }
   }
 }
