@@ -15,14 +15,14 @@ import tech.tablesaw.columns.Column;
 
 final public class ArgumentList {
   // Throws if a column with the same name is registered
-  private final Map<String, FunctionCall<AnalyticAggregateFunctions>> aggregateFunctions;
-  private final Map<String, FunctionCall<AnalyticNumberingFunctions>> numberingFunctions;
+  private final Map<String, FunctionCall<AggregateFunctions>> aggregateFunctions;
+  private final Map<String, FunctionCall<NumberingFunctions>> numberingFunctions;
 
   // Used to determine the order in which to add new columns.
   private final LinkedHashSet<String> newColumnNames;
 
-  public ArgumentList(Map<String, FunctionCall<AnalyticAggregateFunctions>> aggregateFunctions, Map<String,
-    FunctionCall<AnalyticNumberingFunctions>> numberingFunctions, LinkedHashSet<String> newColumnNames) {
+  public ArgumentList(Map<String, FunctionCall<AggregateFunctions>> aggregateFunctions, Map<String,
+    FunctionCall<NumberingFunctions>> numberingFunctions, LinkedHashSet<String> newColumnNames) {
     this.aggregateFunctions = aggregateFunctions;
     this.numberingFunctions = numberingFunctions;
     this.newColumnNames = newColumnNames;
@@ -32,11 +32,11 @@ final public class ArgumentList {
     return new Builder();
   }
 
-  public Map<String, FunctionCall<AnalyticAggregateFunctions>> getAggregateFunctions() {
+  public Map<String, FunctionCall<AggregateFunctions>> getAggregateFunctions() {
     return aggregateFunctions;
   }
 
-  public Map<String, FunctionCall<AnalyticNumberingFunctions>> getNumberingFunctions() {
+  public Map<String, FunctionCall<NumberingFunctions>> getNumberingFunctions() {
     return numberingFunctions;
   }
 
@@ -69,7 +69,7 @@ final public class ArgumentList {
   List<Column<?>> createEmptyDestinationColumns(int rowCount) {
     List<Column<?>> newColumns = new ArrayList<>();
     for(String toColumn : newColumnNames) {
-      FunctionCall<? extends AnalyticFunctionMetaData> functionCall = Stream.of(
+      FunctionCall<? extends FunctionMetaData> functionCall = Stream.of(
         aggregateFunctions.get(toColumn),
         numberingFunctions.get(toColumn)
       ).filter(java.util.Objects::nonNull).findFirst().get();
@@ -89,7 +89,7 @@ final public class ArgumentList {
     return toSqlString("?");
   }
 
-  static class FunctionCall<T extends AnalyticFunctionMetaData> {
+  static class FunctionCall<T extends FunctionMetaData> {
     private final String sourceColumnName;
     private final String destinationColumnName;
     private final T function;
@@ -146,8 +146,8 @@ final public class ArgumentList {
   static class Builder {
 
     // maps new column to aggregate function.
-    private final Map<String, FunctionCall<AnalyticAggregateFunctions>> aggregateFunctions = new HashMap<>();
-    private final Map<String, FunctionCall<AnalyticNumberingFunctions>> numberingFunctions = new HashMap<>();
+    private final Map<String, FunctionCall<AggregateFunctions>> aggregateFunctions = new HashMap<>();
+    private final Map<String, FunctionCall<NumberingFunctions>> numberingFunctions = new HashMap<>();
 
     // Throws if a column with the same name is registered twice.
     private final LinkedHashSet<String> newColumnNames = new LinkedHashSet<>();
@@ -155,13 +155,13 @@ final public class ArgumentList {
     //Temporarily store analytic function data until the user calls as to give the new coumn a name
     // and save all the metadata.
     private String stagedFromColumn;
-    private AnalyticAggregateFunctions stagedAggregateFunction;
-    private AnalyticNumberingFunctions stagedNumberingFunction;
+    private AggregateFunctions stagedAggregateFunction;
+    private NumberingFunctions stagedNumberingFunction;
 
     private Builder() {
     }
 
-    Builder stageFunction(String fromColumn, AnalyticAggregateFunctions function) {
+    Builder stageFunction(String fromColumn, AggregateFunctions function) {
       checkNothingStaged();
       Preconditions.checkNotNull(fromColumn);
       Preconditions.checkNotNull(function);
@@ -170,7 +170,7 @@ final public class ArgumentList {
       return this;
     }
 
-    Builder stageFunction(AnalyticNumberingFunctions function) {
+    Builder stageFunction(NumberingFunctions function) {
       checkNothingStaged();
       Preconditions.checkNotNull(function);
       this.stagedFromColumn = "NUMBERING_FUNCTION_PLACEHOLDER";

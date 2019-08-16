@@ -12,27 +12,27 @@ import tech.tablesaw.api.ColumnType;
  * table can can take O(n) per call for a total of O(n^2). A table with the window definition ROWS BETWEEN UNBOUNDED
  * PRECEDING AND CURRENT ROW would be O(n^2).
  *
- * If at least one side of the window is unbounded the window is considered fixed. Most analytic functions
- * with fixed windows can be implemented in O(n). For example, calculating a sum over the window UNBOUNDED PRECEDING AND
- * CURRENT ROW can be done by simply summing the numbers. Windows ending in UNBOUNDED FOLLOWING can be
- * converted to a window that starts with UNBOUNDED PRECEDING to take advantage of the more efficient algorithm.
+ * If at least one side of the window is unbounded the window is considered fixed. Most analytic functions with fixed
+ * windows can be implemented in O(n). For example, calculating a sum over the window UNBOUNDED PRECEDING AND CURRENT
+ * ROW can be done by simply summing the numbers. Windows ending in UNBOUNDED FOLLOWING can be converted to a window
+ * that starts with UNBOUNDED PRECEDING to take advantage of the more efficient algorithm.
  *
  * Sliding windows are windows where both sides of the window are following(nrows), * preceding(nrows) or current row.
- * Analytic aggregate algorithms for sliding windows are generally implemented with a Deque so that elements can
- * be added or removed from the widow.
+ * Analytic aggregate algorithms for sliding windows are generally implemented with a Deque so that elements can be
+ * added or removed from the widow.
  *
  * This class creates two implementations per analytic function. One for fixed windows and one for sliding windows.
  */
-enum AnalyticAggregateFunctions implements AnalyticFunctionMetaData {
-  SUM(new SumFunctions<>()),
-  MEAN(null),
-  MAX(new MaxFunctions<>()),
-  MIN(null),
-  COUNT(null);
+enum AggregateFunctions implements FunctionMetaData {
+  SUM(new Sum<>()),
+  MAX(new Max<>()),
+  MIN(new Min<>()),
+  MEAN(new Mean<>()),
+  COUNT(new Count<>());
 
   private final WindowDependentAggregateFunction<?> implementation;
 
-  AnalyticAggregateFunctions(WindowDependentAggregateFunction<?> implementation) {
+  AggregateFunctions(WindowDependentAggregateFunction<?> implementation) {
     this.implementation = implementation;
   }
 
@@ -78,7 +78,7 @@ enum AnalyticAggregateFunctions implements AnalyticFunctionMetaData {
     }
   }
 
-  static class SumFunctions<T extends Number> extends WindowDependentAggregateFunction<T> {
+  static class Sum<T extends Number> extends WindowDependentAggregateFunction<T> {
     @Override
     AggregateFunction<T, Double> fixedFunction() {
       return new AggregateFunction<T, Double>() {
@@ -148,7 +148,7 @@ enum AnalyticAggregateFunctions implements AnalyticFunctionMetaData {
     }
   }
 
-  static class MaxFunctions<T extends Number> extends WindowDependentAggregateFunction<T> {
+  static class Max<T extends Number> extends WindowDependentAggregateFunction<T> {
 
     @Override
     AggregateFunction<T, Double> fixedFunction() {
@@ -202,10 +202,50 @@ enum AnalyticAggregateFunctions implements AnalyticFunctionMetaData {
 
         @Override
         public Double getValue() {
+          // This could be faster, but probably does not matter in practice because sliding windows will be small.
           return queue.stream().filter(d -> !Double.isNaN(d)).mapToDouble(Number::doubleValue)
             .max().orElse(Double.NaN);
         }
       };
+    }
+  }
+
+  static class Min<T extends Number> extends WindowDependentAggregateFunction<T> {
+
+    @Override
+    AggregateFunction<T, Double> fixedFunction() {
+      throw new UnsupportedOperationException("Analytic Function Min Is Not implemented");
+    }
+
+    @Override
+    AggregateFunction<T, Double> slidingFunction() {
+      throw new UnsupportedOperationException("Analytic Function Min Is Not implemented");
+    }
+  }
+
+  static class Mean<T extends Number> extends WindowDependentAggregateFunction<T> {
+
+    @Override
+    AggregateFunction<T, Double> fixedFunction() {
+      throw new UnsupportedOperationException("Analytic Function Mean Is Not implemented");
+    }
+
+    @Override
+    AggregateFunction<T, Double> slidingFunction() {
+      throw new UnsupportedOperationException("Analytic Function Mean Is Not implemented");
+    }
+  }
+
+  static class Count<T extends Number> extends WindowDependentAggregateFunction<T> {
+
+    @Override
+    AggregateFunction<T, Double> fixedFunction() {
+      throw new UnsupportedOperationException("Analytic Function Count Is Not implemented");
+    }
+
+    @Override
+    AggregateFunction<T, Double> slidingFunction() {
+      throw new UnsupportedOperationException("Analytic Function Count Is Not implemented");
     }
   }
 }

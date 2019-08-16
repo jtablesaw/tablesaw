@@ -64,7 +64,7 @@ final public class AnalyticQuery {
   }
 
   public ArgumentList getArgumentList() {
-    return  argumentList;
+    return argumentList;
   }
 
   public LinkedHashSet<String> getPartitionColumns() {
@@ -98,21 +98,21 @@ final public class AnalyticQuery {
   public String toSqlString() {
     StringBuilder sb = new StringBuilder();
     if (!argumentList.getNewColumnNames().isEmpty()) {
-      sb.append("SELECT");
-      sb.append(System.lineSeparator());
-      sb.append(argumentList.toSqlString(windowSpecification.getWindowName()));
-      sb.append(System.lineSeparator());
+      sb.append("SELECT")
+        .append(System.lineSeparator())
+        .append(argumentList.toSqlString(windowSpecification.getWindowName()))
+        .append(System.lineSeparator());
     }
-    sb.append("FROM " + table.name());
-    sb.append(System.lineSeparator());
-    sb.append("Window " + windowSpecification.getWindowName() + " AS (");
-    sb.append(System.lineSeparator());
+    sb.append("FROM ").append(table.name())
+      .append(System.lineSeparator())
+      .append("Window ").append(windowSpecification.getWindowName()).append(" AS (")
+      .append(System.lineSeparator());
     if (!windowSpecification.isEmpty()) {
-      sb.append(windowSpecification.toSqlString());
-      sb.append(System.lineSeparator());
+      sb.append(windowSpecification.toSqlString())
+        .append(System.lineSeparator());
     }
-    sb.append(windowFrame.toSqlString());
-    sb.append(");");
+    sb.append(windowFrame.toSqlString())
+      .append(");");
     return sb.toString();
   }
 
@@ -138,49 +138,49 @@ final public class AnalyticQuery {
 
     @Override
     public NameStep rowNumber() {
-      argumentsListBuilder.stageFunction(AnalyticNumberingFunctions.ROW_NUMBER);
+      argumentsListBuilder.stageFunction(NumberingFunctions.ROW_NUMBER);
       return this;
     }
 
     @Override
     public NameStep rank() {
-      argumentsListBuilder.stageFunction(AnalyticNumberingFunctions.RANK);
+      argumentsListBuilder.stageFunction(NumberingFunctions.RANK);
       return this;
     }
 
     @Override
     public NameStep denseRank() {
-      argumentsListBuilder.stageFunction(AnalyticNumberingFunctions.DENSE_RANK);
+      argumentsListBuilder.stageFunction(NumberingFunctions.DENSE_RANK);
       return this;
     }
 
     @Override
     public NameStep sum(String columnName) {
-      argumentsListBuilder.stageFunction(columnName, AnalyticAggregateFunctions.SUM);
+      argumentsListBuilder.stageFunction(columnName, AggregateFunctions.SUM);
       return this;
     }
 
     @Override
     public NameStep mean(String columnName) {
-      argumentsListBuilder.stageFunction(columnName, AnalyticAggregateFunctions.MEAN);
+      argumentsListBuilder.stageFunction(columnName, AggregateFunctions.MEAN);
       return this;
     }
 
     @Override
     public NameStep max(String columnName) {
-      argumentsListBuilder.stageFunction(columnName, AnalyticAggregateFunctions.MAX);
+      argumentsListBuilder.stageFunction(columnName, AggregateFunctions.MAX);
       return this;
     }
 
     @Override
     public NameStep min(String columnName) {
-      argumentsListBuilder.stageFunction(columnName, AnalyticAggregateFunctions.MIN);
+      argumentsListBuilder.stageFunction(columnName, AggregateFunctions.MIN);
       return this;
     }
 
     @Override
     public NameStep count(String columnName) {
-      argumentsListBuilder.stageFunction(columnName, AnalyticAggregateFunctions.COUNT);
+      argumentsListBuilder.stageFunction(columnName, AggregateFunctions.COUNT);
       return this;
     }
 
@@ -317,12 +317,12 @@ final public class AnalyticQuery {
       WindowFrame windowFrame = this.frameBuilder.build();
 
       // Must have an orderby to specify numbering function.
-      if(!argumentList.getNumberingFunctions().isEmpty() && windowSpecification.getOrdering().isEmpty()) {
+      if (!argumentList.getNumberingFunctions().isEmpty() && windowSpecification.getOrdering().isEmpty()) {
         throw new IllegalArgumentException("Cannot specify a numbering function without OrderBy");
       }
 
       // Cannot specify a numbering function with a window frame.
-      if(!argumentList.getNumberingFunctions().isEmpty() && windowFrame.windowGrowthType() != WindowGrowthType.FIXED) {
+      if (!argumentList.getNumberingFunctions().isEmpty() && windowFrame.windowGrowthType() != WindowGrowthType.FIXED) {
         throw new IllegalArgumentException("Cannot specify a numbering function with a Window Frame");
       }
 

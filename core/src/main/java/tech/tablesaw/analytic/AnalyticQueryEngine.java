@@ -12,7 +12,7 @@ import tech.tablesaw.table.TableSlice;
 /**
  * Executes AnalyticQueries.
  */
-public class AnalyticQueryEngine {
+final public class AnalyticQueryEngine {
   private final AnalyticQuery query;
   private final Table destination;
   private final IntComparatorChain rowComparator;
@@ -45,10 +45,10 @@ public class AnalyticQueryEngine {
 
   private void processAggregateFunctions(TableSlice slice) {
     for (String toColumn : query.getArgumentList().getAggregateFunctions().keySet()) {
-      FunctionCall<AnalyticAggregateFunctions> functionCall = query.getArgumentList()
+      FunctionCall<AggregateFunctions> functionCall = query.getArgumentList()
         .getAggregateFunctions().get(toColumn);
 
-      AnalyticAggregateFunctions aggregateFunction = functionCall.getFunction();
+      AggregateFunctions aggregateFunction = functionCall.getFunction();
       Column<?> sourceColumn = query.getTable().column(functionCall.getSourceColumnName());
       validateColumn(aggregateFunction, sourceColumn);
 
@@ -65,9 +65,9 @@ public class AnalyticQueryEngine {
         throw new IllegalArgumentException("Cannot use Numbering Function without"
           + " OrderBy");
       }
-      FunctionCall<AnalyticNumberingFunctions> functionCall = query.getArgumentList()
+      FunctionCall<NumberingFunctions> functionCall = query.getArgumentList()
         .getNumberingFunctions().get(toColumn);
-      AnalyticNumberingFunctions numberingFunctions = functionCall.getFunction();
+      NumberingFunctions numberingFunctions = functionCall.getFunction();
       NumberingFunction function = numberingFunctions.getImplementation();
       Column<Integer> destinationColumn = (Column<Integer>) destination.column(functionCall.getDestinationColumnName());
 
@@ -90,11 +90,7 @@ public class AnalyticQueryEngine {
     }
   }
 
-  private void processConsumers(TableSlice slice) {
-
-  }
-
-  private void validateColumn(AnalyticFunctionMetaData function, Column<?> sourceColumn) {
+  private void validateColumn(FunctionMetaData function, Column<?> sourceColumn) {
     if (!function.isCompatibleColumn(sourceColumn.type())) {
       throw new IllegalArgumentException("Function: " + function.functionName()
         + " Is not compatible with column type: " + sourceColumn.type());

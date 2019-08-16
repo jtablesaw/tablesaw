@@ -7,9 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
-import tech.tablesaw.analytic.AnalyticAggregateFunctions;
-import tech.tablesaw.analytic.AnalyticNumberingFunctions;
-import tech.tablesaw.analytic.ArgumentList;
 import tech.tablesaw.analytic.ArgumentList.FunctionCall;
 
 class ArgumentListTest {
@@ -17,7 +14,7 @@ class ArgumentListTest {
   @Test
   public void singleColumnToSqlString() {
     ArgumentList argumentList = ArgumentList.builder()
-      .stageFunction("col1", AnalyticAggregateFunctions.MAX)
+      .stageFunction("col1", AggregateFunctions.MAX)
       .unStageFunction("col1Count")
       .build();
 
@@ -27,56 +24,56 @@ class ArgumentListTest {
   @Test
   public void stageUnstageAggregate() {
     ArgumentList argumentList = ArgumentList.builder()
-      .stageFunction("col1", AnalyticAggregateFunctions.MAX)
+      .stageFunction("col1", AggregateFunctions.MAX)
       .unStageFunction("col1Max")
-      .stageFunction("col1", AnalyticAggregateFunctions.COUNT)
+      .stageFunction("col1", AggregateFunctions.COUNT)
       .unStageFunction("col1Count")
       .build();
 
     assertEquals(0, argumentList.getNumberingFunctions().size());
     assertEquals(ImmutableList.of("col1Max", "col1Count"), argumentList.getNewColumnNames());
     assertEquals(ImmutableMap.of("col1Max",
-      new FunctionCall<>("col1", "col1Max", AnalyticAggregateFunctions.MAX),
+      new FunctionCall<>("col1", "col1Max", AggregateFunctions.MAX),
       "col1Count",
-      new FunctionCall<>("col1", "col1Count", AnalyticAggregateFunctions.COUNT)
+      new FunctionCall<>("col1", "col1Count", AggregateFunctions.COUNT)
     ), argumentList.getAggregateFunctions());
   }
 
   @Test
   public void stageUnstageNumbering() {
     ArgumentList argumentList = ArgumentList.builder()
-      .stageFunction(AnalyticNumberingFunctions.RANK)
+      .stageFunction(NumberingFunctions.RANK)
       .unStageFunction("col1Rank")
-      .stageFunction(AnalyticNumberingFunctions.DENSE_RANK)
+      .stageFunction(NumberingFunctions.DENSE_RANK)
       .unStageFunction("col1DenseRank")
       .build();
 
     assertEquals(0, argumentList.getAggregateFunctions().size());
     assertEquals(ImmutableList.of("col1Rank", "col1DenseRank"), argumentList.getNewColumnNames());
     assertEquals(ImmutableMap.of("col1Rank",
-      new FunctionCall<>("", "col1Rank", AnalyticNumberingFunctions.RANK),
+      new FunctionCall<>("", "col1Rank", NumberingFunctions.RANK),
       "col1DenseRank",
-      new FunctionCall<>("", "col1DenseRank", AnalyticNumberingFunctions.DENSE_RANK)
+      new FunctionCall<>("", "col1DenseRank", NumberingFunctions.DENSE_RANK)
     ), argumentList.getNumberingFunctions());
   }
 
   @Test
   public void stageUnstageBothTypes() {
     ArgumentList argumentList = ArgumentList.builder()
-      .stageFunction(AnalyticNumberingFunctions.RANK)
+      .stageFunction(NumberingFunctions.RANK)
       .unStageFunction("col1Rank")
-      .stageFunction("col1", AnalyticAggregateFunctions.MAX)
+      .stageFunction("col1", AggregateFunctions.MAX)
       .unStageFunction("col1Max")
       .build();
 
     assertEquals(ImmutableList.of("col1Rank", "col1Max"), argumentList.getNewColumnNames());
 
     assertEquals(ImmutableMap.of("col1Max",
-      new FunctionCall<>("col1", "col1Max", AnalyticAggregateFunctions.MAX)),
+      new FunctionCall<>("col1", "col1Max", AggregateFunctions.MAX)),
       argumentList.getAggregateFunctions());
 
     assertEquals(ImmutableMap.of("col1Rank",
-      new FunctionCall<>("", "col1Rank", AnalyticNumberingFunctions.RANK)),
+      new FunctionCall<>("", "col1Rank", NumberingFunctions.RANK)),
       argumentList.getNumberingFunctions());
 
 
@@ -91,9 +88,9 @@ class ArgumentListTest {
   public void duplicateColsThrows() {
     Throwable thrown = assertThrows(IllegalArgumentException.class, () ->
       ArgumentList.builder()
-      .stageFunction("col1", AnalyticAggregateFunctions.MAX)
+      .stageFunction("col1", AggregateFunctions.MAX)
       .unStageFunction("col1Max")
-      .stageFunction("col1", AnalyticAggregateFunctions.COUNT)
+      .stageFunction("col1", AggregateFunctions.COUNT)
       .unStageFunction("col1Max")
       .build()
       );
@@ -105,7 +102,7 @@ class ArgumentListTest {
   public void buildWithStagedThrows() {
     Throwable thrown = assertThrows(IllegalArgumentException.class, () ->
       ArgumentList.builder()
-        .stageFunction("col1", AnalyticAggregateFunctions.MAX)
+        .stageFunction("col1", AggregateFunctions.MAX)
         .build()
     );
 
@@ -116,8 +113,8 @@ class ArgumentListTest {
   public void nothingStaged() {
     Throwable thrown = assertThrows(IllegalArgumentException.class, () ->
       ArgumentList.builder()
-        .stageFunction("col1", AnalyticAggregateFunctions.MAX)
-        .stageFunction("col1", AnalyticAggregateFunctions.MAX)
+        .stageFunction("col1", AggregateFunctions.MAX)
+        .stageFunction("col1", AggregateFunctions.MAX)
         .build()
     );
 

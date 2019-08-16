@@ -25,7 +25,7 @@ class WindowSlider {
   @SuppressWarnings({"unchecked", "rawtypes"})
   private final Column destinationColumn;
 
-  WindowSlider(WindowFrame windowFrame,  AnalyticAggregateFunctions func, TableSlice slice,
+  WindowSlider(WindowFrame windowFrame,  AggregateFunctions func, TableSlice slice,
     Column<?> sourceColumn, Column<?> destinationColumn) {
     this.slice = slice;
     this.destinationColumn = destinationColumn;

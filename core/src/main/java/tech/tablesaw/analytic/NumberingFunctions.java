@@ -3,7 +3,7 @@ package tech.tablesaw.analytic;
 import java.util.function.Supplier;
 import tech.tablesaw.api.ColumnType;
 
-enum AnalyticNumberingFunctions implements AnalyticFunctionMetaData {
+enum NumberingFunctions implements FunctionMetaData {
 
   ROW_NUMBER(Implementations::rowNumber),
   RANK(Implementations::rank),
@@ -11,7 +11,7 @@ enum AnalyticNumberingFunctions implements AnalyticFunctionMetaData {
 
   private final Supplier<NumberingFunction> supplier;
 
-  AnalyticNumberingFunctions(Supplier<NumberingFunction> supplier) {
+  NumberingFunctions(Supplier<NumberingFunction> supplier) {
     this.supplier = supplier;
   }
 
