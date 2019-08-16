@@ -69,13 +69,12 @@ enum AnalyticAggregateFunctions implements AnalyticFunctionMetaData {
       switch (growthType) {
         case FIXED:
         case FIXED_START:
-          return fixedFunction();
         case FIXED_END:
-          // TODO. It is possible to use a fixed fuction here and get a more efficient implementation.
+          return fixedFunction();
         case SLIDING:
           return slidingFunction();
       }
-      throw new RuntimeException("Unrecognized growthType: " + growthType);
+      throw new RuntimeException("Unexpected growthType: " + growthType);
     }
   }
 

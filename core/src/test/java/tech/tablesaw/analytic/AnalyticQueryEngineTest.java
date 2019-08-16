@@ -43,6 +43,25 @@ class AnalyticQueryEngineTest {
   }
 
   @Test
+  public void testBasic() {
+    String destinationColumnName = "dest";
+    Table table = Table.create("table",
+      DoubleColumn.create("col1", new double[]{2, 1, 1, 1, 1, 1, 1}));
+
+    AnalyticQuery query = AnalyticQuery.from(table)
+      .rowsBetween().preceding(3).andUnBoundedFollowing()
+      .sum("col1").as(destinationColumnName)
+      .build();
+
+    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    Table result = queryEngine.execute();
+
+    double[] expected = new double[]{8, 8, 8, 8, 6, 5, 4};
+    double[] actual = result.doubleColumn(destinationColumnName).asDoubleArray();
+    assertArrayEquals(expected, actual);
+  }
+
+  @Test
   public void testMissingValues() {
     String destinationColumnName = "dest";
     Table table = Table.create("table",
