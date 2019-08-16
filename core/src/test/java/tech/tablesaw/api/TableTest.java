@@ -29,6 +29,7 @@ import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -63,7 +64,9 @@ public class TableTest {
     Table result = table.summarize("Injuries", mean, stdDev).by("State");
     assertEquals(49, result.rowCount());
     assertEquals(3, result.columnCount());
-    assertEquals("4.580805569368455", result.doubleColumn(1).getString(0));
+    assertEquals("4.580805569368441",
+      result.where(result.stringColumn("state").isEqualTo("AL"))
+        .doubleColumn(1).getString(0));
   }
 
   @Test
