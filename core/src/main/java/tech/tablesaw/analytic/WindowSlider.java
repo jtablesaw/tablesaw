@@ -47,7 +47,7 @@ class WindowSlider {
   }
 
   /**
-   * Slide over the partition getting a value for all the relevant windows.
+   * Slide over the partition setting a value for all the relevant windows in the destination column.
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
   void process() {

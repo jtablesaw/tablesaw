@@ -56,16 +56,4 @@ class AnalyticQueryTest {
 
     assertEquals(expectd, query.toSqlString());
   }
-
-  @Test
-  public void addConsumers() {
-    AnalyticQuery analyticQuery = AnalyticQuery.from(Table.create("t1"))
-      .rowsBetween().unboundedPreceding().andUnBoundedFollowing()
-      .apply(consumer1)
-      .apply(consumer1)
-      .build();
-
-    assertEquals(2, analyticQuery.getConsumers().size());
-  }
-
 }

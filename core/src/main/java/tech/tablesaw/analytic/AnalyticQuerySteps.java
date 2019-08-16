@@ -1,9 +1,7 @@
 package tech.tablesaw.analytic;
 
-import java.util.function.Consumer;
 import tech.tablesaw.analytic.AnalyticQuery.Order;
 import tech.tablesaw.analytic.WindowSpecification.OrderPair;
-import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 
 public interface AnalyticQuerySteps {
@@ -15,16 +13,11 @@ public interface AnalyticQuerySteps {
     NameStep rank();
     NameStep denseRank();
 
-    // Regular Analytic Aggregates for Convenience.
     NameStep sum(String columnName);
     NameStep mean(String columnName);
     NameStep max(String columnName);
     NameStep min(String columnName);
     NameStep count(String columnName);
-
-    // Add Consumer for multiColumn transformations pattern.
-    AddAnalyticFunctionWithExecute apply(Consumer<Iterable<Row>> consumer);
-    AddAnalyticFunctionWithExecute apply(Iterable<Consumer<Iterable<Row>>> consumers);
   }
 
   interface StartStep extends PartitionStep, DefineWindow {}

@@ -90,6 +90,10 @@ public class AnalyticQueryEngine {
     }
   }
 
+  private void processConsumers(TableSlice slice) {
+
+  }
+
   private void validateColumn(AnalyticFunctionMetaData function, Column<?> sourceColumn) {
     if (!function.isCompatibleColumn(sourceColumn.type())) {
       throw new IllegalArgumentException("Function: " + function.functionName()

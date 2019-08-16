@@ -1,7 +1,6 @@
 package tech.tablesaw.analytic;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,15 +30,13 @@ final public class AnalyticQuery {
   private final WindowSpecification windowSpecification;
   private final WindowFrame windowFrame;
   private final ArgumentList argumentList;
-  private final List<Consumer<Iterable<Row>>> consumers;
 
   private AnalyticQuery(Table table, WindowSpecification windowSpecification, WindowFrame windowFrame,
-    ArgumentList argumentList, List<Consumer<Iterable<Row>>> consumers) {
+    ArgumentList argumentList) {
     this.table = table;
     this.windowSpecification = windowSpecification;
     this.windowFrame = windowFrame;
     this.argumentList = argumentList;
-    this.consumers = consumers;
   }
 
   @Beta
@@ -64,10 +61,6 @@ final public class AnalyticQuery {
 
   public Table getTable() {
     return table;
-  }
-
-  public List<Consumer<Iterable<Row>>> getConsumers() {
-    return consumers;
   }
 
   public ArgumentList getArgumentList() {
@@ -188,18 +181,6 @@ final public class AnalyticQuery {
     @Override
     public NameStep count(String columnName) {
       argumentsListBuilder.stageFunction(columnName, AnalyticAggregateFunctions.COUNT);
-      return this;
-    }
-
-    @Override
-    public AddAnalyticFunctionWithExecute apply(Consumer<Iterable<Row>> consumer) {
-      this.consumers.add(consumer);
-      return this;
-    }
-
-    @Override
-    public AddAnalyticFunctionWithExecute apply(Iterable<Consumer<Iterable<Row>>> consumers) {
-      consumers.forEach(this.consumers::add);
       return this;
     }
 
@@ -349,8 +330,7 @@ final public class AnalyticQuery {
         this.table,
         windowSpecification,
         windowFrame,
-        argumentList,
-        this.consumers
+        argumentList
       );
     }
 

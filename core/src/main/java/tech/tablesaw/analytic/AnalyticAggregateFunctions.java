@@ -208,6 +208,4 @@ enum AnalyticAggregateFunctions implements AnalyticFunctionMetaData {
       };
     }
   }
-
-
 }
