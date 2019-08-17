@@ -1,10 +1,9 @@
 package tech.tablesaw.analytic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static tech.tablesaw.analytic.AnalyticQuery.Order.ASC;
-
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 
@@ -15,11 +14,11 @@ class AnalyticQueryTest {
 
   @Test
   public void testToSqlString() {
-    Table table = Table.create("table1");
+    Table table = Table.create("table1", IntColumn.create("sales"));
 
     AnalyticQuery query = AnalyticQuery.from(table)
       .partitionBy("product", "region")
-      .orderBy("sales", ASC)
+      .orderBy("sales")
       .rowsBetween().unboundedPreceding().andUnBoundedFollowing()
       .rank().as("salesRank")
       .build();

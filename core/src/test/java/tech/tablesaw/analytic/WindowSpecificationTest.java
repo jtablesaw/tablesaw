@@ -6,8 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
-import tech.tablesaw.analytic.AnalyticQuery.Order;
-import tech.tablesaw.analytic.WindowSpecification.OrderPair;
+import tech.tablesaw.sorting.Sort;
 
 class WindowSpecificationTest {
 
@@ -15,12 +14,7 @@ class WindowSpecificationTest {
   public void testToSqlString() {
     WindowSpecification windowSpecification = WindowSpecification.builder()
       .setWindowName("mainWindow")
-      .setOrderColumns(
-        ImmutableList.of(
-          OrderPair.of("col1", Order.ASC),
-          OrderPair.of("col2", Order.DESC)
-          )
-      )
+      .setSort(Sort.on("col1", Sort.Order.ASCEND).next("col2", Sort.Order.DESCEND))
       .setPartitionColumns(
         ImmutableList.of("col1", "col2")
       )
@@ -31,19 +25,6 @@ class WindowSpecificationTest {
       + "ORDER BY col1 ASC, col2 DESC";
 
     assertEquals(expected, windowSpecification.toSqlString());
-  }
-
-  @Test
-  public void orderDuplicates() {
-    Throwable thrown = assertThrows(IllegalArgumentException.class, () -> WindowSpecification.builder()
-      .setOrderColumns(
-        ImmutableList.of(
-          OrderPair.of("col1", Order.ASC),
-          OrderPair.of("col1", Order.DESC)
-        )
-      ).build());
-
-    assertTrue(thrown.getMessage().contains("duplicate columns"));
   }
 
   @Test

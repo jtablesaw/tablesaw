@@ -1,7 +1,5 @@
 package tech.tablesaw.analytic;
 
-import tech.tablesaw.analytic.AnalyticQuery.Order;
-import tech.tablesaw.analytic.WindowSpecification.OrderPair;
 import tech.tablesaw.api.Table;
 
 public interface AnalyticQuerySteps {
@@ -31,26 +29,8 @@ public interface AnalyticQuerySteps {
    * DESC puts nulls last.
    */
   interface OrderStep {
-
-    // Defaults to ASC
-    DefineWindow orderBy(String column);
-
-    DefineWindow orderBy(String column, Order strategy);
-
-    DefineWindow orderBy(String c1, Order s1, String c2, Order s2);
-
-    DefineWindow orderBy(String c1, Order s1, String c2, Order s2,
-      String c3, Order s3);
-
-    DefineWindow orderBy(String c1, Order s1, String c2, Order s2,
-      String c3, Order s3, String c4, Order o4);
-
-    DefineWindow orderBy(String c1, Order s1, String c2, Order s2,
-      String c3, Order s3, String c4, Order o4, String c5, Order o5);
-
-    DefineWindow orderBy(OrderPair... orderPairs);
+    DefineWindow orderBy(String... columnNames);
   }
-
 
   interface DefineWindow {
     WindowStart rowsBetween();

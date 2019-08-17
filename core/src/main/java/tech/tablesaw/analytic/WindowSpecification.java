@@ -2,24 +2,24 @@ package tech.tablesaw.analytic;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
+import com.google.common.collect.Streams;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import tech.tablesaw.analytic.AnalyticQuery.Order;
+import tech.tablesaw.sorting.Sort;
 
 final public class WindowSpecification {
 
   private final String windowName;
   private final LinkedHashSet<String> partitionColumns;
-  private final List<OrderPair> ordering;
+  private final Sort sort;
 
-  private WindowSpecification(String windowName, LinkedHashSet<String> partitionColumns, List<OrderPair> ordering) {
+  private WindowSpecification(String windowName, LinkedHashSet<String> partitionColumns, Sort sort) {
     this.windowName = windowName;
     this.partitionColumns = partitionColumns;
-    this.ordering = ordering;
+    this.sort = sort;
   }
 
   static Builder builder() {
@@ -33,15 +33,16 @@ final public class WindowSpecification {
       sb.append(String.join(", ", partitionColumns));
       sb.append(System.lineSeparator());
     }
-    if (!ordering.isEmpty()) {
+    if (!sort.isEmpty()) {
       sb.append("ORDER BY ");
-      sb.append(ordering.stream().map(java.util.Objects::toString).collect(Collectors.joining(", ")));
+      sb.append(Streams.stream(sort.iterator())
+        .map(this::formatOrdering).collect(Collectors.joining(", ")));
     }
     return sb.toString();
   }
 
   public boolean isEmpty() {
-    return partitionColumns.isEmpty() && ordering.isEmpty();
+    return partitionColumns.isEmpty() && sort == null;
   }
 
   @Override
@@ -57,8 +58,16 @@ final public class WindowSpecification {
     return partitionColumns;
   }
 
-  public List<OrderPair> getOrdering() {
-    return ordering;
+  public Optional<Sort> getSort() {
+    return Optional.ofNullable(this.sort);
+  }
+
+  private String formatOrdering(Map.Entry<String, Sort.Order> sortEntry) {
+    String formattedOrder = "ASC";
+    if (sortEntry.getValue() == Sort.Order.DESCEND) {
+      formattedOrder = "DESC";
+    }
+    return sortEntry.getKey() + " " + formattedOrder;
   }
 
   @Override
@@ -70,61 +79,18 @@ final public class WindowSpecification {
     WindowSpecification that = (WindowSpecification) o;
     return Objects.equal(windowName, that.windowName) &&
       Objects.equal(partitionColumns, that.partitionColumns) &&
-      Objects.equal(ordering, that.ordering);
+      Objects.equal(sort, that.sort);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(windowName, partitionColumns, ordering);
-  }
-
-  public static class OrderPair {
-    private final String columnName;
-    private final Order order;
-
-    private OrderPair(String columnName, Order order) {
-      this.columnName = columnName;
-      this.order = order;
-    }
-
-    public static OrderPair of(String columnName, Order order) {
-      return new OrderPair(columnName, order);
-    }
-
-    public String getColumnName() {
-      return columnName;
-    }
-
-    public Order getOrder() {
-      return order;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o)
-        return true;
-      if (o == null || getClass() != o.getClass())
-        return false;
-      OrderPair orderPair = (OrderPair) o;
-      return Objects.equal(columnName, orderPair.columnName) &&
-        order == orderPair.order;
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hashCode(columnName, order);
-    }
-
-    @Override
-    public String toString() {
-      return columnName + " " + order;
-    }
+    return Objects.hashCode(windowName, partitionColumns, sort);
   }
 
   static class Builder {
     private String windowName = "w1";
     private LinkedHashSet<String> partitioning = new LinkedHashSet<>();
-    private List<OrderPair> ordering = new ArrayList<>();
+    private Sort sort = null;
 
     private Builder() {
     }
@@ -135,8 +101,6 @@ final public class WindowSpecification {
     }
 
     Builder setPartitionColumns(List<String> columns) {
-      // TODO do we want this?
-      // Preconditions.checkArgument(columns.size() > 0);
       this.partitioning.clear();
       this.partitioning.addAll(columns);
       // TODO add actual duplicate columns to the error message.
@@ -145,13 +109,8 @@ final public class WindowSpecification {
       return this;
     }
 
-    Builder setOrderColumns(List<OrderPair> orderPairs) {
-      Set<String> orderPairSet = orderPairs.stream().map(OrderPair::getColumnName).collect(Collectors.toSet());
-      // TODO add actual duplicate columns to the error message.
-      Preconditions.checkArgument(orderPairSet.size() == orderPairs.size(),
-        "Order By cannot contain duplicate columns"
-      );
-      this.ordering = ImmutableList.copyOf(orderPairs);
+    Builder setSort(Sort sort) {
+      this.sort = sort;
       return this;
     }
 
@@ -159,8 +118,9 @@ final public class WindowSpecification {
       return new WindowSpecification(
         windowName,
         partitioning,
-        ordering
+        sort
       );
     }
+
   }
 }

@@ -1,7 +1,6 @@
 package tech.tablesaw.analytic;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -19,7 +18,6 @@ import tech.tablesaw.analytic.AnalyticQuerySteps.WindowEndOptionOne;
 import tech.tablesaw.analytic.AnalyticQuerySteps.WindowEndOptionTwo;
 import tech.tablesaw.analytic.AnalyticQuerySteps.WindowStart;
 import tech.tablesaw.analytic.WindowFrame.WindowGrowthType;
-import tech.tablesaw.analytic.WindowSpecification.OrderPair;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.sorting.Sort;
@@ -44,21 +42,6 @@ final public class AnalyticQuery {
     return new Builder(table);
   }
 
-  public enum Order {
-    ASC,
-    DESC;
-
-    private Sort.Order getSortOrder() {
-      switch (this) {
-        case ASC:
-          return Sort.Order.ASCEND;
-        case DESC:
-          return Sort.Order.DESCEND;
-      }
-      throw new RuntimeException("No Enum Match for " + this);
-    }
-  }
-
   public Table getTable() {
     return table;
   }
@@ -72,19 +55,7 @@ final public class AnalyticQuery {
   }
 
   public Optional<Sort> getSort() {
-    List<OrderPair> ordering = windowSpecification.getOrdering();
-    if (ordering.isEmpty()) {
-      return Optional.empty();
-    }
-
-    OrderPair order = ordering.get(0);
-    Sort sort = Sort.on(order.getColumnName(), order.getOrder().getSortOrder());
-
-    for (int i = 1; i < ordering.size(); i++) {
-      order = ordering.get(i);
-      sort.next(order.getColumnName(), order.getOrder().getSortOrder());
-    }
-    return Optional.of(sort);
+    return windowSpecification.getSort();
   }
 
   public WindowSpecification getWindowSpecification() {
@@ -191,63 +162,8 @@ final public class AnalyticQuery {
     }
 
     @Override
-    public DefineWindow orderBy(String column) {
-      windowSpecificationBuilder.setOrderColumns(
-        ImmutableList.of(OrderPair.of(column, Order.ASC)));
-      return this;
-    }
-
-    @Override
-    public DefineWindow orderBy(String column, Order strategy) {
-      windowSpecificationBuilder.setOrderColumns(
-        ImmutableList.of(OrderPair.of(column, strategy)));
-      return this;
-    }
-
-    @Override
-    public DefineWindow orderBy(String c1, Order s1, String c2, Order s2) {
-      windowSpecificationBuilder.setOrderColumns(
-        ImmutableList.of(
-          OrderPair.of(c1, s1), OrderPair.of(c2, s2)));
-      return this;
-    }
-
-    @Override
-    public DefineWindow orderBy(String c1, Order s1, String c2, Order s2, String c3,
-      Order s3) {
-      windowSpecificationBuilder.setOrderColumns(ImmutableList.of(
-        OrderPair.of(c1, s1),
-        OrderPair.of(c2, s2),
-        OrderPair.of(c3, s3)));
-      return this;
-    }
-
-    @Override
-    public DefineWindow orderBy(String c1, Order s1, String c2, Order s2, String c3,
-      Order s3, String c4, Order s4) {
-      windowSpecificationBuilder.setOrderColumns(
-        ImmutableList.of(
-          OrderPair.of(c1, s1),
-          OrderPair.of(c2, s2),
-          OrderPair.of(c3, s3),
-          OrderPair.of(c4, s4)));
-      return this;
-    }
-
-    @Override
-    public DefineWindow orderBy(String c1, Order s1, String c2, Order s2, String c3,
-      Order s3, String c4, Order s4, String c5, Order s5) {
-      windowSpecificationBuilder.setOrderColumns(ImmutableList.of(OrderPair.of(c1, s1),
-        OrderPair.of(c2, s2),
-        OrderPair.of(c3, s3),
-        OrderPair.of(c4, s4),
-        OrderPair.of(c4, s5)));
-      return this;
-    }
-
-    @Override
-    public DefineWindow orderBy(OrderPair... orderPairs) {
-      windowSpecificationBuilder.setOrderColumns(Arrays.asList(orderPairs));
+    public DefineWindow orderBy(String... columnNames) {
+      windowSpecificationBuilder.setSort(Sort.create(this.table, columnNames));
       return this;
     }
 
@@ -317,7 +233,7 @@ final public class AnalyticQuery {
       WindowFrame windowFrame = this.frameBuilder.build();
 
       // Must have an orderby to specify numbering function.
-      if (!argumentList.getNumberingFunctions().isEmpty() && windowSpecification.getOrdering().isEmpty()) {
+      if (!argumentList.getNumberingFunctions().isEmpty() && !windowSpecification.getSort().isPresent()) {
         throw new IllegalArgumentException("Cannot specify a numbering function without OrderBy");
       }
 
