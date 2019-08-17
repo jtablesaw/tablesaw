@@ -5,7 +5,6 @@ import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.asLocalDateTim
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.annotation.concurrent.Immutable;
-import tech.tablesaw.columns.times.TimeColumnType;
 
 @Immutable
 public class DateTimeColumnFormatter {
@@ -27,7 +26,7 @@ public class DateTimeColumnFormatter {
   }
 
   public String format(long value) {
-    if (value == TimeColumnType.missingValueIndicator()) {
+    if (value == DateTimeColumnType.missingValueIndicator()) {
       return missingValueString;
     }
     if (format == null) {

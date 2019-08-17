@@ -18,7 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableListMultimap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +46,8 @@ public class TableSliceGroupTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+    // The source data is sorted by who. Put it in a different order.
+    table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv")).sortAscendingOn("approval");
   }
 
   @Test
@@ -59,6 +62,23 @@ public class TableSliceGroupTest {
       count += view.rowCount();
     }
     assertEquals(table.rowCount(), count);
+  }
+
+  @Test
+  public void testViewGroupCreationNames() {
+
+    TableSliceGroup group = StandardTableSliceGroup.create(table, "who", "approval");
+    List<TableSlice> viewList = group.getSlices();
+    assertEquals(146, group.size());
+
+    Set<String> viewNames = new HashSet<>();
+    int count = 0;
+    for (TableSlice view : viewList) {
+      viewNames.add(view.name());
+      count += view.rowCount();
+    }
+    assertEquals(table.rowCount(), count);
+    assertTrue(viewNames.contains("zogby~~~45"));
   }
 
   @Test
