@@ -117,7 +117,6 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
   }
 
   private static Optional<Order> getOrder(String prefix) {
-    Sort.Order order = null;
     switch (prefix) {
       case "+":
         return Optional.of(Order.ASCEND);
