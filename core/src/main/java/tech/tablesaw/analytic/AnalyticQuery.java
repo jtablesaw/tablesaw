@@ -1,5 +1,6 @@
 package tech.tablesaw.analytic;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,7 @@ final public class AnalyticQuery {
    *
    * @return Full Analytic Query Builder.
    */
+  @Beta
   public static FullAnalyticQuerySteps.FromStep query() {
     return new FullQueryBuilder();
   }
@@ -53,8 +55,9 @@ final public class AnalyticQuery {
   /**
    * Entry point for Numbering Query.
    *
-   * @return Full Analytic Query Builder.
+   * @return Numbering Analytic Query Builder.
    */
+  @Beta
   public static NumberingQuerySteps.FromStep numberingQuery() {
     return new NumberingQueryBuilder();
   }
@@ -62,8 +65,9 @@ final public class AnalyticQuery {
   /**
    * Entry point for Quick Analytic Query.
    *
-   * @return Full Analytic Query Builder.
+   * @return Quick Analytic Query Builder.
    */
+  @Beta
   public static QuickQuerySteps.FromStep quickQuery() {
     return new QuickQueryBuilder();
   }
