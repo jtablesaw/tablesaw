@@ -4,32 +4,51 @@ import tech.tablesaw.api.Table;
 
 public interface AnalyticQuerySteps {
 
+  interface FullAnalyticQuerySteps {
+    interface FromStep extends From<FullAnalyticQuerySteps.PartitionStep> {}
+    interface PartitionStep extends Partition<FullAnalyticQuerySteps.OrderOptionalStep> {}
+    interface OrderOptionalStep extends OrderOptional<DefineWindow> {}
+  }
+
+  interface NumberingQuerySteps {
+    interface FromStep extends From<NumberingQuerySteps.PartitionStep> {}
+    interface PartitionStep extends Partition<NumberingQuerySteps.OrderRequiredStep> {}
+    interface OrderRequiredStep extends AnalyticQuerySteps.OrderRequiredStep<AddNumberingFunction> {}
+  }
+
+  interface QuickQuerySteps {
+    interface FromStep extends From<DefineWindow> {}
+  }
+
+  interface From<Next> {
+    Next from(Table table);
+  }
+
+  interface Partition<Next> {
+    Next partitionBy(String... columnNames);
+  }
+
+  interface OrderOptional<Next> {
+    Next orderBy(String... columnNames);
+  }
+
+  interface OrderRequiredStep<Next> {
+    Next orderBy(String columnOne, String... rest);
+  }
+
   interface AnalyticFunctions {
+    NameStepAggregate sum(String columnName);
+    NameStepAggregate mean(String columnName);
+    NameStepAggregate max(String columnName);
+    NameStepAggregate min(String columnName);
+    NameStepAggregate count(String columnName);
+  }
 
+  interface NumberingFunctions {
     // Require Order.
-    NameStep rowNumber();
-    NameStep rank();
-    NameStep denseRank();
-
-    NameStep sum(String columnName);
-    NameStep mean(String columnName);
-    NameStep max(String columnName);
-    NameStep min(String columnName);
-    NameStep count(String columnName);
-  }
-
-  interface StartStep extends PartitionStep, DefineWindow {}
-
-  interface PartitionStep {
-    OrderStep partitionBy(String... columns);
-  }
-
-  /**
-   * ASC puts nulls last.
-   * DESC puts nulls last.
-   */
-  interface OrderStep {
-    DefineWindow orderBy(String... columnNames);
+    NameStepNumbering rowNumber();
+    NameStepNumbering rank();
+    NameStepNumbering denseRank();
   }
 
   interface DefineWindow {
@@ -47,29 +66,30 @@ public interface AnalyticQuerySteps {
   }
 
   interface WindowEndOptionOne {
-    AddAnalyticFunctions andPreceding(int nRows);
+    AddAggregateFunctions andPreceding(int nRows);
 
-    AddAnalyticFunctions andCurrentRow();
+    AddAggregateFunctions andCurrentRow();
 
-    AddAnalyticFunctions andFollowing(int nRows);
+    AddAggregateFunctions andFollowing(int nRows);
 
-    AddAnalyticFunctions andUnBoundedFollowing();
+    AddAggregateFunctions andUnBoundedFollowing();
   }
 
   interface WindowEndOptionTwo {
-    AddAnalyticFunctions andFollowing(int nRows);
+    AddAggregateFunctions andFollowing(int nRows);
 
-    AddAnalyticFunctions andUnBoundedFollowing();
+    AddAggregateFunctions andUnBoundedFollowing();
   }
 
-  interface NameStep {
-    AddAnalyticFunctionWithExecute as(String columnName);
+  interface NameStepAggregate {
+    AddAggregateFunctionsWithExecute as(String columnName);
   }
 
-  interface AddAnalyticFunctions extends AnalyticFunctions {}
+  interface NameStepNumbering {
+    AddNumberingFunctionWithExecute as(String columnName);
+  }
 
-  interface AddAnalyticFunctionWithExecute extends AnalyticFunctions {
-
+  interface Execute {
     AnalyticQuery build();
     // Creates a new table.
     Table execute();
@@ -78,4 +98,9 @@ public interface AnalyticQuerySteps {
     void executeInPlace();
   }
 
+  interface AddAggregateFunctions extends AnalyticFunctions {}
+  interface AddAggregateFunctionsWithExecute extends AnalyticFunctions, Execute {}
+
+  interface AddNumberingFunction extends NumberingFunctions {}
+  interface AddNumberingFunctionWithExecute extends NumberingFunctions, Execute {}
 }

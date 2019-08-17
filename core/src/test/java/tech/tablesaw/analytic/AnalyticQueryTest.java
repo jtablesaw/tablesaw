@@ -3,6 +3,7 @@ package tech.tablesaw.analytic;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
@@ -16,16 +17,16 @@ class AnalyticQueryTest {
   public void testToSqlString() {
     Table table = Table.create("table1", IntColumn.create("sales"));
 
-    AnalyticQuery query = AnalyticQuery.from(table)
+    AnalyticQuery query = AnalyticQuery.query().from(table)
       .partitionBy("product", "region")
       .orderBy("sales")
       .rowsBetween().unboundedPreceding().andUnBoundedFollowing()
-      .rank().as("salesRank")
+      .sum("sales").as("sumSales")
       .build();
 
     String expected = "SELECT"
       + System.lineSeparator()
-      + "RANK() OVER w1 AS salesRank"
+      + "SUM(sales) OVER w1 AS sumSales"
       + System.lineSeparator()
       + "FROM table1"
       + System.lineSeparator()
@@ -41,17 +42,35 @@ class AnalyticQueryTest {
   }
 
   @Test
-  public void testToSqlStringEmptyWindowSpecification() {
-    AnalyticQuery query = AnalyticQuery.from(Table.create("house"))
+  public void toSqlStringQuick() {
+    AnalyticQuery query = AnalyticQuery.quickQuery().from(Table.create("sales"))
       .rowsBetween().currentRow().andFollowing(1)
-      .max("col1").as("house")
+      .max("sales").as("salesSum")
       .build();
 
     String expectd = "SELECT\n"
-      + "MAX(col1) OVER w1 AS house\n"
-      + "FROM house\n"
+      + "MAX(sales) OVER w1 AS salesSum\n"
+      + "FROM sales\n"
       + "Window w1 AS (\n"
       + "ROWS BETWEEN CURRENT_ROW AND 1 FOLLOWING);";
+
+    assertEquals(expectd, query.toSqlString());
+  }
+
+  @Test
+  public void toSqlStringNumbering() {
+    AnalyticQuery query = AnalyticQuery.numberingQuery()
+      .from(Table.create("myTable", IntColumn.create("date")))
+      .partitionBy()
+      .orderBy("date")
+      .rank().as("myRank")
+      .build();
+
+    String expectd = "SELECT\n"
+      + "RANK() OVER w1 AS myRank\n"
+      + "FROM myTable\n"
+      + "Window w1 AS (\n"
+      + "ORDER BY date ASC);";
 
     assertEquals(expectd, query.toSqlString());
   }

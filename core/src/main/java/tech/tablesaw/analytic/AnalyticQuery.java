@@ -1,23 +1,27 @@
 package tech.tablesaw.analytic;
 
-import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import tech.tablesaw.analytic.AnalyticQuerySteps.AddAnalyticFunctionWithExecute;
-import tech.tablesaw.analytic.AnalyticQuerySteps.AddAnalyticFunctions;
+import tech.tablesaw.analytic.AnalyticQuerySteps.AddAggregateFunctions;
+import tech.tablesaw.analytic.AnalyticQuerySteps.AddAggregateFunctionsWithExecute;
+import tech.tablesaw.analytic.AnalyticQuerySteps.AddNumberingFunction;
+import tech.tablesaw.analytic.AnalyticQuerySteps.AddNumberingFunctionWithExecute;
 import tech.tablesaw.analytic.AnalyticQuerySteps.DefineWindow;
-import tech.tablesaw.analytic.AnalyticQuerySteps.NameStep;
-import tech.tablesaw.analytic.AnalyticQuerySteps.OrderStep;
-import tech.tablesaw.analytic.AnalyticQuerySteps.PartitionStep;
-import tech.tablesaw.analytic.AnalyticQuerySteps.StartStep;
+import tech.tablesaw.analytic.AnalyticQuerySteps.FullAnalyticQuerySteps;
+import tech.tablesaw.analytic.AnalyticQuerySteps.NameStepAggregate;
+import tech.tablesaw.analytic.AnalyticQuerySteps.NameStepNumbering;
+import tech.tablesaw.analytic.AnalyticQuerySteps.NumberingQuerySteps;
+import tech.tablesaw.analytic.AnalyticQuerySteps.NumberingQuerySteps.OrderRequiredStep;
+import tech.tablesaw.analytic.AnalyticQuerySteps.NumberingQuerySteps.PartitionStep;
+import tech.tablesaw.analytic.AnalyticQuerySteps.QuickQuerySteps;
 import tech.tablesaw.analytic.AnalyticQuerySteps.WindowEndOptionOne;
 import tech.tablesaw.analytic.AnalyticQuerySteps.WindowEndOptionTwo;
 import tech.tablesaw.analytic.AnalyticQuerySteps.WindowStart;
-import tech.tablesaw.analytic.WindowFrame.WindowGrowthType;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.sorting.Sort;
@@ -37,9 +41,31 @@ final public class AnalyticQuery {
     this.argumentList = argumentList;
   }
 
-  @Beta
-  public static StartStep from(Table table) {
-    return new Builder(table);
+  /**
+   * Entry point for Full Analytic Query.
+   *
+   * @return Full Analytic Query Builder.
+   */
+  public static FullAnalyticQuerySteps.FromStep query() {
+    return new FullQueryBuilder();
+  }
+
+  /**
+   * Entry point for Numbering Query.
+   *
+   * @return Full Analytic Query Builder.
+   */
+  public static NumberingQuerySteps.FromStep numberingQuery() {
+    return new NumberingQueryBuilder();
+  }
+
+  /**
+   * Entry point for Quick Analytic Query.
+   *
+   * @return Full Analytic Query Builder.
+   */
+  public static QuickQuerySteps.FromStep quickQuery() {
+    return new QuickQueryBuilder();
   }
 
   public Table getTable() {
@@ -79,11 +105,15 @@ final public class AnalyticQuery {
       .append("Window ").append(windowSpecification.getWindowName()).append(" AS (")
       .append(System.lineSeparator());
     if (!windowSpecification.isEmpty()) {
-      sb.append(windowSpecification.toSqlString())
-        .append(System.lineSeparator());
+      sb.append(windowSpecification.toSqlString());
     }
-    sb.append(windowFrame.toSqlString())
-      .append(");");
+    if(windowFrame != null) {
+      if(!windowSpecification.isEmpty()) {
+        sb.append(System.lineSeparator());
+      }
+      sb.append(windowFrame.toSqlString());
+    }
+    sb.append(");");
     return sb.toString();
   }
 
@@ -92,71 +122,125 @@ final public class AnalyticQuery {
     return toSqlString();
   }
 
-  static class Builder implements StartStep, PartitionStep, OrderStep, DefineWindow,
-    WindowStart, WindowEndOptionOne, WindowEndOptionTwo, NameStep, AddAnalyticFunctions,
-    AddAnalyticFunctionWithExecute {
+  public Table execute() {
+    return AnalyticQueryEngine.create(this).execute();
+  }
 
-    private final Table table;
+  static class NumberingQueryBuilder implements NumberingQuerySteps.FromStep, NumberingQuerySteps.OrderRequiredStep, NumberingQuerySteps.PartitionStep,
+    AnalyticQuerySteps.AddNumberingFunction, AddNumberingFunctionWithExecute, NameStepNumbering {
+    private Table table;
     private final WindowFrame.Builder frameBuilder = WindowFrame.builder();
     private final WindowSpecification.Builder windowSpecificationBuilder = WindowSpecification.builder();
     private final ArgumentList.Builder argumentsListBuilder = ArgumentList.builder();
     private final List<Consumer<Iterable<Row>>> consumers = new ArrayList<>();
 
-
-    private Builder(Table table) {
-      this.table = table;
+    @Override
+    public PartitionStep from(Table table) {
+     this.table = table;
+     return this;
     }
 
     @Override
-    public NameStep rowNumber() {
+    public OrderRequiredStep partitionBy(String... columnNames) {
+      this.windowSpecificationBuilder.setPartitionColumns(Arrays.asList(columnNames));
+      return this;
+    }
+
+    @Override
+    public AddNumberingFunction orderBy(String columnOne, String... rest) {
+      String[] cols = new String[rest.length + 1];
+      cols[0] = columnOne;
+      System.arraycopy(rest, 0, cols, 1, rest.length);
+      windowSpecificationBuilder.setSort(Sort.create(this.table, cols));
+      return this;
+    }
+
+    @Override
+    public AddNumberingFunctionWithExecute as(String columnName) {
+      argumentsListBuilder.unStageFunction(columnName);
+      return this;
+    }
+
+    @Override
+    public NameStepNumbering rowNumber() {
       argumentsListBuilder.stageFunction(NumberingFunctions.ROW_NUMBER);
       return this;
     }
 
     @Override
-    public NameStep rank() {
+    public NameStepNumbering rank() {
       argumentsListBuilder.stageFunction(NumberingFunctions.RANK);
       return this;
     }
 
     @Override
-    public NameStep denseRank() {
+    public NameStepNumbering denseRank() {
       argumentsListBuilder.stageFunction(NumberingFunctions.DENSE_RANK);
       return this;
     }
 
     @Override
-    public NameStep sum(String columnName) {
+    public AnalyticQuery build() {
+      return new AnalyticQuery(
+        this.table,
+        this.windowSpecificationBuilder.build(),
+        null,
+        this.argumentsListBuilder.build()
+      );
+    }
+
+    @Override
+    public Table execute() {
+      return this.build().execute();
+    }
+
+    @Override
+    public void executeInPlace() {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+  static abstract class AnalyticBuilder implements FullAnalyticQuerySteps.OrderOptionalStep, FullAnalyticQuerySteps.PartitionStep,
+    DefineWindow, WindowStart, WindowEndOptionOne, WindowEndOptionTwo, NameStepAggregate, AddAggregateFunctions,
+    AddAggregateFunctionsWithExecute {
+    private Table table;
+    private final WindowFrame.Builder frameBuilder = WindowFrame.builder();
+    private final WindowSpecification.Builder windowSpecificationBuilder = WindowSpecification.builder();
+    private final ArgumentList.Builder argumentsListBuilder = ArgumentList.builder();
+    private final List<Consumer<Iterable<Row>>> consumers = new ArrayList<>();
+
+    @Override
+    public NameStepAggregate sum(String columnName) {
       argumentsListBuilder.stageFunction(columnName, AggregateFunctions.SUM);
       return this;
     }
 
     @Override
-    public NameStep mean(String columnName) {
+    public NameStepAggregate mean(String columnName) {
       argumentsListBuilder.stageFunction(columnName, AggregateFunctions.MEAN);
       return this;
     }
 
     @Override
-    public NameStep max(String columnName) {
+    public NameStepAggregate max(String columnName) {
       argumentsListBuilder.stageFunction(columnName, AggregateFunctions.MAX);
       return this;
     }
 
     @Override
-    public NameStep min(String columnName) {
+    public NameStepAggregate min(String columnName) {
       argumentsListBuilder.stageFunction(columnName, AggregateFunctions.MIN);
       return this;
     }
 
     @Override
-    public NameStep count(String columnName) {
+    public NameStepAggregate count(String columnName) {
       argumentsListBuilder.stageFunction(columnName, AggregateFunctions.COUNT);
       return this;
     }
 
     @Override
-    public OrderStep partitionBy(String... columns) {
+    public FullAnalyticQuerySteps.OrderOptionalStep partitionBy(String... columns) {
       this.windowSpecificationBuilder.setPartitionColumns(Arrays.asList(columns));
       return this;
     }
@@ -197,67 +281,72 @@ final public class AnalyticQuery {
     }
 
     @Override
-    public AddAnalyticFunctions andPreceding(int nRows) {
+    public AddAggregateFunctions andPreceding(int nRows) {
       this.frameBuilder.setEndPreceding(nRows);
       return this;
     }
 
     @Override
-    public AddAnalyticFunctions andCurrentRow() {
+    public AddAggregateFunctions andCurrentRow() {
       this.frameBuilder.setEnndCurrentRow();
       return this;
     }
 
     @Override
-    public AddAnalyticFunctions andFollowing(int nRows) {
+    public AddAggregateFunctions andFollowing(int nRows) {
       this.frameBuilder.setEndFollowing(nRows);
       return this;
     }
 
     @Override
-    public AddAnalyticFunctions andUnBoundedFollowing() {
+    public AddAggregateFunctions andUnBoundedFollowing() {
       // Default is unboundedFollowing
       return this;
     }
 
     @Override
-    public AddAnalyticFunctionWithExecute as(String columnName) {
+    public AddAggregateFunctionsWithExecute as(String columnName) {
       argumentsListBuilder.unStageFunction(columnName);
       return this;
     }
 
     @Override
     public AnalyticQuery build() {
-      WindowSpecification windowSpecification = this.windowSpecificationBuilder.build();
-      ArgumentList argumentList = this.argumentsListBuilder.build();
-      WindowFrame windowFrame = this.frameBuilder.build();
-
-      // Must have an orderby to specify numbering function.
-      if (!argumentList.getNumberingFunctions().isEmpty() && !windowSpecification.getSort().isPresent()) {
-        throw new IllegalArgumentException("Cannot specify a numbering function without OrderBy");
-      }
-
-      // Cannot specify a numbering function with a window frame.
-      if (!argumentList.getNumberingFunctions().isEmpty() && windowFrame.windowGrowthType() != WindowGrowthType.FIXED) {
-        throw new IllegalArgumentException("Cannot specify a numbering function with a Window Frame");
-      }
-
+      Preconditions.checkNotNull(table);
       return new AnalyticQuery(
         this.table,
-        windowSpecification,
-        windowFrame,
-        argumentList
+        this.windowSpecificationBuilder.build(),
+        this.frameBuilder.build(),
+        this.argumentsListBuilder.build()
       );
     }
 
     @Override
     public Table execute() {
-      throw new UnsupportedOperationException();
+      return this.build().execute();
     }
 
     @Override
     public void executeInPlace() {
       throw new UnsupportedOperationException();
+    }
+  }
+
+  static class FullQueryBuilder extends AnalyticBuilder implements FullAnalyticQuerySteps.FromStep {
+
+    @Override
+    public FullAnalyticQuerySteps.PartitionStep from(Table table) {
+      super.table = table;
+      return this;
+    }
+  }
+
+  static class QuickQueryBuilder extends AnalyticBuilder implements QuickQuerySteps.FromStep {
+
+    @Override
+    public DefineWindow from(Table table) {
+      super.table = table;
+      return this;
     }
   }
 }
