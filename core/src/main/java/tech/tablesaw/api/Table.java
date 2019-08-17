@@ -530,45 +530,7 @@ public class Table extends Relation implements Iterable<Row> {
    * <p>if column name starts with - then sort that column descending otherwise sort ascending
    */
   public Table sortOn(String... columnNames) {
-
-    Sort key = null;
-    List<String> names = columnNames().stream().map(String::toUpperCase).collect(toList());
-
-    for (String columnName : columnNames) {
-      Sort.Order order = Sort.Order.ASCEND;
-      if (!names.contains(columnName.toUpperCase())) {
-        // the column name has been annotated with a prefix.
-        // get the prefix which could be - or +
-        String prefix = columnName.substring(0, 1);
-
-        // remove - prefix so provided name matches actual column name
-        columnName = columnName.substring(1, columnName.length());
-
-        order = getOrder(prefix);
-      }
-
-      if (key == null) { // key will be null the first time through
-        key = first(columnName, order);
-      } else {
-        key.next(columnName, order);
-      }
-    }
-    return sortOn(key);
-  }
-
-  private Sort.Order getOrder(String prefix) {
-    Sort.Order order;
-    switch (prefix) {
-      case "+":
-        order = Sort.Order.ASCEND;
-        break;
-      case "-":
-        order = Sort.Order.DESCEND;
-        break;
-      default:
-        throw new IllegalStateException("Column prefix: " + prefix + " is unknown.");
-    }
-    return order;
+    return this.sortOn(Sort.create(this, columnNames));
   }
 
   /**
