@@ -24,6 +24,8 @@ import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import tech.tablesaw.columns.strings.StringColumnType;
+
 public class DateTimeColumnTest {
 
   private DateTimeColumn column1;
@@ -108,5 +110,16 @@ public class DateTimeColumnTest {
 	  column1.appendMissing();
 	  assertEquals("2000-01-01T00:00:00", column1.getString(0));
 	  assertEquals("NaT", column1.getString(1));
+  }
+
+  @Test
+  public void testAsStringColumn() {
+    column1.appendCell("1923-10-20T10:15:30");
+    column1.appendMissing();
+    StringColumn sc = column1.asStringColumn();
+    assertEquals("Game date strings", sc.name());
+    assertEquals(2, sc.size());
+    assertEquals("1923-10-20T10:15:30.000", sc.get(0));
+    assertEquals(StringColumnType.missingValueIndicator(), sc.get(1));
   }
 }

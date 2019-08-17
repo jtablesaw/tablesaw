@@ -15,11 +15,14 @@
 package tech.tablesaw;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.sorting.Sort;
 
 /** Verify sorting functions */
 public class SortTest {
@@ -120,6 +123,33 @@ public class SortTest {
         unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
     Table expectedResults = TestData.SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT.getTable();
     assertTablesEquals(expectedResults, sortedTable);
+  }
+
+  @Test
+  public void createSortInvalidPrefixColumnExists() {
+    Table table = Table.create("t", DoubleColumn.create("col1"));
+    Throwable thrown = assertThrows(IllegalStateException.class, () ->
+      Sort.create(table, "<col1"));
+
+    assertEquals("Column prefix: < is unknown.", thrown.getMessage());
+  }
+
+  @Test
+  public void createSortValidPrefixColumnDoesNotExist() {
+    Table table = Table.create("t", DoubleColumn.create("col1"));
+    Throwable thrown = assertThrows(IllegalStateException.class, () ->
+      Sort.create(table, "+col2"));
+
+    assertEquals("Column col2 does not exist in table t", thrown.getMessage());
+  }
+
+  @Test
+  public void createSortInvalidPrefixColumnDoesNotExist() {
+    Table table = Table.create("t", DoubleColumn.create("col1"));
+    Throwable thrown = assertThrows(IllegalStateException.class, () ->
+      Sort.create(table, ">col2"));
+
+    assertEquals("Unrecognized Column: '>col2'", thrown.getMessage());
   }
 
   /**
