@@ -530,7 +530,7 @@ public class Table extends Relation implements Iterable<Row> {
    * <p>if column name starts with - then sort that column descending otherwise sort ascending
    */
   public Table sortOn(String... columnNames) {
-    return this.sortOn(Sort.on(this, columnNames));
+    return this.sortOn(Sort.create(this, columnNames));
   }
 
   /**

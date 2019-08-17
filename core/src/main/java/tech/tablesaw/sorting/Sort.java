@@ -62,7 +62,15 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
     return sortOrder.size();
   }
 
-  public static Sort on(Table table, String... columnNames) {
+  /**
+   * Create a Sort object from the given table and sort column names. Does not sort the table.
+   *
+   * @param table to sort. Used only to pull the table's schema. Does not modify the table.
+   * @param columnNames The columns to sort on. Can prefix column name with + for ascending, - for descending.
+   * Default to ascending if no prefix is added.
+   * @return a {@link #Sort} Object.
+   */
+  public static Sort create(Table table, String... columnNames) {
     Preconditions.checkArgument(columnNames.length > 0, "");
 
     Sort key = null;
