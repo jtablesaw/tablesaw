@@ -617,5 +617,10 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     return where(selectNRowsAtRandom(tableSize, size()));
   }
 
+  /**
+   * Returns a StringColumn consisting of the (unformatted) String representation of this column values
+   * @return a {@link StringColumn} built using the column {@link #getUnformattedString} method
+   */
   StringColumn asStringColumn();
+
 }

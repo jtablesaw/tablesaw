@@ -48,6 +48,7 @@ import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.selection.Selection;
 
 /** Unit tests for the NumberColumn class */
@@ -317,6 +318,28 @@ public class NumberColumnTest {
     StringColumn sc = numberColumn.asStringColumn();
     assertEquals("test strings", sc.name());
     assertEquals("48392.2932", sc.get(0));
+  }
+
+  @Test
+  public void testDoubleColumnAsStringWithMissing() {
+    DoubleColumn numberColumn = DoubleColumn.create("test");
+    numberColumn.append(48392.2932);
+    numberColumn.appendMissing();
+    StringColumn sc = numberColumn.asStringColumn();
+    assertEquals("test strings", sc.name());
+    assertEquals("48392.2932", sc.get(0));
+    assertEquals(StringColumnType.missingValueIndicator(), sc.get(1));
+  }
+
+  @Test
+  public void testIntegerColumnAsStringWithMissing() {
+    IntColumn numberColumn = IntColumn.create("test");
+    numberColumn.append(48392);
+    numberColumn.appendMissing();
+    StringColumn sc = numberColumn.asStringColumn();
+    assertEquals("test strings", sc.name());
+    assertEquals("48392", sc.get(0));
+    assertEquals(StringColumnType.missingValueIndicator(), sc.get(1));
   }
 
   @Test
