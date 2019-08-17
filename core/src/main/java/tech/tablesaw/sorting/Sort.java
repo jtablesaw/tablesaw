@@ -71,7 +71,8 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
    * @return a {@link #Sort} Object.
    */
   public static Sort create(Table table, String... columnNames) {
-    Preconditions.checkArgument(columnNames.length > 0, "");
+    Preconditions.checkArgument(columnNames.length > 0,
+      "At least one sort column must provided.");
 
     Sort key = null;
     Set<String> names = table.columnNames().stream().map(String::toUpperCase).collect(toSet());
