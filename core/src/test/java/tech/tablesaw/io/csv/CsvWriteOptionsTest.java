@@ -19,11 +19,15 @@ public class CsvWriteOptionsTest {
             .lineEnd("\r\n")
             .quoteChar('"')
             .separator('.')
+            .ignoreLeadingWhiteSpaces(true)
+            .ignoreTrailingWhitespaces(true)
             .build();
     assertEquals('~', options.escapeChar());
     assertTrue(options.header());
     assertEquals('"', options.quoteChar());
     assertEquals('.', options.separator());
+    assertTrue(options.ignoreLeadingWhitespaces());
+    assertTrue(options.ignoreTrailingWhitespaces());
 
     CsvWriterSettings settings = CsvWriter.createSettings(options);
 
@@ -31,5 +35,7 @@ public class CsvWriteOptionsTest {
     assertEquals("\r\n", settings.getFormat().getLineSeparatorString());
     assertEquals('"', settings.getFormat().getQuote());
     assertEquals('.', settings.getFormat().getDelimiter());
+    assertEquals(options.ignoreLeadingWhitespaces(), settings.getIgnoreLeadingWhitespaces());
+    assertEquals(options.ignoreTrailingWhitespaces(), settings.getIgnoreTrailingWhitespaces());
   }
 }

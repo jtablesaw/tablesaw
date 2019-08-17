@@ -77,6 +77,8 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
     settings.getFormat().setQuote(options.quoteChar());
     settings.getFormat().setQuoteEscape(options.escapeChar());
     settings.getFormat().setLineSeparator(options.lineEnd());
+    settings.setIgnoreLeadingWhitespaces(options.ignoreLeadingWhitespaces());
+    settings.setIgnoreTrailingWhitespaces(options.ignoreTrailingWhitespaces());
     // writes empty lines as well.
     settings.setSkipEmptyLines(false);
     return settings;
