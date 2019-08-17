@@ -14,10 +14,16 @@
 
 package tech.tablesaw.sorting;
 
+import static java.util.stream.Collectors.toSet;
+
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import tech.tablesaw.api.Table;
 
 /**
  * Provides fine-grained control over sorting.
@@ -54,6 +60,63 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
 
   public int size() {
     return sortOrder.size();
+  }
+
+  public static Sort on(Table table, String... columnNames) {
+    Preconditions.checkArgument(columnNames.length > 0, "");
+
+    Sort key = null;
+    Set<String> names = table.columnNames().stream().map(String::toUpperCase).collect(toSet());
+
+    for (String columnName : columnNames) {
+      Sort.Order order = Sort.Order.ASCEND;
+      if (!names.contains(columnName.toUpperCase())) {
+        // the column name has been annotated with a prefix.
+        // get the prefix which could be - or +
+        String prefix = columnName.substring(0, 1);
+        Optional<Order> orderOptional = getOrder(prefix);
+
+        // Invalid prefix, column name exists on table.
+        if(!orderOptional.isPresent() && names.contains(columnName.substring(1).toUpperCase())) {
+          throw new IllegalStateException("Column prefix: " + prefix + " is unknown.");
+        }
+
+        // Valid prefix, column name does not exist on table.
+        if(orderOptional.isPresent() && !names.contains(columnName.substring(1).toUpperCase())) {
+          throw new IllegalStateException(
+            String.format("Column %s does not exist in table %s", columnName.substring(1), table.name()));
+        }
+
+        // Invalid prefix, column name does not exist on table.
+        if(!orderOptional.isPresent()) {
+          throw new IllegalStateException("Unrecognized Column: '" + columnName + "'");
+        }
+
+        // Valid Prefix, column name exists on table.
+        // remove - prefix so provided name matches actual column name
+        columnName = columnName.substring(1);
+        order = orderOptional.get();
+      }
+
+      if (key == null) { // key will be null the first time through
+        key = new Sort(columnName, order);
+      } else {
+        key.next(columnName, order);
+      }
+    }
+    return key;
+  }
+
+  private static Optional<Order> getOrder(String prefix) {
+    Sort.Order order = null;
+    switch (prefix) {
+      case "+":
+        return Optional.of(Order.ASCEND);
+      case "-":
+        return Optional.of(Order.DESCEND);
+      default:
+        return Optional.empty();
+    }
   }
 
   /**
