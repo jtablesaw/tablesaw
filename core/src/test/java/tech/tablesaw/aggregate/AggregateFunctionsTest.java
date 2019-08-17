@@ -36,8 +36,12 @@ import static tech.tablesaw.aggregate.AggregateFunctions.proportionTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.standardDeviation;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.api.QuerySupport.and;
+import static tech.tablesaw.api.QuerySupport.date;
 import static tech.tablesaw.api.QuerySupport.num;
+import static tech.tablesaw.api.QuerySupport.str;
 
+import java.time.LocalDate;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -186,7 +190,11 @@ class AggregateFunctionsTest {
     assertEquals(4, result.columnCount());
     assertEquals("who", result.column(0).name());
     assertEquals(323, result.rowCount());
-    assertEquals("46.0", result.getUnformatted(0, 2));
+    assertEquals("46.0",
+      result.where(and(
+        str("who").isEqualTo("fox"),
+        date("date").isEqualTo(LocalDate.of(2001, 1, 24))
+     )).getUnformatted(0, 2));
   }
 
   @Test
