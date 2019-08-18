@@ -11,6 +11,8 @@ import tech.tablesaw.io.WriteOptions;
 public class CsvWriteOptions extends WriteOptions {
 
   private final boolean header;
+  private final boolean ignoreLeadingWhitespaces;
+  private final boolean ignoreTrailingWhitespaces;
   private final char separator;
   private final char quoteChar;
   private final char escapeChar;
@@ -23,10 +25,20 @@ public class CsvWriteOptions extends WriteOptions {
     this.quoteChar = builder.quoteChar;
     this.escapeChar = builder.escapeChar;
     this.lineEnd = builder.lineEnd;
+    this.ignoreLeadingWhitespaces = builder.ignoreLeadingWhitespaces;
+    this.ignoreTrailingWhitespaces = builder.ignoreTrailingWhitespaces;
   }
 
   public boolean header() {
     return header;
+  }
+
+  public boolean ignoreLeadingWhitespaces() {
+    return ignoreTrailingWhitespaces;
+  }
+
+  public boolean ignoreTrailingWhitespaces() {
+    return ignoreTrailingWhitespaces;
   }
 
   public char separator() {
@@ -68,6 +80,8 @@ public class CsvWriteOptions extends WriteOptions {
   public static class Builder extends WriteOptions.Builder {
 
     private boolean header = true;
+    private boolean ignoreLeadingWhitespaces = true;
+    private boolean ignoreTrailingWhitespaces = true;
     private char separator = ',';
     private String lineEnd = System.lineSeparator();
     private char escapeChar = '\\';
@@ -115,6 +129,16 @@ public class CsvWriteOptions extends WriteOptions {
 
     public CsvWriteOptions.Builder header(boolean header) {
       this.header = header;
+      return this;
+    }
+
+    public CsvWriteOptions.Builder ignoreLeadingWhitespaces(boolean ignoreLeadingWhitespaces) {
+      this.ignoreLeadingWhitespaces = ignoreLeadingWhitespaces;
+      return this;
+    }
+
+    public CsvWriteOptions.Builder ignoreTrailingWhitespaces(boolean ignoreTrailingWhitespaces) {
+      this.ignoreTrailingWhitespaces = ignoreTrailingWhitespaces;
       return this;
     }
 
