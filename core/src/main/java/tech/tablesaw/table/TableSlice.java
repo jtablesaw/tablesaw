@@ -194,7 +194,7 @@ public class TableSlice extends Relation {
    *
    * @return an int iterator of row numbers in the source table that are present in this view.
    */
-  public PrimitiveIterator.OfInt sourceRowNumberIterator() {
+  protected PrimitiveIterator.OfInt sourceRowNumberIterator() {
     if(this.isSorted()) {
       return Arrays.stream(sortOrder).iterator();
     } else if (this.hasSelection()) {
@@ -267,7 +267,10 @@ public class TableSlice extends Relation {
   }
 
   /**
-   * Sort the TableSlice independently from the underlying table.
+   * Sort this view in place without modifying or copying the underlying source table. Unlike {@link
+   * Table#sortOn(Sort)} which returns a copy of the table, this method sorts the view in place.
+   *
+   * @param key to sort on.
    */
   public void sortOn(Sort key) {
     Preconditions.checkArgument(!key.isEmpty());

@@ -549,7 +549,12 @@ public class Table extends Relation implements Iterable<Row> {
     return sortOn(key);
   }
 
-  /** */
+  /**
+   * Returns a copy of this table sorted using the given sort key.
+   *
+   * @param key to sort on.
+   * @return a sorted copy of this table.
+   */
   public Table sortOn(Sort key) {
     Preconditions.checkArgument(!key.isEmpty());
     if (key.size() == 1) {
