@@ -132,7 +132,7 @@ public class CsvWriteOptions extends WriteOptions {
       return this;
     }
 
-    public CsvWriteOptions.Builder ignoreLeadingWhiteSpaces(boolean ignoreLeadingWhitespaces) {
+    public CsvWriteOptions.Builder ignoreLeadingWhitespaces(boolean ignoreLeadingWhitespaces) {
       this.ignoreLeadingWhitespaces = ignoreLeadingWhitespaces;
       return this;
     }

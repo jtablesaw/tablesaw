@@ -19,7 +19,7 @@ public class CsvWriteOptionsTest {
             .lineEnd("\r\n")
             .quoteChar('"')
             .separator('.')
-            .ignoreLeadingWhiteSpaces(true)
+            .ignoreLeadingWhitespaces(true)
             .ignoreTrailingWhitespaces(true)
             .build();
     assertEquals('~', options.escapeChar());
