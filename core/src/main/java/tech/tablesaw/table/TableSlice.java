@@ -194,7 +194,7 @@ public class TableSlice extends Relation {
    *
    * @return an int iterator of row numbers in the source table that are present in this view.
    */
-  public PrimitiveIterator.OfInt sourceRowNumberIterator() {
+  private PrimitiveIterator.OfInt sourceRowNumberIterator() {
     if(this.isSorted()) {
       return Arrays.stream(sortOrder).iterator();
     } else if (this.hasSelection()) {
