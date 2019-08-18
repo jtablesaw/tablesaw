@@ -33,9 +33,6 @@ public class DistributionVisualizations extends AbstractExample {
             .build();
     Plot.show(new Figure(layout, trace));
 
-    // Plot.show(Histogram.create("Distribution of property sizes",
-    // property.numberColumn("sq__ft")));
-
     Plot.show(Histogram2D.create("Distribution of price and size", property, "price", "sq__ft"));
 
     Plot.show(BoxPlot.create("Prices by property type", property, "type", "price"));
