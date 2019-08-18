@@ -25,17 +25,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.strings.AbstractStringColumn;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.NoKeysAvailableException;
-import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
-import tech.tablesaw.columns.strings.StringFilters;
-import tech.tablesaw.columns.strings.StringMapFunctions;
-import tech.tablesaw.columns.strings.StringReduceUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -47,13 +43,10 @@ import tech.tablesaw.selection.Selection;
  * <p>Because the MISSING_VALUE for this column type is an empty string, there is little or no need
  * for special handling of missing values in this class's methods.
  */
-public class StringColumn extends AbstractColumn<String>
-    implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
+public class StringColumn extends AbstractStringColumn {
 
   // a bidirectional map of keys to backing string values.
   private DictionaryMap lookupTable = new ByteDictionaryMap();
-
-  private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
   private final IntComparator rowComparator =
       (i, i1) -> {
@@ -115,25 +108,6 @@ public class StringColumn extends AbstractColumn<String>
   @Override
   public boolean isMissing(int rowNumber) {
     return lookupTable.isMissing(rowNumber);
-  }
-
-  public void setPrintFormatter(StringColumnFormatter formatter) {
-    Preconditions.checkNotNull(formatter);
-    this.printFormatter = formatter;
-  }
-
-  public StringColumnFormatter getPrintFormatter() {
-    return printFormatter;
-  }
-
-  @Override
-  public String getString(int row) {
-    return printFormatter.format(get(row));
-  }
-
-  @Override
-  public String getUnformattedString(int row) {
-    return String.valueOf(get(row));
   }
 
   @Override
@@ -209,12 +183,14 @@ public class StringColumn extends AbstractColumn<String>
     lookupTable.clear();
   }
 
+  @Override
   public StringColumn lead(int n) {
     StringColumn column = lag(-n);
     column.setName(name() + " lead(" + n + ")");
     return column;
   }
 
+  @Override
   public StringColumn lag(int n) {
 
     StringColumn copy = emptyCopy();
@@ -249,6 +225,7 @@ public class StringColumn extends AbstractColumn<String>
    * <p>Examples: myCatColumn.set(myCatColumn.isEqualTo("Cat"), "Dog"); // no more cats
    * myCatColumn.set(myCatColumn.valueIsMissing(), "Fox"); // no more missing values
    */
+  @Override
   public StringColumn set(Selection rowSelection, String newValue) {
     for (int row : rowSelection) {
       set(row, newValue);
@@ -256,6 +233,7 @@ public class StringColumn extends AbstractColumn<String>
     return this;
   }
 
+  @Override
   public StringColumn set(int rowIndex, String stringValue) {
     try {
       lookupTable.set(rowIndex, stringValue);
@@ -274,40 +252,6 @@ public class StringColumn extends AbstractColumn<String>
   @Override
   public int countUnique() {
     return lookupTable.countUnique();
-  }
-
-  /**
-   * Returns the largest ("top") n values in the column
-   *
-   * @param n The maximum number of records to return. The actual number will be smaller if n is
-   *     greater than the number of observations in the column
-   * @return A list, possibly empty, of the largest observations
-   */
-  public List<String> top(int n) {
-    List<String> top = new ArrayList<>();
-    StringColumn copy = this.copy();
-    copy.sortDescending();
-    for (int i = 0; i < n; i++) {
-      top.add(copy.get(i));
-    }
-    return top;
-  }
-
-  /**
-   * Returns the smallest ("bottom") n values in the column
-   *
-   * @param n The maximum number of records to return. The actual number will be smaller if n is
-   *     greater than the number of observations in the column
-   * @return A list, possibly empty, of the smallest n observations
-   */
-  public List<String> bottom(int n) {
-    List<String> bottom = new ArrayList<>();
-    StringColumn copy = this.copy();
-    copy.sortAscending();
-    for (int i = 0; i < n; i++) {
-      bottom.add(copy.get(i));
-    }
-    return bottom;
   }
 
   /**
@@ -420,16 +364,6 @@ public class StringColumn extends AbstractColumn<String>
     return this;
   }
 
-  @Override
-  public Column<String> append(Column<String> column, int row) {
-    return append(column.getUnformattedString(row));
-  }
-
-  @Override
-  public Column<String> set(int row, Column<String> column, int sourceRow) {
-    return set(row, column.getUnformattedString(sourceRow));
-  }
-
   /** Returns the count of missing values in this column */
   @Override
   public int countMissing() {
@@ -440,7 +374,7 @@ public class StringColumn extends AbstractColumn<String>
   public StringColumn removeMissing() {
     StringColumn noMissing = emptyCopy();
     for (String v : this) {
-      if (!valueIsMissing(v)) {
+      if (!StringColumnType.isMissingValue(v)) {
         noMissing.append(v);
       }
     }
@@ -454,11 +388,6 @@ public class StringColumn extends AbstractColumn<String>
 
   public Set<String> asSet() {
     return lookupTable.asSet();
-  }
-
-  @Override
-  public int byteSize() {
-    return type().byteSize();
   }
 
   /** Returns the contents of the cell at rowNumber as a byte[] */
@@ -541,11 +470,6 @@ public class StringColumn extends AbstractColumn<String>
   @Override
   public String[] asObjectArray() {
     return lookupTable.asObjectArray();
-  }
-
-  @Override
-  public int compare(String o1, String o2) {
-    return o1.compareTo(o2);
   }
 
   @Override
