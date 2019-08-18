@@ -15,7 +15,6 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
