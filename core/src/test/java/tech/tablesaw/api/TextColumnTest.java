@@ -496,5 +496,4 @@ public class TextColumnTest {
     assertEquals(3, col1.countUnique());
     assertEquals(3, col1.unique().size());
   }
-
 }

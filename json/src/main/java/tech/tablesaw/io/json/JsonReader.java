@@ -101,7 +101,7 @@ public class JsonReader implements DataReader<JsonReadOptions> {
     for (JsonNode node : flattenedJsonObj) {
       String[] arr = new String[columnNames.size()];
       for (int i = 0; i < columnNames.size(); i++) {
-        if(node.has(columnNames.get(i))) {
+        if (node.has(columnNames.get(i))) {
           arr[i] = node.get(columnNames.get(i)).asText();
         } else {
           arr[i] = null;

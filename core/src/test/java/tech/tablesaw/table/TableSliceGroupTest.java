@@ -47,7 +47,8 @@ public class TableSliceGroupTest {
   @BeforeEach
   public void setUp() throws Exception {
     // The source data is sorted by who. Put it in a different order.
-    table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv")).sortAscendingOn("approval");
+    table =
+        Table.read().csv(CsvReadOptions.builder("../data/bush.csv")).sortAscendingOn("approval");
   }
 
   @Test
