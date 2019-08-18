@@ -24,13 +24,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.StringColumnFormatter;
-import tech.tablesaw.columns.strings.StringFilters;
-import tech.tablesaw.columns.strings.StringMapFunctions;
-import tech.tablesaw.columns.strings.StringReduceUtils;
+import tech.tablesaw.columns.strings.AbstractStringColumn;
 import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -44,13 +40,10 @@ import tech.tablesaw.selection.Selection;
  * <p>Because the MISSING_VALUE for this column type is an empty string, there is little or no need
  * for special handling of missing values in this class's methods.
  */
-public class TextColumn extends AbstractColumn<String>
-    implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
+public class TextColumn extends AbstractStringColumn {
 
   // holds each element in the column.
   private List<String> values;
-
-  private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
   private final IntComparator rowComparator =
       (i, i1) -> {
@@ -117,25 +110,6 @@ public class TextColumn extends AbstractColumn<String>
   @Override
   public boolean isMissing(int rowNumber) {
     return get(rowNumber).equals(TextColumnType.missingValueIndicator());
-  }
-
-  public void setPrintFormatter(StringColumnFormatter formatter) {
-    Preconditions.checkNotNull(formatter);
-    this.printFormatter = formatter;
-  }
-
-  public StringColumnFormatter getPrintFormatter() {
-    return printFormatter;
-  }
-
-  @Override
-  public String getString(int row) {
-    return printFormatter.format(get(row));
-  }
-
-  @Override
-  public String getUnformattedString(int row) {
-    return String.valueOf(get(row));
   }
 
   @Override
@@ -212,12 +186,14 @@ public class TextColumn extends AbstractColumn<String>
     values.clear();
   }
 
+  @Override
   public TextColumn lead(int n) {
     TextColumn column = lag(-n);
     column.setName(name() + " lead(" + n + ")");
     return column;
   }
 
+  @Override
   public TextColumn lag(int n) {
 
     TextColumn copy = emptyCopy();
@@ -252,6 +228,7 @@ public class TextColumn extends AbstractColumn<String>
    * <p>Examples: myCatColumn.set(myCatColumn.isEqualTo("Cat"), "Dog"); // no more cats
    * myCatColumn.set(myCatColumn.valueIsMissing(), "Fox"); // no more missing values
    */
+  @Override
   public TextColumn set(Selection rowSelection, String newValue) {
     for (int row : rowSelection) {
       set(row, newValue);
@@ -259,6 +236,7 @@ public class TextColumn extends AbstractColumn<String>
     return this;
   }
 
+  @Override
   public TextColumn set(int rowIndex, String stringValue) {
     String str = TextColumnType.missingValueIndicator();
     if (stringValue != null) {
@@ -271,40 +249,6 @@ public class TextColumn extends AbstractColumn<String>
   @Override
   public int countUnique() {
     return asSet().size();
-  }
-
-  /**
-   * Returns the largest ("top") n values in the column
-   *
-   * @param n The maximum number of records to return. The actual number will be smaller if n is
-   *     greater than the number of observations in the column
-   * @return A list, possibly empty, of the largest observations
-   */
-  public List<String> top(int n) {
-    List<String> top = new ArrayList<>();
-    TextColumn copy = this.copy();
-    copy.sortDescending();
-    for (int i = 0; i < n; i++) {
-      top.add(copy.get(i));
-    }
-    return top;
-  }
-
-  /**
-   * Returns the smallest ("bottom") n values in the column
-   *
-   * @param n The maximum number of records to return. The actual number will be smaller if n is
-   *     greater than the number of observations in the column
-   * @return A list, possibly empty, of the smallest n observations
-   */
-  public List<String> bottom(int n) {
-    List<String> bottom = new ArrayList<>();
-    TextColumn copy = this.copy();
-    copy.sortAscending();
-    for (int i = 0; i < n; i++) {
-      bottom.add(copy.get(i));
-    }
-    return bottom;
   }
 
   /**
@@ -393,16 +337,6 @@ public class TextColumn extends AbstractColumn<String>
     return this;
   }
 
-  @Override
-  public Column<String> append(Column<String> column, int row) {
-    return append(column.getUnformattedString(row));
-  }
-
-  @Override
-  public Column<String> set(int row, Column<String> column, int sourceRow) {
-    return set(row, column.getUnformattedString(sourceRow));
-  }
-
   /** Returns the count of missing values in this column */
   @Override
   public int countMissing() {
@@ -418,10 +352,8 @@ public class TextColumn extends AbstractColumn<String>
   @Override
   public TextColumn removeMissing() {
     TextColumn noMissing = emptyCopy();
-    Iterator<String> iterator = iterator();
-    while (iterator.hasNext()) {
-      String v = iterator.next();
-      if (!valueIsMissing(v)) {
+    for (String v : this) {
+      if (!TextColumnType.isMissingValue(v)) {
         noMissing.append(v);
       }
     }
@@ -435,11 +367,6 @@ public class TextColumn extends AbstractColumn<String>
 
   public Set<String> asSet() {
     return new HashSet<>(values);
-  }
-
-  @Override
-  public int byteSize() {
-    return type().byteSize();
   }
 
   /** Returns the contents of the cell at rowNumber as a byte[] */
@@ -530,10 +457,5 @@ public class TextColumn extends AbstractColumn<String>
       textColumn.set(i, get(i));
     }
     return textColumn;
-  }
-
-  @Override
-  public int compare(String o1, String o2) {
-    return o1.compareTo(o2);
   }
 }
