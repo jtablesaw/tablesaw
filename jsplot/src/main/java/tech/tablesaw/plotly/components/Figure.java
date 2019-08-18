@@ -1,12 +1,16 @@
 package tech.tablesaw.plotly.components;
 
+import com.google.common.base.Preconditions;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import tech.tablesaw.plotly.event.EventHandler;
 import tech.tablesaw.plotly.traces.Trace;
@@ -29,28 +33,42 @@ public class Figure {
 
   private final PebbleEngine engine = TemplateUtils.getNewEngine();
 
-  public Figure(Layout layout, Trace... traces) {
-    this.data = traces;
-    this.layout = layout;
-    this.eventHandlers = null;
-  }
-
-  public Figure(Layout layout, EventHandler eventHandler, Trace... traces) {
-    this.data = traces;
-    this.layout = layout;
-    this.eventHandlers = new EventHandler[] {eventHandler};
-  }
-
-  public Figure(Layout layout, EventHandler[] eventHandlers, Trace... traces) {
-    this.data = traces;
-    this.layout = layout;
-    this.eventHandlers = eventHandlers;
+  public Figure(FigureBuilder builder) {
+    this.data = builder.traces();
+    this.layout = builder.layout;
+    this.eventHandlers = builder.eventHandlers();
   }
 
   public Figure(Trace... traces) {
     this.data = traces;
     this.layout = null;
     this.eventHandlers = null;
+  }
+
+  public Figure(Layout layout, Trace... traces) {
+    this.data = traces;
+    this.layout = layout;
+    this.eventHandlers = null;
+  }
+
+  /**
+   * @deprecated Use the FigureBuilder instead
+   */
+  @Deprecated
+  public Figure(Layout layout, EventHandler eventHandler, Trace... traces) {
+    this.data = traces;
+    this.layout = layout;
+    this.eventHandlers = new EventHandler[] {eventHandler};
+  }
+
+  /**
+   * @deprecated Use the FigureBuilder instead
+   */
+  @Deprecated
+  public Figure(Layout layout, EventHandler[] eventHandlers, Trace... traces) {
+    this.data = traces;
+    this.layout = layout;
+    this.eventHandlers = eventHandlers;
   }
 
   public String divString(String divName) {
@@ -129,8 +147,8 @@ public class Figure {
 
     if (eventHandlers != null) {
       builder.append(System.lineSeparator());
-      for (int i = 0; i < eventHandlers.length; i++) {
-        builder.append(eventHandlers[i].asJavascript(targetName, divName));
+      for (EventHandler eventHandler : eventHandlers) {
+        builder.append(eventHandler.asJavascript(targetName, divName));
       }
       builder.append(System.lineSeparator());
     }
@@ -140,5 +158,44 @@ public class Figure {
 
   public Map<String, Object> getContext() {
     return context;
+  }
+
+  public static FigureBuilder builder() {
+    return new FigureBuilder();
+  }
+
+  public static class FigureBuilder {
+
+    private Layout layout;
+    private List<Trace> traces = new ArrayList<>();
+    private List<EventHandler> eventHandlers = new ArrayList<>();
+
+    public FigureBuilder layout(Layout layout) {
+      this.layout = layout;
+      return this;
+    }
+
+    public FigureBuilder addTraces(Trace... traces) {
+      this.traces.addAll(Arrays.asList(traces));
+      return this;
+    }
+
+    public FigureBuilder addEventHandlers(EventHandler... handlers) {
+      this.eventHandlers.addAll(Arrays.asList(handlers));
+      return this;
+    }
+
+    public Figure build() {
+      Preconditions.checkState(!traces.isEmpty(), "A figure must have at least one trace");
+      return new Figure(this);
+    }
+
+    private EventHandler[] eventHandlers() {
+      return eventHandlers.toArray(new EventHandler[0]);
+    }
+
+    private Trace[] traces() {
+      return traces.toArray(new Trace[0]);
+    }
   }
 }
