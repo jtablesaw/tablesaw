@@ -16,6 +16,7 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -470,11 +471,11 @@ public class TextColumn extends AbstractColumn<String>
 
   @Override
   public Selection isIn(String... strings) {
-    List<String> stringList = Lists.newArrayList(strings);
+    Set<String> stringSet = Sets.newHashSet(strings);
 
     Selection results = new BitmapBackedSelection();
     for (int i = 0; i < size(); i++) {
-      if (stringList.contains(values.get(i))) {
+      if (stringSet.contains(values.get(i))) {
         results.add(i);
       }
     }
@@ -483,11 +484,11 @@ public class TextColumn extends AbstractColumn<String>
 
   @Override
   public Selection isIn(Collection<String> strings) {
-    List<String> stringList = Lists.newArrayList(strings);
+    Set<String> stringSet = Sets.newHashSet(strings);
 
     Selection results = new BitmapBackedSelection();
     for (int i = 0; i < size(); i++) {
-      if (stringList.contains(values.get(i))) {
+      if (stringSet.contains(values.get(i))) {
         results.add(i);
       }
     }
