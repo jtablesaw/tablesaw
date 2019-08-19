@@ -20,10 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import tech.tablesaw.columns.strings.StringColumnType;
 
 public class DateTimeColumnTest {
@@ -102,14 +100,14 @@ public class DateTimeColumnTest {
 
     assertEquals(3, column1.countUnique());
   }
-  
+
   @Test
   public void testFormatter() {
-	  column1.setPrintFormatter(DateTimeFormatter.ISO_LOCAL_DATE_TIME, "NaT");
-	  column1.append(LocalDateTime.of(2000, 1, 1, 0, 0));
-	  column1.appendMissing();
-	  assertEquals("2000-01-01T00:00:00", column1.getString(0));
-	  assertEquals("NaT", column1.getString(1));
+    column1.setPrintFormatter(DateTimeFormatter.ISO_LOCAL_DATE_TIME, "NaT");
+    column1.append(LocalDateTime.of(2000, 1, 1, 0, 0));
+    column1.appendMissing();
+    assertEquals("2000-01-01T00:00:00", column1.getString(0));
+    assertEquals("NaT", column1.getString(1));
   }
 
   @Test

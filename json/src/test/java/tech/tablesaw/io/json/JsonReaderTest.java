@@ -60,16 +60,14 @@ public class JsonReaderTest {
 
   @Test
   public void arrayOfRowsWithIncompleteIndexes() {
-    String json = "[" +
-      "{\"A\" : \"123\", \"B\" : \"456\"}," +
-      "{\"B\" : \"789\", \"C\" : \"123\"}" +
-      "]";
+    String json =
+        "[" + "{\"A\" : \"123\", \"B\" : \"456\"}," + "{\"B\" : \"789\", \"C\" : \"123\"}" + "]";
 
-    Table expected = Table.create(
-      IntColumn.create("A", new int[]{123, Integer.MIN_VALUE}),
-      IntColumn.create("B", new int[]{456, 789}),
-      IntColumn.create("C", new int[]{Integer.MIN_VALUE, 123})
-    );
+    Table expected =
+        Table.create(
+            IntColumn.create("A", new int[] {123, Integer.MIN_VALUE}),
+            IntColumn.create("B", new int[] {456, 789}),
+            IntColumn.create("C", new int[] {Integer.MIN_VALUE, 123}));
     Table actual = Table.read().string(json, "json");
 
     assertEquals(ColumnType.INTEGER, actual.columnTypes()[0]);
@@ -77,5 +75,4 @@ public class JsonReaderTest {
     assertEquals(expected.column("B").asList(), actual.column("B").asList());
     assertEquals(expected.column("C").asList(), actual.column("C").asList());
   }
-
 }

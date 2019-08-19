@@ -50,5 +50,4 @@ class AnalyticAggregateFunctionsTest {
     function.addRightMost(3);
     assertEquals(10, function.getValue());
   }
-
 }

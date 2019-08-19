@@ -48,13 +48,15 @@ import tech.tablesaw.columns.booleans.BooleanFillers;
 import tech.tablesaw.columns.booleans.BooleanFilters;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
 import tech.tablesaw.columns.booleans.BooleanMapUtils;
+import tech.tablesaw.filtering.BooleanFilterSpec;
 import tech.tablesaw.filtering.predicates.BytePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 /** A column in a base table that contains float values */
 public class BooleanColumn extends AbstractColumn<Boolean>
-    implements BooleanMapUtils,
+    implements BooleanFilterSpec<Selection>,
+        BooleanMapUtils,
         CategoricalColumn<Boolean>,
         BooleanFillers<BooleanColumn>,
         BooleanFilters {

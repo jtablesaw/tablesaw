@@ -128,8 +128,7 @@ public class SortTest {
   @Test
   public void createSortInvalidPrefixColumnExists() {
     Table table = Table.create("t", DoubleColumn.create("col1"));
-    Throwable thrown = assertThrows(IllegalStateException.class, () ->
-      Sort.create(table, "<col1"));
+    Throwable thrown = assertThrows(IllegalStateException.class, () -> Sort.create(table, "<col1"));
 
     assertEquals("Column prefix: < is unknown.", thrown.getMessage());
   }
@@ -137,8 +136,7 @@ public class SortTest {
   @Test
   public void createSortValidPrefixColumnDoesNotExist() {
     Table table = Table.create("t", DoubleColumn.create("col1"));
-    Throwable thrown = assertThrows(IllegalStateException.class, () ->
-      Sort.create(table, "+col2"));
+    Throwable thrown = assertThrows(IllegalStateException.class, () -> Sort.create(table, "+col2"));
 
     assertEquals("Column col2 does not exist in table t", thrown.getMessage());
   }
@@ -146,8 +144,7 @@ public class SortTest {
   @Test
   public void createSortInvalidPrefixColumnDoesNotExist() {
     Table table = Table.create("t", DoubleColumn.create("col1"));
-    Throwable thrown = assertThrows(IllegalStateException.class, () ->
-      Sort.create(table, ">col2"));
+    Throwable thrown = assertThrows(IllegalStateException.class, () -> Sort.create(table, ">col2"));
 
     assertEquals("Unrecognized Column: '>col2'", thrown.getMessage());
   }

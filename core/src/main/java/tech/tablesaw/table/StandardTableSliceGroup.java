@@ -27,9 +27,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/**
- * A group of tables formed by performing splitting operations on an original table
- */
+/** A group of tables formed by performing splitting operations on an original table */
 public class StandardTableSliceGroup extends TableSliceGroup {
 
   private StandardTableSliceGroup(Table original, CategoricalColumn<?>... columns) {
@@ -47,8 +45,8 @@ public class StandardTableSliceGroup extends TableSliceGroup {
   }
 
   /**
-   * Returns a viewGroup splitting the original table on the given columns. The named columns must be
-   * CategoricalColumns
+   * Returns a viewGroup splitting the original table on the given columns. The named columns must
+   * be CategoricalColumns
    */
   public static StandardTableSliceGroup create(Table original, String... columnsNames) {
     List<CategoricalColumn<?>> columns = original.categoricalColumns(columnsNames);
@@ -64,7 +62,8 @@ public class StandardTableSliceGroup extends TableSliceGroup {
   }
 
   /**
-   * Splits the sourceTable table into sub-tables, grouping on the columns whose names are given in splitColumnNames
+   * Splits the sourceTable table into sub-tables, grouping on the columns whose names are given in
+   * splitColumnNames
    */
   private void splitOn(String... columnNames) {
     Map<ByteArray, Selection> selectionMap = new LinkedHashMap<>();
@@ -78,7 +77,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
       int count = 0;
       for (Column<?> col : splitColumns) {
         stringKey.append(col.getString(i));
-        if(count < splitColumns.size() - 1) {
+        if (count < splitColumns.size() - 1) {
           stringKey.append(SPLIT_STRING);
         }
         byteBuffer.put(col.asBytes(i));
@@ -100,21 +99,18 @@ public class StandardTableSliceGroup extends TableSliceGroup {
     }
   }
 
-  /**
-   * Wrapper class for a byte[] that implements equals and hashcode.
-   */
+  /** Wrapper class for a byte[] that implements equals and hashcode. */
   private static class ByteArray {
     final byte[] bytes;
+
     ByteArray(byte[] bytes) {
       this.bytes = bytes;
     }
 
     @Override
     public boolean equals(Object o) {
-      if (this == o)
-        return true;
-      if (o == null || getClass() != o.getClass())
-        return false;
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
       ByteArray byteArray = (ByteArray) o;
       return Arrays.equals(bytes, byteArray.bytes);
     }

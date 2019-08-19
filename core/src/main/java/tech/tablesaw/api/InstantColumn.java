@@ -14,6 +14,8 @@
 
 package tech.tablesaw.api;
 
+import static tech.tablesaw.columns.temporal.TemporalPredicates.*;
+
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -765,5 +767,15 @@ public class InstantColumn extends AbstractColumn<Instant>
   @Override
   public InstantColumn sampleX(double proportion) {
     return (InstantColumn) super.sampleX(proportion);
+  }
+
+  @Override
+  public Selection isMissing() {
+    return eval(isMissing);
+  }
+
+  @Override
+  public Selection isNotMissing() {
+    return eval(isNotMissing);
   }
 }

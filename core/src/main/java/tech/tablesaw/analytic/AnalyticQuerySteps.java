@@ -6,14 +6,19 @@ public interface AnalyticQuerySteps {
 
   interface FullAnalyticQuerySteps {
     interface FromStep extends From<FullAnalyticQuerySteps.PartitionStep> {}
+
     interface PartitionStep extends Partition<FullAnalyticQuerySteps.OrderOptionalStep> {}
+
     interface OrderOptionalStep extends OrderOptional<DefineWindow> {}
   }
 
   interface NumberingQuerySteps {
     interface FromStep extends From<NumberingQuerySteps.PartitionStep> {}
+
     interface PartitionStep extends Partition<NumberingQuerySteps.OrderRequiredStep> {}
-    interface OrderRequiredStep extends AnalyticQuerySteps.OrderRequiredStep<AddNumberingFunction> {}
+
+    interface OrderRequiredStep
+        extends AnalyticQuerySteps.OrderRequiredStep<AddNumberingFunction> {}
   }
 
   interface QuickQuerySteps {
@@ -38,16 +43,22 @@ public interface AnalyticQuerySteps {
 
   interface AnalyticFunctions {
     NameStepAggregate sum(String columnName);
+
     NameStepAggregate mean(String columnName);
+
     NameStepAggregate max(String columnName);
+
     NameStepAggregate min(String columnName);
+
     NameStepAggregate count(String columnName);
   }
 
   interface NumberingFunctions {
     // Require Order.
     NameStepNumbering rowNumber();
+
     NameStepNumbering rank();
+
     NameStepNumbering denseRank();
   }
 
@@ -99,8 +110,10 @@ public interface AnalyticQuerySteps {
   }
 
   interface AddAggregateFunctions extends AnalyticFunctions {}
+
   interface AddAggregateFunctionsWithExecute extends AnalyticFunctions, Execute {}
 
   interface AddNumberingFunction extends NumberingFunctions {}
+
   interface AddNumberingFunctionWithExecute extends NumberingFunctions, Execute {}
 }

@@ -1,11 +1,14 @@
 package tech.tablesaw.filtering;
 
+import com.google.common.annotations.Beta;
 import java.util.function.Function;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 
-public class DeferredBooleanColumn extends DeferredColumn {
+@Beta
+public class DeferredBooleanColumn extends DeferredColumn
+    implements BooleanFilterSpec<Function<Table, Selection>> {
 
   public DeferredBooleanColumn(String columnName) {
     super(columnName);
