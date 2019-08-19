@@ -161,6 +161,20 @@
             <version>1.6</version>
             <scope>test</scope>
         </dependency>
+
+<!--- Saw dependencies -->
+        <dependency>
+            <groupId>org.iq80.snappy</groupId>
+            <artifactId>snappy</artifactId>
+            <version>0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+        <!--- Saw dependencies end -->
+
         <dependency>
             <groupId>com.github.jbellis</groupId>
             <artifactId>jamm</artifactId> <!-- Memory usage testing -->

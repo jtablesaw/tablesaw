@@ -549,4 +549,11 @@ public class StringColumn extends AbstractStringColumn {
     }
     return textColumn;
   }
+
+  /**
+   * Don't use this. For tablesaw use only
+   */
+  public DictionaryMap unsafeGetLookupTable() {
+    return lookupTable;
+  }
 }

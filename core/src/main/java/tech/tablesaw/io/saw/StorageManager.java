@@ -1,0 +1,57 @@
+package tech.tablesaw.io.saw;
+
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
+import org.iq80.snappy.SnappyFramedInputStream;
+import org.iq80.snappy.SnappyFramedOutputStream;
+import tech.tablesaw.api.*;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.strings.DictionaryMap;
+import tech.tablesaw.table.Relation;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.Pattern;
+
+/**
+ * A controller for reading and writing data in Tablesaw's own compressed, column-oriented file format
+ */
+public class StorageManager {
+
+    static final String FLOAT = "FLOAT";
+    static final String DOUBLE = "DOUBLE";
+    static final String INTEGER = "INTEGER";
+    static final String LONG = "LONG";
+    static final String SHORT = "SHORT";
+    static final String STRING = "STRING";
+    static final String LOCAL_DATE = "LOCAL_DATE";
+    static final String LOCAL_TIME = "LOCAL_TIME";
+    static final String LOCAL_DATE_TIME = "LOCAL_DATE_TIME";
+    static final String BOOLEAN = "BOOLEAN";
+
+    /**
+     * TODO: This is no way to get a File system separator
+     */
+    static String separator() {
+        FileSystem fileSystem = FileSystems.getDefault();
+        return fileSystem.getSeparator();
+    }
+
+}
