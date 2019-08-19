@@ -14,7 +14,8 @@
 
 package tech.tablesaw.api;
 
-import static tech.tablesaw.columns.temporal.TemporalPredicates.*;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.isMissing;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.isNotMissing;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;

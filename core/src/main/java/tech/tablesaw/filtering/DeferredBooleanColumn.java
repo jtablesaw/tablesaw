@@ -14,22 +14,27 @@ public class DeferredBooleanColumn extends DeferredColumn
     super(columnName);
   }
 
+  @Override
   public Function<Table, Selection> isFalse() {
     return table -> table.booleanColumn(name()).isFalse();
   }
 
+  @Override
   public Function<Table, Selection> isTrue() {
     return table -> table.booleanColumn(name()).isTrue();
   }
 
+  @Override
   public Function<Table, Selection> isEqualTo(BooleanColumn other) {
     return table -> table.booleanColumn(name()).isEqualTo(other);
   }
 
+  @Override
   public Function<Table, Selection> isMissing() {
     return table -> table.booleanColumn(name()).isMissing();
   }
 
+  @Override
   public Function<Table, Selection> isNotMissing() {
     return table -> table.booleanColumn(name()).isNotMissing();
   }
