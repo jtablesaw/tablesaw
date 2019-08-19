@@ -115,8 +115,6 @@ public class TimeDependentFilteringTest {
 
       // iterate an individual table and find the rows where concept matches the target concept
       for (Row row : patientTable) {
-        StringColumn concepts = patientTable.stringColumn("concept");
-        DateColumn dates = patientTable.dateColumn("date");
         if (row.getString("concept").equals(conceptZ)) {
           eventDates.add(row.getDate("date"));
         }
