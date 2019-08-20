@@ -11,11 +11,13 @@ import java.util.function.Predicate;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.instant.PackedInstant;
+import tech.tablesaw.filtering.InstantFilterSpec;
 import tech.tablesaw.filtering.predicates.LongBiPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-public interface TemporalFilters<T extends Temporal> extends Column<T> {
+public interface TemporalFilters<T extends Temporal>
+    extends Column<T>, InstantFilterSpec<Selection> {
 
   default Selection eval(LongPredicate predicate) {
     Selection bitmap = new BitmapBackedSelection();
@@ -91,16 +93,6 @@ public interface TemporalFilters<T extends Temporal> extends Column<T> {
     return eval(isEqualTo, PackedInstant.pack(value));
   }
 
-  @Override
-  default Selection isMissing() {
-    return eval(isMissing);
-  }
-
-  @Override
-  default Selection isNotMissing() {
-    return eval(isNotMissing);
-  }
-
   int size();
 
   LongArrayList data();
@@ -108,4 +100,10 @@ public interface TemporalFilters<T extends Temporal> extends Column<T> {
   long getLongInternal(int index);
 
   T get(int index);
+
+  @Override
+  Selection isMissing();
+
+  @Override
+  Selection isNotMissing();
 }

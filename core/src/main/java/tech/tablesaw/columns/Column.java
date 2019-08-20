@@ -618,9 +618,10 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   }
 
   /**
-   * Returns a StringColumn consisting of the (unformatted) String representation of this column values
+   * Returns a StringColumn consisting of the (unformatted) String representation of this column
+   * values
+   *
    * @return a {@link StringColumn} built using the column {@link #getUnformattedString} method
    */
   StringColumn asStringColumn();
-
 }

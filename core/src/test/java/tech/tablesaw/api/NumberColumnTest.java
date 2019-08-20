@@ -551,9 +551,6 @@ public class NumberColumnTest {
     assertEquals(3, shorts.unique().size());
   }
 
-
-
-
   @Test
   public void testUnique() {
     DoubleColumn doubles = DoubleColumn.create("doubles");

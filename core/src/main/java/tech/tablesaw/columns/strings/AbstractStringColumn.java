@@ -8,11 +8,9 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 
-/**
- * Abstract super class for Text like columns.
- */
-public abstract class AbstractStringColumn extends AbstractColumn<String> implements
-  CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
+/** Abstract super class for Text like columns. */
+public abstract class AbstractStringColumn extends AbstractColumn<String>
+    implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
   private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
   public AbstractStringColumn(ColumnType type, String name) {
@@ -38,7 +36,7 @@ public abstract class AbstractStringColumn extends AbstractColumn<String> implem
     return String.valueOf(get(row));
   }
 
-   /**
+  /**
    * Returns the largest ("top") n values in the column
    *
    * @param n The maximum number of records to return. The actual number will be smaller if n is
@@ -81,6 +79,7 @@ public abstract class AbstractStringColumn extends AbstractColumn<String> implem
   public Column<String> set(int row, Column<String> column, int sourceRow) {
     return set(row, column.getUnformattedString(sourceRow));
   }
+
   @Override
   public int byteSize() {
     return type().byteSize();

@@ -51,9 +51,7 @@ public class Figure {
     this.eventHandlers = null;
   }
 
-  /**
-   * @deprecated Use the FigureBuilder instead
-   */
+  /** @deprecated Use the FigureBuilder instead */
   @Deprecated
   public Figure(Layout layout, EventHandler eventHandler, Trace... traces) {
     this.data = traces;
@@ -61,9 +59,7 @@ public class Figure {
     this.eventHandlers = new EventHandler[] {eventHandler};
   }
 
-  /**
-   * @deprecated Use the FigureBuilder instead
-   */
+  /** @deprecated Use the FigureBuilder instead */
   @Deprecated
   public Figure(Layout layout, EventHandler[] eventHandlers, Trace... traces) {
     this.data = traces;

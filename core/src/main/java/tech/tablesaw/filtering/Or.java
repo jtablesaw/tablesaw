@@ -1,10 +1,12 @@
 package tech.tablesaw.filtering;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.function.Function;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 
+@Beta
 public class Or implements Function<Table, Selection> {
 
   private Function<Table, Selection>[] arguments;

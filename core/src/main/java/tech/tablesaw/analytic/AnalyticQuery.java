@@ -27,15 +27,18 @@ import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.sorting.Sort;
 
-final public class AnalyticQuery {
+public final class AnalyticQuery {
 
   private final Table table;
   private final WindowSpecification windowSpecification;
   private final WindowFrame windowFrame;
   private final ArgumentList argumentList;
 
-  private AnalyticQuery(Table table, WindowSpecification windowSpecification, WindowFrame windowFrame,
-    ArgumentList argumentList) {
+  private AnalyticQuery(
+      Table table,
+      WindowSpecification windowSpecification,
+      WindowFrame windowFrame,
+      ArgumentList argumentList) {
     this.table = table;
     this.windowSpecification = windowSpecification;
     this.windowFrame = windowFrame;
@@ -100,19 +103,22 @@ final public class AnalyticQuery {
     StringBuilder sb = new StringBuilder();
     if (!argumentList.getNewColumnNames().isEmpty()) {
       sb.append("SELECT")
-        .append(System.lineSeparator())
-        .append(argumentList.toSqlString(windowSpecification.getWindowName()))
-        .append(System.lineSeparator());
+          .append(System.lineSeparator())
+          .append(argumentList.toSqlString(windowSpecification.getWindowName()))
+          .append(System.lineSeparator());
     }
-    sb.append("FROM ").append(table.name())
-      .append(System.lineSeparator())
-      .append("Window ").append(windowSpecification.getWindowName()).append(" AS (")
-      .append(System.lineSeparator());
+    sb.append("FROM ")
+        .append(table.name())
+        .append(System.lineSeparator())
+        .append("Window ")
+        .append(windowSpecification.getWindowName())
+        .append(" AS (")
+        .append(System.lineSeparator());
     if (!windowSpecification.isEmpty()) {
       sb.append(windowSpecification.toSqlString());
     }
-    if(windowFrame != null) {
-      if(!windowSpecification.isEmpty()) {
+    if (windowFrame != null) {
+      if (!windowSpecification.isEmpty()) {
         sb.append(System.lineSeparator());
       }
       sb.append(windowFrame.toSqlString());
@@ -130,18 +136,24 @@ final public class AnalyticQuery {
     return AnalyticQueryEngine.create(this).execute();
   }
 
-  static class NumberingQueryBuilder implements NumberingQuerySteps.FromStep, NumberingQuerySteps.OrderRequiredStep, NumberingQuerySteps.PartitionStep,
-    AnalyticQuerySteps.AddNumberingFunction, AddNumberingFunctionWithExecute, NameStepNumbering {
+  static class NumberingQueryBuilder
+      implements NumberingQuerySteps.FromStep,
+          NumberingQuerySteps.OrderRequiredStep,
+          NumberingQuerySteps.PartitionStep,
+          AnalyticQuerySteps.AddNumberingFunction,
+          AddNumberingFunctionWithExecute,
+          NameStepNumbering {
     private Table table;
     private final WindowFrame.Builder frameBuilder = WindowFrame.builder();
-    private final WindowSpecification.Builder windowSpecificationBuilder = WindowSpecification.builder();
+    private final WindowSpecification.Builder windowSpecificationBuilder =
+        WindowSpecification.builder();
     private final ArgumentList.Builder argumentsListBuilder = ArgumentList.builder();
     private final List<Consumer<Iterable<Row>>> consumers = new ArrayList<>();
 
     @Override
     public PartitionStep from(Table table) {
-     this.table = table;
-     return this;
+      this.table = table;
+      return this;
     }
 
     @Override
@@ -186,11 +198,10 @@ final public class AnalyticQuery {
     @Override
     public AnalyticQuery build() {
       return new AnalyticQuery(
-        this.table,
-        this.windowSpecificationBuilder.build(),
-        null,
-        this.argumentsListBuilder.build()
-      );
+          this.table,
+          this.windowSpecificationBuilder.build(),
+          null,
+          this.argumentsListBuilder.build());
     }
 
     @Override
@@ -204,12 +215,20 @@ final public class AnalyticQuery {
     }
   }
 
-  static abstract class AnalyticBuilder implements FullAnalyticQuerySteps.OrderOptionalStep, FullAnalyticQuerySteps.PartitionStep,
-    DefineWindow, WindowStart, WindowEndOptionOne, WindowEndOptionTwo, NameStepAggregate, AddAggregateFunctions,
-    AddAggregateFunctionsWithExecute {
+  abstract static class AnalyticBuilder
+      implements FullAnalyticQuerySteps.OrderOptionalStep,
+          FullAnalyticQuerySteps.PartitionStep,
+          DefineWindow,
+          WindowStart,
+          WindowEndOptionOne,
+          WindowEndOptionTwo,
+          NameStepAggregate,
+          AddAggregateFunctions,
+          AddAggregateFunctionsWithExecute {
     private Table table;
     private final WindowFrame.Builder frameBuilder = WindowFrame.builder();
-    private final WindowSpecification.Builder windowSpecificationBuilder = WindowSpecification.builder();
+    private final WindowSpecification.Builder windowSpecificationBuilder =
+        WindowSpecification.builder();
     private final ArgumentList.Builder argumentsListBuilder = ArgumentList.builder();
     private final List<Consumer<Iterable<Row>>> consumers = new ArrayList<>();
 
@@ -318,11 +337,10 @@ final public class AnalyticQuery {
     public AnalyticQuery build() {
       Preconditions.checkNotNull(table);
       return new AnalyticQuery(
-        this.table,
-        this.windowSpecificationBuilder.build(),
-        this.frameBuilder.build(),
-        this.argumentsListBuilder.build()
-      );
+          this.table,
+          this.windowSpecificationBuilder.build(),
+          this.frameBuilder.build(),
+          this.argumentsListBuilder.build());
     }
 
     @Override

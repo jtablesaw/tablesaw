@@ -1,22 +1,19 @@
 package tech.tablesaw.columns.datetimes;
 
 import static tech.tablesaw.columns.datetimes.DateTimePredicates.isInYear;
-import static tech.tablesaw.columns.temporal.TemporalPredicates.isEqualTo;
-import static tech.tablesaw.columns.temporal.TemporalPredicates.isGreaterThan;
-import static tech.tablesaw.columns.temporal.TemporalPredicates.isGreaterThanOrEqualTo;
-import static tech.tablesaw.columns.temporal.TemporalPredicates.isLessThan;
-import static tech.tablesaw.columns.temporal.TemporalPredicates.isLessThanOrEqualTo;
-import static tech.tablesaw.columns.temporal.TemporalPredicates.isNotEqualTo;
+import static tech.tablesaw.columns.temporal.TemporalPredicates.*;
 
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.temporal.TemporalFilters;
+import tech.tablesaw.filtering.DateTimeFilterSpec;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-public interface DateTimeFilters extends TemporalFilters<LocalDateTime> {
+public interface DateTimeFilters
+    extends TemporalFilters<LocalDateTime>, DateTimeFilterSpec<Selection> {
 
   default Selection isAfter(LocalDateTime value) {
     return eval(isGreaterThan, PackedLocalDateTime.pack(value));
@@ -242,5 +239,15 @@ public interface DateTimeFilters extends TemporalFilters<LocalDateTime> {
 
   default Selection isInYear(int year) {
     return eval(isInYear, year);
+  }
+
+  @Override
+  default Selection isMissing() {
+    return eval(isMissing);
+  }
+
+  @Override
+  default Selection isNotMissing() {
+    return eval(isNotMissing);
   }
 }

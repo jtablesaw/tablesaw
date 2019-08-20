@@ -9,10 +9,8 @@ import tech.tablesaw.sorting.SortUtils;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
 import tech.tablesaw.table.TableSlice;
 
-/**
- * Executes AnalyticQueries.
- */
-final public class AnalyticQueryEngine {
+/** Executes AnalyticQueries. */
+public final class AnalyticQueryEngine {
   private final AnalyticQuery query;
   private final Table destination;
   private final IntComparatorChain rowComparator;
@@ -45,16 +43,17 @@ final public class AnalyticQueryEngine {
 
   private void processAggregateFunctions(TableSlice slice) {
     for (String toColumn : query.getArgumentList().getAggregateFunctions().keySet()) {
-      FunctionCall<AggregateFunctions> functionCall = query.getArgumentList()
-        .getAggregateFunctions().get(toColumn);
+      FunctionCall<AggregateFunctions> functionCall =
+          query.getArgumentList().getAggregateFunctions().get(toColumn);
 
       AggregateFunctions aggregateFunction = functionCall.getFunction();
       Column<?> sourceColumn = query.getTable().column(functionCall.getSourceColumnName());
       validateColumn(aggregateFunction, sourceColumn);
 
       Column<?> destinationColumn = destination.column(functionCall.getDestinationColumnName());
-      new WindowSlider(query.getWindowFrame(), aggregateFunction, slice, sourceColumn, destinationColumn)
-        .process();
+      new WindowSlider(
+              query.getWindowFrame(), aggregateFunction, slice, sourceColumn, destinationColumn)
+          .process();
     }
   }
 
@@ -62,14 +61,14 @@ final public class AnalyticQueryEngine {
   private void processNumberingFunctions(TableSlice slice) {
     for (String toColumn : query.getArgumentList().getNumberingFunctions().keySet()) {
       if (rowComparator == null) {
-        throw new IllegalArgumentException("Cannot use Numbering Function without"
-          + " OrderBy");
+        throw new IllegalArgumentException("Cannot use Numbering Function without" + " OrderBy");
       }
-      FunctionCall<NumberingFunctions> functionCall = query.getArgumentList()
-        .getNumberingFunctions().get(toColumn);
+      FunctionCall<NumberingFunctions> functionCall =
+          query.getArgumentList().getNumberingFunctions().get(toColumn);
       NumberingFunctions numberingFunctions = functionCall.getFunction();
       NumberingFunction function = numberingFunctions.getImplementation();
-      Column<Integer> destinationColumn = (Column<Integer>) destination.column(functionCall.getDestinationColumnName());
+      Column<Integer> destinationColumn =
+          (Column<Integer>) destination.column(functionCall.getDestinationColumnName());
 
       int prevRowNumber = -1;
       for (Row row : slice) {
@@ -77,8 +76,8 @@ final public class AnalyticQueryEngine {
           function.addNextRow();
         } else {
           if (rowComparator.compare(
-            slice.mappedRowNumber(prevRowNumber),
-            slice.mappedRowNumber(row.getRowNumber())) == 0) {
+                  slice.mappedRowNumber(prevRowNumber), slice.mappedRowNumber(row.getRowNumber()))
+              == 0) {
             function.addEqualRow();
           } else {
             function.addNextRow();
@@ -92,14 +91,20 @@ final public class AnalyticQueryEngine {
 
   private void validateColumn(FunctionMetaData function, Column<?> sourceColumn) {
     if (!function.isCompatibleColumn(sourceColumn.type())) {
-      throw new IllegalArgumentException("Function: " + function.functionName()
-        + " Is not compatible with column type: " + sourceColumn.type());
+      throw new IllegalArgumentException(
+          "Function: "
+              + function.functionName()
+              + " Is not compatible with column type: "
+              + sourceColumn.type());
     }
   }
 
   private void addColumns() {
-    this.destination.addColumns(query.getArgumentList()
-      .createEmptyDestinationColumns(query.getTable().rowCount()).toArray(new Column<?>[0]));
+    this.destination.addColumns(
+        query
+            .getArgumentList()
+            .createEmptyDestinationColumns(query.getTable().rowCount())
+            .toArray(new Column<?>[0]));
   }
 
   private Iterable<TableSlice> partition() {

@@ -13,11 +13,12 @@ import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.filtering.DateAndDateTimeFilterSpec;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-public interface DateFilters extends Column<LocalDate> {
+public interface DateFilters extends Column<LocalDate>, DateAndDateTimeFilterSpec<Selection> {
 
   DateColumn where(Selection selection);
 

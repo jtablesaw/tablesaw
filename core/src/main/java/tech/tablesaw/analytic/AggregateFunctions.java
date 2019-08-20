@@ -1,6 +1,5 @@
 package tech.tablesaw.analytic;
 
-
 import java.util.ArrayDeque;
 import tech.tablesaw.analytic.WindowFrame.WindowGrowthType;
 import tech.tablesaw.api.ColumnType;
@@ -8,20 +7,22 @@ import tech.tablesaw.api.ColumnType;
 /**
  * Analytic Aggregate functions.
  *
- * These require different implementations from regular aggregate functions because they can be called up to n times per
- * table can can take O(n) per call for a total of O(n^2). A table with the window definition ROWS BETWEEN UNBOUNDED
- * PRECEDING AND CURRENT ROW would be O(n^2).
+ * <p>These require different implementations from regular aggregate functions because they can be
+ * called up to n times per table can can take O(n) per call for a total of O(n^2). A table with the
+ * window definition ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW would be O(n^2).
  *
- * If at least one side of the window is unbounded the window is considered fixed. Most analytic functions with fixed
- * windows can be implemented in O(n). For example, calculating a sum over the window UNBOUNDED PRECEDING AND CURRENT
- * ROW can be done by simply summing the numbers. Windows ending in UNBOUNDED FOLLOWING can be converted to a window
- * that starts with UNBOUNDED PRECEDING to take advantage of the more efficient algorithm.
+ * <p>If at least one side of the window is unbounded the window is considered fixed. Most analytic
+ * functions with fixed windows can be implemented in O(n). For example, calculating a sum over the
+ * window UNBOUNDED PRECEDING AND CURRENT ROW can be done by simply summing the numbers. Windows
+ * ending in UNBOUNDED FOLLOWING can be converted to a window that starts with UNBOUNDED PRECEDING
+ * to take advantage of the more efficient algorithm.
  *
- * Sliding windows are windows where both sides of the window are following(nrows), * preceding(nrows) or current row.
- * Analytic aggregate algorithms for sliding windows are generally implemented with a Deque so that elements can be
- * added or removed from the widow.
+ * <p>Sliding windows are windows where both sides of the window are following(nrows), *
+ * preceding(nrows) or current row. Analytic aggregate algorithms for sliding windows are generally
+ * implemented with a Deque so that elements can be added or removed from the widow.
  *
- * This class creates two implementations per analytic function. One for fixed windows and one for sliding windows.
+ * <p>This class creates two implementations per analytic function. One for fixed windows and one
+ * for sliding windows.
  */
 enum AggregateFunctions implements FunctionMetaData {
   SUM(new Sum<>()),
@@ -53,10 +54,10 @@ enum AggregateFunctions implements FunctionMetaData {
   @Override
   public boolean isCompatibleColumn(ColumnType type) {
     return type.equals(ColumnType.DOUBLE)
-      || type.equals(ColumnType.FLOAT)
-      || type.equals(ColumnType.INTEGER)
-      || type.equals(ColumnType.SHORT)
-      || type.equals(ColumnType.LONG);
+        || type.equals(ColumnType.FLOAT)
+        || type.equals(ColumnType.INTEGER)
+        || type.equals(ColumnType.SHORT)
+        || type.equals(ColumnType.LONG);
   }
 
   private abstract static class WindowDependentAggregateFunction<T extends Number> {
@@ -90,12 +91,10 @@ enum AggregateFunctions implements FunctionMetaData {
         }
 
         @Override
-        public void removeLeftMost() {
-        }
+        public void removeLeftMost() {}
 
         @Override
-        public void addRightMostMissing() {
-        }
+        public void addRightMostMissing() {}
 
         @Override
         public void addRightMost(T newValue) {
@@ -170,8 +169,7 @@ enum AggregateFunctions implements FunctionMetaData {
         }
 
         @Override
-        public void addRightMostMissing() {
-        }
+        public void addRightMostMissing() {}
 
         @Override
         public Double getValue() {
@@ -202,9 +200,13 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public Double getValue() {
-          // This could be faster, but probably does not matter in practice because sliding windows will be small.
-          return queue.stream().filter(d -> !Double.isNaN(d)).mapToDouble(Number::doubleValue)
-            .max().orElse(Double.NaN);
+          // This could be faster, but probably does not matter in practice because sliding windows
+          // will be small.
+          return queue.stream()
+              .filter(d -> !Double.isNaN(d))
+              .mapToDouble(Number::doubleValue)
+              .max()
+              .orElse(Double.NaN);
         }
       };
     }

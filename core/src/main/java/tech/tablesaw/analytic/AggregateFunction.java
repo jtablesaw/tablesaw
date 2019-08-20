@@ -3,7 +3,9 @@ package tech.tablesaw.analytic;
 public interface AggregateFunction<T, R> {
 
   void removeLeftMost();
+
   void addRightMost(T value);
+
   void addRightMostMissing();
 
   default void addAllRightMost(Iterable<T> newValues) {
@@ -12,4 +14,3 @@ public interface AggregateFunction<T, R> {
 
   R getValue();
 }
-
