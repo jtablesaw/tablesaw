@@ -1,12 +1,14 @@
 package tech.tablesaw.io.saw;
 
 import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
@@ -36,6 +38,7 @@ import java.util.regex.Pattern;
 
 import static tech.tablesaw.io.saw.StorageManager.*;
 
+@SuppressWarnings("WeakerAccess")
 public class SawWriter {
 
     private static final int FLUSH_AFTER_ITERATIONS = 10_000;
@@ -132,6 +135,9 @@ public class SawWriter {
                 case STRING:
                     writeColumn(fileName, (StringColumn) column);
                     break;
+                case INSTANT:
+                    writeColumn(fileName, (InstantColumn) column);
+                    break;
                 case SHORT:
                     writeColumn(fileName, (ShortColumn) column);
                     break;
@@ -223,7 +229,7 @@ public class SawWriter {
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
             int i = 0;
-            for (int d : column) {
+            for (int d : column.data()) {
                 dos.writeInt(d);
                 if (i % FLUSH_AFTER_ITERATIONS == 0) {
                     dos.flush();
@@ -284,6 +290,22 @@ public class SawWriter {
     }
 
     private static void writeColumn(String fileName, DateTimeColumn column) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(fileName);
+             SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
+             DataOutputStream dos = new DataOutputStream(sos)) {
+            int i = 0;
+            for (long d : column.data()) {
+                dos.writeLong(d);
+                if (i % FLUSH_AFTER_ITERATIONS == 0) {
+                    dos.flush();
+                }
+                i++;
+            }
+            dos.flush();
+        }
+    }
+
+    private static void writeColumn(String fileName, InstantColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {

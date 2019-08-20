@@ -14,26 +14,13 @@ package tech.tablesaw.io.saw;
  * limitations under the License.
  */
 
-import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
-import org.iq80.snappy.SnappyFramedInputStream;
-import org.iq80.snappy.SnappyFramedOutputStream;
-import tech.tablesaw.api.*;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.DictionaryMap;
-import tech.tablesaw.table.Relation;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.regex.Pattern;
 
 /**
  * A controller for reading and writing data in Tablesaw's own compressed, column-oriented file format
  */
-public class StorageManager {
+class StorageManager {
 
     static final String FLOAT = "FLOAT";
     static final String DOUBLE = "DOUBLE";
@@ -41,6 +28,8 @@ public class StorageManager {
     static final String LONG = "LONG";
     static final String SHORT = "SHORT";
     static final String STRING = "STRING";
+    static final String TEXT = "TEXT";
+    static final String INSTANT = "INSTANT";
     static final String LOCAL_DATE = "LOCAL_DATE";
     static final String LOCAL_TIME = "LOCAL_TIME";
     static final String LOCAL_DATE_TIME = "LOCAL_DATE_TIME";

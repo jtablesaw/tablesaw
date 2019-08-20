@@ -29,13 +29,13 @@ public class ColumnMetadata {
 
   private final String id;
   private final String name;
-  private final ColumnType type;
+  private final String type;
   private final int size;
 
   ColumnMetadata(Column column) {
     this.id = UUID.randomUUID().toString();
     this.name = column.name();
-    this.type = column.type();
+    this.type = column.type().name();
     this.size = column.size();
   }
 
@@ -63,28 +63,6 @@ public class ColumnMetadata {
         + '}';
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    ColumnMetadata that = (ColumnMetadata) o;
-
-    if (size != that.size) return false;
-    if (!id.equals(that.id)) return false;
-    if (!name.equals(that.name)) return false;
-    return type == that.type;
-  }
-
-  @Override
-  public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + name.hashCode();
-    result = 31 * result + type.hashCode();
-    result = 31 * result + size;
-    return result;
-  }
-
   public String getId() {
     return id;
   }
@@ -93,7 +71,7 @@ public class ColumnMetadata {
     return name;
   }
 
-  public ColumnType getType() {
+  public String getType() {
     return type;
   }
 
@@ -102,7 +80,7 @@ public class ColumnMetadata {
   }
 
   public Column createColumn() {
-      final String typeString = getType().toString();
+      final String typeString = getType();
     switch (typeString) {
       case FLOAT:
         return FloatColumn.create(name);

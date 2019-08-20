@@ -6,6 +6,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
@@ -33,6 +34,7 @@ import java.util.concurrent.Future;
 
 import static tech.tablesaw.io.saw.StorageManager.*;
 
+@SuppressWarnings("WeakerAccess")
 public class SawReader {
 
     private static final int READER_POOL_SIZE = 4;
@@ -97,7 +99,7 @@ public class SawReader {
     private static Column readColumn(String fileName, ColumnMetadata columnMetadata)
             throws IOException {
 
-        final String typeString = columnMetadata.getType().toString();
+        final String typeString = columnMetadata.getType();
 
         switch (typeString) {
             case FLOAT:
@@ -114,6 +116,8 @@ public class SawReader {
                 return readLocalTimeColumn(fileName, columnMetadata);
             case LOCAL_DATE_TIME:
                 return readLocalDateTimeColumn(fileName, columnMetadata);
+            case INSTANT:
+                return readInstantColumn(fileName, columnMetadata);
 //            case STRING:
 //                return readStringColumn(fileName, columnMetadata);
             case SHORT:
@@ -230,8 +234,8 @@ public class SawReader {
         return dates;
     }
 
-    private static DateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata) throws
-            IOException {
+    private static DateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata)
+            throws IOException {
         DateTimeColumn dates = DateTimeColumn.create(metadata.getName());
         try (FileInputStream fis = new FileInputStream(fileName);
              SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
@@ -247,6 +251,25 @@ public class SawReader {
             }
         }
         return dates;
+    }
+
+    private static InstantColumn readInstantColumn(String fileName, ColumnMetadata metadata)
+            throws IOException {
+        InstantColumn instants = InstantColumn.create(metadata.getName());
+        try (FileInputStream fis = new FileInputStream(fileName);
+             SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+             DataInputStream dis = new DataInputStream(sis)) {
+            boolean EOF = false;
+            while (!EOF) {
+                try {
+                    long cell = dis.readLong();
+                    instants.appendInternal(cell);
+                } catch (EOFException e) {
+                    EOF = true;
+                }
+            }
+        }
+        return instants;
     }
 
     private static TimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata) throws IOException {

@@ -25,7 +25,18 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
   /** Compares two ints, such that a sort based on this comparator would sort in descending order */
   private final IntComparator descendingComparator = (o2, o1) -> (Integer.compare(o1, o2));
 
+  protected final IntComparator comparator =
+          (r1, r2) -> {
+            final int f1 = getInt(r1);
+            final int f2 = getInt(r2);
+            return Integer.compare(f1, f2);
+          };
+
   private final IntArrayList data;
+
+  public IntArrayList data() {
+    return data;
+  }
 
   protected IntColumn(final String name, IntArrayList data) {
     super(IntColumnType.instance(), name);
