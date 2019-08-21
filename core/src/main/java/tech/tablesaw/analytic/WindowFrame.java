@@ -3,8 +3,18 @@ package tech.tablesaw.analytic;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-/** Simple Data class capturing the start and end of the window. */
-public final class WindowFrame {
+/**
+ * This class holds data on the WindowFrame clause of an analytic query.
+ *
+ * <p>Each Window is viewed as an array of values/rows and has a let bound and right bound.
+ *
+ * <p>For example in the window [1, 2, (3, 4, 5), 6, 7] The left most element in the window is 3 and
+ * the rightmost element is 5.
+ *
+ * <p>For more information on the window frame clause in SQL see {@link
+ * AnalyticQuerySteps.DefineWindowFame}
+ */
+final class WindowFrame {
 
   enum WindowBoundTypes {
     UNBOUNDED_PRECEDING(0),
@@ -20,28 +30,32 @@ public final class WindowFrame {
     }
   }
 
-  // TODO make this package private
   enum WindowGrowthType {
+    // UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
     FIXED,
-    FIXED_START,
-    FIXED_END,
+    // UNBOUNDED PRECEDING AND NOT UNBOUNDED FOLLOWING
+    FIXED_LEFT,
+    // NOT UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    FIXED_RIGHT,
+    // NOT UNBOUNDED PRECEDING AND NOT UNBOUNDED FOLLOWING
     SLIDING;
   }
 
-  private final WindowBoundTypes frameStart;
-  private final int frameStartShift;
-  private final WindowBoundTypes frameEnd;
-  private final int frameEndShift;
+  private final WindowBoundTypes leftBoundType;
+  private final int initialLeftBound;
+  private final WindowBoundTypes rightBoundType;
+  // Set to zero for UNBOUNDED FOLLOWING windows.
+  private final int initialRightBound;
 
   private WindowFrame(
-      WindowBoundTypes frameStart,
-      int frameStartShift,
-      WindowBoundTypes frameEnd,
-      int frameEndShift) {
-    this.frameStart = frameStart;
-    this.frameStartShift = frameStartShift;
-    this.frameEnd = frameEnd;
-    this.frameEndShift = frameEndShift;
+      WindowBoundTypes leftBoundType,
+      int initialLeftBound,
+      WindowBoundTypes rightBoundType,
+      int initialRightBound) {
+    this.leftBoundType = leftBoundType;
+    this.initialLeftBound = initialLeftBound;
+    this.rightBoundType = rightBoundType;
+    this.initialRightBound = initialRightBound;
     validateWindow();
   }
 
@@ -49,72 +63,79 @@ public final class WindowFrame {
     return new Builder();
   }
 
-  public WindowBoundTypes getFrameStart() {
-    return frameStart;
+  WindowBoundTypes getLeftBoundType() {
+    return leftBoundType;
   }
 
-  public int getFrameStartShift() {
-    return frameStartShift;
+  int getInitialLeftBound() {
+    return initialLeftBound;
   }
 
-  public WindowBoundTypes getFrameEnd() {
-    return frameEnd;
+  WindowBoundTypes getRightBoundType() {
+    return rightBoundType;
   }
 
-  public int getFrameEndShift() {
-    return frameEndShift;
+  int getInitialRightBound() {
+    return initialRightBound;
   }
 
-  /** Throw if invalid combination */
+  /**
+   * Throw if invalid window frame. For example ROWS BETWEEN FOLLOWING AND UNBOUNDED PRECEDING is
+   * invalid.
+   */
   private void validateWindow() {
     String errorMsg = "Invalid Window: " + this.toString() + '.';
     // If bounds are the same they both must either be preceding or following.
-    if (this.frameEnd == this.frameStart) {
+    if (this.rightBoundType == this.leftBoundType) {
       Preconditions.checkArgument(
-          frameStart == WindowBoundTypes.PRECEDING || frameStart == WindowBoundTypes.FOLLOWING,
+          leftBoundType == WindowBoundTypes.PRECEDING
+              || leftBoundType == WindowBoundTypes.FOLLOWING,
           errorMsg);
       // When the bounds are both preceding the lef bound should be greater than
-      if (this.frameStart == WindowBoundTypes.PRECEDING) {
+      if (this.leftBoundType == WindowBoundTypes.PRECEDING) {
         Preconditions.checkArgument(
-            frameStartShift < frameEndShift,
+            initialLeftBound < initialRightBound,
             errorMsg
                 + " The number preceding at start of the window '"
-                + Math.abs(frameStartShift)
+                + Math.abs(initialLeftBound)
                 + "' must be greater than the number preceding at the end of the window '"
-                + Math.abs(frameEndShift)
+                + Math.abs(initialRightBound)
                 + "'");
       } else {
         Preconditions.checkArgument(
-            frameEndShift > frameStartShift,
+            initialRightBound > initialLeftBound,
             errorMsg
                 + " The number following at start of the window '"
-                + frameStartShift
+                + initialLeftBound
                 + "' must be less than the number following at the end of the window '"
-                + frameEndShift
+                + initialRightBound
                 + "'");
       }
     }
     Preconditions.checkArgument(
-        frameEnd.order >= frameStart.order,
-        errorMsg + ". " + frameStart + " cannot come before " + frameEnd);
+        rightBoundType.order >= leftBoundType.order,
+        errorMsg + ". " + leftBoundType + " cannot come before " + rightBoundType);
   }
 
+  /**
+   * Calculate the window growth type. Knowing the growth type simplifies the executing the query.
+   */
   WindowGrowthType windowGrowthType() {
-    if (frameStart == WindowBoundTypes.UNBOUNDED_PRECEDING
-        && frameEnd == WindowBoundTypes.UNBOUNDED_FOLLOWING) {
+    if (leftBoundType == WindowBoundTypes.UNBOUNDED_PRECEDING
+        && rightBoundType == WindowBoundTypes.UNBOUNDED_FOLLOWING) {
       return WindowGrowthType.FIXED;
-    } else if ((frameStart == WindowBoundTypes.PRECEDING
-            || frameStart == WindowBoundTypes.FOLLOWING
-            || frameStart == WindowBoundTypes.CURRENT_ROW)
-        && (frameEnd == WindowBoundTypes.PRECEDING
-            || frameEnd == WindowBoundTypes.FOLLOWING
-            || frameEnd == WindowBoundTypes.CURRENT_ROW)) {
+    } else if ((leftBoundType == WindowBoundTypes.PRECEDING
+            || leftBoundType == WindowBoundTypes.FOLLOWING
+            || leftBoundType == WindowBoundTypes.CURRENT_ROW)
+        && (rightBoundType == WindowBoundTypes.PRECEDING
+            || rightBoundType == WindowBoundTypes.FOLLOWING
+            || rightBoundType == WindowBoundTypes.CURRENT_ROW)) {
       return WindowGrowthType.SLIDING;
     }
-    if (frameStart == WindowBoundTypes.UNBOUNDED_PRECEDING) {
-      return WindowGrowthType.FIXED_START;
+    if (leftBoundType == WindowBoundTypes.UNBOUNDED_PRECEDING) {
+      return WindowGrowthType.FIXED_LEFT;
     }
-    return WindowGrowthType.FIXED_END;
+    return WindowGrowthType.FIXED_RIGHT;
   }
 
   @Override
@@ -122,26 +143,28 @@ public final class WindowFrame {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     WindowFrame that = (WindowFrame) o;
-    return frameStartShift == that.frameStartShift
-        && frameEndShift == that.frameEndShift
-        && frameStart == that.frameStart
-        && frameEnd == that.frameEnd;
+    return initialLeftBound == that.initialLeftBound
+        && initialRightBound == that.initialRightBound
+        && leftBoundType == that.leftBoundType
+        && rightBoundType == that.rightBoundType;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(frameStart, frameStartShift, frameEnd, frameEndShift);
+    return Objects.hashCode(leftBoundType, initialLeftBound, rightBoundType, initialRightBound);
   }
 
-  public String toSqlString() {
-    String formatedStart = frameStart.toString();
-    if (frameStart == WindowBoundTypes.PRECEDING || frameStart == WindowBoundTypes.FOLLOWING) {
-      formatedStart = Math.abs(frameStartShift) + " " + formatedStart;
+  String toSqlString() {
+    String formatedStart = leftBoundType.toString();
+    if (leftBoundType == WindowBoundTypes.PRECEDING
+        || leftBoundType == WindowBoundTypes.FOLLOWING) {
+      formatedStart = Math.abs(initialLeftBound) + " " + formatedStart;
     }
 
-    String formattedRightBound = frameEnd.toString();
-    if (frameEnd == WindowBoundTypes.PRECEDING || frameEnd == WindowBoundTypes.FOLLOWING) {
-      formattedRightBound = Math.abs(frameEndShift) + " " + formattedRightBound;
+    String formattedRightBound = rightBoundType.toString();
+    if (rightBoundType == WindowBoundTypes.PRECEDING
+        || rightBoundType == WindowBoundTypes.FOLLOWING) {
+      formattedRightBound = Math.abs(initialRightBound) + " " + formattedRightBound;
     }
 
     return "ROWS BETWEEN " + formatedStart + " AND " + formattedRightBound;
@@ -152,55 +175,62 @@ public final class WindowFrame {
     return toSqlString();
   }
 
-  static class Builder {
+  /**
+   * Builder for a {@link WindowFrame}. Defaults to UNBOUNDED PRECEDING UNBOUNDED FOLLOWING.
+   *
+   * <p>The shift is the number of rows to extend the window left or right from the current row.
+   * Negative includes rows to the left, positive includes rows to the right.
+   */
+  static final class Builder {
 
-    private WindowBoundTypes frameStart = WindowBoundTypes.UNBOUNDED_PRECEDING;
-    private int frameStartShift = 0;
-    private WindowBoundTypes frameEnd = WindowBoundTypes.UNBOUNDED_FOLLOWING;
-    private int frameEndShift = 0;
+    private WindowBoundTypes leftBoundType = WindowBoundTypes.UNBOUNDED_PRECEDING;
+    private int initialLeftBound = 0;
+    private WindowBoundTypes rightBoundType = WindowBoundTypes.UNBOUNDED_FOLLOWING;
+    // Set to zero for UNBOUNDED FOLLOWING windows
+    private int initialRightBound = 0;
 
     private Builder() {}
 
-    Builder setStartPreceding(int nRows) {
+    Builder setLeftPreceding(int nRows) {
       Preconditions.checkArgument(nRows > 0);
-      this.frameStart = WindowBoundTypes.PRECEDING;
-      this.frameStartShift = nRows * -1;
+      this.leftBoundType = WindowBoundTypes.PRECEDING;
+      this.initialLeftBound = nRows * -1;
       return this;
     }
 
-    Builder setStartCurrentRow() {
-      this.frameStart = WindowBoundTypes.CURRENT_ROW;
+    Builder setLeftCurrentRow() {
+      this.leftBoundType = WindowBoundTypes.CURRENT_ROW;
       return this;
     }
 
-    Builder setStartFollowing(int nRows) {
+    Builder setLeftFollowing(int nRows) {
       Preconditions.checkArgument(nRows > 0);
-      this.frameStart = WindowBoundTypes.FOLLOWING;
-      this.frameStartShift = nRows;
+      this.leftBoundType = WindowBoundTypes.FOLLOWING;
+      this.initialLeftBound = nRows;
       return this;
     }
 
-    Builder setEndPreceding(int nRows) {
+    Builder setRightPreceding(int nRows) {
       Preconditions.checkArgument(nRows > 0);
-      this.frameEnd = WindowBoundTypes.PRECEDING;
-      this.frameEndShift = nRows * -1;
+      this.rightBoundType = WindowBoundTypes.PRECEDING;
+      this.initialRightBound = nRows * -1;
       return this;
     }
 
-    Builder setEnndCurrentRow() {
-      this.frameEnd = WindowBoundTypes.CURRENT_ROW;
+    Builder setRightCurrentRow() {
+      this.rightBoundType = WindowBoundTypes.CURRENT_ROW;
       return this;
     }
 
-    Builder setEndFollowing(int nRows) {
+    Builder setRightFollowing(int nRows) {
       Preconditions.checkArgument(nRows > 0);
-      this.frameEnd = WindowBoundTypes.FOLLOWING;
-      this.frameEndShift = nRows;
+      this.rightBoundType = WindowBoundTypes.FOLLOWING;
+      this.initialRightBound = nRows;
       return this;
     }
 
     public WindowFrame build() {
-      return new WindowFrame(frameStart, frameStartShift, frameEnd, frameEndShift);
+      return new WindowFrame(leftBoundType, initialLeftBound, rightBoundType, initialRightBound);
     }
   }
 }

@@ -7,22 +7,28 @@ import tech.tablesaw.api.ColumnType;
 /**
  * Analytic Aggregate functions.
  *
- * <p>These require different implementations from regular aggregate functions because they can be
- * called up to n times per table can can take O(n) per call for a total of O(n^2). A table with the
- * window definition ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW would be O(n^2).
+ * <p>Analytic Aggregate functions require different implementations compared to regular aggregate
+ * functions because they are called once per row and must return a value for every row in the
+ * table.
  *
- * <p>If at least one side of the window is unbounded the window is considered fixed. Most analytic
- * functions with fixed windows can be implemented in O(n). For example, calculating a sum over the
- * window UNBOUNDED PRECEDING AND CURRENT ROW can be done by simply summing the numbers. Windows
- * ending in UNBOUNDED FOLLOWING can be converted to a window that starts with UNBOUNDED PRECEDING
- * to take advantage of the more efficient algorithm.
+ * <p>Consider calculating the SUM over a table with a window definition of ROWS BETWEEN UNBOUNDED
+ * PRECEDING AND CURRENT ROW. If a regular aggregate function was used it would be called once for
+ * each row and since each window contains O(n) rows for a total running time of O(n^2). Clearly you
+ * can use a more efficient algorithm that keeps a running sum as rows are added to the window and
+ * runs in O(n). This class allows for those more efficient algorithms to be used.
  *
- * <p>Sliding windows are windows where both sides of the window are following(nrows), *
- * preceding(nrows) or current row. Analytic aggregate algorithms for sliding windows are generally
- * implemented with a Deque so that elements can be added or removed from the widow.
+ * <p>If at least one side of the window is unbounded the window is considered an append window.
+ * With a bit of tweaking windows UNBOUNDED FOLLOWING windows can be converted to UNBOUNDED
+ * PRECEDING windows so they are append only and can use a more efficient algorithm similar to the
+ * one explained above.
  *
- * <p>This class creates two implementations per analytic function. One for fixed windows and one
- * for sliding windows.
+ * <p>Sliding windows are windows where both sides of the window are following, preceding or current
+ * row. Analytic aggregate algorithms for sliding windows are generally implemented with a {@link
+ * java.util.Deque} so that elements can be added or removed from either side of the window as it
+ * slides.
+ *
+ * <p>This class creates two implementations per analytic aggregate function. One for append windows
+ * and one for sliding windows.
  */
 enum AggregateFunctions implements FunctionMetaData {
   SUM(new Sum<>()),
@@ -37,6 +43,7 @@ enum AggregateFunctions implements FunctionMetaData {
     this.implementation = implementation;
   }
 
+  /** Get the right implementation for that window definition. */
   AggregateFunction<?, Double> getImplementation(WindowGrowthType growthType) {
     return this.implementation.functionFor(growthType);
   }
@@ -62,18 +69,27 @@ enum AggregateFunctions implements FunctionMetaData {
 
   private abstract static class WindowDependentAggregateFunction<T extends Number> {
 
-    abstract AggregateFunction<T, Double> fixedFunction();
+    /** Sub classes of append windows should never call removeLeft. */
+    private abstract static class AppendAggregateFunction<T, R> implements AggregateFunction<T, R> {
+      @Override
+      public void removeLeftMost() {
+        throw new UnsupportedOperationException(
+            "Implementers of append aggregate functions should never call removeLeftMost");
+      }
+    }
 
-    abstract AggregateFunction<T, Double> slidingFunction();
+    abstract AppendAggregateFunction<T, Double> functionForAppendWindows();
+
+    abstract AggregateFunction<T, Double> functionForSlidingWindows();
 
     AggregateFunction<T, Double> functionFor(WindowGrowthType growthType) {
       switch (growthType) {
         case FIXED:
-        case FIXED_START:
-        case FIXED_END:
-          return fixedFunction();
+        case FIXED_LEFT:
+        case FIXED_RIGHT:
+          return functionForAppendWindows();
         case SLIDING:
-          return slidingFunction();
+          return functionForSlidingWindows();
       }
       throw new RuntimeException("Unexpected growthType: " + growthType);
     }
@@ -81,17 +97,14 @@ enum AggregateFunctions implements FunctionMetaData {
 
   static class Sum<T extends Number> extends WindowDependentAggregateFunction<T> {
     @Override
-    AggregateFunction<T, Double> fixedFunction() {
-      return new AggregateFunction<T, Double>() {
+    AppendAggregateFunction<T, Double> functionForAppendWindows() {
+      return new AppendAggregateFunction<T, Double>() {
         private double sum = Double.NaN;
 
         @Override
         public Double getValue() {
           return sum;
         }
-
-        @Override
-        public void removeLeftMost() {}
 
         @Override
         public void addRightMostMissing() {}
@@ -107,7 +120,7 @@ enum AggregateFunctions implements FunctionMetaData {
     }
 
     @Override
-    AggregateFunction<T, Double> slidingFunction() {
+    AggregateFunction<T, Double> functionForSlidingWindows() {
       return new AggregateFunction<T, Double>() {
         private final ArrayDeque<Double> queue = new ArrayDeque<>();
         private Double sum = 0.0;
@@ -150,14 +163,9 @@ enum AggregateFunctions implements FunctionMetaData {
   static class Max<T extends Number> extends WindowDependentAggregateFunction<T> {
 
     @Override
-    AggregateFunction<T, Double> fixedFunction() {
-      return new AggregateFunction<T, Double>() {
+    AppendAggregateFunction<T, Double> functionForAppendWindows() {
+      return new AppendAggregateFunction<T, Double>() {
         private Double max = Double.NaN;
-
-        @Override
-        public void removeLeftMost() {
-          throw new IllegalArgumentException("Should never call remove on fixed function");
-        }
 
         @Override
         public void addRightMost(T newValue) {
@@ -179,7 +187,7 @@ enum AggregateFunctions implements FunctionMetaData {
     }
 
     @Override
-    AggregateFunction<T, Double> slidingFunction() {
+    AggregateFunction<T, Double> functionForSlidingWindows() {
       return new AggregateFunction<T, Double>() {
         private final ArrayDeque<Double> queue = new ArrayDeque<>();
 
@@ -215,12 +223,12 @@ enum AggregateFunctions implements FunctionMetaData {
   static class Min<T extends Number> extends WindowDependentAggregateFunction<T> {
 
     @Override
-    AggregateFunction<T, Double> fixedFunction() {
+    AppendAggregateFunction<T, Double> functionForAppendWindows() {
       throw new UnsupportedOperationException("Analytic Function Min Is Not implemented");
     }
 
     @Override
-    AggregateFunction<T, Double> slidingFunction() {
+    AggregateFunction<T, Double> functionForSlidingWindows() {
       throw new UnsupportedOperationException("Analytic Function Min Is Not implemented");
     }
   }
@@ -228,12 +236,12 @@ enum AggregateFunctions implements FunctionMetaData {
   static class Mean<T extends Number> extends WindowDependentAggregateFunction<T> {
 
     @Override
-    AggregateFunction<T, Double> fixedFunction() {
+    AppendAggregateFunction<T, Double> functionForAppendWindows() {
       throw new UnsupportedOperationException("Analytic Function Mean Is Not implemented");
     }
 
     @Override
-    AggregateFunction<T, Double> slidingFunction() {
+    AggregateFunction<T, Double> functionForSlidingWindows() {
       throw new UnsupportedOperationException("Analytic Function Mean Is Not implemented");
     }
   }
@@ -241,12 +249,12 @@ enum AggregateFunctions implements FunctionMetaData {
   static class Count<T extends Number> extends WindowDependentAggregateFunction<T> {
 
     @Override
-    AggregateFunction<T, Double> fixedFunction() {
+    AppendAggregateFunction<T, Double> functionForAppendWindows() {
       throw new UnsupportedOperationException("Analytic Function Count Is Not implemented");
     }
 
     @Override
-    AggregateFunction<T, Double> slidingFunction() {
+    AggregateFunction<T, Double> functionForSlidingWindows() {
       throw new UnsupportedOperationException("Analytic Function Count Is Not implemented");
     }
   }

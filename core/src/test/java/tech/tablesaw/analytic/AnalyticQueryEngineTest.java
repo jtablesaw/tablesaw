@@ -1,9 +1,11 @@
 package tech.tablesaw.analytic;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
@@ -12,17 +14,18 @@ import tech.tablesaw.api.Table;
 
 class AnalyticQueryEngineTest {
 
-  private static Table source;
+  private static Table referenceImplementation;
 
-  // Before all is a few seconds faster.
+  // Before runs tests a few seconds faster.
   @BeforeAll
   public static void setUp() throws Exception {
     // Reference implementation generated from BigQuery.
-    source = Table.read().csv("../data/bush_analytic_reference_implementation.csv");
+    referenceImplementation =
+        Table.read().csv("../data/bush_analytic_reference_implementation.csv");
   }
 
   private double[] sourceColumnAsDouble(String columnName) {
-    return source.intColumn(columnName).asDoubleArray();
+    return referenceImplementation.intColumn(columnName).asDoubleArray();
   }
 
   @Test
@@ -106,7 +109,7 @@ class AnalyticQueryEngineTest {
   public void unoundedPrecedingAnd5Preceding() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -134,7 +137,7 @@ class AnalyticQueryEngineTest {
   public void unboundedPrecedingAndCurrentRow() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -162,7 +165,7 @@ class AnalyticQueryEngineTest {
   public void unboundedPrecedingAnd5Following() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -190,7 +193,7 @@ class AnalyticQueryEngineTest {
   public void unboundedPrecedingAndUnboundedFollowing() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -218,7 +221,7 @@ class AnalyticQueryEngineTest {
   public void fivePrecedingAnd3Preceding() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -246,7 +249,7 @@ class AnalyticQueryEngineTest {
   public void fivePrecedingAndCurrentRow() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -274,7 +277,7 @@ class AnalyticQueryEngineTest {
   public void fivePrecedingAnd5Following() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -302,7 +305,7 @@ class AnalyticQueryEngineTest {
   public void fivePrecedingAndUnboundedFollowing() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -330,7 +333,7 @@ class AnalyticQueryEngineTest {
   public void currentRowAndUnboundedFollowing() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -358,7 +361,7 @@ class AnalyticQueryEngineTest {
   public void fiveFollowingAnd8Following() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -387,7 +390,7 @@ class AnalyticQueryEngineTest {
   public void fiveFollowingAndUnboundedFollowing() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -415,7 +418,7 @@ class AnalyticQueryEngineTest {
   public void numberingFunctionReferenceImplementation() {
     AnalyticQuery query =
         AnalyticQuery.numberingQuery()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowNumber()
@@ -466,5 +469,28 @@ class AnalyticQueryEngineTest {
     assertArrayEquals(
         new double[] {1.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0},
         result.intColumn("denseRank").asDoubleArray());
+  }
+
+  @Test
+  public void resultColumnOrderSameAsSpecifiedInQuery() {
+    Table table = Table.create("table", StringColumn.create("col1", new String[] {}));
+
+    AnalyticQuery query =
+        AnalyticQuery.numberingQuery()
+            .from(table)
+            .partitionBy()
+            .orderBy("col1")
+            .rowNumber()
+            .as("rowNumber")
+            .rank()
+            .as("rank")
+            .denseRank()
+            .as("denseRank")
+            .build();
+
+    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    Table result = queryEngine.execute();
+
+    assertEquals(ImmutableList.of("rowNumber", "rank", "denseRank"), result.columnNames());
   }
 }

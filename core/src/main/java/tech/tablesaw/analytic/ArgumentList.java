@@ -13,7 +13,8 @@ import java.util.stream.Stream;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.Column;
 
-public final class ArgumentList {
+/** This class holds data on what aggregate and numbering functions to execute in the query. */
+final class ArgumentList {
   // Throws if a column with the same name is registered
   private final Map<String, FunctionCall<AggregateFunctions>> aggregateFunctions;
   private final Map<String, FunctionCall<NumberingFunctions>> numberingFunctions;
@@ -154,16 +155,18 @@ public final class ArgumentList {
 
   static class Builder {
 
-    // maps new column to aggregate function.
+    // Maps the destination column name to aggregate function.
     private final Map<String, FunctionCall<AggregateFunctions>> aggregateFunctions =
         new HashMap<>();
+    // Maps the destination column name to aggregate function.
     private final Map<String, FunctionCall<NumberingFunctions>> numberingFunctions =
         new HashMap<>();
 
     // Throws if a column with the same name is registered twice.
     private final LinkedHashSet<String> newColumnNames = new LinkedHashSet<>();
 
-    // Temporarily store analytic function data until the user calls as to give the new coumn a name
+    // Temporarily store analytic function data until the user calls 'as' to give the new column a
+    // name
     // and save all the metadata.
     private String stagedFromColumn;
     private AggregateFunctions stagedAggregateFunction;
@@ -183,6 +186,7 @@ public final class ArgumentList {
     Builder stageFunction(NumberingFunctions function) {
       checkNothingStaged();
       Preconditions.checkNotNull(function);
+      // Numbering functions do not have a from column. Use a placeholder instead.
       this.stagedFromColumn = "NUMBERING_FUNCTION_PLACEHOLDER";
       this.stagedNumberingFunction = function;
       return this;
@@ -224,7 +228,7 @@ public final class ArgumentList {
 
     ArgumentList build() {
       if (this.stagedFromColumn != null) {
-        throw new IllegalArgumentException("Cannot build when a column is staged");
+        throw new IllegalStateException("Cannot build when a column is staged");
       }
       return new ArgumentList(aggregateFunctions, numberingFunctions, newColumnNames);
     }

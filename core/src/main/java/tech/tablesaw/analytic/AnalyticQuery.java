@@ -2,31 +2,29 @@ package tech.tablesaw.analytic;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddAggregateFunctions;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddAggregateFunctionsWithExecute;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddNumberingFunction;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddNumberingFunctionWithExecute;
-import tech.tablesaw.analytic.AnalyticQuerySteps.DefineWindow;
+import tech.tablesaw.analytic.AnalyticQuerySteps.DefineWindowFame;
 import tech.tablesaw.analytic.AnalyticQuerySteps.FullAnalyticQuerySteps;
+import tech.tablesaw.analytic.AnalyticQuerySteps.FullAnalyticQuerySteps.OrderByOptionalStep;
 import tech.tablesaw.analytic.AnalyticQuerySteps.NameStepAggregate;
 import tech.tablesaw.analytic.AnalyticQuerySteps.NameStepNumbering;
 import tech.tablesaw.analytic.AnalyticQuerySteps.NumberingQuerySteps;
-import tech.tablesaw.analytic.AnalyticQuerySteps.NumberingQuerySteps.OrderRequiredStep;
-import tech.tablesaw.analytic.AnalyticQuerySteps.NumberingQuerySteps.PartitionStep;
+import tech.tablesaw.analytic.AnalyticQuerySteps.NumberingQuerySteps.OrderByRequiredStep;
+import tech.tablesaw.analytic.AnalyticQuerySteps.NumberingQuerySteps.PartitionByStep;
 import tech.tablesaw.analytic.AnalyticQuerySteps.QuickQuerySteps;
-import tech.tablesaw.analytic.AnalyticQuerySteps.WindowEndOptionOne;
-import tech.tablesaw.analytic.AnalyticQuerySteps.WindowEndOptionTwo;
-import tech.tablesaw.analytic.AnalyticQuerySteps.WindowStart;
-import tech.tablesaw.api.Row;
+import tech.tablesaw.analytic.AnalyticQuerySteps.SetWindowEndOptionOne;
+import tech.tablesaw.analytic.AnalyticQuerySteps.SetWindowEndOptionTwo;
+import tech.tablesaw.analytic.AnalyticQuerySteps.SetWindowStart;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.sorting.Sort;
 
+/** A class representing an analytic query similar to the Over or Window clause in SQL. */
 public final class AnalyticQuery {
 
   private final Table table;
@@ -46,9 +44,21 @@ public final class AnalyticQuery {
   }
 
   /**
-   * Entry point for Full Analytic Query.
+   * Entry point for the fluent analytic query builder. Order By and Partition By are optional.
    *
-   * @return Full Analytic Query Builder.
+   * <p>An AnalyticQuery performs a calculation across a set of table rows that are somehow related
+   * to the current row.
+   *
+   * <pre>
+   * Query includes steps for:
+   * FROM table_name
+   * [ PARTITION BY co1, col2... ]
+   * [ ORDER BY col1, col2...]
+   * window_frame_clause {@link DefineWindowFame}
+   * argument_list {@link AnalyticQuerySteps.AnalyticFunctions}
+   * </pre>
+   *
+   * @return a fluent analytic query builder.
    */
   @Beta
   public static FullAnalyticQuerySteps.FromStep query() {
@@ -56,9 +66,20 @@ public final class AnalyticQuery {
   }
 
   /**
-   * Entry point for Numbering Query.
+   * Entry point for the fluent Numbering Query Builder.
    *
-   * @return Numbering Analytic Query Builder.
+   * <p>A numbering assigns integer values to each row based on their position within the specified
+   * partition. Numbering queries require Order By.
+   *
+   * <pre>
+   * Query includes steps for:
+   * FROM table_name
+   * [ PARTITION BY col1, col2...]
+   * ORDER BY
+   * argument_list {@link AnalyticQuerySteps.NumberingFunctions}
+   * </pre>
+   *
+   * @return a fluent numbering query builder.
    */
   @Beta
   public static NumberingQuerySteps.FromStep numberingQuery() {
@@ -66,40 +87,59 @@ public final class AnalyticQuery {
   }
 
   /**
-   * Entry point for Quick Analytic Query.
+   * Entry point for the fluent Analytic Query Builder. Same as the {@link AnalyticQuery#query()}
+   * but skips the ORDER BY and PARTITION BY steps.
    *
-   * @return Quick Analytic Query Builder.
+   * <pre>
+   * Query includes steps for:
+   * FROM table_name
+   * window_frame_clause {@link DefineWindowFame}
+   * argument_list {@link AnalyticQuerySteps.AnalyticFunctions}
+   * </pre>
+   *
+   * @return a fluent analytic query builder that will skip the PartitionBy and OrderBy steps.
    */
   @Beta
   public static QuickQuerySteps.FromStep quickQuery() {
     return new QuickQueryBuilder();
   }
 
+  /**
+   * The Table behind the query.
+   *
+   * @return the underlying {@link Table} behind this query.
+   */
   public Table getTable() {
     return table;
   }
 
-  public ArgumentList getArgumentList() {
+  ArgumentList getArgumentList() {
     return argumentList;
   }
 
-  public LinkedHashSet<String> getPartitionColumns() {
+  LinkedHashSet<String> getPartitionColumns() {
     return windowSpecification.getPartitionColumns();
   }
 
-  public Optional<Sort> getSort() {
+  Optional<Sort> getSort() {
     return windowSpecification.getSort();
   }
 
-  public WindowSpecification getWindowSpecification() {
+  WindowSpecification getWindowSpecification() {
     return windowSpecification;
   }
 
-  public WindowFrame getWindowFrame() {
+  WindowFrame getWindowFrame() {
     return windowFrame;
   }
 
-  public String toSqlString() {
+  /**
+   * Creates a SQL like string for documentation purposes. The returned SQL is not meant be executed
+   * in SQL database.
+   *
+   * @return a SQL like string explaining the query.
+   */
+  public String toSqlLikeString() {
     StringBuilder sb = new StringBuilder();
     if (!argumentList.getNewColumnNames().isEmpty()) {
       sb.append("SELECT")
@@ -129,44 +169,58 @@ public final class AnalyticQuery {
 
   @Override
   public String toString() {
-    return toSqlString();
+    return toSqlLikeString();
   }
 
+  /**
+   * Executes the query adding all the calculated columns to a new table. The result columns will
+   * have the same order as the from table.
+   *
+   * @return a new table containing only the result columns.
+   */
   public Table execute() {
     return AnalyticQueryEngine.create(this).execute();
   }
 
+  /**
+   * Executes the query and adds all the calculated columns directly to the source table.
+   *
+   * @throws IllegalArgumentException if any of the calculated columns have the same name as one of
+   *     the columns in the FROM table.
+   */
+  public void executeInPlace() {
+    throw new UnsupportedOperationException("Execute Place is not implemented");
+  }
+
   static class NumberingQueryBuilder
       implements NumberingQuerySteps.FromStep,
-          NumberingQuerySteps.OrderRequiredStep,
-          NumberingQuerySteps.PartitionStep,
+          OrderByRequiredStep,
+          PartitionByStep,
           AnalyticQuerySteps.AddNumberingFunction,
           AddNumberingFunctionWithExecute,
           NameStepNumbering {
     private Table table;
-    private final WindowFrame.Builder frameBuilder = WindowFrame.builder();
     private final WindowSpecification.Builder windowSpecificationBuilder =
         WindowSpecification.builder();
     private final ArgumentList.Builder argumentsListBuilder = ArgumentList.builder();
-    private final List<Consumer<Iterable<Row>>> consumers = new ArrayList<>();
 
     @Override
-    public PartitionStep from(Table table) {
+    public PartitionByStep from(Table table) {
       this.table = table;
       return this;
     }
 
     @Override
-    public OrderRequiredStep partitionBy(String... columnNames) {
+    public OrderByRequiredStep partitionBy(String... columnNames) {
       this.windowSpecificationBuilder.setPartitionColumns(Arrays.asList(columnNames));
       return this;
     }
 
     @Override
-    public AddNumberingFunction orderBy(String columnOne, String... rest) {
-      String[] cols = new String[rest.length + 1];
-      cols[0] = columnOne;
-      System.arraycopy(rest, 0, cols, 1, rest.length);
+    public AddNumberingFunction orderBy(String columnName, String... columnNames) {
+      String[] cols = new String[columnNames.length + 1];
+      cols[0] = columnName;
+      System.arraycopy(columnNames, 0, cols, 1, columnNames.length);
       windowSpecificationBuilder.setSort(Sort.create(this.table, cols));
       return this;
     }
@@ -216,12 +270,12 @@ public final class AnalyticQuery {
   }
 
   abstract static class AnalyticBuilder
-      implements FullAnalyticQuerySteps.OrderOptionalStep,
-          FullAnalyticQuerySteps.PartitionStep,
-          DefineWindow,
-          WindowStart,
-          WindowEndOptionOne,
-          WindowEndOptionTwo,
+      implements OrderByOptionalStep,
+          FullAnalyticQuerySteps.PartitionByStep,
+          DefineWindowFame,
+          SetWindowStart,
+          SetWindowEndOptionOne,
+          SetWindowEndOptionTwo,
           NameStepAggregate,
           AddAggregateFunctions,
           AddAggregateFunctionsWithExecute {
@@ -230,7 +284,6 @@ public final class AnalyticQuery {
     private final WindowSpecification.Builder windowSpecificationBuilder =
         WindowSpecification.builder();
     private final ArgumentList.Builder argumentsListBuilder = ArgumentList.builder();
-    private final List<Consumer<Iterable<Row>>> consumers = new ArrayList<>();
 
     @Override
     public NameStepAggregate sum(String columnName) {
@@ -263,61 +316,61 @@ public final class AnalyticQuery {
     }
 
     @Override
-    public FullAnalyticQuerySteps.OrderOptionalStep partitionBy(String... columns) {
+    public OrderByOptionalStep partitionBy(String... columns) {
       this.windowSpecificationBuilder.setPartitionColumns(Arrays.asList(columns));
       return this;
     }
 
     @Override
-    public DefineWindow orderBy(String... columnNames) {
+    public DefineWindowFame orderBy(String... columnNames) {
       windowSpecificationBuilder.setSort(Sort.create(this.table, columnNames));
       return this;
     }
 
     @Override
-    public WindowStart rowsBetween() {
+    public SetWindowStart rowsBetween() {
       return this;
     }
 
     @Override
-    public WindowEndOptionOne unboundedPreceding() {
+    public SetWindowEndOptionOne unboundedPreceding() {
       // default is unbounded preceding.
       return this;
     }
 
     @Override
-    public WindowEndOptionOne preceding(int nRows) {
-      this.frameBuilder.setStartPreceding(nRows);
+    public SetWindowEndOptionOne preceding(int nRows) {
+      this.frameBuilder.setLeftPreceding(nRows);
       return this;
     }
 
     @Override
-    public WindowEndOptionTwo currentRow() {
-      this.frameBuilder.setStartCurrentRow();
+    public SetWindowEndOptionTwo currentRow() {
+      this.frameBuilder.setLeftCurrentRow();
       return this;
     }
 
     @Override
-    public WindowEndOptionTwo following(int nRows) {
-      this.frameBuilder.setStartFollowing(nRows);
+    public SetWindowEndOptionTwo following(int nRows) {
+      this.frameBuilder.setLeftFollowing(nRows);
       return this;
     }
 
     @Override
     public AddAggregateFunctions andPreceding(int nRows) {
-      this.frameBuilder.setEndPreceding(nRows);
+      this.frameBuilder.setRightPreceding(nRows);
       return this;
     }
 
     @Override
     public AddAggregateFunctions andCurrentRow() {
-      this.frameBuilder.setEnndCurrentRow();
+      this.frameBuilder.setRightCurrentRow();
       return this;
     }
 
     @Override
     public AddAggregateFunctions andFollowing(int nRows) {
-      this.frameBuilder.setEndFollowing(nRows);
+      this.frameBuilder.setRightFollowing(nRows);
       return this;
     }
 
@@ -350,14 +403,14 @@ public final class AnalyticQuery {
 
     @Override
     public void executeInPlace() {
-      throw new UnsupportedOperationException();
+      this.build().executeInPlace();
     }
   }
 
   static class FullQueryBuilder extends AnalyticBuilder implements FullAnalyticQuerySteps.FromStep {
 
     @Override
-    public FullAnalyticQuerySteps.PartitionStep from(Table table) {
+    public FullAnalyticQuerySteps.PartitionByStep from(Table table) {
       super.table = table;
       return this;
     }
@@ -366,7 +419,7 @@ public final class AnalyticQuery {
   static class QuickQueryBuilder extends AnalyticBuilder implements QuickQuerySteps.FromStep {
 
     @Override
-    public DefineWindow from(Table table) {
+    public DefineWindowFame from(Table table) {
       super.table = table;
       return this;
     }

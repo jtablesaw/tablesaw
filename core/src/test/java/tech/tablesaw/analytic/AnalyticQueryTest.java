@@ -43,7 +43,7 @@ class AnalyticQueryTest {
             + System.lineSeparator()
             + "ROWS BETWEEN UNBOUNDED_PRECEDING AND UNBOUNDED_FOLLOWING);";
 
-    assertEquals(expected, query.toSqlString());
+    assertEquals(expected, query.toSqlLikeString());
   }
 
   @Test
@@ -65,7 +65,7 @@ class AnalyticQueryTest {
             + "Window w1 AS (\n"
             + "ROWS BETWEEN CURRENT_ROW AND 1 FOLLOWING);";
 
-    assertEquals(expectd, query.toSqlString());
+    assertEquals(expectd, query.toSqlLikeString());
   }
 
   @Test
@@ -86,6 +86,6 @@ class AnalyticQueryTest {
             + "Window w1 AS (\n"
             + "ORDER BY date ASC);";
 
-    assertEquals(expectd, query.toSqlString());
+    assertEquals(expectd, query.toSqlLikeString());
   }
 }
