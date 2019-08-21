@@ -221,15 +221,61 @@ enum AggregateFunctions implements FunctionMetaData {
   }
 
   static class Min<T extends Number> extends WindowDependentAggregateFunction<T> {
-
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
-      throw new UnsupportedOperationException("Analytic Function Min Is Not implemented");
+      return new AppendAggregateFunction<T, Double>() {
+        private Double min = Double.NaN;
+
+        @Override
+        public void addRightMost(T newValue) {
+          if (Double.isNaN(min)) {
+            min = newValue.doubleValue();
+            return;
+          }
+          this.min = Math.min(min, newValue.doubleValue());
+        }
+
+        @Override
+        public void addRightMostMissing() {}
+
+        @Override
+        public Double getValue() {
+          return min;
+        }
+      };
     }
 
     @Override
     AggregateFunction<T, Double> functionForSlidingWindows() {
-      throw new UnsupportedOperationException("Analytic Function Min Is Not implemented");
+      return new AggregateFunction<T, Double>() {
+        private final ArrayDeque<Double> queue = new ArrayDeque<>();
+
+        @Override
+        public void removeLeftMost() {
+          queue.remove();
+        }
+
+        @Override
+        public void addRightMost(T newValue) {
+          queue.add(newValue.doubleValue());
+        }
+
+        @Override
+        public void addRightMostMissing() {
+          queue.add(Double.NaN);
+        }
+
+        @Override
+        public Double getValue() {
+          // This could be faster, but probably does not matter in practice because sliding windows
+          // will be small.
+          return queue.stream()
+              .filter(d -> !Double.isNaN(d))
+              .mapToDouble(Number::doubleValue)
+              .min()
+              .orElse(Double.NaN);
+        }
+      };
     }
   }
 

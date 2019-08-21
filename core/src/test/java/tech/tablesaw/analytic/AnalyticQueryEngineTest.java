@@ -119,6 +119,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -130,6 +132,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_unboundedpreceding_and_5preceding");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_unboundedpreceding_and_5preceding");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -147,6 +153,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -158,6 +166,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_unboundedpreceding_and_currentrow");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_unboundedpreceding_and_currentrow");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -175,6 +187,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -186,6 +200,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_unboundedpreceding_and_5following");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_unboundedpreceding_and_5following");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -203,6 +221,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -214,6 +234,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_unboundedpreceding_and_unboundedfollowing");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_unboundedpreceding_and_unboundedfollowing");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -231,6 +255,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -242,6 +268,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_5preceding_and_3preceding");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_5preceding_and_3preceding");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -259,6 +289,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -270,6 +302,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_5preceding_and_currentrow");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_5preceding_and_currentrow");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -287,6 +323,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -298,6 +336,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_5preceding_and_5following");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_5preceding_and_5following");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -315,6 +357,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -326,6 +370,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_5preceding_and_unboundedfollowing");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_5preceding_and_unboundedfollowing");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -343,6 +391,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -354,6 +404,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_currentrow_and_unboundedfollowing");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_currentrow_and_unboundedfollowing");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -371,6 +425,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -382,7 +438,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_5following_and_8following");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
 
+    expected = sourceColumnAsDouble("min_5following_and_8following");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -400,6 +459,8 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -411,6 +472,10 @@ class AnalyticQueryEngineTest {
 
     expected = sourceColumnAsDouble("max_5following_and_unboundedfollowing");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = sourceColumnAsDouble("min_5following_and_unboundedfollowing");
+    actual = result.doubleColumn("min").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
