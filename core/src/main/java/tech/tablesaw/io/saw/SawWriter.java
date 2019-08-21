@@ -396,8 +396,8 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       for (int i = 0; i < column.size(); i++) {
-        boolean value = column.get(i);
-        dos.writeBoolean(value);
+        byte value = column.getByte(i);
+        dos.writeByte(value);
         if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }

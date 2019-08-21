@@ -417,7 +417,7 @@ public class SawReader {
       boolean EOF = false;
       while (!EOF) {
         try {
-          boolean cell = dis.readBoolean();
+          byte cell = dis.readByte();
           bools.append(cell);
         } catch (EOFException e) {
           EOF = true;
