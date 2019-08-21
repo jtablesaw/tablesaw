@@ -283,12 +283,70 @@ enum AggregateFunctions implements FunctionMetaData {
 
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
-      throw new UnsupportedOperationException("Analytic Function Mean Is Not implemented");
+      return new AppendAggregateFunction<T, Double>() {
+        private double sum = Double.NaN;
+        private double count = 0;
+
+        @Override
+        public Double getValue() {
+          if (count == 0) {
+            return Double.NaN;
+          }
+          return sum / count;
+        }
+
+        @Override
+        public void addRightMostMissing() {}
+
+        @Override
+        public void addRightMost(T newValue) {
+          if (Double.isNaN(sum)) {
+            this.sum = 0.0;
+          }
+          this.sum += newValue.doubleValue();
+          count++;
+        }
+      };
     }
 
     @Override
     AggregateFunction<T, Double> functionForSlidingWindows() {
-      throw new UnsupportedOperationException("Analytic Function Mean Is Not implemented");
+      return new AggregateFunction<T, Double>() {
+        private final ArrayDeque<Double> queue = new ArrayDeque<>();
+        private Double sum = 0.0;
+        private int missingCount = 0;
+
+        @Override
+        public void removeLeftMost() {
+          Double removed = queue.remove();
+          if (Double.isNaN(removed)) {
+            missingCount--;
+          } else {
+            this.sum -= removed;
+          }
+        }
+
+        @Override
+        public void addRightMost(T newValue) {
+          Double doubleValue = newValue.doubleValue();
+          this.sum += doubleValue;
+          queue.add(doubleValue);
+        }
+
+        @Override
+        public void addRightMostMissing() {
+          queue.add(Double.NaN);
+          missingCount++;
+        }
+
+        @Override
+        public Double getValue() {
+          if (queue.size() - missingCount == 0) {
+            return Double.NaN;
+          }
+          return sum / (queue.size() - missingCount);
+        }
+      };
     }
   }
 
