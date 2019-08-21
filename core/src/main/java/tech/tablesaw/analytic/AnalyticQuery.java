@@ -5,6 +5,8 @@ import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddAggregateFunctions;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddAggregateFunctionsWithExecute;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddNumberingFunction;
@@ -189,7 +191,23 @@ public final class AnalyticQuery {
    *     the columns in the FROM table.
    */
   public void executeInPlace() {
-    throw new UnsupportedOperationException("Execute Place is not implemented");
+    // Throw an exception if there will be duplicate columns before executing the query.
+    Set<String> existingColumnNames =
+        this.table.columnNames().stream().map(String::toLowerCase).collect(Collectors.toSet());
+    Set<String> newColumnNames =
+        this.getArgumentList().getNewColumnNames().stream()
+            .map(String::toLowerCase)
+            .collect(Collectors.toSet());
+    newColumnNames.retainAll(existingColumnNames);
+    if (!newColumnNames.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Cannot execute query in place. Query contains output column(s): "
+              + String.join(", ", newColumnNames)
+              + " that already exists on the source table: "
+              + this.table.name());
+    }
+    Table result = execute();
+    table.concat(result);
   }
 
   static class NumberingQueryBuilder
@@ -265,7 +283,7 @@ public final class AnalyticQuery {
 
     @Override
     public void executeInPlace() {
-      throw new UnsupportedOperationException();
+      this.build().executeInPlace();
     }
   }
 

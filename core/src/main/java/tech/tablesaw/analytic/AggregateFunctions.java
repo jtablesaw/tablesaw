@@ -70,9 +70,9 @@ enum AggregateFunctions implements FunctionMetaData {
   private abstract static class WindowDependentAggregateFunction<T extends Number> {
 
     /** Sub classes of append windows should never call removeLeft. */
-    private abstract static class AppendAggregateFunction<T, R> implements AggregateFunction<T, R> {
+    abstract static class AppendAggregateFunction<T, R> implements AggregateFunction<T, R> {
       @Override
-      public void removeLeftMost() {
+      public final void removeLeftMost() {
         throw new UnsupportedOperationException(
             "Implementers of append aggregate functions should never call removeLeftMost");
       }
