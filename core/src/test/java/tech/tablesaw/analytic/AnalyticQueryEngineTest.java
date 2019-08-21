@@ -127,6 +127,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -146,6 +148,10 @@ class AnalyticQueryEngineTest {
 
     expected = doubleSourceColumnAsDoubleArray("mean_unboundedpreceding_and_5preceding");
     actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_unboundedpreceding_and_5preceding");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -167,6 +173,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -186,6 +194,10 @@ class AnalyticQueryEngineTest {
 
     expected = doubleSourceColumnAsDoubleArray("mean_unboundedpreceding_and_currentrow");
     actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_unboundedpreceding_and_currentrow");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -207,6 +219,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -226,6 +240,10 @@ class AnalyticQueryEngineTest {
 
     expected = doubleSourceColumnAsDoubleArray("mean_unboundedpreceding_and_5following");
     actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_unboundedpreceding_and_5following");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -247,6 +265,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -268,6 +288,10 @@ class AnalyticQueryEngineTest {
     expected = doubleSourceColumnAsDoubleArray("mean_unboundedpreceding_and_unboundedfollowing");
     actual = result.doubleColumn("mean").asDoubleArray();
     assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_unboundedpreceding_and_unboundedfollowing");
+    actual = result.intColumn("count").asDoubleArray();
+    assertArrayEquals(expected, actual);
   }
 
   @Test
@@ -288,6 +312,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -307,6 +333,10 @@ class AnalyticQueryEngineTest {
 
     expected = doubleSourceColumnAsDoubleArray("mean_5preceding_and_3preceding");
     actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5preceding_and_3preceding");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -328,6 +358,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -347,6 +379,10 @@ class AnalyticQueryEngineTest {
 
     expected = doubleSourceColumnAsDoubleArray("mean_5preceding_and_currentrow");
     actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5preceding_and_currentrow");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -368,6 +404,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -387,6 +425,10 @@ class AnalyticQueryEngineTest {
 
     expected = doubleSourceColumnAsDoubleArray("mean_5preceding_and_5following");
     actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5preceding_and_5following");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -408,6 +450,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -427,6 +471,10 @@ class AnalyticQueryEngineTest {
 
     expected = doubleSourceColumnAsDoubleArray("mean_5preceding_and_unboundedfollowing");
     actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5preceding_and_unboundedfollowing");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -448,6 +496,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -467,6 +517,10 @@ class AnalyticQueryEngineTest {
 
     expected = doubleSourceColumnAsDoubleArray("mean_currentrow_and_unboundedfollowing");
     actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_currentrow_and_unboundedfollowing");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -488,6 +542,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -507,6 +563,10 @@ class AnalyticQueryEngineTest {
 
     expected = doubleSourceColumnAsDoubleArray("mean_5following_and_8following");
     actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5following_and_8following");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -528,6 +588,8 @@ class AnalyticQueryEngineTest {
             .as("min")
             .mean("approval")
             .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
@@ -548,6 +610,33 @@ class AnalyticQueryEngineTest {
     expected = doubleSourceColumnAsDoubleArray("mean_5following_and_unboundedfollowing");
     actual = result.doubleColumn("mean").asDoubleArray();
     assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5following_and_unboundedfollowing");
+    actual = result.intColumn("count").asDoubleArray();
+    assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  public void countWithStrings() {
+    Table table =
+        Table.create(
+            "table",
+            StringColumn.create("col1", new String[] {"A", "B", null, "C", "C", "C", "D"}));
+
+    AnalyticQuery query =
+        AnalyticQuery.quickQuery()
+            .from(table)
+            .rowsBetween()
+            .unboundedPreceding()
+            .andCurrentRow()
+            .count("col1")
+            .as("count")
+            .build();
+
+    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    Table result = queryEngine.execute();
+
+    assertEquals(ImmutableList.of(1, 2, 2, 3, 4, 5, 6), result.intColumn("count").asList());
   }
 
   @Test

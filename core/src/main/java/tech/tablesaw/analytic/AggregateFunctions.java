@@ -1,6 +1,7 @@
 package tech.tablesaw.analytic;
 
 import java.util.ArrayDeque;
+import java.util.function.Function;
 import tech.tablesaw.analytic.WindowFrame.WindowGrowthType;
 import tech.tablesaw.api.ColumnType;
 
@@ -31,20 +32,27 @@ import tech.tablesaw.api.ColumnType;
  * and one for sliding windows.
  */
 enum AggregateFunctions implements FunctionMetaData {
-  SUM(new Sum<>()),
-  MAX(new Max<>()),
-  MIN(new Min<>()),
-  MEAN(new Mean<>()),
-  COUNT(new Count<>());
+  SUM(new Sum<>(), ColumnType.DOUBLE, AggregateFunctions::isNumericColumn),
+  MAX(new Max<>(), ColumnType.DOUBLE, AggregateFunctions::isNumericColumn),
+  MIN(new Min<>(), ColumnType.DOUBLE, AggregateFunctions::isNumericColumn),
+  MEAN(new Mean<>(), ColumnType.DOUBLE, AggregateFunctions::isNumericColumn),
+  COUNT(new Count<>(), ColumnType.INTEGER, t -> true);
 
   private final WindowDependentAggregateFunction<?> implementation;
+  private final ColumnType outputColumnType;
+  private final Function<ColumnType, Boolean> isCompatibleColumnTestFunc;
 
-  AggregateFunctions(WindowDependentAggregateFunction<?> implementation) {
+  AggregateFunctions(
+      WindowDependentAggregateFunction<?> implementation,
+      ColumnType outputColumnType,
+      Function<ColumnType, Boolean> isCompatibleColumnTestFunc) {
     this.implementation = implementation;
+    this.outputColumnType = outputColumnType;
+    this.isCompatibleColumnTestFunc = isCompatibleColumnTestFunc;
   }
 
   /** Get the right implementation for that window definition. */
-  AggregateFunction<?, Double> getImplementation(WindowGrowthType growthType) {
+  AggregateFunction<?, ? extends Number> getImplementation(WindowGrowthType growthType) {
     return this.implementation.functionFor(growthType);
   }
 
@@ -55,11 +63,15 @@ enum AggregateFunctions implements FunctionMetaData {
 
   @Override
   public ColumnType returnType() {
-    return ColumnType.DOUBLE;
+    return outputColumnType;
   }
 
   @Override
   public boolean isCompatibleColumn(ColumnType type) {
+    return isCompatibleColumnTestFunc.apply(type);
+  }
+
+  private static boolean isNumericColumn(ColumnType type) {
     return type.equals(ColumnType.DOUBLE)
         || type.equals(ColumnType.FLOAT)
         || type.equals(ColumnType.INTEGER)
@@ -67,7 +79,7 @@ enum AggregateFunctions implements FunctionMetaData {
         || type.equals(ColumnType.LONG);
   }
 
-  private abstract static class WindowDependentAggregateFunction<T extends Number> {
+  private abstract static class WindowDependentAggregateFunction<T> {
 
     /** Sub classes of append windows should never call removeLeft. */
     abstract static class AppendAggregateFunction<T, R> implements AggregateFunction<T, R> {
@@ -78,11 +90,11 @@ enum AggregateFunctions implements FunctionMetaData {
       }
     }
 
-    abstract AppendAggregateFunction<T, Double> functionForAppendWindows();
+    abstract AppendAggregateFunction<T, ? extends Number> functionForAppendWindows();
 
-    abstract AggregateFunction<T, Double> functionForSlidingWindows();
+    abstract AggregateFunction<T, ? extends Number> functionForSlidingWindows();
 
-    AggregateFunction<T, Double> functionFor(WindowGrowthType growthType) {
+    AggregateFunction<T, ? extends Number> functionFor(WindowGrowthType growthType) {
       switch (growthType) {
         case FIXED:
         case FIXED_LEFT:
@@ -350,16 +362,59 @@ enum AggregateFunctions implements FunctionMetaData {
     }
   }
 
-  static class Count<T extends Number> extends WindowDependentAggregateFunction<T> {
+  static class Count<T> extends WindowDependentAggregateFunction<T> {
 
     @Override
-    AppendAggregateFunction<T, Double> functionForAppendWindows() {
-      throw new UnsupportedOperationException("Analytic Function Count Is Not implemented");
+    AppendAggregateFunction<T, Integer> functionForAppendWindows() {
+      return new AppendAggregateFunction<T, Integer>() {
+        private int count = 0;
+
+        @Override
+        public Integer getValue() {
+          return count;
+        }
+
+        @Override
+        public void addRightMostMissing() {}
+
+        @Override
+        public void addRightMost(T newValue) {
+          count++;
+        }
+      };
     }
 
     @Override
-    AggregateFunction<T, Double> functionForSlidingWindows() {
-      throw new UnsupportedOperationException("Analytic Function Count Is Not implemented");
+    AggregateFunction<T, Integer> functionForSlidingWindows() {
+      return new AggregateFunction<T, Integer>() {
+        // True if is missing value;
+        private final ArrayDeque<Boolean> queue = new ArrayDeque<>();
+        private int missingCount = 0;
+
+        @Override
+        public void removeLeftMost() {
+          Boolean removedMissingValue = queue.remove();
+          if (removedMissingValue) {
+            missingCount--;
+          }
+        }
+
+        @Override
+        public void addRightMost(T newValue) {
+          queue.add(false);
+        }
+
+        @Override
+        public void addRightMostMissing() {
+          queue.add(true);
+          missingCount++;
+        }
+
+        @Override
+        public Integer getValue() {
+          return queue.size() - missingCount;
+        }
+      };
     }
   }
 }
