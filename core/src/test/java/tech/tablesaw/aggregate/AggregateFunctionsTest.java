@@ -190,11 +190,12 @@ class AggregateFunctionsTest {
     assertEquals(4, result.columnCount());
     assertEquals("who", result.column(0).name());
     assertEquals(323, result.rowCount());
-    assertEquals("46.0",
-      result.where(and(
-        str("who").isEqualTo("fox"),
-        date("date").isEqualTo(LocalDate.of(2001, 1, 24))
-     )).getUnformatted(0, 2));
+    assertEquals(
+        "46.0",
+        result
+            .where(
+                and(str("who").isEqualTo("fox"), date("date").isEqualTo(LocalDate.of(2001, 1, 24))))
+            .getUnformatted(0, 2));
   }
 
   @Test

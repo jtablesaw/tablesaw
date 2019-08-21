@@ -14,18 +14,17 @@
 
 package tech.tablesaw.io.saw;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static tech.tablesaw.api.ColumnType.*;
+
 import com.google.common.base.Stopwatch;
+import java.time.LocalDate;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.*;
 import tech.tablesaw.io.csv.CsvReadOptions;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static tech.tablesaw.api.ColumnType.*;
 
 /** Tests for reading and writing saw files */
 class SawStorageTest {

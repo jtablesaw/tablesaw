@@ -44,10 +44,8 @@ public class TableSlice extends Relation {
 
   private final Table table;
   private String name;
-  @Nullable
-  private Selection selection;
-  @Nullable
-  private int[] sortOrder = null;
+  @Nullable private Selection selection;
+  @Nullable private int[] sortOrder = null;
 
   /**
    * Returns a new View constructed from the given table, containing only the rows represented by
@@ -60,7 +58,8 @@ public class TableSlice extends Relation {
   }
 
   /**
-   * Returns a new view constructed from the given table. The view can be sorted independently of the table.
+   * Returns a new view constructed from the given table. The view can be sorted independently of
+   * the table.
    */
   public TableSlice(Table table) {
     this.name = table.name();
@@ -73,7 +72,7 @@ public class TableSlice extends Relation {
     Column<?> col = table.column(columnIndex);
     if (isSorted()) {
       return col.subset(sortOrder);
-    } else if(hasSelection()) {
+    } else if (hasSelection()) {
       return col.where(selection);
     }
     return col;
@@ -91,7 +90,7 @@ public class TableSlice extends Relation {
 
   @Override
   public int rowCount() {
-    if(hasSelection()) {
+    if (hasSelection()) {
       return selection.size();
     }
     return table.rowCount();
@@ -132,13 +131,15 @@ public class TableSlice extends Relation {
     selection = Selection.with();
   }
 
-  /** Removes the sort from this View.*/
+  /** Removes the sort from this View. */
   public void removeSort() {
     this.sortOrder = null;
   }
 
-  /** Removes the selection from this view, leaving it with the same number of rows
-   * as the underlying source table. */
+  /**
+   * Removes the selection from this view, leaving it with the same number of rows as the underlying
+   * source table.
+   */
   public void removeSelection() {
     this.selection = null;
   }
@@ -188,14 +189,14 @@ public class TableSlice extends Relation {
   }
 
   /**
-   * IntIterator of source table row numbers that are present in this view. This can be used to
-   * in combination with the source table to iterate over the cells of a column
-   * in a sorted order without copying the column.
+   * IntIterator of source table row numbers that are present in this view. This can be used to in
+   * combination with the source table to iterate over the cells of a column in a sorted order
+   * without copying the column.
    *
    * @return an int iterator of row numbers in the source table that are present in this view.
    */
   protected PrimitiveIterator.OfInt sourceRowNumberIterator() {
-    if(this.isSorted()) {
+    if (this.isSorted()) {
       return Arrays.stream(sortOrder).iterator();
     } else if (this.hasSelection()) {
       return selection.iterator();
@@ -214,15 +215,15 @@ public class TableSlice extends Relation {
    */
   public double reduce(String numberColumnName, NumericAggregateFunction function) {
     NumberColumn<?> column = table.numberColumn(numberColumnName);
-    if(hasSelection()) {
+    if (hasSelection()) {
       return function.summarize(column.where(selection));
     }
     return function.summarize(column);
   }
 
   /**
-   * Iterate over the underlying rows in the source table. If you set one of the
-   * rows while iterating it will change the row in the source table.
+   * Iterate over the underlying rows in the source table. If you set one of the rows while
+   * iterating it will change the row in the source table.
    */
   @Override
   public Iterator<Row> iterator() {
@@ -276,17 +277,17 @@ public class TableSlice extends Relation {
     Preconditions.checkArgument(!key.isEmpty());
     if (key.size() == 1) {
       IntComparator comparator = SortUtils.getComparator(table, key);
-      this.sortOrder =  sortOn(comparator);
+      this.sortOrder = sortOn(comparator);
     } else {
       IntComparatorChain chain = SortUtils.getChain(table, key);
       this.sortOrder = sortOn(chain);
     }
   }
 
-  /** Returns an array of integers representing the source table indexes in sorted order.*/
+  /** Returns an array of integers representing the source table indexes in sorted order. */
   private int[] sortOn(IntComparator rowComparator) {
     int[] newRows;
-    if(hasSelection()) {
+    if (hasSelection()) {
       newRows = this.selection.toArray();
     } else {
       newRows = IntStream.range(0, table.rowCount()).toArray();

@@ -1,48 +1,130 @@
 package tech.tablesaw.io.saw;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.api.ColumnType.TEXT;
+
+import com.google.common.base.Stopwatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
-import com.google.common.base.Stopwatch;
-
-import java.util.concurrent.TimeUnit;
 
 class SawWriterTest {
 
   private final Table empty = Table.create("empty table");
-  private final Table noData = Table.create("no data", IntColumn.create("empty int"),
-          DoubleColumn.create("empty double"));
 
-  private final Table intsOnly = Table.create("Ints only",
+  private final Table noData =
+      Table.create("no data", IntColumn.create("empty int"), DoubleColumn.create("empty double"));
+
+  private final Table intsOnly =
+      Table.create(
+          "Ints only",
           IntColumn.indexColumn("index1", 100, 1),
           IntColumn.indexColumn("index2", 100, 1));
 
+  private final Table intsAndStrings =
+      Table.create("Ints and strings", IntColumn.indexColumn("index1", 100, 300));
+
+  private final Table intsAndText =
+      Table.create("Ints and text", IntColumn.indexColumn("index1", 100, 300));
+
   @BeforeEach
   void setUp() {
-
+    intsAndStrings.addColumns(intsAndStrings.intColumn("index1").asStringColumn());
+    intsAndText.addColumns(intsAndText.intColumn("index1").asStringColumn().asTextColumn());
   }
 
   @Test
   void saveEmptyTable() {
-    String path = SawWriter.saveTable("testoutput", empty);
+    String path = SawWriter.saveTable("../testoutput", empty);
     Table table = SawReader.readTable(path);
     System.out.println(table);
   }
 
   @Test
   void saveNoDataTable() {
-    String path = SawWriter.saveTable("testoutput", noData);
+    String path = SawWriter.saveTable("../testoutput", noData);
     Table table = SawReader.readTable(path);
     System.out.println(table);
-
   }
 
   @Test
   void saveIntsOnly() {
-    String path = SawWriter.saveTable("testoutput", intsOnly);
+    String path = SawWriter.saveTable("../testoutput", intsOnly);
     Table table = SawReader.readTable(path);
+    System.out.println(table);
+  }
+
+  @Test
+  void saveIntsAndStrings() {
+    String path = SawWriter.saveTable("../testoutput", intsAndStrings);
+    Table table = SawReader.readTable(path);
+    System.out.println(table);
+  }
+
+  @Test
+  void saveIntsAndText() {
+    String path = SawWriter.saveTable("../testoutput", intsAndText);
+    Table table = SawReader.readTable(path);
+    assertTrue(table.column(1).size() > 0);
+    assertEquals(TEXT, table.column(1).type());
+    System.out.println(table);
+  }
+
+  @Test
+  void bush() throws Exception {
+    Table bush = Table.read().csv("../data/bush.csv");
+    String path = SawWriter.saveTable("../testoutput/bush", bush);
+    Table table = SawReader.readTable(path);
+    assertTrue(table.column(1).size() > 0);
+    System.out.println(table);
+  }
+
+  @Test
+  void tornado() throws Exception {
+    Table tornado = Table.read().csv("../data/tornadoes_1950-2014.csv");
+    String path = SawWriter.saveTable("../testoutput/tornadoes_1950-2014", tornado);
+    Table table = SawReader.readTable(path);
+    assertTrue(table.column(1).size() > 0);
+    System.out.println(table);
+  }
+
+  @Test
+  void baseball() throws Exception {
+    Table table = Table.read().csv("../data/baseball.csv");
+    String path = SawWriter.saveTable("../testoutput/baseball", table);
+    table = SawReader.readTable(path);
+    assertTrue(table.column(1).size() > 0);
+    System.out.println(table);
+  }
+
+  @Test
+  void boston_roberies() throws Exception {
+    Table table = Table.read().csv("../data/boston-robberies.csv");
+    String path = SawWriter.saveTable("../testoutput/boston_robberies", table);
+    table = SawReader.readTable(path);
+    assertTrue(table.column(1).size() > 0);
+    System.out.println(table);
+  }
+
+  @Test
+  void sacramento() throws Exception {
+    Table table = Table.read().csv("../data/sacramento_real_estate_transactions.csv");
+    String path = SawWriter.saveTable("../testoutput/sacramento", table);
+    table = SawReader.readTable(path);
+    assertTrue(table.column(1).size() > 0);
+    System.out.println(table);
+  }
+
+  @Test
+  void test_wines() throws Exception {
+    Table table = Table.read().csv("../data/test_wines.csv");
+    String path = SawWriter.saveTable("../testoutput/test_wines", table);
+    table = SawReader.readTable(path);
+    assertTrue(table.column(1).size() > 0);
     System.out.println(table);
   }
 
@@ -50,29 +132,102 @@ class SawWriterTest {
   void saveIntsLarger() {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
-    final Table intsOnlyLarger = Table.create("Ints only, larger",
+    final Table intsOnlyLarger =
+        Table.create(
+            "Ints only, larger",
             IntColumn.indexColumn("index1", 100_000_000, 1),
             IntColumn.indexColumn("index2", 100_000_000, 1));
     System.out.println("created " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-    String path = SawWriter.saveTable("testoutput", intsOnlyLarger);
+    String path = SawWriter.saveTable("../testoutput", intsOnlyLarger);
     System.out.println("saved " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
     Table table = SawReader.readTable(path);
     System.out.println("read " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
     System.out.println(table);
   }
-  
+
   @Test
   void saveIntsLarger2() throws Exception {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
-    Table intsOnlyLarger = Table.create("Ints only, larger",
+    Table intsOnlyLarger =
+        Table.create(
+            "Ints only, larger",
             IntColumn.indexColumn("index1", 100_000_000, 1),
             IntColumn.indexColumn("index2", 100_000_000, 1));
+
     System.out.println("created " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-    intsOnlyLarger.write().csv("test1");
-    System.out.println("saved " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-    intsOnlyLarger = Table.read().csv("test1");
-    System.out.println("read " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-    System.out.println(intsOnlyLarger);
+
+    stopwatch = Stopwatch.createStarted();
+    String path = SawWriter.saveTable("../testoutput", intsOnlyLarger);
+    System.out.println("saved saw " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+    stopwatch = Stopwatch.createStarted();
+    intsOnlyLarger.write().csv("../testoutput/test1");
+    System.out.println("saved csv " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+    stopwatch = Stopwatch.createStarted();
+    Table table = SawReader.readTable(path);
+    long readTime = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+    System.out.println("read saw " + readTime);
+
+    stopwatch = Stopwatch.createStarted();
+    intsOnlyLarger = Table.read().csv("../testoutput/test1");
+    System.out.println("read csv " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
+  /*
+
+    @Test
+    void bigTable() throws Exception {
+      String inputFile = "/Users/lwhite/Downloads/data/coredb/2019-May/OnePathPerLine.txt";
+
+      Stopwatch stopwatch = Stopwatch.createStarted();
+      Table intsOnlyLarger =
+          Table.read()
+              .csv(
+                  CsvReadOptions.builder(inputFile)
+                      .separator('\t')
+                      // .columnTypes(columnTypes)
+                      // .minimizeColumnSizes()  //Don't need this as long as we're passing the column
+                      // types
+                      .sample(false)
+                      .maxCharsPerColumn(20000)
+                      .missingValueIndicator(".")
+                      .lineEnding("\n")
+                      .build());
+
+      System.out.println(
+          new CsvReader()
+              .printColumnTypes(
+                  CsvReadOptions.builder(inputFile)
+                      .separator('\t')
+                      // .columnTypes(columnTypes)
+                      // .minimizeColumnSizes()  //Don't need this as long as we're passing the column
+                      // types
+                      .sample(false)
+                      .maxCharsPerColumn(20000)
+                      .missingValueIndicator(".")
+                      .lineEnding("\n")
+                      .dateFormat(DateTimeFormatter.ofPattern("yyyy-M-dd"))
+                      .build()));
+
+      System.out.println("created " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+      stopwatch = Stopwatch.createStarted();
+      String path = SawWriter.saveTable("testoutput", intsOnlyLarger);
+      System.out.println("saved saw " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+      stopwatch = Stopwatch.createStarted();
+      intsOnlyLarger.write().csv("test1");
+      System.out.println("saved csv " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+      stopwatch = Stopwatch.createStarted();
+      Table table = SawReader.readTable(path);
+      long readTime = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+      System.out.println("read saw " + readTime);
+
+      stopwatch = Stopwatch.createStarted();
+      intsOnlyLarger = Table.read().csv("test1");
+      System.out.println("read csv " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    }
+  */
 }

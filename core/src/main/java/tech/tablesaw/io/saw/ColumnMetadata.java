@@ -14,13 +14,16 @@
 
 package tech.tablesaw.io.saw;
 
+import static tech.tablesaw.io.saw.StorageManager.*;
+
 import com.google.gson.Gson;
+import java.util.UUID;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
-
-import java.util.UUID;
-
-import static tech.tablesaw.io.saw.StorageManager.*;
+import tech.tablesaw.columns.strings.ByteDictionaryMap;
+import tech.tablesaw.columns.strings.DictionaryMap;
+import tech.tablesaw.columns.strings.IntDictionaryMap;
+import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
 /** Data about a specific column used in it's persistence */
 public class ColumnMetadata {
@@ -31,12 +34,28 @@ public class ColumnMetadata {
   private final String name;
   private final String type;
   private final int size;
+  private final String stringColumnKeySize;
 
   ColumnMetadata(Column column) {
     this.id = UUID.randomUUID().toString();
     this.name = column.name();
     this.type = column.type().name();
     this.size = column.size();
+    if (column instanceof StringColumn) {
+      StringColumn stringColumn = (StringColumn) column;
+      DictionaryMap lookupTable = stringColumn.unsafeGetLookupTable();
+      if (lookupTable instanceof IntDictionaryMap) {
+        stringColumnKeySize = Integer.class.getSimpleName();
+      } else if (lookupTable instanceof ByteDictionaryMap) {
+        stringColumnKeySize = Byte.class.getSimpleName();
+      } else if (lookupTable instanceof ShortDictionaryMap) {
+        stringColumnKeySize = Short.class.getSimpleName();
+      } else {
+        stringColumnKeySize = "";
+      }
+    } else {
+      stringColumnKeySize = "";
+    }
   }
 
   public static ColumnMetadata fromJson(String jsonString) {
@@ -75,12 +94,16 @@ public class ColumnMetadata {
     return type;
   }
 
+  public String getStringColumnKeySize() {
+    return stringColumnKeySize;
+  }
+
   public int getSize() {
     return size;
   }
 
   public Column createColumn() {
-      final String typeString = getType();
+    final String typeString = getType();
     switch (typeString) {
       case FLOAT:
         return FloatColumn.create(name);
@@ -96,8 +119,12 @@ public class ColumnMetadata {
         return TimeColumn.create(name);
       case LOCAL_DATE_TIME:
         return DateTimeColumn.create(name);
+      case INSTANT:
+        return DateTimeColumn.create(name);
       case STRING:
         return StringColumn.create(name);
+      case TEXT:
+        return TextColumn.create(name);
       case SHORT:
         return ShortColumn.create(name);
       case LONG:

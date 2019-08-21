@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,6 +68,11 @@ public class IntDictionaryMap implements DictionaryMap {
     }
   }
 
+  public IntDictionaryMap() {
+    valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
+    keyToCount.defaultReturnValue(0);
+  }
+
   private void put(int key, String value) {
     keyToValue.put(key, value);
     valueToKey.put(value, key);
@@ -90,6 +96,14 @@ public class IntDictionaryMap implements DictionaryMap {
   public String getValueForIndex(int rowIndex) {
     int k = values.getInt(rowIndex);
     return getValueForKey(k);
+  }
+
+  public ObjectSet<Int2ObjectMap.Entry<String>> getKeyValueEntries() {
+    return keyToValue.int2ObjectEntrySet();
+  }
+
+  public IntArrayList values() {
+    return values;
   }
 
   @Override
@@ -203,6 +217,15 @@ public class IntDictionaryMap implements DictionaryMap {
     }
     values.add(key);
     keyToCount.addTo(key, 1);
+  }
+
+  public void updateMaps(int key, String value) {
+    put(key, value);
+    keyToCount.addTo(key, 1);
+  }
+
+  public void addValue(int key) {
+    values.add(key);
   }
 
   private int getValueId() throws NoKeysAvailableException {

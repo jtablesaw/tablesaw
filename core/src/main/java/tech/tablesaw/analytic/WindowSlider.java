@@ -8,8 +8,8 @@ import tech.tablesaw.table.TableSlice;
 /**
  * Execute the aggregate function over the correct windows.
  *
- * Any window with a Fixed end (UNBOUNDED FOLLOWING) is converted ("mirrored")
- * into the equivalent UNBOUNDED PRECEDING widow so that a faster algorithm can be used.
+ * <p>Any window with a Fixed end (UNBOUNDED FOLLOWING) is converted ("mirrored") into the
+ * equivalent UNBOUNDED PRECEDING widow so that a faster algorithm can be used.
  */
 class WindowSlider {
   private final boolean mirrored;
@@ -22,17 +22,23 @@ class WindowSlider {
   // TODO change to table slice
   private final TableSlice slice;
   private final Column<?> sourceColumn;
+
   @SuppressWarnings({"unchecked", "rawtypes"})
   private final Column destinationColumn;
 
-  WindowSlider(WindowFrame windowFrame,  AggregateFunctions func, TableSlice slice,
-    Column<?> sourceColumn, Column<?> destinationColumn) {
+  WindowSlider(
+      WindowFrame windowFrame,
+      AggregateFunctions func,
+      TableSlice slice,
+      Column<?> sourceColumn,
+      Column<?> destinationColumn) {
     this.slice = slice;
     this.destinationColumn = destinationColumn;
     this.sourceColumn = sourceColumn;
     this.function = func.getImplementation(windowFrame.windowGrowthType());
 
-    // Can convert UNBOUNDED FOLLOWING to an equivalent UNBOUNDED PRECEDING window by mirroring everything.
+    // Can convert UNBOUNDED FOLLOWING to an equivalent UNBOUNDED PRECEDING window by mirroring
+    // everything.
     if (windowFrame.windowGrowthType() == WindowGrowthType.FIXED_END) {
       this.windowGrowthType = WindowGrowthType.FIXED_START;
       this.mirrored = true;
@@ -47,25 +53,26 @@ class WindowSlider {
   }
 
   /**
-   * Slide over the partition setting a value for all the relevant windows in the destination column.
+   * Slide over the partition setting a value for all the relevant windows in the destination
+   * column.
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
   void process() {
     initWindow(sourceColumn);
-    int leftBound = getInitialStartIndex() -1;
+    int leftBound = getInitialStartIndex() - 1;
     int rightBound = getInitialEndIndex();
     for (int i = 0; i < slice.rowCount(); i++) {
       this.set(i, function.getValue());
 
       int newLeftBound = slideLeftStrategy().apply(leftBound);
-      if(newLeftBound > leftBound && inTableRange(newLeftBound)) {
+      if (newLeftBound > leftBound && inTableRange(newLeftBound)) {
         function.removeLeftMost();
       }
       leftBound = newLeftBound;
 
       int newRightBound = slideRightStrategy().apply(rightBound);
-      if(newRightBound > rightBound && inTableRange(newRightBound)) {
-        if(isMissing(newRightBound)) {
+      if (newRightBound > rightBound && inTableRange(newRightBound)) {
+        if (isMissing(newRightBound)) {
           function.addRightMostMissing();
         } else {
           function.addRightMost(get(newRightBound));
@@ -77,7 +84,7 @@ class WindowSlider {
 
   // Get the mirrored index about the center of the window.
   int mirror(int rowNumber) {
-    if(this.mirrored) {
+    if (this.mirrored) {
       return slice.rowCount() - rowNumber - 1;
     }
     return rowNumber;
@@ -88,7 +95,7 @@ class WindowSlider {
     int leftBound = Math.max(getInitialStartIndex(), 0);
     int rightBound = Math.min(getInitialEndIndex(), slice.rowCount() - 1);
     for (int i = leftBound; i <= rightBound; i++) {
-      if(isMissing(i)) {
+      if (isMissing(i)) {
         function.addRightMostMissing();
       } else {
         function.addRightMost(get(i));
@@ -103,12 +110,12 @@ class WindowSlider {
   }
 
   // Get value from the source column. Pulling from the source table behind the slide.
-  private Object get(int rowNumberInSlice)  {
+  private Object get(int rowNumberInSlice) {
     return sourceColumn.get(slice.mappedRowNumber(mirror(rowNumberInSlice)));
   }
 
   // Determine if the value in the source column is missing.
-  private boolean isMissing(int rowNumberInSlice)  {
+  private boolean isMissing(int rowNumberInSlice) {
     return sourceColumn.isMissing(slice.mappedRowNumber(mirror(rowNumberInSlice)));
   }
 
@@ -128,13 +135,13 @@ class WindowSlider {
   }
 
   private Function<Integer, Integer> slideRightStrategy() {
-      switch (this.windowGrowthType) {
-        case FIXED:
-          return i -> i;
-        case FIXED_START:
-        case SLIDING:
-          return i -> i + 1;
-      }
+    switch (this.windowGrowthType) {
+      case FIXED:
+        return i -> i;
+      case FIXED_START:
+      case SLIDING:
+        return i -> i + 1;
+    }
     throw new RuntimeException("Unexpected growthType: " + this.windowGrowthType);
   }
 
@@ -144,7 +151,7 @@ class WindowSlider {
       case FIXED_START:
         return 0;
       case SLIDING:
-          return this.frameStartShift;
+        return this.frameStartShift;
     }
     throw new RuntimeException("Unexpected growthType: " + this.windowGrowthType);
   }

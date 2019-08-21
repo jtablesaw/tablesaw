@@ -1,6 +1,7 @@
 package tech.tablesaw.columns.strings;
 
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
@@ -24,7 +25,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/** A map that supports reversible key value pairs of int-String */
+/** A map that supports reversible key value pairs of short-String */
 public class ShortDictionaryMap implements DictionaryMap {
 
   // The maximum number of unique values or categories that I can hold. If the column has more
@@ -57,7 +58,7 @@ public class ShortDictionaryMap implements DictionaryMap {
   private final Short2IntOpenHashMap keyToCount = new Short2IntOpenHashMap();
 
   /** Returns a new DictionaryMap that is a deep copy of the original */
-  ShortDictionaryMap(DictionaryMap original) throws NoKeysAvailableException {
+  ShortDictionaryMap(ByteDictionaryMap original) throws NoKeysAvailableException {
     valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
     keyToCount.defaultReturnValue(0);
 
@@ -90,6 +91,23 @@ public class ShortDictionaryMap implements DictionaryMap {
   public String getValueForIndex(int rowIndex) {
     short k = values.getShort(rowIndex);
     return getValueForKey(k);
+  }
+
+  public ObjectSet<Short2ObjectMap.Entry<String>> getKeyValueEntries() {
+    return keyToValue.short2ObjectEntrySet();
+  }
+
+  public ShortArrayList values() {
+    return values;
+  }
+
+  public void updateMaps(short key, String value) {
+    put(key, value);
+    keyToCount.addTo(key, 1);
+  }
+
+  public void addValue(short key) {
+    values.add(key);
   }
 
   @Override

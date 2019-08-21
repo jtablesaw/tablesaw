@@ -58,8 +58,8 @@ public abstract class AbstractColumn<T> implements Column<T> {
   @Override
   public StringColumn asStringColumn() {
     StringColumn sc = StringColumn.create(name() + " strings");
-    for(int i = 0; i < size(); i++) {
-    	sc.append(getUnformattedString(i));
+    for (int i = 0; i < size(); i++) {
+      sc.append(getUnformattedString(i));
     }
     return sc;
   }

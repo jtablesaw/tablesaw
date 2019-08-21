@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import tech.tablesaw.api.ColumnType;
 
 enum NumberingFunctions implements FunctionMetaData {
-
   ROW_NUMBER(Implementations::rowNumber),
   RANK(Implementations::rank),
   DENSE_RANK(Implementations::denseRank);
@@ -19,8 +18,7 @@ enum NumberingFunctions implements FunctionMetaData {
     return supplier.get();
   }
 
-  public @Override
-  String toString() {
+  public @Override String toString() {
     return name();
   }
 
@@ -40,9 +38,7 @@ enum NumberingFunctions implements FunctionMetaData {
     return true;
   }
 
-  /**
-   * Implementations.
-   */
+  /** Implementations. */
   static class Implementations {
 
     static final NumberingFunction rowNumber() {

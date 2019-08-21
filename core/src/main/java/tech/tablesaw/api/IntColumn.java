@@ -26,11 +26,11 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
   private final IntComparator descendingComparator = (o2, o1) -> (Integer.compare(o1, o2));
 
   protected final IntComparator comparator =
-          (r1, r2) -> {
-            final int f1 = getInt(r1);
-            final int f2 = getInt(r2);
-            return Integer.compare(f1, f2);
-          };
+      (r1, r2) -> {
+        final int f1 = getInt(r1);
+        final int f2 = getInt(r2);
+        return Integer.compare(f1, f2);
+      };
 
   private final IntArrayList data;
 

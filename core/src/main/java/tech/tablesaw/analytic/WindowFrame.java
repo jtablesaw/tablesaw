@@ -2,13 +2,9 @@ package tech.tablesaw.analytic;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import tech.tablesaw.table.TableSlice;
 
-/**
- * Simple Data class capturing the start and end of the window.
- */
-
-final public class WindowFrame {
+/** Simple Data class capturing the start and end of the window. */
+public final class WindowFrame {
 
   enum WindowBoundTypes {
     UNBOUNDED_PRECEDING(0),
@@ -37,8 +33,11 @@ final public class WindowFrame {
   private final WindowBoundTypes frameEnd;
   private final int frameEndShift;
 
-  private WindowFrame(WindowBoundTypes frameStart, int frameStartShift,
-    WindowBoundTypes frameEnd, int frameEndShift) {
+  private WindowFrame(
+      WindowBoundTypes frameStart,
+      int frameStartShift,
+      WindowBoundTypes frameEnd,
+      int frameEndShift) {
     this.frameStart = frameStart;
     this.frameStartShift = frameStartShift;
     this.frameEnd = frameEnd;
@@ -66,38 +65,50 @@ final public class WindowFrame {
     return frameEndShift;
   }
 
-  /**
-   * Throw if invalid combination
-   */
+  /** Throw if invalid combination */
   private void validateWindow() {
     String errorMsg = "Invalid Window: " + this.toString() + '.';
     // If bounds are the same they both must either be preceding or following.
     if (this.frameEnd == this.frameStart) {
       Preconditions.checkArgument(
-        frameStart == WindowBoundTypes.PRECEDING
-          || frameStart == WindowBoundTypes.FOLLOWING, errorMsg);
+          frameStart == WindowBoundTypes.PRECEDING || frameStart == WindowBoundTypes.FOLLOWING,
+          errorMsg);
       // When the bounds are both preceding the lef bound should be greater than
       if (this.frameStart == WindowBoundTypes.PRECEDING) {
-        Preconditions.checkArgument(frameStartShift < frameEndShift,
-          errorMsg + " The number preceding at start of the window '" + Math.abs(frameStartShift)
-            + "' must be greater than the number preceding at the end of the window '" + Math.abs(frameEndShift) + "'");
+        Preconditions.checkArgument(
+            frameStartShift < frameEndShift,
+            errorMsg
+                + " The number preceding at start of the window '"
+                + Math.abs(frameStartShift)
+                + "' must be greater than the number preceding at the end of the window '"
+                + Math.abs(frameEndShift)
+                + "'");
       } else {
-        Preconditions.checkArgument(frameEndShift > frameStartShift,
-          errorMsg + " The number following at start of the window '" + frameStartShift
-            + "' must be less than the number following at the end of the window '" + frameEndShift + "'");
+        Preconditions.checkArgument(
+            frameEndShift > frameStartShift,
+            errorMsg
+                + " The number following at start of the window '"
+                + frameStartShift
+                + "' must be less than the number following at the end of the window '"
+                + frameEndShift
+                + "'");
       }
     }
-    Preconditions.checkArgument(frameEnd.order >= frameStart.order,
-      errorMsg + ". " + frameStart + " cannot come before " + frameEnd);
+    Preconditions.checkArgument(
+        frameEnd.order >= frameStart.order,
+        errorMsg + ". " + frameStart + " cannot come before " + frameEnd);
   }
 
   WindowGrowthType windowGrowthType() {
-    if (frameStart == WindowBoundTypes.UNBOUNDED_PRECEDING && frameEnd == WindowBoundTypes.UNBOUNDED_FOLLOWING) {
+    if (frameStart == WindowBoundTypes.UNBOUNDED_PRECEDING
+        && frameEnd == WindowBoundTypes.UNBOUNDED_FOLLOWING) {
       return WindowGrowthType.FIXED;
-    } else if (
-      (frameStart == WindowBoundTypes.PRECEDING || frameStart == WindowBoundTypes.FOLLOWING || frameStart == WindowBoundTypes.CURRENT_ROW)
-        &&
-        (frameEnd == WindowBoundTypes.PRECEDING || frameEnd == WindowBoundTypes.FOLLOWING || frameEnd == WindowBoundTypes.CURRENT_ROW)) {
+    } else if ((frameStart == WindowBoundTypes.PRECEDING
+            || frameStart == WindowBoundTypes.FOLLOWING
+            || frameStart == WindowBoundTypes.CURRENT_ROW)
+        && (frameEnd == WindowBoundTypes.PRECEDING
+            || frameEnd == WindowBoundTypes.FOLLOWING
+            || frameEnd == WindowBoundTypes.CURRENT_ROW)) {
       return WindowGrowthType.SLIDING;
     }
     if (frameStart == WindowBoundTypes.UNBOUNDED_PRECEDING) {
@@ -106,18 +117,15 @@ final public class WindowFrame {
     return WindowGrowthType.FIXED_END;
   }
 
-
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
     WindowFrame that = (WindowFrame) o;
-    return frameStartShift == that.frameStartShift &&
-      frameEndShift == that.frameEndShift &&
-      frameStart == that.frameStart &&
-      frameEnd == that.frameEnd;
+    return frameStartShift == that.frameStartShift
+        && frameEndShift == that.frameEndShift
+        && frameStart == that.frameStart
+        && frameEnd == that.frameEnd;
   }
 
   @Override
@@ -151,8 +159,7 @@ final public class WindowFrame {
     private WindowBoundTypes frameEnd = WindowBoundTypes.UNBOUNDED_FOLLOWING;
     private int frameEndShift = 0;
 
-    private Builder() {
-    }
+    private Builder() {}
 
     Builder setStartPreceding(int nRows) {
       Preconditions.checkArgument(nRows > 0);
@@ -195,6 +202,5 @@ final public class WindowFrame {
     public WindowFrame build() {
       return new WindowFrame(frameStart, frameStartShift, frameEnd, frameEndShift);
     }
-
   }
 }

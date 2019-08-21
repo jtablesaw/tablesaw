@@ -15,65 +15,67 @@
 package tech.tablesaw.io.saw;
 
 import com.google.gson.Gson;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.table.Relation;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.table.Relation;
 
-/**
- * Data about a specific physical table used in its persistence
- */
+/** Data about a specific physical table used in its persistence */
 public class TableMetadata {
 
-    private static final Gson GSON = new Gson();
+  private static final Gson GSON = new Gson();
 
-    private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
-    private final String name;
-    private final int rowCount;
+  private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
+  private final String name;
+  private final int version = 1;
+  private final int rowCount;
 
-    TableMetadata(Relation table) {
-        this.name = table.name();
-        this.rowCount = table.rowCount();
-        for (Column column : table.columns()) {
-            ColumnMetadata metadata = new ColumnMetadata(column);
-            columnMetadataList.add(metadata);
-        }
+  TableMetadata(Relation table) {
+    this.name = table.name();
+    this.rowCount = table.rowCount();
+    for (Column column : table.columns()) {
+      ColumnMetadata metadata = new ColumnMetadata(column);
+      columnMetadataList.add(metadata);
     }
+  }
 
-    static TableMetadata fromJson(String jsonString) {
-        return GSON.fromJson(jsonString, TableMetadata.class);
-    }
+  static TableMetadata fromJson(String jsonString) {
+    return GSON.fromJson(jsonString, TableMetadata.class);
+  }
 
-    String toJson() {
-        return GSON.toJson(this);
-    }
+  String toJson() {
+    return GSON.toJson(this);
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TableMetadata that = (TableMetadata) o;
-        return rowCount == that.rowCount &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(columnMetadataList, that.columnMetadataList);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TableMetadata that = (TableMetadata) o;
+    return rowCount == that.rowCount
+        && Objects.equals(name, that.name)
+        && Objects.equals(columnMetadataList, that.columnMetadataList);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, rowCount, columnMetadataList);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, rowCount, columnMetadataList);
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public int getRowCount() {
-        return rowCount;
-    }
+  public int getRowCount() {
+    return rowCount;
+  }
 
-    List<ColumnMetadata> getColumnMetadataList() {
-        return columnMetadataList;
-    }
+  public int getVersion() {
+    return version;
+  }
+
+  List<ColumnMetadata> getColumnMetadataList() {
+    return columnMetadataList;
+  }
 }

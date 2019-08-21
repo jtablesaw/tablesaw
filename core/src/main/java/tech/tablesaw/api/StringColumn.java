@@ -79,6 +79,10 @@ public class StringColumn extends AbstractStringColumn {
     return new StringColumn(name, strings);
   }
 
+  public static StringColumn createInternal(String name, DictionaryMap map) {
+    return new StringColumn(name, map);
+  }
+
   public static StringColumn create(String name, int size) {
     StringColumn column = new StringColumn(name, new ArrayList<>(size));
     for (int i = 0; i < size; i++) {
@@ -92,6 +96,11 @@ public class StringColumn extends AbstractStringColumn {
     for (String string : strings) {
       append(string);
     }
+  }
+
+  private StringColumn(String name, DictionaryMap map) {
+    super(StringColumnType.instance(), name);
+    lookupTable = map;
   }
 
   private StringColumn(String name) {
@@ -550,9 +559,7 @@ public class StringColumn extends AbstractStringColumn {
     return textColumn;
   }
 
-  /**
-   * Don't use this. For tablesaw use only
-   */
+  /** Don't use this. For tablesaw use only */
   public DictionaryMap unsafeGetLookupTable() {
     return lookupTable;
   }

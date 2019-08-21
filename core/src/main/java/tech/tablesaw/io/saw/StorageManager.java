@@ -14,33 +14,31 @@ package tech.tablesaw.io.saw;
  * limitations under the License.
  */
 
-import java.nio.file.FileSystem;
 import java.nio.file.*;
+import java.nio.file.FileSystem;
 
 /**
- * A controller for reading and writing data in Tablesaw's own compressed, column-oriented file format
+ * A controller for reading and writing data in Tablesaw's own compressed, column-oriented file
+ * format
  */
 class StorageManager {
 
-    static final String FLOAT = "FLOAT";
-    static final String DOUBLE = "DOUBLE";
-    static final String INTEGER = "INTEGER";
-    static final String LONG = "LONG";
-    static final String SHORT = "SHORT";
-    static final String STRING = "STRING";
-    static final String TEXT = "TEXT";
-    static final String INSTANT = "INSTANT";
-    static final String LOCAL_DATE = "LOCAL_DATE";
-    static final String LOCAL_TIME = "LOCAL_TIME";
-    static final String LOCAL_DATE_TIME = "LOCAL_DATE_TIME";
-    static final String BOOLEAN = "BOOLEAN";
+  static final String FLOAT = "FLOAT";
+  static final String DOUBLE = "DOUBLE";
+  static final String INTEGER = "INTEGER";
+  static final String LONG = "LONG";
+  static final String SHORT = "SHORT";
+  static final String STRING = "STRING";
+  static final String TEXT = "TEXT";
+  static final String INSTANT = "INSTANT";
+  static final String LOCAL_DATE = "LOCAL_DATE";
+  static final String LOCAL_TIME = "LOCAL_TIME";
+  static final String LOCAL_DATE_TIME = "LOCAL_DATE_TIME";
+  static final String BOOLEAN = "BOOLEAN";
 
-    /**
-     * TODO: This is no way to get a File system separator
-     */
-    static String separator() {
-        FileSystem fileSystem = FileSystems.getDefault();
-        return fileSystem.getSeparator();
-    }
-
+  /** TODO: This is no way to get a File system separator */
+  static String separator() {
+    FileSystem fileSystem = FileSystems.getDefault();
+    return fileSystem.getSeparator();
+  }
 }

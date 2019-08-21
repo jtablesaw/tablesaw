@@ -10,13 +10,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import tech.tablesaw.sorting.Sort;
 
-final public class WindowSpecification {
+public final class WindowSpecification {
 
   private final String windowName;
   private final LinkedHashSet<String> partitionColumns;
   private final Sort sort;
 
-  private WindowSpecification(String windowName, LinkedHashSet<String> partitionColumns, Sort sort) {
+  private WindowSpecification(
+      String windowName, LinkedHashSet<String> partitionColumns, Sort sort) {
     this.windowName = windowName;
     this.partitionColumns = partitionColumns;
     this.sort = sort;
@@ -35,8 +36,10 @@ final public class WindowSpecification {
     }
     if (!sort.isEmpty()) {
       sb.append("ORDER BY ");
-      sb.append(Streams.stream(sort.iterator())
-        .map(this::formatOrdering).collect(Collectors.joining(", ")));
+      sb.append(
+          Streams.stream(sort.iterator())
+              .map(this::formatOrdering)
+              .collect(Collectors.joining(", ")));
     }
     return sb.toString();
   }
@@ -72,14 +75,12 @@ final public class WindowSpecification {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
     WindowSpecification that = (WindowSpecification) o;
-    return Objects.equal(windowName, that.windowName) &&
-      Objects.equal(partitionColumns, that.partitionColumns) &&
-      Objects.equal(sort, that.sort);
+    return Objects.equal(windowName, that.windowName)
+        && Objects.equal(partitionColumns, that.partitionColumns)
+        && Objects.equal(sort, that.sort);
   }
 
   @Override
@@ -92,8 +93,7 @@ final public class WindowSpecification {
     private LinkedHashSet<String> partitioning = new LinkedHashSet<>();
     private Sort sort = null;
 
-    private Builder() {
-    }
+    private Builder() {}
 
     Builder setWindowName(String windowName) {
       this.windowName = windowName;
@@ -104,8 +104,9 @@ final public class WindowSpecification {
       this.partitioning.clear();
       this.partitioning.addAll(columns);
       // TODO add actual duplicate columns to the error message.
-      Preconditions.checkArgument(partitioning.size() == columns.size(),
-        "Partition by Columns cannot contain duplicate columns");
+      Preconditions.checkArgument(
+          partitioning.size() == columns.size(),
+          "Partition by Columns cannot contain duplicate columns");
       return this;
     }
 
@@ -115,12 +116,7 @@ final public class WindowSpecification {
     }
 
     WindowSpecification build() {
-      return new WindowSpecification(
-        windowName,
-        partitioning,
-        sort
-      );
+      return new WindowSpecification(windowName, partitioning, sort);
     }
-
   }
 }

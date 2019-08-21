@@ -66,13 +66,12 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
    * Create a Sort object from the given table and sort column names. Does not sort the table.
    *
    * @param table to sort. Used only to pull the table's schema. Does not modify the table.
-   * @param columnNames The columns to sort on. Can prefix column name with + for ascending, - for descending.
-   * Default to ascending if no prefix is added.
+   * @param columnNames The columns to sort on. Can prefix column name with + for ascending, - for
+   *     descending. Default to ascending if no prefix is added.
    * @return a {@link #Sort} Object.
    */
   public static Sort create(Table table, String... columnNames) {
-    Preconditions.checkArgument(columnNames.length > 0,
-      "At least one sort column must provided.");
+    Preconditions.checkArgument(columnNames.length > 0, "At least one sort column must provided.");
 
     Sort key = null;
     Set<String> names = table.columnNames().stream().map(String::toUpperCase).collect(toSet());
@@ -86,18 +85,19 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
         Optional<Order> orderOptional = getOrder(prefix);
 
         // Invalid prefix, column name exists on table.
-        if(!orderOptional.isPresent() && names.contains(columnName.substring(1).toUpperCase())) {
+        if (!orderOptional.isPresent() && names.contains(columnName.substring(1).toUpperCase())) {
           throw new IllegalStateException("Column prefix: " + prefix + " is unknown.");
         }
 
         // Valid prefix, column name does not exist on table.
-        if(orderOptional.isPresent() && !names.contains(columnName.substring(1).toUpperCase())) {
+        if (orderOptional.isPresent() && !names.contains(columnName.substring(1).toUpperCase())) {
           throw new IllegalStateException(
-            String.format("Column %s does not exist in table %s", columnName.substring(1), table.name()));
+              String.format(
+                  "Column %s does not exist in table %s", columnName.substring(1), table.name()));
         }
 
         // Invalid prefix, column name does not exist on table.
-        if(!orderOptional.isPresent()) {
+        if (!orderOptional.isPresent()) {
           throw new IllegalStateException("Unrecognized Column: '" + columnName + "'");
         }
 
