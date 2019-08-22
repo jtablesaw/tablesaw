@@ -2,6 +2,7 @@ package tech.tablesaw.api;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static tech.tablesaw.api.ColumnType.BOOLEAN;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
 import static tech.tablesaw.api.ColumnType.FLOAT;
@@ -626,5 +627,29 @@ public class RowTest {
     Integer[] actual = Streams.stream(row).map(r -> r.getInt("approval")).toArray(Integer[]::new);
 
     assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  public void columnDoesNotExistOnRow() {
+    Table table = Table.create("myTable", IntColumn.create("col1", new int[] {1}));
+
+    Throwable thrown =
+        assertThrows(IllegalStateException.class, () -> table.forEach(r -> r.getInt("col2")));
+
+    assertEquals("Column col2 is not present in table myTable", thrown.getMessage());
+  }
+
+  @Test
+  public void columnExistsButWrongType() {
+    Table table = Table.create("myTale", DateColumn.create("col1", new LocalDate[] {null}));
+
+    Throwable thrown =
+        assertThrows(
+            IllegalArgumentException.class, () -> table.forEach(r -> r.setTime("col1", null)));
+
+    assertEquals(
+        "Column col1 is of type LOCAL_DATE and cannot be cast to LOCAL_TIME."
+            + " Use the method for LOCAL_DATE.",
+        thrown.getMessage());
   }
 }
