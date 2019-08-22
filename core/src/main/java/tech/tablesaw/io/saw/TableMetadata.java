@@ -24,6 +24,8 @@ import tech.tablesaw.table.Relation;
 /** Data about a specific physical table used in its persistence */
 public class TableMetadata {
 
+  static final String METADATA_FILE_NAME = "Metadata.json";
+
   private static final Gson GSON = new Gson();
 
   private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();

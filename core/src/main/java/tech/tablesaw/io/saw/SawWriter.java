@@ -1,7 +1,9 @@
 package tech.tablesaw.io.saw;
 
 import static tech.tablesaw.io.saw.StorageManager.*;
+import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -22,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
+
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -51,7 +54,7 @@ public class SawWriter {
   private static final Pattern SEPARATOR_PATTERN = Pattern.compile(Pattern.quote(separator()));
 
   /**
-   * Saves the data from the given table in the location specified by folderName. Within that folder
+   * Saves the data from the given table in the location specified by parentFolderName. Within that folder
    * each table has its own sub-folder, whose name is based on the name of the table.
    *
    * <p>NOTE: If you store a table with the same name in the same folder. The data in that folder
@@ -60,48 +63,64 @@ public class SawWriter {
    * <p>The storage format is the tablesaw compressed column-oriented format, which consists of a
    * set of file in a folder. The name of the folder is based on the name of the table.
    *
-   * @param folderName The location of the table (for example: "mytables")
+   * @param parentFolderName The location of the table (for example: "mytables")
    * @param table The table to be saved
    * @return The path and name of the table
    * @throws RuntimeException wrapping IOException if the file can not be read
    */
-  public static String saveTable(String folderName, Relation table) {
+  public static String saveTable(String parentFolderName, Relation table) {
+
+    Preconditions.checkArgument(parentFolderName != null,
+            "The folder name for the saw output cannot be null");
+    Preconditions.checkArgument(!parentFolderName.isEmpty(),
+            "The folder name for the saw output cannot be empty");
 
     ExecutorService executorService = Executors.newFixedThreadPool(10);
     CompletionService<Void> writerCompletionService =
         new ExecutorCompletionService<>(executorService);
 
-    String name = table.name();
-    name =
-        WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from the table name
-    name =
-        SEPARATOR_PATTERN
-            .matcher(name)
-            .replaceAll("_"); // remove path separators from the table name
+    // creates the containing foler
+    Path folderPath = Paths.get(parentFolderName);
 
-    String storageFolder = folderName + separator() + name + '.' + FILE_EXTENSION;
-
-    Path path = Paths.get(storageFolder);
-
-    if (!Files.exists(path)) {
+    if (!Files.exists(folderPath)) {
       try {
-        Files.createDirectories(path);
+        Files.createDirectories(folderPath);
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
 
+    // creates the folder containing the files
+    String sawFolderName = makeName(table);
+    Path filePath = folderPath.resolve(sawFolderName);
+
+    if (Files.exists(filePath)) {
+      try {
+        Files.walk(filePath)
+                .map(Path::toFile)
+                .sorted((o1, o2) -> -o1.compareTo(o2))
+                .forEach(File::delete);
+      } catch (IOException e) { e.printStackTrace();}
+    }
+    try {
+      Files.createDirectories(filePath);
+    } catch (IOException e) {e.printStackTrace();}
+
     try {
       TableMetadata tableMetadata = new TableMetadata(table);
-      writeTableMetadata(path.toString() + separator() + "Metadata.json", tableMetadata);
+
+      Path metaDataPath = filePath.resolve(METADATA_FILE_NAME);
+
+      writeTableMetadata(metaDataPath, tableMetadata);
 
       List<Column<?>> columns = table.columns();
       for (int i = 0; i < columns.size(); i++) {
         Column column = columns.get(i);
         String pathString = tableMetadata.getColumnMetadataList().get(i).getId();
+
         writerCompletionService.submit(
             () -> {
-              Path columnPath = path.resolve(pathString);
+              Path columnPath = filePath.resolve(pathString);
               writeColumn(columnPath.toString(), column);
               return null;
             });
@@ -114,7 +133,19 @@ public class SawWriter {
       throw new RuntimeException(e);
     }
     executorService.shutdown();
-    return storageFolder;
+    return filePath.toAbsolutePath().toString();
+  }
+
+  private static String makeName(Relation table) {
+
+    String name = table.name();
+    name =
+            WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from the table name
+    name =
+            SEPARATOR_PATTERN
+                    .matcher(name)
+                    .replaceAll("_"); // remove path separators from the table name
+    return name + '.' + FILE_EXTENSION;
   }
 
   private static void writeColumn(String fileName, Column column) {
@@ -410,12 +441,12 @@ public class SawWriter {
    * Writes out a json-formatted representation of the given {@code table}'s metadata to the given
    * {@code file}
    *
-   * @param fileName Expected to be fully specified
-   * @throws IOException if the file can not be read
+   * @param filePath      The full file path including file name
+   * @throws IOException  if the file can not be read
    */
-  private static void writeTableMetadata(String fileName, TableMetadata metadata)
+  private static void writeTableMetadata(Path filePath, TableMetadata metadata)
       throws IOException {
-    File myFile = Paths.get(fileName).toFile();
+    File myFile = filePath.toFile();
     myFile.createNewFile();
     try (FileOutputStream fOut = new FileOutputStream(myFile);
         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {

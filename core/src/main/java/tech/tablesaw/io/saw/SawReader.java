@@ -1,6 +1,7 @@
 package tech.tablesaw.io.saw;
 
 import static tech.tablesaw.io.saw.StorageManager.*;
+import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -8,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
@@ -58,8 +60,10 @@ public class SawReader {
         new ExecutorCompletionService<>(executorService);
 
     TableMetadata tableMetadata;
+
+    Path sawPath = Paths.get(path);
     try {
-      tableMetadata = readTableMetadata(path + separator() + "Metadata.json");
+      tableMetadata = readTableMetadata(sawPath.resolve(METADATA_FILE_NAME));
     } catch (IOException e) {
       throw new RuntimeException("Error attempting to load saw data", e);
     }
@@ -431,12 +435,12 @@ public class SawReader {
    * Reads in a json-formatted file and creates a TableMetadata instance from it. Files are expected
    * to be in the format provided by TableMetadata}
    *
-   * @param fileName Expected to be fully specified
+   * @param filePath    The path
    * @throws IOException if the file can not be read
    */
-  private static TableMetadata readTableMetadata(String fileName) throws IOException {
+  private static TableMetadata readTableMetadata(Path filePath) throws IOException {
 
-    byte[] encoded = Files.readAllBytes(Paths.get(fileName));
+    byte[] encoded = Files.readAllBytes(filePath);
     return TableMetadata.fromJson(new String(encoded, StandardCharsets.UTF_8));
   }
 }
