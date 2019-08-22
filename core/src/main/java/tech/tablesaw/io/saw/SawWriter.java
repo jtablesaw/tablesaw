@@ -404,7 +404,7 @@ public class SawWriter {
     }
   }
 
-  // TODO(lwhite): saveTable the column using integer compression
+  // TODO(lwhite): save the column using integer compression?
   private static void writeColumn(String fileName, TimeColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -421,7 +421,7 @@ public class SawWriter {
     }
   }
 
-  // TODO(lwhite): saveTable the column using compressed bitmap
+  // TODO(lwhite): save the column using compressed bitmap?
   private static void writeColumn(String fileName, BooleanColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);

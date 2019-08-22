@@ -25,12 +25,12 @@ import tech.tablesaw.table.Relation;
 public class TableMetadata {
 
   static final String METADATA_FILE_NAME = "Metadata.json";
+  private static final int SAW_VERSION = 1;
 
   private static final Gson GSON = new Gson();
 
   private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
   private final String name;
-  private final int version = 1;
   private final int rowCount;
 
   TableMetadata(Relation table) {
@@ -74,7 +74,7 @@ public class TableMetadata {
   }
 
   public int getVersion() {
-    return version;
+    return SAW_VERSION;
   }
 
   List<ColumnMetadata> getColumnMetadataList() {
