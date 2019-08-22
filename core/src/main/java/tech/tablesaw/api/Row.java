@@ -43,8 +43,8 @@ public class Row implements Iterator<Row> {
     }
 
     /**
-     * Will get thrown when column name is correct, but used the wrong method get/set is called. E.G. the user called
-     * .getLong on an IntColumn.
+     * Will get thrown when column name is correct, but used the wrong method get/set is called.
+     * E.G. the user called .getLong on an IntColumn.
      */
     private void throwWrongTypeError(String columnName) {
       for (int i = 0; i < columnNames.length; i++) {

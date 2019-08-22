@@ -141,7 +141,7 @@ public class ColumnTypeDetector {
   private ColumnType detectType(List<String> valuesList, ReadOptions options) {
 
     CopyOnWriteArrayList<AbstractColumnParser<?>> parsers =
-            new CopyOnWriteArrayList<>(getParserList(typeArray, options));
+        new CopyOnWriteArrayList<>(getParserList(typeArray, options));
 
     CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
