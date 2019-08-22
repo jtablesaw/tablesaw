@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
-
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -54,8 +53,8 @@ public class SawWriter {
   private static final Pattern SEPARATOR_PATTERN = Pattern.compile(Pattern.quote(separator()));
 
   /**
-   * Saves the data from the given table in the location specified by parentFolderName. Within that folder
-   * each table has its own sub-folder, whose name is based on the name of the table.
+   * Saves the data from the given table in the location specified by parentFolderName. Within that
+   * folder each table has its own sub-folder, whose name is based on the name of the table.
    *
    * <p>NOTE: If you store a table with the same name in the same folder. The data in that folder
    * will be over-written.
@@ -70,10 +69,10 @@ public class SawWriter {
    */
   public static String saveTable(String parentFolderName, Relation table) {
 
-    Preconditions.checkArgument(parentFolderName != null,
-            "The folder name for the saw output cannot be null");
-    Preconditions.checkArgument(!parentFolderName.isEmpty(),
-            "The folder name for the saw output cannot be empty");
+    Preconditions.checkArgument(
+        parentFolderName != null, "The folder name for the saw output cannot be null");
+    Preconditions.checkArgument(
+        !parentFolderName.isEmpty(), "The folder name for the saw output cannot be empty");
 
     ExecutorService executorService = Executors.newFixedThreadPool(10);
     CompletionService<Void> writerCompletionService =
@@ -97,14 +96,18 @@ public class SawWriter {
     if (Files.exists(filePath)) {
       try {
         Files.walk(filePath)
-                .map(Path::toFile)
-                .sorted((o1, o2) -> -o1.compareTo(o2))
-                .forEach(File::delete);
-      } catch (IOException e) { e.printStackTrace();}
+            .map(Path::toFile)
+            .sorted((o1, o2) -> -o1.compareTo(o2))
+            .forEach(File::delete);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
     try {
       Files.createDirectories(filePath);
-    } catch (IOException e) {e.printStackTrace();}
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     try {
       TableMetadata tableMetadata = new TableMetadata(table);
@@ -140,11 +143,11 @@ public class SawWriter {
 
     String name = table.name();
     name =
-            WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from the table name
+        WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from the table name
     name =
-            SEPARATOR_PATTERN
-                    .matcher(name)
-                    .replaceAll("_"); // remove path separators from the table name
+        SEPARATOR_PATTERN
+            .matcher(name)
+            .replaceAll("_"); // remove path separators from the table name
     return name + '.' + FILE_EXTENSION;
   }
 
@@ -441,11 +444,10 @@ public class SawWriter {
    * Writes out a json-formatted representation of the given {@code table}'s metadata to the given
    * {@code file}
    *
-   * @param filePath      The full file path including file name
-   * @throws IOException  if the file can not be read
+   * @param filePath The full file path including file name
+   * @throws IOException if the file can not be read
    */
-  private static void writeTableMetadata(Path filePath, TableMetadata metadata)
-      throws IOException {
+  private static void writeTableMetadata(Path filePath, TableMetadata metadata) throws IOException {
     File myFile = filePath.toFile();
     myFile.createNewFile();
     try (FileOutputStream fOut = new FileOutputStream(myFile);

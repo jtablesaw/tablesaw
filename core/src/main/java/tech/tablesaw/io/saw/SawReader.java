@@ -435,7 +435,7 @@ public class SawReader {
    * Reads in a json-formatted file and creates a TableMetadata instance from it. Files are expected
    * to be in the format provided by TableMetadata}
    *
-   * @param filePath    The path
+   * @param filePath The path
    * @throws IOException if the file can not be read
    */
   private static TableMetadata readTableMetadata(Path filePath) throws IOException {
