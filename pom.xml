@@ -85,6 +85,9 @@
                     <configuration>
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <failOnError>false</failOnError>
+                        <quiet>true</quiet>
+                        <additionalOptions>-Xdoclint:none</additionalOptions>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
                     </configuration>
                     <executions>
                         <execution>

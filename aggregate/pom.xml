@@ -29,6 +29,7 @@
           <argLine>${argLine} -Xms256m -Xmx2048m</argLine>
           <forkCount>1</forkCount>
           <runOrder>random</runOrder>
+          <printSummary>false</printSummary>
         </configuration>
       </plugin>
       <plugin>

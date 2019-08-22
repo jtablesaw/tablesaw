@@ -96,6 +96,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>-Duser.language=en-US -Duser.region=US</argLine>
+                    <printSummary>false</printSummary>
                 </configuration>
             </plugin>
         </plugins>
