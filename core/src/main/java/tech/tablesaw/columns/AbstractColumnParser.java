@@ -33,7 +33,7 @@ public abstract class AbstractColumnParser<T> {
     return columnType;
   }
 
-  protected boolean isMissing(String s) {
+  public boolean isMissing(String s) {
     if (s == null) {
       return true;
     }
