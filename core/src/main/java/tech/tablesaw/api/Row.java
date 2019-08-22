@@ -14,7 +14,7 @@ import tech.tablesaw.table.TableSlice;
 public class Row implements Iterator<Row> {
 
   /**
-   * Wrap Map of columnname to Column ap and provide helpful error messages to the user when a
+   * Wrap Map of column name to Column map and provide helpful error messages to the user when a
    * column name cannot be found.
    */
   private class ColumnMap<T> {
@@ -43,7 +43,7 @@ public class Row implements Iterator<Row> {
     }
 
     /**
-     * Will get thrown when column name is correct, but used the wrong method get/set it. E.G. used
+     * Will get thrown when column name is correct, but used the wrong method get/set is called. E.G. the user called
      * .getLong on an IntColumn.
      */
     private void throwWrongTypeError(String columnName) {
