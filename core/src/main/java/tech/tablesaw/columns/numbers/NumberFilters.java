@@ -22,10 +22,11 @@ import static tech.tablesaw.columns.numbers.NumberPredicates.isZero;
 import java.util.function.BiPredicate;
 import java.util.function.DoublePredicate;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.filtering.NumberFilterSpec;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-public interface NumberFilters {
+public interface NumberFilters extends NumberFilterSpec<Selection> {
 
   Selection eval(DoublePredicate predicate);
 
