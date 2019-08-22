@@ -4,39 +4,90 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
 
 public class Row implements Iterator<Row> {
 
+  /**
+   * Wrap Map of columnname to Column ap and provide helpful error messages to the user when a
+   * column name cannot be found.
+   */
+  private class ColumnMap<T> {
+    private final Map<String, T> columnMap = new HashMap<>();
+    private final ColumnType columnType;
+
+    public ColumnMap(ColumnType columnType) {
+      this.columnType = columnType;
+    }
+
+    ColumnMap() {
+      this.columnType = null;
+    }
+
+    T get(String columnName) {
+      T column = columnMap.get(columnName.toLowerCase());
+      if (column == null) {
+        throwWrongTypeError(columnName);
+        throwColumnNotPresentError(columnName);
+      }
+      return column;
+    }
+
+    void put(String columnName, T column) {
+      columnMap.put(columnName.toLowerCase(), column);
+    }
+
+    /**
+     * Will get thrown when column name is correct, but used the wrong method get/set it. E.G. used
+     * .getLong on an IntColumn.
+     */
+    private void throwWrongTypeError(String columnName) {
+      for (int i = 0; i < columnNames.length; i++) {
+        if (columnName.equals(columnNames[i])) {
+          String actualType = tableSlice.getTable().columns().get(i).type().name();
+          String proposedType = columnTypeName();
+          throw new IllegalArgumentException(
+              String.format(
+                  "Column %s is of type %s and cannot be cast to %s. Use the method for %s.",
+                  columnName, actualType, proposedType, actualType));
+        }
+      }
+    }
+
+    private void throwColumnNotPresentError(String columnName) {
+      throw new IllegalStateException(
+          String.format(
+              "Column %s is not present in table %s", columnName, tableSlice.getTable().name()));
+    }
+
+    private String columnTypeName() {
+      if (this.columnType != null) {
+        return this.columnType.name();
+      }
+      return "Object";
+    }
+  }
+
   private final TableSlice tableSlice;
   private final String[] columnNames;
-  private final Map<String, DateColumn> dateColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, DoubleColumn> doubleColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, IntColumn> intColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, LongColumn> longColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, ShortColumn> shortColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, FloatColumn> floatColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, Column<String>> stringColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, BooleanColumn> booleanColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, DateTimeColumn> dateTimeColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, InstantColumn> instantColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, TimeColumn> timeColumnMap =
-      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-  private final Map<String, Column<?>> columnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+  private final ColumnMap<DateColumn> dateColumnMap = new ColumnMap<>();
+  private final ColumnMap<DoubleColumn> doubleColumnMap = new ColumnMap<>(ColumnType.DOUBLE);
+  private final ColumnMap<IntColumn> intColumnMap = new ColumnMap<>(ColumnType.INTEGER);
+  private final ColumnMap<LongColumn> longColumnMap = new ColumnMap<>(ColumnType.LONG);
+  private final ColumnMap<ShortColumn> shortColumnMap = new ColumnMap<>(ColumnType.SHORT);
+  private final ColumnMap<FloatColumn> floatColumnMap = new ColumnMap<>(ColumnType.FLOAT);
+  private final ColumnMap<Column<String>> stringColumnMap = new ColumnMap<>(ColumnType.STRING);
+  private final ColumnMap<BooleanColumn> booleanColumnMap = new ColumnMap<>(ColumnType.BOOLEAN);
+  private final ColumnMap<DateTimeColumn> dateTimeColumnMap =
+      new ColumnMap<>(ColumnType.LOCAL_DATE_TIME);
+  private final ColumnMap<InstantColumn> instantColumnMap = new ColumnMap<>(ColumnType.INSTANT);
+  private final ColumnMap<TimeColumn> timeColumnMap = new ColumnMap<>(ColumnType.LOCAL_TIME);
+  private final ColumnMap<Column<?>> columnMap = new ColumnMap<>();
   private int rowNumber;
 
   public Row(Table table) {
