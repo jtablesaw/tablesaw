@@ -14,14 +14,17 @@ package tech.tablesaw.io.saw;
  * limitations under the License.
  */
 
+import com.google.common.annotations.Beta;
+
 import java.nio.file.*;
 import java.nio.file.FileSystem;
 
 /**
- * A controller for reading and writing data in Tablesaw's own compressed, column-oriented file
- * format
+ * Utilities and constants for reading and writing data in Tablesaw's own compressed,
+ * column-oriented file format aka "saw"
  */
-class StorageManager {
+@Beta
+class SawUtils {
 
   static final String FLOAT = "FLOAT";
   static final String DOUBLE = "DOUBLE";

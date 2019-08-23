@@ -1,8 +1,9 @@
 package tech.tablesaw.io.saw;
 
-import static tech.tablesaw.io.saw.StorageManager.*;
+import static tech.tablesaw.io.saw.SawUtils.*;
 import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -45,6 +46,7 @@ import tech.tablesaw.columns.strings.ShortDictionaryMap;
 import tech.tablesaw.table.Relation;
 
 @SuppressWarnings("WeakerAccess")
+@Beta
 public class SawWriter {
 
   private static final int FLUSH_AFTER_ITERATIONS = 10_000;

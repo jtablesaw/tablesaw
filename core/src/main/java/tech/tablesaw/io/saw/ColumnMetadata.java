@@ -14,8 +14,9 @@
 
 package tech.tablesaw.io.saw;
 
-import static tech.tablesaw.io.saw.StorageManager.*;
+import static tech.tablesaw.io.saw.SawUtils.*;
 
+import com.google.common.annotations.Beta;
 import com.google.gson.Gson;
 import java.util.UUID;
 import tech.tablesaw.api.*;
@@ -26,6 +27,7 @@ import tech.tablesaw.columns.strings.IntDictionaryMap;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
 /** Data about a specific column used in it's persistence */
+@Beta
 public class ColumnMetadata {
 
   private static final Gson GSON = new Gson();

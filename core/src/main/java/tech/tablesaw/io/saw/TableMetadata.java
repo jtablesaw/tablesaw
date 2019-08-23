@@ -14,6 +14,7 @@
 
 package tech.tablesaw.io.saw;
 
+import com.google.common.annotations.Beta;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
 
 /** Data about a specific physical table used in its persistence */
+@Beta
 public class TableMetadata {
 
   static final String METADATA_FILE_NAME = "Metadata.json";

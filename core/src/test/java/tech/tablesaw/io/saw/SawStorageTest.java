@@ -135,6 +135,6 @@ class SawStorageTest {
 
   @Test
   void testSeparator() {
-    assertNotNull(StorageManager.separator());
+    assertNotNull(SawUtils.separator());
   }
 }
