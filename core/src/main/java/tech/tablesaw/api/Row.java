@@ -88,6 +88,7 @@ public class Row implements Iterator<Row> {
   private final ColumnMap<InstantColumn> instantColumnMap = new ColumnMap<>(ColumnType.INSTANT);
   private final ColumnMap<TimeColumn> timeColumnMap = new ColumnMap<>(ColumnType.LOCAL_TIME);
   private final ColumnMap<Column<?>> columnMap = new ColumnMap<>();
+  private final ColumnMap<NumericColumn<? extends Number>> numericColumnMap = new ColumnMap<>();
   private int rowNumber;
 
   public Row(Table table) {
@@ -109,18 +110,23 @@ public class Row implements Iterator<Row> {
     for (Column<?> column : tableSlice.getTable().columns()) {
       if (column instanceof DoubleColumn) {
         doubleColumnMap.put(column.name(), (DoubleColumn) column);
+        numericColumnMap.put(column.name(), (DoubleColumn) column);
       }
       if (column instanceof IntColumn) {
         intColumnMap.put(column.name(), (IntColumn) column);
+        numericColumnMap.put(column.name(), (IntColumn) column);
       }
       if (column instanceof ShortColumn) {
         shortColumnMap.put(column.name(), (ShortColumn) column);
+        numericColumnMap.put(column.name(), (ShortColumn) column);
       }
       if (column instanceof LongColumn) {
         longColumnMap.put(column.name(), (LongColumn) column);
+        numericColumnMap.put(column.name(), (LongColumn) column);
       }
       if (column instanceof FloatColumn) {
         floatColumnMap.put(column.name(), (FloatColumn) column);
+        numericColumnMap.put(column.name(), (FloatColumn) column);
       }
       if (column instanceof BooleanColumn) {
         booleanColumnMap.put(column.name(), (BooleanColumn) column);
@@ -292,6 +298,12 @@ public class Row implements Iterator<Row> {
     return stringColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
+  public boolean isMissing(String columnName) {
+    Column<?> x = columnMap.get(columnName);
+    int i = getIndex(rowNumber);
+    return x.isMissing(i);
+  }
+
   @Override
   public boolean hasNext() {
     return rowNumber < this.tableSlice.rowCount() - 1;
@@ -395,8 +407,22 @@ public class Row implements Iterator<Row> {
     setTime(columnNames[columnIndex], value);
   }
 
+  /**
+   * Returns the row number for this row, relative to the backing column
+   *
+   * @param rowNumber the rowNumber in the TableSlice backing this (row)
+   * @return the matching row number in the underlying column.
+   */
   private int getIndex(int rowNumber) {
     return tableSlice.mappedRowNumber(rowNumber);
+  }
+
+  public double getNumber(String columnName) {
+    return numericColumnMap.get(columnName).getDouble(rowNumber);
+  }
+
+  public ColumnType getColumnType(String columnName) {
+    return columnMap.get(columnName).type();
   }
 
   @Override

@@ -3,6 +3,7 @@ package tech.tablesaw.io.saw;
 import static tech.tablesaw.io.saw.SawUtils.*;
 import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
+import com.google.common.annotations.Beta;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.FileInputStream;
@@ -21,8 +22,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import com.google.common.annotations.Beta;
 import org.iq80.snappy.SnappyFramedInputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
