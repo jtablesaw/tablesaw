@@ -8,7 +8,7 @@ public interface AnalyticQuerySteps {
 
     interface FromStep {
       /**
-       * Set the From Table name.
+       * Set the From/Source Table name to use in the query.
        *
        * @param table to query.
        * @return the Partition By step in the fluent analytic query builder.
@@ -47,7 +47,7 @@ public interface AnalyticQuerySteps {
 
     interface FromStep {
       /**
-       * Set the From Table name.
+       * Set the From/Source Table name to use in the query.
        *
        * @param table to query.
        * @return the Partition By Step in the fluent analytic query builder.
@@ -86,7 +86,7 @@ public interface AnalyticQuerySteps {
   interface QuickQuerySteps {
     interface FromStep {
       /**
-       * Set the From Table name.
+       * Set the From/Source Table name to use in the query.
        *
        * @param table to query.
        * @return the define window frame step in the fluent analytic query builder.

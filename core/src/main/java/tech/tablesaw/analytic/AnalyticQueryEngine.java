@@ -80,7 +80,7 @@ final class AnalyticQueryEngine {
   private void processNumberingFunctions(TableSlice slice) {
     for (String toColumn : query.getArgumentList().getNumberingFunctions().keySet()) {
       if (rowComparator == null) {
-        throw new IllegalArgumentException("Cannot use Numbering Function without " + "OrderBy");
+        throw new IllegalArgumentException("Cannot use Numbering Function without OrderBy");
       }
       FunctionCall<NumberingFunctions> functionCall =
           query.getArgumentList().getNumberingFunctions().get(toColumn);

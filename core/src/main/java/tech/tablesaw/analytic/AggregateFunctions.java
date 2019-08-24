@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.function.Function;
 import tech.tablesaw.analytic.WindowFrame.WindowGrowthType;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 
 /**
  * Analytic Aggregate functions.
@@ -111,7 +112,7 @@ enum AggregateFunctions implements FunctionMetaData {
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
       return new AppendAggregateFunction<T, Double>() {
-        private double sum = Double.NaN;
+        private double sum = DoubleColumnType.missingValueIndicator();
 
         @Override
         public Double getValue() {
@@ -123,7 +124,7 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMost(T newValue) {
-          if (Double.isNaN(sum)) {
+          if (DoubleColumnType.isMissingValue(sum)) {
             this.sum = 0.0;
           }
           this.sum += newValue.doubleValue();
@@ -141,7 +142,7 @@ enum AggregateFunctions implements FunctionMetaData {
         @Override
         public void removeLeftMost() {
           Double removed = queue.remove();
-          if (Double.isNaN(removed)) {
+          if (DoubleColumnType.isMissingValue(removed)) {
             missingCount--;
           } else {
             this.sum -= removed;
@@ -157,14 +158,14 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMostMissing() {
-          queue.add(Double.NaN);
+          queue.add(DoubleColumnType.missingValueIndicator());
           missingCount++;
         }
 
         @Override
         public Double getValue() {
           if (queue.size() == 0 || missingCount == queue.size()) {
-            return Double.NaN;
+            return DoubleColumnType.missingValueIndicator();
           }
           return sum;
         }
@@ -177,11 +178,11 @@ enum AggregateFunctions implements FunctionMetaData {
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
       return new AppendAggregateFunction<T, Double>() {
-        private Double max = Double.NaN;
+        private Double max = DoubleColumnType.missingValueIndicator();
 
         @Override
         public void addRightMost(T newValue) {
-          if (Double.isNaN(max)) {
+          if (DoubleColumnType.isMissingValue(max)) {
             max = newValue.doubleValue();
             return;
           }
@@ -215,7 +216,7 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMostMissing() {
-          queue.add(Double.NaN);
+          queue.add(DoubleColumnType.missingValueIndicator());
         }
 
         @Override
@@ -223,10 +224,10 @@ enum AggregateFunctions implements FunctionMetaData {
           // This could be faster, but probably does not matter in practice because sliding windows
           // will be small.
           return queue.stream()
-              .filter(d -> !Double.isNaN(d))
+              .filter(d -> !DoubleColumnType.isMissingValue(d))
               .mapToDouble(Number::doubleValue)
               .max()
-              .orElse(Double.NaN);
+              .orElse(DoubleColumnType.missingValueIndicator());
         }
       };
     }
@@ -236,11 +237,11 @@ enum AggregateFunctions implements FunctionMetaData {
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
       return new AppendAggregateFunction<T, Double>() {
-        private Double min = Double.NaN;
+        private Double min = DoubleColumnType.missingValueIndicator();
 
         @Override
         public void addRightMost(T newValue) {
-          if (Double.isNaN(min)) {
+          if (DoubleColumnType.isMissingValue(min)) {
             min = newValue.doubleValue();
             return;
           }
@@ -274,7 +275,7 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMostMissing() {
-          queue.add(Double.NaN);
+          queue.add(DoubleColumnType.missingValueIndicator());
         }
 
         @Override
@@ -282,10 +283,10 @@ enum AggregateFunctions implements FunctionMetaData {
           // This could be faster, but probably does not matter in practice because sliding windows
           // will be small.
           return queue.stream()
-              .filter(d -> !Double.isNaN(d))
+              .filter(d -> !DoubleColumnType.isMissingValue(d))
               .mapToDouble(Number::doubleValue)
               .min()
-              .orElse(Double.NaN);
+              .orElse(DoubleColumnType.missingValueIndicator());
         }
       };
     }
@@ -296,13 +297,13 @@ enum AggregateFunctions implements FunctionMetaData {
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
       return new AppendAggregateFunction<T, Double>() {
-        private double sum = Double.NaN;
+        private double sum = DoubleColumnType.missingValueIndicator();
         private double count = 0;
 
         @Override
         public Double getValue() {
           if (count == 0) {
-            return Double.NaN;
+            return DoubleColumnType.missingValueIndicator();
           }
           return sum / count;
         }
@@ -312,7 +313,7 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMost(T newValue) {
-          if (Double.isNaN(sum)) {
+          if (DoubleColumnType.isMissingValue(sum)) {
             this.sum = 0.0;
           }
           this.sum += newValue.doubleValue();
@@ -331,7 +332,7 @@ enum AggregateFunctions implements FunctionMetaData {
         @Override
         public void removeLeftMost() {
           Double removed = queue.remove();
-          if (Double.isNaN(removed)) {
+          if (DoubleColumnType.isMissingValue(removed)) {
             missingCount--;
           } else {
             this.sum -= removed;
@@ -347,14 +348,14 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMostMissing() {
-          queue.add(Double.NaN);
+          queue.add(DoubleColumnType.missingValueIndicator());
           missingCount++;
         }
 
         @Override
         public Double getValue() {
           if (queue.size() - missingCount == 0) {
-            return Double.NaN;
+            return DoubleColumnType.missingValueIndicator();
           }
           return sum / (queue.size() - missingCount);
         }
@@ -387,7 +388,8 @@ enum AggregateFunctions implements FunctionMetaData {
     @Override
     AggregateFunction<T, Integer> functionForSlidingWindows() {
       return new AggregateFunction<T, Integer>() {
-        // True if is missing value;
+        // Deque contains a boolean that when true indicates that the value in that position of the
+        // window is missing.
         private final ArrayDeque<Boolean> queue = new ArrayDeque<>();
         private int missingCount = 0;
 

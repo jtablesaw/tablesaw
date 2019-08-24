@@ -5,8 +5,8 @@ package tech.tablesaw.analytic;
  *
  * <p>See {@link AggregateFunctions} for more background.
  *
- * <p>This class allows callers to independently slide a the left side, and right side of the
- * window. Implementers must keep track of the state of the window as it slides.
+ * <p>This class allows callers to independently slide the left side, and right side of the window.
+ * Implementers must keep track of the state of the window as it slides.
  *
  * @param <T> the type of the values in the input column (E.G. Integer).
  * @param <R> the type of values in the return column (E.G. Double).
