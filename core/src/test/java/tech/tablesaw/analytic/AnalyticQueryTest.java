@@ -2,6 +2,7 @@ package tech.tablesaw.analytic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import java.util.function.Consumer;
@@ -151,9 +152,6 @@ class AnalyticQueryTest {
                     .as("col1")
                     .executeInPlace());
 
-    assertEquals(
-        "Cannot execute query in place. Query contains output column(s): "
-            + "col1 that already exists on the source table: myTable",
-        thrown.getMessage());
+    assertTrue(thrown.getMessage().contains("Cannot add column with duplicate name"));
   }
 }

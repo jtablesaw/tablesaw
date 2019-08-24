@@ -20,14 +20,14 @@ interface AggregateFunction<T, R> {
   void removeLeftMost();
 
   /**
-   * Slides the right side (aka end) of the window to the right (aka end) by appending a new missing
-   * element. E.G. [(1, 2, 3), NULL, 5] -> [(1, 2, 3, NULL), 5)]
+   * Slides the right side (aka end) of the window to the right (aka end) by appending a new
+   * non-missing element. E.G. [(1, 2, 3), 4, 5] -> [(1, 2, 3, 4), 5)]
    */
   void addRightMost(T value);
 
   /**
-   * Slides the right side (aka end) of the window to the right (aka end) by appending a new
-   * non-missing element. E.G. [(1, 2, 3), 4, 5] -> [(1, 2, 3, 4), 5)]
+   * Slides the right side (aka end) of the window to the right (aka end) by appending a new missing
+   * element. E.G. [(1, 2, 3), NULL, 5] -> [(1, 2, 3, NULL), 5)]
    */
   void addRightMostMissing();
 
