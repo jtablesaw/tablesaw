@@ -1,9 +1,8 @@
 
 
-# Introducing Tablesaw: A brief tutorial
+# Tablesaw: A brief tutorial
 
-Tablesaw is a fairly large library. In this section, we touch on the most common operations. If you haven't already done
-so, we strongly recommend that you read the Getting Started guide, before continuing here. 
+Tablesaw is a large library. We'll use Tablesaw to look at data about Tornadoes. If you haven't already done so, we strongly recommend that you read the Getting Started guide, before continuing here. 
 
 ## Exploring Tornadoes 
 
@@ -25,9 +24,11 @@ All the data is in the Tablesaw *data* folder. The code is taken from the Tornad
 
 Here we read a csv file of tornado data. Tablesaw infers the column types by sampling the data.
 
-    Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
+```java
+Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
+```
 
-Note that the file is addressed relative to the current working directory. You may have to change it for your code. 
+**Note:** that the file is addressed relative to the current working directory. You may have to change it for your code. 
 
 ### Viewing table metadata
 
@@ -46,21 +47,23 @@ The *shape()* method displays the row and column counts:
 
 *structure()* shows the index, name and type of each column
 
-    tornadoes.structure();
-    
-    >>  Structure of data/tornadoes_1950-2014.csv
-            Index Column Names Column Type 
-            0     Date         LOCAL_DATE  
-            1     Time         LOCAL_TIME  
-            2     State        CATEGORY    
-            3     State No     DOUBLE     
-            4     Scale        DOUBLE     
-            5     Injuries     DOUBLE     
-            6     Fatalities   DOUBLE     
-            7     Start Lat    DOUBLE       
-            8     Start Lon    DOUBLE       
-            9     Length       DOUBLE       
-            10    Width        DOUBLE       
+```java
+tornadoes.structure().printAll();
+
+>>  Structure of data/tornadoes_1950-2014.csv
+        Index Column Names Column Type 
+        0     Date         LOCAL_DATE  
+        1     Time         LOCAL_TIME  
+        2     State        STRING    
+        3     State No     DOUBLE     
+        4     Scale        DOUBLE     
+        5     Injuries     INTEGER     
+        6     Fatalities   INTEGER     
+        7     Start Lat    DOUBLE       
+        8     Start Lon    DOUBLE       
+        9     Length       DOUBLE       
+        10    Width        DOUBLE       
+```
 
 Like many Tablesaw methods, *structure()* returns a table.  You can then produce a string representation for display. For convenience, calling *toString()* on a table invokes *print()*, which produces a string representation of the table table. To display the table then, you can simply call. 
 
@@ -98,7 +101,7 @@ Mapping operations in Tablesaw take one or more columns as inputs and produce a 
 StringColumn month = tornadoes.dateColumn("Date").month();
 ```
 
-Now that you have a new column, you can add it to a table:
+Now that you have a new column, you can add it to the table:
 
 ```java
 tornadoes.addColumn(month);
@@ -139,13 +142,13 @@ table.column("Fatalities").summary().print();
 You can write your own methods to filter rows, but it’s easier to use the built-in filter classes as shown below:
 
 ```java 
-result = tornadoes.selectWhere(DOUBLEColumn("Fatalities").isGreaterThan(0));
+result = tornadoes.selectWhere(doubleColumn("Fatalities").isGreaterThan(0));
 
 result = tornadoes.selectWhere(dateColumn("Date").isInApril());
 
 result = tornadoes.selectWhere(either
-           (DOUBLEColumn("Width").isGreaterThan(300)),   // 300 yards
-           (DOUBLEColumn("Length").isGreaterThan(10)));  // 10 miles
+           (doubleColumn("Width").isGreaterThan(300)),   // 300 yards
+           (doubleColumn("Length").isGreaterThan(10)));  // 10 miles
 
 result = tornadoes.select("State", "Date").where(column("Date").isInQ2());
 ```
@@ -223,7 +226,7 @@ summer.addColumn(summer.dateColumn("Date").lag(1));
 DateColumn summerDate = summer.dateColumn("Date");
 DateColumn laggedDate = summer.dateColumn("Date lag(1)");
 
-DOUBLEColumn delta = laggedDate.daysUntil(summerDate);
+DoubleColumn delta = laggedDate.daysUntil(summerDate);
 summer.addColumn(delta);
 ```
 
@@ -252,8 +255,6 @@ summary.nCol(1).mean();
 >>	Average days between tornadoes in the summer: 1.761269943549373
 ```
 
-
-
 ### Saving your data
 
 To save a table, you can write it as a CSV file:
@@ -262,5 +263,5 @@ To save a table, you can write it as a CSV file:
 tornadoes.write().csv("data/rev_tornadoes_1950-2014.csv");
 ```
 
-And that’s it for the introduction. Stay tuned for more info about advanced features.
+And that’s it for the introduction. Please see the User Guide for more information.
 

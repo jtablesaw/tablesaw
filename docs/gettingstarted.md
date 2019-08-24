@@ -2,7 +2,7 @@
 
 Java is a great language, but it wasn't designed for data analysis. Tablesaw makes it easy to do data analysis in Java. 
 
-Once you're up and running, this tutorial will tell you what you need to know to use Tablesaw.
+This tutorial will help you get up and running, and introduce some of Tablesaw's basic functionality.
 
 ## Setup
 
@@ -28,7 +28,7 @@ As you would expect, Tablesaw is all about tables, and tables are made of column
 
 A column is a named, one-dimensional collection of data. It may or may not be part of a table. All data in a column must be of the same type. 
 
-Tablesaw supports columns for Strings, doubles, booleans, LocalDates, LocalTimes, and LocalDateTimes. The date and time columns are comparable with the java.time classes introduced in Java 8.
+Tablesaw supports columns for Strings, floats, doubles, ints, shorts, longs, booleans, LocalDates, LocalTimes, Instants, and LocalDateTimes. The date and time columns are comparable with the java.time classes introduced in Java 8. 
 
 To create a column you can use one of its static *create()* methods:
 
@@ -47,7 +47,7 @@ Column: Test
 ```
 Each column has an associated 0-based index. To get an individual value call *get()* with the index. 
 ```java
-nc.get(2);
+double three = nc.get(2);
 ```
 which returns 3.0.
 
@@ -74,7 +74,7 @@ There are so many columnar operations in Tablesaw that, as a general rule, if yo
 
 #### Objects and Primitives
 
-Many Java programs and programmers work exclusively with Objects, rather than primitives. In Tablesaw, we use primitives whenever possible because they use  *much* less memory than their boxed alternatives.  A Byte object, for example, uses as much memory as a primitive double, even though bytes have a range of only 256 values. 
+Many Java programs and programmers work exclusively with Objects, rather than primitives. In Tablesaw, we often use primitives because they use *much* less memory than their boxed alternatives.  A Byte *object*, for example, uses as much memory as a primitive double, even though bytes have a range of only 256 values. 
 
 There is a price for this frugality. When you work with primitives, you forgo some common java capabilities, like the use of standard Java 8 predicates. While Java thoughtfully provides some specialized predicate interfaces (e.g. *IntPredicate*), they don't provide any primitive *BiPredicate* implementations, nor do their primitive interfaces cover all primitive types. Without an IntBiPredicate, we can't implement operations like a < b. So we were left to roll our own. You can find them in the package *tech.tablesaw.filtering.predicates*. They work like the standard objects. 
 
@@ -112,10 +112,10 @@ If the methods returned columns directly, they couldn't be combined this way.  I
 These examples show how to select using predicates. You can also use a selection to retrieve the value at a specific index, or indexes. All of the following are supported:
 
 ```java
-nc.where(Selection.with(0, 2));  	// returns 2 rows with the given indexes
-nc.where(Selection.selectNRowsAtRandom(2)); // returns 2 randomly selected rows
-nc.where(Selection.withRange(1, 3));		// returns rows 1-3 inclusive
-nc.where(Selection.withoutRange(1, 3));		// returns row 0
+nc.where(Selection.with(0, 2));  							// returns 2 rows with the given indexes
+nc.where(Selection.selectNRowsAtRandom(2)); 	// returns 2 randomly selected rows
+nc.where(Selection.withRange(1, 3));					// returns rows 1-3 inclusive
+nc.where(Selection.withoutRange(1, 3));				// returns row 0
 ```
 
 If you have several columns of the same length as you would in a table of data, you can make a selection with one column and use it to filter another:
@@ -143,7 +143,7 @@ StringColumn s;
 s = aStringColumn.upperCase();
 s = s.replaceFirst("foo", "bar")
 s = s.substring(3, 10);
-s = s.padEnd(4, 'x');				// put 4 x chars at the end of each string
+s = s.padEnd(4, 'x');					// put 4 x chars at the end of each string
 
 // this returns the common prefix of each row in two columns
 y = s.commonPrefix(anotherStringColumn);
@@ -202,7 +202,7 @@ Tablesaw does a pretty good job at guessing the column types for many data sets,
 
 #### Exploring Tables
 
-Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of another table where one column contains the column names, etc.  The structure() method is one of several that help you to know a new data set. Here are some examples.
+Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of another table where one column contains the column names, etc.  The methods ` structure()`, `shape()`, `first(n)`, and `last(n)` can help you get to know a new data set. Here are some examples.
 
 ```java
 Table structure = bushTable.structure();
@@ -225,8 +225,7 @@ Table head = bushTable.first(3);
 	 2004-01-21  |      53.0  |  fox  |
 	 2004-01-07  |      58.0  |  fox  |
                      
-Table tail = myTable.last(3);
-> etc.
+Table tail = myTable.last(3);  // etc.
 ```
 
 Table's *toString()* method returns a String representation like those shown above. It returns a limited number of rows by default, but you can also use *table.printAll()*, or *table.print(n)* to get the output you want.
@@ -238,12 +237,12 @@ Of course, this is just the beginning of exploratory data analysis. You can also
 Often you'll work with specific columns in a table. Here are some useful methods:
 
 ```java
-table.columnNames();  			// returns all column names
-List<Column> = table.columns(); // returns all the columns in the table
+table.columnNames();  			              // returns all column names
+List<Column> = table.columns();           // returns all the columns in the table
 
 // removing columns
-table.removeColumns("Foo");			// keep everything but "foo"
-table.retainColumns("Foo", "Bar");  // only keep foo and bar
+table.removeColumns("Foo");			         // keep everything but "foo"
+table.retainColumns("Foo", "Bar");       // only keep foo and bar
 table.removeColumnsWithMissingValues();
 
 // adding columns
@@ -265,23 +264,26 @@ remembering column names is enough of a burden without having to remember exactl
 Columns can be retrieved from tables by name or position. The simplest method *column()* returns a object of type Column. This may be good enough, but often you want to get a column of a specific type. For example, you would need to cast the value returned to a NumberColumn to use its values in a scatter plot. 
 
 ```java
-Column nc = table.column("Foo"); // returns the column named 'Foo' if it's in the table.
+Column column = table.column("Foo"); // returns the column named 'Foo' if it's in the table.
 // or 
-Column nc = table.column(0);  // returns the first column
+Column column = table.column(0);     // returns the first column
+```
 
-// To work with a StringColumn you can cast the return value
-StringColumn nc = (StringColumn) table.column(0); 
-// Now you can do some numeric stuff with the column nc
+When a variable type is "Column" it only provides methods that are available on *all* columns. You can't perform math or do a string replace directly on a Column type. If you need a StringColumn you could cast the column, for example: 
+
+```java
+StringColumn sc = (StringColumn) table.column(0); 
 ```
 
 Table also supports methods that return columns of the desired type directly:
 
 ```Java
-StringColumn nc = table.stringColumn(0); 
-DateColumn dc = table.dateColumn("start date");
+StringColumn strings = table.stringColumn(0); 
+DateColumn dates = table.dateColumn("start date");
+DoubleColumn doubles = table.doubleColumn("doubles");
 ```
 
-If you want all the columns of specific type, you can get those as well. The method columnsOfType(aColumnType) returns them as a List, but you still have to cast the results. For example, to format all columns as ints when you print them, you could do this. 
+If you want all the columns of specific type, you can get those as well. The method columnsOfType(aColumnType) returns them as a List, but you still have to cast the results. For example, to format all DoubleColumns as ints when you print them, you could do this: 
 
 ```Java
 table.columnOfType(ColumnType.DOUBLE).forEach(x ->                                               		((DoubleColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
@@ -301,7 +303,7 @@ result = table.dropRowsWithMissingValues();
 result = table.dropWhere(table.numberColumn(0).isLessThan(100));
 
 // add rows
-table.addRow(43, sourceTable);	// adds row 43 from sourceTable to the receiver
+destinationTable.addRow(43, sourceTable);	// adds row 43 from sourceTable to the receiver
 
 // sampling
 table.sample(200);				// select 200 rows at random from table 
@@ -315,7 +317,7 @@ for (Row row : table) {
 }
 ```
 
-There are better ways, however. Another approach lets you skip the iteration and just provide a Consumer for each row.
+Another approach lets you skip the iteration and just provide a Consumer for each row.
 
 ```java
 table.stream().forEach(row -> {
@@ -353,8 +355,8 @@ Table sorted = table.sort("foo", "bar", "bam");
 The above code sorts in ascending order by default.  Other options are shown below:
 
 ```java
+sorted = table.sortAscending("bar"); 	 // just like sort(), but makes the order explicit.
 sorted = table.sortDescending("foo");
-sorted = table.sortAscending("bar"); 	// just like sort(), but makes order explicit.
 
 /* sort on foo ascending, then bar descending. Note the minus sign preceding the name of column bar. */
 sorted = table.sort("foo", "-bar");		 
@@ -364,7 +366,7 @@ See [Sorting](https://jtablesaw.github.io/tablesaw/userguide/sorting) for more i
 
 #### Filtering tables with selections
 
-Tables also use selections to perform filtering. The basic approach is similar.
+We showed an example above of how to use the where() method to perform filtering. The basic approach is similar.
 
 ```java
 Table t = Table.create("test").addColumns(nc1, nc2);
@@ -379,8 +381,8 @@ Query filters can be combined using the logical operations *and*, *or*, and *not
 
 ```java
 Table result = t.where(
-	t.and(nc1.isGreaterThan(4),
-         t.or(t.not(nc2.isLessThanOrEqualTo(5)),
+	and(nc1.isGreaterThan(4),
+         or(t.not(nc2.isLessThanOrEqualTo(5)),
          		nc2.isEven()));
 ```
 
