@@ -2,7 +2,9 @@ package tech.tablesaw.api;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.api.ColumnType.BOOLEAN;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
 import static tech.tablesaw.api.ColumnType.FLOAT;
@@ -651,5 +653,19 @@ public class RowTest {
         "Column col1 is of type LOCAL_DATE and cannot be cast to LOCAL_TIME."
             + " Use the method for LOCAL_DATE.",
         thrown.getMessage());
+  }
+
+  @Test
+  void testGetNumber() throws IOException {
+    Table table = Table.read().csv("../data/bush.csv");
+    assertEquals(53.0, table.row(0).getNumber("approval"));
+  }
+
+  @Test
+  void testIsMissing() throws IOException {
+    Table table = Table.read().csv("../data/bush.csv");
+    assertFalse(table.row(0).isMissing("approval"));
+    table.row(0).setMissing("approval");
+    assertTrue(table.row(0).isMissing("approval"));
   }
 }
