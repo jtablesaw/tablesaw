@@ -50,6 +50,7 @@
         <module>html</module>
         <module>json</module>
         <module>jsplot</module>
+        <module>docs</module>
     </modules>
 
     <profiles>
