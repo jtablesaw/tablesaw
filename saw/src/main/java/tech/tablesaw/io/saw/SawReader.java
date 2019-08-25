@@ -90,8 +90,8 @@ public class SawReader {
     // to the table in original order
 
     // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all
-    // columns are read
-    //      Problem seems to be mostly with string columns rebuilding the encoding dictionary
+    //   columns are read
+    //   Problem seems to be mostly with string columns rebuilding the encoding dictionary
 
     ConcurrentLinkedQueue<Column> columnList = new ConcurrentLinkedQueue<>();
     Map<String, Column> columns = new HashMap<>();
@@ -99,7 +99,8 @@ public class SawReader {
       for (ColumnMetadata column : columnMetadata) {
         readerCompletionService.submit(
             () -> {
-              columnList.add(readColumn(path + separator() + column.getId(), column));
+              Path columnPath = sawPath.resolve(column.getId());
+              columnList.add(readColumn(columnPath.toString(), column));
               return null;
             });
       }

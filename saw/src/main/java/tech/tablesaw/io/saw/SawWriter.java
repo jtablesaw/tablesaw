@@ -156,12 +156,8 @@ public class SawWriter {
   private static String makeName(Relation table) {
 
     String name = table.name();
-    name =
-        WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from the table name
-    name =
-        SEPARATOR_PATTERN
-            .matcher(name)
-            .replaceAll("_"); // remove path separators from the table name
+    name = WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from table name
+    name = SEPARATOR_PATTERN.matcher(name).replaceAll("_"); // remove path separators from name
     return name + '.' + FILE_EXTENSION;
   }
 
