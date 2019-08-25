@@ -62,6 +62,51 @@ public interface StringMapFunctions extends Column<String> {
     return newColumn;
   }
 
+  /**
+   * Capitalizes each String changing the first character of each to title case as per {@link
+   * Character#toTitleCase(int)}, as if in a sentence. No other characters are changed.
+   *
+   * <pre>
+   * capitalize(null)  = null
+   * capitalize("")    = ""
+   * capitalize("cat") = "Cat"
+   * capitalize("cAt") = "CAt"
+   * capitalize("'cat'") = "'cat'"
+   * </pre>
+   */
+  default StringColumn capitalize() {
+
+    StringColumn newColumn = StringColumn.create(name() + "[titleCase]");
+
+    for (int r = 0; r < size(); r++) {
+      String value = getString(r);
+      newColumn.append(StringUtils.capitalize(value));
+    }
+    return newColumn;
+  }
+
+  /**
+   * Repeats each the column's values elementwise, concatinating the results into a new StringColumn
+   *
+   * @param times The number of repeat desired
+   *     <pre>
+   *  repeat("", 2)   = ""
+   *  repeat("cat", 3) = "catcatcat"
+   * </pre>
+   *
+   * @return the new StringColumn
+   */
+  default StringColumn repeat(int times) {
+
+    StringColumn newColumn = StringColumn.create(String.format("%s [rep %d]", name(), times));
+
+    for (int r = 0; r < size(); r++) {
+      String value = getString(r);
+      newColumn.append(StringUtils.repeat(value, times));
+    }
+    return newColumn;
+  }
+
   default StringColumn trim() {
 
     StringColumn newColumn = StringColumn.create(name() + "[trim]");
@@ -224,7 +269,7 @@ public interface StringMapFunctions extends Column<String> {
     return newColumn;
   }
 
-  default StringColumn commonPrefix(Column<?> column2) {
+  default StringColumn commonPrefix(Column<String> column2) {
 
     StringColumn newColumn = StringColumn.create(name() + column2.name() + "[prefix]");
 
@@ -236,7 +281,7 @@ public interface StringMapFunctions extends Column<String> {
     return newColumn;
   }
 
-  default StringColumn commonSuffix(Column<?> column2) {
+  default StringColumn commonSuffix(Column<String> column2) {
 
     StringColumn newColumn = StringColumn.create(name() + column2.name() + "[suffix]");
 
@@ -249,7 +294,7 @@ public interface StringMapFunctions extends Column<String> {
   }
 
   /** Returns a column containing the levenshtein distance between the two given string columns */
-  default DoubleColumn distance(Column<?> column2) {
+  default DoubleColumn distance(Column<String> column2) {
 
     DoubleColumn newColumn = DoubleColumn.create(name() + column2.name() + "[distance]");
 
@@ -267,14 +312,14 @@ public interface StringMapFunctions extends Column<String> {
    * @param columns the column to append
    * @return the new column
    */
-  default StringColumn join(String separator, Column<?>... columns) {
+  default StringColumn join(String separator, Column... columns) {
     StringColumn newColumn = StringColumn.create(name() + "[column appended]", this.size());
     for (int r = 0; r < size(); r++) {
-      String result = getString(r);
+      StringBuilder result = new StringBuilder(getString(r));
       for (Column<?> stringColumn : columns) {
-        result = result + separator + stringColumn.get(r);
+        result.append(separator).append(stringColumn.get(r));
       }
-      newColumn.set(r, result);
+      newColumn.set(r, result.toString());
     }
     return newColumn;
   }
@@ -282,13 +327,32 @@ public interface StringMapFunctions extends Column<String> {
   /**
    * Return a copy of this column with the given string appended to each element
    *
-   * @param append the string to append
+   * @param stringsToAppend the stringified objects to append
    * @return the new column
    */
-  default StringColumn concatenate(String append) {
+  default StringColumn concatenate(Object... stringsToAppend) {
     StringColumn newColumn = StringColumn.create(name() + "[append]", this.size());
     for (int r = 0; r < size(); r++) {
-      newColumn.set(r, getString(r) + append);
+      for (Object o : stringsToAppend) {
+        newColumn.set(r, getString(r) + o);
+      }
+    }
+    return newColumn;
+  }
+
+  /**
+   * Return a copy of this column with the corresponding value of each column argument appended to
+   * each element. getString is used to ensure the value returned by the args are strings
+   *
+   * @param stringColumns the string columns to append
+   * @return the new column
+   */
+  default StringColumn concatenate(Column... stringColumns) {
+    StringColumn newColumn = StringColumn.create(name() + "[append]", this.size());
+    for (int r = 0; r < size(); r++) {
+      StringBuilder s = new StringBuilder(getString(r));
+      for (Column stringColumn : stringColumns) s.append(stringColumn.getString(r));
+      newColumn.set(r, s.toString());
     }
     return newColumn;
   }
