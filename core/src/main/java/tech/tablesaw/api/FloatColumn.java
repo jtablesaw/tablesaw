@@ -74,6 +74,10 @@ public class FloatColumn extends NumberColumn<Float> {
     return data.getFloat(index);
   }
 
+  public static boolean valueIsMissing(float value) {
+    return FloatColumnType.isMissingValue(value);
+  }
+
   @Override
   public FloatColumn subset(final int[] rows) {
     final FloatColumn c = this.emptyCopy();

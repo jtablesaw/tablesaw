@@ -55,8 +55,6 @@ public class StringColumn extends AbstractStringColumn {
         return f1.compareTo(f2);
       };
 
-  /** @deprecated Use StringColumnType.isMissingValue(int value) instead */
-  @Deprecated
   public static boolean valueIsMissing(String string) {
     return StringColumnType.isMissingValue(string);
   }

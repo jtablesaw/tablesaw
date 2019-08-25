@@ -123,8 +123,6 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     return column;
   }
 
-  /** @deprecated Use DateTimeColumnType.isMissingValue(int) instead */
-  @Deprecated
   public static boolean valueIsMissing(long value) {
     return DateTimeColumnType.isMissingValue(value);
   }

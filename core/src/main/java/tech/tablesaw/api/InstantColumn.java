@@ -108,8 +108,6 @@ public class InstantColumn extends AbstractColumn<Instant>
     return column;
   }
 
-  /** @deprecated Use InstantColumnType.isMissingValue(long) instead */
-  @Deprecated
   public static boolean valueIsMissing(long value) {
     return InstantColumnType.isMissingValue(value);
   }

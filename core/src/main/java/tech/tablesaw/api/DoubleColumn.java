@@ -42,6 +42,10 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     this.data = data;
   }
 
+  public static boolean valueIsMissing(double value) {
+    return DoubleColumnType.isMissingValue(value);
+  }
+
   @Override
   public String getString(final int row) {
     final double value = getDouble(row);

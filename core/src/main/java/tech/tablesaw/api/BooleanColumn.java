@@ -79,8 +79,6 @@ public class BooleanColumn extends AbstractColumn<Boolean>
     data = values;
   }
 
-  /** @deprecated Use BooleanColumnType.isMissingValue(byte) instead */
-  @Deprecated
   public static boolean valueIsMissing(byte b) {
     return BooleanColumnType.isMissingValue(b);
   }
