@@ -394,6 +394,33 @@ class StringColumnTest {
   }
 
   @Test
+  void testRepeat() {
+    String[] words = {"running", "icecube", "back"};
+    StringColumn wordColumn = StringColumn.create("words", words);
+    StringColumn result = wordColumn.repeat(3);
+    assertEquals(result.get(0), "runningrunningrunning");
+  }
+
+  @Test
+  void testCapitalize() {
+    String[] words = {"running", "ice cube", "stuff4us"};
+    StringColumn wordColumn = StringColumn.create("words", words);
+    StringColumn result = wordColumn.capitalize();
+    assertEquals(result.get(0), "Running");
+    assertEquals(result.get(1), "Ice cube");
+    assertEquals(result.get(2), "Stuff4us");
+  }
+
+  @Test
+  void testConcatinate() {
+    String[] words = {"running", "icecube", "back"};
+    StringColumn wordColumn1 = StringColumn.create("words1", words);
+    StringColumn wordColumn2 = StringColumn.create("words2", words);
+    StringColumn result = wordColumn1.concatenate(wordColumn2);
+    assertEquals(result.get(0), "runningrunning");
+  }
+
+  @Test
   void testSubstring2() {
     String[] words = {"running", "icecube", "back"};
     StringColumn wordColumn = StringColumn.create("words", words);

@@ -52,17 +52,17 @@ public class Row implements Iterator<Row> {
           String actualType = tableSlice.getTable().columns().get(i).type().name();
           String proposedType = columnTypeName();
           throw new IllegalArgumentException(
-                  String.format(
-                          "Column %s is of type %s and cannot be cast to %s. Use the method for %s.",
-                          columnName, actualType, proposedType, actualType));
+              String.format(
+                  "Column %s is of type %s and cannot be cast to %s. Use the method for %s.",
+                  columnName, actualType, proposedType, actualType));
         }
       }
     }
 
     private void throwColumnNotPresentError(String columnName) {
       throw new IllegalStateException(
-              String.format(
-                      "Column %s is not present in table %s", columnName, tableSlice.getTable().name()));
+          String.format(
+              "Column %s is not present in table %s", columnName, tableSlice.getTable().name()));
     }
 
     private String columnTypeName() {
@@ -84,7 +84,7 @@ public class Row implements Iterator<Row> {
   private final ColumnMap<Column<String>> stringColumnMap = new ColumnMap<>(ColumnType.STRING);
   private final ColumnMap<BooleanColumn> booleanColumnMap = new ColumnMap<>(ColumnType.BOOLEAN);
   private final ColumnMap<DateTimeColumn> dateTimeColumnMap =
-          new ColumnMap<>(ColumnType.LOCAL_DATE_TIME);
+      new ColumnMap<>(ColumnType.LOCAL_DATE_TIME);
   private final ColumnMap<InstantColumn> instantColumnMap = new ColumnMap<>(ColumnType.INSTANT);
   private final ColumnMap<TimeColumn> timeColumnMap = new ColumnMap<>(ColumnType.LOCAL_TIME);
   private final ColumnMap<Column<?>> columnMap = new ColumnMap<>();

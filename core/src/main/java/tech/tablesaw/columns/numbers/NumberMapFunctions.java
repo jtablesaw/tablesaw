@@ -259,6 +259,19 @@ public interface NumberMapFunctions {
     return result;
   }
 
+  default DoubleColumn remainder(double val2) {
+    DoubleColumn result = DoubleColumn.create(name() + " % " + val2, size());
+    for (int r = 0; r < size(); r++) {
+      double val1 = getDouble(r);
+      if (DoubleColumnType.isMissingValue(val1) || DoubleColumnType.isMissingValue(val2)) {
+        result.setMissing(r);
+      } else {
+        result.set(r, getDouble(r) % val2);
+      }
+    }
+    return result;
+  }
+
   /** Returns the natural log of the values in this column as a NumberColumn. */
   default DoubleColumn logN() {
     DoubleColumn newColumn = DoubleColumn.create(name() + "[logN]", size());
