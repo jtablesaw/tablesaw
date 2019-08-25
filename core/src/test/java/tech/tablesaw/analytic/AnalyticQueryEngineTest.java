@@ -1,9 +1,11 @@
 package tech.tablesaw.analytic;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
@@ -12,17 +14,22 @@ import tech.tablesaw.api.Table;
 
 class AnalyticQueryEngineTest {
 
-  private static Table source;
+  private static Table referenceImplementation;
 
-  // Before all is a few seconds faster.
+  // Before runs tests a few seconds faster.
   @BeforeAll
   public static void setUp() throws Exception {
     // Reference implementation generated from BigQuery.
-    source = Table.read().csv("../data/bush_analytic_reference_implementation.csv");
+    referenceImplementation =
+        Table.read().csv("../data/bush_analytic_reference_implementation.csv");
   }
 
-  private double[] sourceColumnAsDouble(String columnName) {
-    return source.intColumn(columnName).asDoubleArray();
+  private double[] intSourceColumnAsDoubleArray(String columnName) {
+    return referenceImplementation.intColumn(columnName).asDoubleArray();
+  }
+
+  private double[] doubleSourceColumnAsDoubleArray(String columnName) {
+    return referenceImplementation.doubleColumn(columnName).asDoubleArray();
   }
 
   @Test
@@ -106,7 +113,7 @@ class AnalyticQueryEngineTest {
   public void unoundedPrecedingAnd5Preceding() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -116,17 +123,35 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_unboundedpreceding_and_5preceding");
+    double[] expected = intSourceColumnAsDoubleArray("sum_unboundedpreceding_and_5preceding");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_unboundedpreceding_and_5preceding");
+    expected = intSourceColumnAsDoubleArray("max_unboundedpreceding_and_5preceding");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_unboundedpreceding_and_5preceding");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_unboundedpreceding_and_5preceding");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_unboundedpreceding_and_5preceding");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -134,7 +159,7 @@ class AnalyticQueryEngineTest {
   public void unboundedPrecedingAndCurrentRow() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -144,17 +169,35 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_unboundedpreceding_and_currentrow");
+    double[] expected = intSourceColumnAsDoubleArray("sum_unboundedpreceding_and_currentrow");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_unboundedpreceding_and_currentrow");
+    expected = intSourceColumnAsDoubleArray("max_unboundedpreceding_and_currentrow");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_unboundedpreceding_and_currentrow");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_unboundedpreceding_and_currentrow");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_unboundedpreceding_and_currentrow");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -162,7 +205,7 @@ class AnalyticQueryEngineTest {
   public void unboundedPrecedingAnd5Following() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -172,17 +215,35 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_unboundedpreceding_and_5following");
+    double[] expected = intSourceColumnAsDoubleArray("sum_unboundedpreceding_and_5following");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_unboundedpreceding_and_5following");
+    expected = intSourceColumnAsDoubleArray("max_unboundedpreceding_and_5following");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_unboundedpreceding_and_5following");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_unboundedpreceding_and_5following");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_unboundedpreceding_and_5following");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -190,7 +251,7 @@ class AnalyticQueryEngineTest {
   public void unboundedPrecedingAndUnboundedFollowing() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -200,17 +261,36 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_unboundedpreceding_and_unboundedfollowing");
+    double[] expected =
+        intSourceColumnAsDoubleArray("sum_unboundedpreceding_and_unboundedfollowing");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_unboundedpreceding_and_unboundedfollowing");
+    expected = intSourceColumnAsDoubleArray("max_unboundedpreceding_and_unboundedfollowing");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_unboundedpreceding_and_unboundedfollowing");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_unboundedpreceding_and_unboundedfollowing");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_unboundedpreceding_and_unboundedfollowing");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -218,7 +298,7 @@ class AnalyticQueryEngineTest {
   public void fivePrecedingAnd3Preceding() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -228,17 +308,35 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_5preceding_and_3preceding");
+    double[] expected = intSourceColumnAsDoubleArray("sum_5preceding_and_3preceding");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_5preceding_and_3preceding");
+    expected = intSourceColumnAsDoubleArray("max_5preceding_and_3preceding");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_5preceding_and_3preceding");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_5preceding_and_3preceding");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5preceding_and_3preceding");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -246,7 +344,7 @@ class AnalyticQueryEngineTest {
   public void fivePrecedingAndCurrentRow() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -256,17 +354,35 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_5preceding_and_currentrow");
+    double[] expected = intSourceColumnAsDoubleArray("sum_5preceding_and_currentrow");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_5preceding_and_currentrow");
+    expected = intSourceColumnAsDoubleArray("max_5preceding_and_currentrow");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_5preceding_and_currentrow");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_5preceding_and_currentrow");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5preceding_and_currentrow");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -274,7 +390,7 @@ class AnalyticQueryEngineTest {
   public void fivePrecedingAnd5Following() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -284,17 +400,35 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_5preceding_and_5following");
+    double[] expected = intSourceColumnAsDoubleArray("sum_5preceding_and_5following");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_5preceding_and_5following");
+    expected = intSourceColumnAsDoubleArray("max_5preceding_and_5following");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_5preceding_and_5following");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_5preceding_and_5following");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5preceding_and_5following");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -302,7 +436,7 @@ class AnalyticQueryEngineTest {
   public void fivePrecedingAndUnboundedFollowing() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -312,17 +446,35 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_5preceding_and_unboundedfollowing");
+    double[] expected = intSourceColumnAsDoubleArray("sum_5preceding_and_unboundedfollowing");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_5preceding_and_unboundedfollowing");
+    expected = intSourceColumnAsDoubleArray("max_5preceding_and_unboundedfollowing");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_5preceding_and_unboundedfollowing");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_5preceding_and_unboundedfollowing");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5preceding_and_unboundedfollowing");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -330,7 +482,7 @@ class AnalyticQueryEngineTest {
   public void currentRowAndUnboundedFollowing() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -340,17 +492,35 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_currentrow_and_unboundedfollowing");
+    double[] expected = intSourceColumnAsDoubleArray("sum_currentrow_and_unboundedfollowing");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_currentrow_and_unboundedfollowing");
+    expected = intSourceColumnAsDoubleArray("max_currentrow_and_unboundedfollowing");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_currentrow_and_unboundedfollowing");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_currentrow_and_unboundedfollowing");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_currentrow_and_unboundedfollowing");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -358,7 +528,7 @@ class AnalyticQueryEngineTest {
   public void fiveFollowingAnd8Following() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -368,18 +538,35 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_5following_and_8following");
+    double[] expected = intSourceColumnAsDoubleArray("sum_5following_and_8following");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_5following_and_8following");
+    expected = intSourceColumnAsDoubleArray("max_5following_and_8following");
     actual = result.doubleColumn("max").asDoubleArray();
+    assertArrayEquals(expected, actual);
 
+    expected = intSourceColumnAsDoubleArray("min_5following_and_8following");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_5following_and_8following");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5following_and_8following");
+    actual = result.intColumn("count").asDoubleArray();
     assertArrayEquals(expected, actual);
   }
 
@@ -387,7 +574,7 @@ class AnalyticQueryEngineTest {
   public void fiveFollowingAndUnboundedFollowing() {
     AnalyticQuery query =
         AnalyticQuery.query()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowsBetween()
@@ -397,25 +584,66 @@ class AnalyticQueryEngineTest {
             .as("sum")
             .max("approval")
             .as("max")
+            .min("approval")
+            .as("min")
+            .mean("approval")
+            .as("mean")
+            .count("approval")
+            .as("count")
             .build();
 
     AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
     Table result = queryEngine.execute();
 
-    double[] expected = sourceColumnAsDouble("sum_5following_and_unboundedfollowing");
+    double[] expected = intSourceColumnAsDoubleArray("sum_5following_and_unboundedfollowing");
     double[] actual = result.doubleColumn("sum").asDoubleArray();
     assertArrayEquals(expected, actual);
 
-    expected = sourceColumnAsDouble("max_5following_and_unboundedfollowing");
+    expected = intSourceColumnAsDoubleArray("max_5following_and_unboundedfollowing");
     actual = result.doubleColumn("max").asDoubleArray();
     assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("min_5following_and_unboundedfollowing");
+    actual = result.doubleColumn("min").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = doubleSourceColumnAsDoubleArray("mean_5following_and_unboundedfollowing");
+    actual = result.doubleColumn("mean").asDoubleArray();
+    assertArrayEquals(expected, actual);
+
+    expected = intSourceColumnAsDoubleArray("count_5following_and_unboundedfollowing");
+    actual = result.intColumn("count").asDoubleArray();
+    assertArrayEquals(expected, actual);
+  }
+
+  @Test
+  public void countWithStrings() {
+    Table table =
+        Table.create(
+            "table",
+            StringColumn.create("col1", new String[] {"A", "B", null, "C", "C", "C", "D"}));
+
+    AnalyticQuery query =
+        AnalyticQuery.quickQuery()
+            .from(table)
+            .rowsBetween()
+            .unboundedPreceding()
+            .andCurrentRow()
+            .count("col1")
+            .as("count")
+            .build();
+
+    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    Table result = queryEngine.execute();
+
+    assertEquals(ImmutableList.of(1, 2, 2, 3, 4, 5, 6), result.intColumn("count").asList());
   }
 
   @Test
   public void numberingFunctionReferenceImplementation() {
     AnalyticQuery query =
         AnalyticQuery.numberingQuery()
-            .from(source)
+            .from(referenceImplementation)
             .partitionBy("who")
             .orderBy("date")
             .rowNumber()
@@ -430,10 +658,11 @@ class AnalyticQueryEngineTest {
     Table result = queryEngine.execute();
 
     assertArrayEquals(
-        sourceColumnAsDouble("row_number"), result.intColumn("rowNumber").asDoubleArray());
-    assertArrayEquals(sourceColumnAsDouble("rank"), result.intColumn("rank").asDoubleArray());
+        intSourceColumnAsDoubleArray("row_number"), result.intColumn("rowNumber").asDoubleArray());
     assertArrayEquals(
-        sourceColumnAsDouble("dense_rank"), result.intColumn("denseRank").asDoubleArray());
+        intSourceColumnAsDoubleArray("rank"), result.intColumn("rank").asDoubleArray());
+    assertArrayEquals(
+        intSourceColumnAsDoubleArray("dense_rank"), result.intColumn("denseRank").asDoubleArray());
   }
 
   @Test
@@ -466,5 +695,28 @@ class AnalyticQueryEngineTest {
     assertArrayEquals(
         new double[] {1.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0},
         result.intColumn("denseRank").asDoubleArray());
+  }
+
+  @Test
+  public void resultColumnOrderSameAsSpecifiedInQuery() {
+    Table table = Table.create("table", StringColumn.create("col1", new String[] {}));
+
+    AnalyticQuery query =
+        AnalyticQuery.numberingQuery()
+            .from(table)
+            .partitionBy()
+            .orderBy("col1")
+            .rowNumber()
+            .as("rowNumber")
+            .rank()
+            .as("rank")
+            .denseRank()
+            .as("denseRank")
+            .build();
+
+    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    Table result = queryEngine.execute();
+
+    assertEquals(ImmutableList.of("rowNumber", "rank", "denseRank"), result.columnNames());
   }
 }

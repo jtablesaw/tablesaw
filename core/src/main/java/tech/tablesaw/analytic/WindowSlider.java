@@ -6,20 +6,21 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
 
 /**
- * Execute the aggregate function over the correct windows.
+ * Execute the aggregate function once for every row in the slice.
  *
  * <p>Any window with a Fixed end (UNBOUNDED FOLLOWING) is converted ("mirrored") into the
- * equivalent UNBOUNDED PRECEDING widow so that a faster algorithm can be used.
+ * equivalent UNBOUNDED PRECEDING widow so that it is an append window and a faster algorithm can be
+ * used.
  */
 class WindowSlider {
   private final boolean mirrored;
   private final WindowGrowthType windowGrowthType;
-  private final int frameStartShift;
-  private final int frameEndShift;
+  private final int initialLeftBound;
+  private final int initialRightBound;
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   private final AggregateFunction function;
-  // TODO change to table slice
+
   private final TableSlice slice;
   private final Column<?> sourceColumn;
 
@@ -37,41 +38,45 @@ class WindowSlider {
     this.sourceColumn = sourceColumn;
     this.function = func.getImplementation(windowFrame.windowGrowthType());
 
-    // Can convert UNBOUNDED FOLLOWING to an equivalent UNBOUNDED PRECEDING window by mirroring
-    // everything.
-    if (windowFrame.windowGrowthType() == WindowGrowthType.FIXED_END) {
-      this.windowGrowthType = WindowGrowthType.FIXED_START;
+    // Convert UNBOUNDED FOLLOWING to an equivalent UNBOUNDED PRECEDING window.
+    if (windowFrame.windowGrowthType() == WindowGrowthType.FIXED_RIGHT) {
+      this.windowGrowthType = WindowGrowthType.FIXED_LEFT;
       this.mirrored = true;
-      this.frameStartShift = windowFrame.getFrameEndShift() * -1;
-      this.frameEndShift = windowFrame.getFrameStartShift() * -1;
+      this.initialLeftBound = windowFrame.getInitialRightBound() * -1;
+      this.initialRightBound = windowFrame.getInitialLeftBound() * -1;
     } else {
       this.mirrored = false;
-      this.frameStartShift = windowFrame.getFrameStartShift();
-      this.frameEndShift = windowFrame.getFrameEndShift();
+      this.initialLeftBound = windowFrame.getInitialLeftBound();
+      this.initialRightBound = windowFrame.getInitialRightBound();
       this.windowGrowthType = windowFrame.windowGrowthType();
     }
   }
 
-  /**
-   * Slide over the partition setting a value for all the relevant windows in the destination
-   * column.
-   */
+  /** Slide the window over the slice calculating an aggregate value for every row in the slice. */
   @SuppressWarnings({"unchecked", "rawtypes"})
-  void process() {
-    initWindow(sourceColumn);
-    int leftBound = getInitialStartIndex() - 1;
-    int rightBound = getInitialEndIndex();
+  void execute() {
+    initWindow();
+    // Initial window bounds can be outside the current slice. This allows for windows like 20
+    // PRECEDING 10 PRECEDING
+    // to slide into the slice. Rows outside the slide will be ignored.
+    int leftBound = getInitialLeftBound() - 1;
+    int rightBound = getInitialRightBound();
     for (int i = 0; i < slice.rowCount(); i++) {
       this.set(i, function.getValue());
 
+      // Slide the left side of the window if applicable for the window definition.
       int newLeftBound = slideLeftStrategy().apply(leftBound);
-      if (newLeftBound > leftBound && inTableRange(newLeftBound)) {
+      if (newLeftBound > leftBound && isRowNumberInSlice(newLeftBound)) {
+        // If the left side of the window changed remove the left most value from the aggregate
+        // function.
         function.removeLeftMost();
       }
       leftBound = newLeftBound;
 
+      // Slide the right side of the window if applicable for the window definition.
       int newRightBound = slideRightStrategy().apply(rightBound);
-      if (newRightBound > rightBound && inTableRange(newRightBound)) {
+      if (newRightBound > rightBound && isRowNumberInSlice(newRightBound)) {
+        // If the right side of the window changed add the next value to the aggregate function.
         if (isMissing(newRightBound)) {
           function.addRightMostMissing();
         } else {
@@ -82,7 +87,10 @@ class WindowSlider {
     }
   }
 
-  // Get the mirrored index about the center of the window.
+  /**
+   * Returns the mirrored index about the center of the window. Used to convert UNBOUNDED FOLLOWING
+   * windows to UNBOUNDED PRECEDING windows.
+   */
   int mirror(int rowNumber) {
     if (this.mirrored) {
       return slice.rowCount() - rowNumber - 1;
@@ -90,10 +98,14 @@ class WindowSlider {
     return rowNumber;
   }
 
+  /**
+   * Adds initial values to the aggregate function for the first window. E.G. ROWS BETWEEN CURRENT
+   * ROW AND 3 FOLLOWING would add the first four rows in the slice to the function.
+   */
   @SuppressWarnings({"unchecked", "rawtypes"})
-  private void initWindow(Column<?> sourceColumn) {
-    int leftBound = Math.max(getInitialStartIndex(), 0);
-    int rightBound = Math.min(getInitialEndIndex(), slice.rowCount() - 1);
+  private void initWindow() {
+    int leftBound = Math.max(getInitialLeftBound(), 0);
+    int rightBound = Math.min(getInitialRightBound(), slice.rowCount() - 1);
     for (int i = leftBound; i <= rightBound; i++) {
       if (isMissing(i)) {
         function.addRightMostMissing();
@@ -103,30 +115,33 @@ class WindowSlider {
     }
   }
 
-  // Set value in the destination column.
+  /** Set the value in the destination column that corresponds to the row in the view. */
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void set(int rowNumberInSlice, Object value) {
     destinationColumn.set(slice.mappedRowNumber(mirror(rowNumberInSlice)), value);
   }
 
-  // Get value from the source column. Pulling from the source table behind the slide.
+  /** Get a value from the source column that corresponds to the row in the view. */
   private Object get(int rowNumberInSlice) {
     return sourceColumn.get(slice.mappedRowNumber(mirror(rowNumberInSlice)));
   }
 
-  // Determine if the value in the source column is missing.
+  /**
+   * Determine if the value in the source column that corresponds to the row in the view is missing.
+   */
   private boolean isMissing(int rowNumberInSlice) {
     return sourceColumn.isMissing(slice.mappedRowNumber(mirror(rowNumberInSlice)));
   }
 
-  private boolean inTableRange(int rowNumber) {
+  /** Returns true of the rowNumber exists in the slice. */
+  private boolean isRowNumberInSlice(int rowNumber) {
     return rowNumber >= 0 && rowNumber < slice.rowCount();
   }
 
   private Function<Integer, Integer> slideLeftStrategy() {
     switch (this.windowGrowthType) {
       case FIXED:
-      case FIXED_START:
+      case FIXED_LEFT:
         return i -> i;
       case SLIDING:
         return i -> i + 1;
@@ -138,31 +153,25 @@ class WindowSlider {
     switch (this.windowGrowthType) {
       case FIXED:
         return i -> i;
-      case FIXED_START:
+      case FIXED_LEFT:
       case SLIDING:
         return i -> i + 1;
     }
     throw new RuntimeException("Unexpected growthType: " + this.windowGrowthType);
   }
 
-  private int getInitialStartIndex() {
-    switch (this.windowGrowthType) {
-      case FIXED:
-      case FIXED_START:
-        return 0;
-      case SLIDING:
-        return this.frameStartShift;
-    }
-    throw new RuntimeException("Unexpected growthType: " + this.windowGrowthType);
+  private int getInitialLeftBound() {
+    // is zero for FIXED and FIXED_LEFT windows.
+    return this.initialLeftBound;
   }
 
-  private int getInitialEndIndex() {
+  private int getInitialRightBound() {
     switch (this.windowGrowthType) {
       case FIXED:
         return slice.rowCount() - 1;
-      case FIXED_START:
+      case FIXED_LEFT:
       case SLIDING:
-        return this.frameEndShift;
+        return this.initialRightBound;
     }
     throw new RuntimeException("Unexpected growthType: " + this.windowGrowthType);
   }

@@ -10,7 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import tech.tablesaw.sorting.Sort;
 
-public final class WindowSpecification {
+/** This class holds data on the Partition By and Order By clauses of an an analytic query. */
+final class WindowSpecification {
 
   private final String windowName;
   private final LinkedHashSet<String> partitionColumns;
@@ -103,7 +104,6 @@ public final class WindowSpecification {
     Builder setPartitionColumns(List<String> columns) {
       this.partitioning.clear();
       this.partitioning.addAll(columns);
-      // TODO add actual duplicate columns to the error message.
       Preconditions.checkArgument(
           partitioning.size() == columns.size(),
           "Partition by Columns cannot contain duplicate columns");

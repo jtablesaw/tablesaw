@@ -3,6 +3,11 @@ package tech.tablesaw.analytic;
 import java.util.function.Supplier;
 import tech.tablesaw.api.ColumnType;
 
+/**
+ * Analytic numbering functions give every value in the window a number based on some ordering.
+ *
+ * <p>Rank denseRank and rowNumber are examples of analytic mapping functions.
+ */
 enum NumberingFunctions implements FunctionMetaData {
   ROW_NUMBER(Implementations::rowNumber),
   RANK(Implementations::rank),
@@ -34,14 +39,14 @@ enum NumberingFunctions implements FunctionMetaData {
 
   @Override
   public boolean isCompatibleColumn(ColumnType type) {
-    // TODO. Hard code this list to functions that implement comparable and equals.
+    // True for call tables that can be ordered.
     return true;
   }
 
   /** Implementations. */
   static class Implementations {
 
-    static final NumberingFunction rowNumber() {
+    static NumberingFunction rowNumber() {
 
       return new NumberingFunction() {
         private int count = 0;
@@ -63,7 +68,7 @@ enum NumberingFunctions implements FunctionMetaData {
       };
     }
 
-    static final NumberingFunction denseRank() {
+    static NumberingFunction denseRank() {
       return new NumberingFunction() {
         private int rank = 0;
 
@@ -82,7 +87,7 @@ enum NumberingFunctions implements FunctionMetaData {
       };
     }
 
-    static final NumberingFunction rank() {
+    static NumberingFunction rank() {
 
       return new NumberingFunction() {
         private int rank = 0;
