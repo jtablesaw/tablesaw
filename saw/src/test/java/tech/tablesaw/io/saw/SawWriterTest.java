@@ -132,7 +132,6 @@ class SawWriterTest {
     Table table = SawReader.readTable(path);
     assertEquals(wines.columnCount(), table.columnCount());
     assertEquals(wines.rowCount(), table.rowCount());
-
   }
 
   @Test

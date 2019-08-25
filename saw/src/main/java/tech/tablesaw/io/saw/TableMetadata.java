@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +36,7 @@ public class TableMetadata {
 
   @JsonProperty("columnMetadata")
   private List<ColumnMetadata> columnMetadataList = new ArrayList<>();
+
   private String name;
   private int rowCount;
   private int version;
@@ -52,9 +52,7 @@ public class TableMetadata {
     this.version = SAW_VERSION;
   }
 
-  /**
-   * Default constructor for Jackson json serialization
-   */
+  /** Default constructor for Jackson json serialization */
   private TableMetadata() {}
 
   static TableMetadata fromJson(String jsonString) {

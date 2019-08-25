@@ -30,7 +30,6 @@ import static tech.tablesaw.io.saw.SawUtils.TEXT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
-
 import java.io.IOException;
 import java.util.UUID;
 import tech.tablesaw.api.BooleanColumn;
@@ -83,6 +82,7 @@ public class ColumnMetadata {
       stringColumnKeySize = "";
     }
   }
+
   private ColumnMetadata() {}
 
   public static ColumnMetadata fromJson(String jsonString) {
