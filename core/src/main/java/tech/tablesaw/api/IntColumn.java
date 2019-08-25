@@ -92,8 +92,6 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     data.clear();
   }
 
-  /** @deprecated use IntColumnType.isMissingValue(value) instead */
-  @Deprecated
   public static boolean valueIsMissing(int value) {
     return IntColumnType.isMissingValue(value);
   }

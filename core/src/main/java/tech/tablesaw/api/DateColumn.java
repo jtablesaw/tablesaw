@@ -410,8 +410,6 @@ public class DateColumn extends AbstractColumn<LocalDate>
     return table;
   }
 
-  /** @deprecated Use DateColumnType.isMissingValue(int) instead */
-  @Deprecated
   public static boolean valueIsMissing(int i) {
     return DateColumnType.isMissingValue(i);
   }

@@ -78,8 +78,6 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  /** @deprecated Use TimeColumnType.isMissingValue() instead */
-  @Deprecated
   public static boolean valueIsMissing(int i) {
     return TimeColumnType.isMissingValue(i);
   }

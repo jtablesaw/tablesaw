@@ -75,8 +75,6 @@ public class TextColumn extends AbstractStringColumn {
     }
   }
 
-  /** @deprecated Use TextColumnType.isMissingValue(string) instead */
-  @Deprecated
   public static boolean valueIsMissing(String string) {
     return TextColumnType.isMissingValue(string);
   }

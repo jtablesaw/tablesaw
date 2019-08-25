@@ -85,8 +85,6 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     return String.valueOf(getPrintFormatter().format(value));
   }
 
-  /** @deprecated Use LongColumnType.isMissingValue(value) instead */
-  @Deprecated
   public static boolean valueIsMissing(long value) {
     return LongColumnType.isMissingValue(value);
   }
