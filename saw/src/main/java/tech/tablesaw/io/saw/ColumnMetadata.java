@@ -14,12 +14,36 @@
 
 package tech.tablesaw.io.saw;
 
-import static tech.tablesaw.io.saw.SawUtils.*;
+import static tech.tablesaw.io.saw.SawUtils.BOOLEAN;
+import static tech.tablesaw.io.saw.SawUtils.DOUBLE;
+import static tech.tablesaw.io.saw.SawUtils.FLOAT;
+import static tech.tablesaw.io.saw.SawUtils.INSTANT;
+import static tech.tablesaw.io.saw.SawUtils.INTEGER;
+import static tech.tablesaw.io.saw.SawUtils.LOCAL_DATE;
+import static tech.tablesaw.io.saw.SawUtils.LOCAL_DATE_TIME;
+import static tech.tablesaw.io.saw.SawUtils.LOCAL_TIME;
+import static tech.tablesaw.io.saw.SawUtils.LONG;
+import static tech.tablesaw.io.saw.SawUtils.SHORT;
+import static tech.tablesaw.io.saw.SawUtils.STRING;
+import static tech.tablesaw.io.saw.SawUtils.TEXT;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
-import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.UUID;
-import tech.tablesaw.api.*;
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.TextColumn;
+import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
@@ -30,13 +54,13 @@ import tech.tablesaw.columns.strings.ShortDictionaryMap;
 @Beta
 public class ColumnMetadata {
 
-  private static final Gson GSON = new Gson();
+  private static final ObjectMapper objectMapper = new ObjectMapper();
 
-  private final String id;
-  private final String name;
-  private final String type;
-  private final int size;
-  private final String stringColumnKeySize;
+  private String id;
+  private String name;
+  private String type;
+  private int size;
+  private String stringColumnKeySize;
 
   ColumnMetadata(Column column) {
     this.id = UUID.randomUUID().toString();
@@ -59,13 +83,24 @@ public class ColumnMetadata {
       stringColumnKeySize = "";
     }
   }
+  private ColumnMetadata() {}
 
   public static ColumnMetadata fromJson(String jsonString) {
-    return GSON.fromJson(jsonString, ColumnMetadata.class);
+    try {
+      return objectMapper.readValue(jsonString, ColumnMetadata.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
   }
 
   public String toJson() {
-    return GSON.toJson(this);
+    try {
+      return objectMapper.writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

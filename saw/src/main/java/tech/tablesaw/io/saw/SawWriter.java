@@ -1,6 +1,18 @@
 package tech.tablesaw.io.saw;
 
-import static tech.tablesaw.io.saw.SawUtils.*;
+import static tech.tablesaw.io.saw.SawUtils.BOOLEAN;
+import static tech.tablesaw.io.saw.SawUtils.DOUBLE;
+import static tech.tablesaw.io.saw.SawUtils.FLOAT;
+import static tech.tablesaw.io.saw.SawUtils.INSTANT;
+import static tech.tablesaw.io.saw.SawUtils.INTEGER;
+import static tech.tablesaw.io.saw.SawUtils.LOCAL_DATE;
+import static tech.tablesaw.io.saw.SawUtils.LOCAL_DATE_TIME;
+import static tech.tablesaw.io.saw.SawUtils.LOCAL_TIME;
+import static tech.tablesaw.io.saw.SawUtils.LONG;
+import static tech.tablesaw.io.saw.SawUtils.SHORT;
+import static tech.tablesaw.io.saw.SawUtils.STRING;
+import static tech.tablesaw.io.saw.SawUtils.TEXT;
+import static tech.tablesaw.io.saw.SawUtils.separator;
 import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
@@ -454,7 +466,8 @@ public class SawWriter {
     myFile.createNewFile();
     try (FileOutputStream fOut = new FileOutputStream(myFile);
         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
-      myOutWriter.append(metadata.toJson());
+      String output = metadata.toJson();
+      myOutWriter.append(output);
     }
   }
 }

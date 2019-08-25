@@ -15,8 +15,8 @@ package tech.tablesaw.io.saw;
  */
 
 import com.google.common.annotations.Beta;
-import java.nio.file.*;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 
 /**
  * Utilities and constants for reading and writing data in Tablesaw's own compressed,

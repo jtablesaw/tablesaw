@@ -14,8 +14,12 @@
 
 package tech.tablesaw.io.saw;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
-import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,27 +33,46 @@ public class TableMetadata {
   static final String METADATA_FILE_NAME = "Metadata.json";
   private static final int SAW_VERSION = 1;
 
-  private static final Gson GSON = new Gson();
+  private static final ObjectMapper objectMapper = new ObjectMapper();
 
-  private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
-  private final String name;
-  private final int rowCount;
+  @JsonProperty("columnMetadata")
+  private List<ColumnMetadata> columnMetadataList = new ArrayList<>();
+  private String name;
+  private int rowCount;
+  private int version;
 
   TableMetadata(Relation table) {
     this.name = table.name();
     this.rowCount = table.rowCount();
+
     for (Column column : table.columns()) {
       ColumnMetadata metadata = new ColumnMetadata(column);
       columnMetadataList.add(metadata);
     }
+    this.version = SAW_VERSION;
   }
 
+  /**
+   * Default constructor for Jackson json serialization
+   */
+  private TableMetadata() {}
+
   static TableMetadata fromJson(String jsonString) {
-    return GSON.fromJson(jsonString, TableMetadata.class);
+    try {
+      return objectMapper.readValue(jsonString, TableMetadata.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
   }
 
   String toJson() {
-    return GSON.toJson(this);
+    try {
+      return objectMapper.writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -76,7 +99,7 @@ public class TableMetadata {
   }
 
   public int getVersion() {
-    return SAW_VERSION;
+    return version;
   }
 
   List<ColumnMetadata> getColumnMetadataList() {

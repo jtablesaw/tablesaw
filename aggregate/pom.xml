@@ -77,5 +77,10 @@
       <artifactId>tablesaw-jsplot</artifactId>
       <version>0.34.3-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>tech.tablesaw</groupId>
+      <artifactId>tablesaw-saw</artifactId>
+      <version>0.34.3-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>
