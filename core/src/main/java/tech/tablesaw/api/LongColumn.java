@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.LongStream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -29,7 +30,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
 
   private final LongArrayList data;
 
-  private LongColumn(final String name, LongArrayList data) {
+  private LongColumn(String name, LongArrayList data) {
     super(LongColumnType.instance(), name);
     setPrintFormatter(NumberColumnFormatter.ints());
     this.data = data;
@@ -39,11 +40,11 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     return new LongColumn(name, new LongArrayList());
   }
 
-  public static LongColumn create(final String name, final long[] arr) {
+  public static LongColumn create(String name, long[] arr) {
     return new LongColumn(name, new LongArrayList(arr));
   }
 
-  public static LongColumn create(final String name, final int initialSize) {
+  public static LongColumn create(String name, int initialSize) {
     LongColumn column = new LongColumn(name, new LongArrayList(initialSize));
     for (int i = 0; i < initialSize; i++) {
       column.appendMissing();
@@ -51,13 +52,19 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     return column;
   }
 
+  public static LongColumn create(String name, LongStream stream) {
+    LongArrayList list = new LongArrayList();
+    stream.forEach(val -> list.add(val));
+    return new LongColumn(name, list);
+  }
+
   @Override
-  public LongColumn createCol(final String name, final int initialSize) {
+  public LongColumn createCol(String name, int initialSize) {
     return create(name, initialSize);
   }
 
   @Override
-  public LongColumn createCol(final String name) {
+  public LongColumn createCol(String name) {
     return create(name);
   }
 

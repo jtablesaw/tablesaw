@@ -41,6 +41,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -95,6 +96,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     for (LocalDateTime date : data) {
       column.append(date);
     }
+    return column;
+  }
+
+  public static DateTimeColumn create(String name, Stream<LocalDateTime> stream) {
+    DateTimeColumn column = create(name);
+    stream.forEach(val -> column.append(val));
     return column;
   }
 

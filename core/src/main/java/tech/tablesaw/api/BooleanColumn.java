@@ -39,6 +39,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -120,7 +121,6 @@ public class BooleanColumn extends AbstractColumn<Boolean>
   }
 
   public static BooleanColumn create(String name, boolean[] values) {
-
     BooleanColumn column = create(name, values.length);
     int r = 0;
     for (boolean b : values) {
@@ -138,11 +138,17 @@ public class BooleanColumn extends AbstractColumn<Boolean>
     return column;
   }
 
-  public static BooleanColumn create(String name, Boolean[] objects) {
+  public static BooleanColumn create(String name, Boolean[] arr) {
     BooleanColumn column = create(name);
-    for (Boolean b : objects) {
-      column.append(b);
+    for (Boolean val : arr) {
+      column.append(val);
     }
+    return column;
+  }
+
+  public static BooleanColumn create(String name, Stream<Boolean> stream) {
+    BooleanColumn column = create(name);
+    stream.forEach(val -> column.append(val));
     return column;
   }
 

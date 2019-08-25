@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.AbstractStringColumn;
@@ -82,6 +83,12 @@ public class StringColumn extends AbstractStringColumn {
     for (int i = 0; i < size; i++) {
       column.appendMissing();
     }
+    return column;
+  }
+
+  public static StringColumn create(String name, Stream<String> stream) {
+    StringColumn column = create(name);
+    stream.forEach(val -> column.append(val));
     return column;
   }
 

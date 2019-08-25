@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.AbstractStringColumn;
@@ -103,6 +104,12 @@ public class TextColumn extends AbstractStringColumn {
       strings.add(TextColumnType.missingValueIndicator());
     }
     return new TextColumn(name, strings);
+  }
+
+  public static TextColumn create(String name, Stream<String> stream) {
+    TextColumn column = create(name);
+    stream.forEach(val -> column.append(val));
+    return column;
   }
 
   @Override

@@ -18,6 +18,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.DoubleStream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -36,7 +37,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
 
   private final DoubleArrayList data;
 
-  protected DoubleColumn(final String name, final DoubleArrayList data) {
+  protected DoubleColumn(String name, DoubleArrayList data) {
     super(DoubleColumnType.instance(), name);
     setPrintFormatter(NumberColumnFormatter.floatingPointDefault());
     this.data = data;
@@ -47,7 +48,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   }
 
   @Override
-  public String getString(final int row) {
+  public String getString(int row) {
     final double value = getDouble(row);
     if (DoubleColumnType.isMissingValue(value)) {
       return "";
@@ -70,21 +71,21 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     return this;
   }
 
-  protected DoubleColumn(final String name) {
+  protected DoubleColumn(String name) {
     super(DoubleColumnType.instance(), name);
     setPrintFormatter(NumberColumnFormatter.floatingPointDefault());
     this.data = new DoubleArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  public static DoubleColumn create(final String name, final double[] arr) {
+  public static DoubleColumn create(String name, double[] arr) {
     return new DoubleColumn(name, new DoubleArrayList(arr));
   }
 
-  public static DoubleColumn create(final String name) {
+  public static DoubleColumn create(String name) {
     return new DoubleColumn(name);
   }
 
-  public static DoubleColumn create(final String name, final float[] arr) {
+  public static DoubleColumn create(String name, float[] arr) {
     final double[] doubles = new double[arr.length];
     for (int i = 0; i < arr.length; i++) {
       doubles[i] = arr[i];
@@ -92,7 +93,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     return new DoubleColumn(name, new DoubleArrayList(doubles));
   }
 
-  public static DoubleColumn create(final String name, final int[] arr) {
+  public static DoubleColumn create(String name, int[] arr) {
     final double[] doubles = new double[arr.length];
     for (int i = 0; i < arr.length; i++) {
       doubles[i] = arr[i];
@@ -100,7 +101,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     return new DoubleColumn(name, new DoubleArrayList(doubles));
   }
 
-  public static DoubleColumn create(final String name, final long[] arr) {
+  public static DoubleColumn create(String name, long[] arr) {
     final double[] doubles = new double[arr.length];
     for (int i = 0; i < arr.length; i++) {
       doubles[i] = arr[i];
@@ -108,7 +109,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     return new DoubleColumn(name, new DoubleArrayList(doubles));
   }
 
-  public static DoubleColumn create(final String name, final List<Number> numberList) {
+  public static DoubleColumn create(String name, List<Number> numberList) {
     DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
     for (Number number : numberList) {
       newColumn.append(number);
@@ -116,7 +117,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     return newColumn;
   }
 
-  public static DoubleColumn create(final String name, final Number[] numbers) {
+  public static DoubleColumn create(String name, Number[] numbers) {
     DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
     for (Number number : numbers) {
       newColumn.append(number);
@@ -124,7 +125,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     return newColumn;
   }
 
-  public static DoubleColumn create(final String name, final int initialSize) {
+  public static DoubleColumn create(String name, int initialSize) {
     DoubleColumn column = new DoubleColumn(name);
     for (int i = 0; i < initialSize; i++) {
       column.appendMissing();
@@ -132,13 +133,19 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     return column;
   }
 
+  public static DoubleColumn create(String name, DoubleStream stream) {
+    DoubleArrayList list = new DoubleArrayList();
+    stream.forEach(val -> list.add(val));
+    return new DoubleColumn(name, list);
+  }
+
   @Override
-  public DoubleColumn createCol(final String name, final int initialSize) {
+  public DoubleColumn createCol(String name, int initialSize) {
     return create(name, initialSize);
   }
 
   @Override
-  public DoubleColumn createCol(final String name) {
+  public DoubleColumn createCol(String name) {
     return create(name);
   }
 
@@ -148,7 +155,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   }
 
   @Override
-  public DoubleColumn subset(final int[] rows) {
+  public DoubleColumn subset(int[] rows) {
     final DoubleColumn c = this.emptyCopy();
     for (final int row : rows) {
       c.append(getDouble(row));
