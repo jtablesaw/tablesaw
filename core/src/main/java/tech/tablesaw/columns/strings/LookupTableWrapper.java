@@ -10,14 +10,14 @@ import java.io.IOException;
 import tech.tablesaw.api.StringColumn;
 
 /**
- * Wraps a dictionary map, exposing just a few methods, in an attempt to make it less likely to be
- * hacked directly
+ * This class is strictly for Saw file IO. It wraps a dictionary map, exposing just a few methods,
+ * in an attempt to make it less likely to be hacked directly
  */
-public class LookupTable {
+public class LookupTableWrapper {
 
   private final DictionaryMap dictionaryMap;
 
-  public LookupTable(DictionaryMap dictionaryMap) {
+  public LookupTableWrapper(DictionaryMap dictionaryMap) {
     this.dictionaryMap = dictionaryMap;
   }
 

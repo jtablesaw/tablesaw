@@ -46,7 +46,7 @@ import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
-import tech.tablesaw.columns.strings.LookupTable;
+import tech.tablesaw.columns.strings.LookupTableWrapper;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
 /** Data about a specific column used in it's persistence */
@@ -68,7 +68,7 @@ public class ColumnMetadata {
     this.size = column.size();
     if (column instanceof StringColumn) {
       StringColumn stringColumn = (StringColumn) column;
-      LookupTable lookupTable = stringColumn.getLookupTable();
+      LookupTableWrapper lookupTable = stringColumn.getLookupTable();
       if (lookupTable.dictionaryClass().equals(IntDictionaryMap.class)) {
         stringColumnKeySize = Integer.class.getSimpleName();
       } else if (lookupTable.dictionaryClass().equals(ByteDictionaryMap.class)) {

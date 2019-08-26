@@ -51,7 +51,7 @@ import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
-import tech.tablesaw.columns.strings.LookupTable;
+import tech.tablesaw.columns.strings.LookupTableWrapper;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.ReaderRegistry;
@@ -359,7 +359,7 @@ public class SawReader implements DataReader {
       } else {
         throw new RuntimeException("Unable to match the dictionary map type for StringColum");
       }
-      LookupTable lookupTable = new LookupTable(dictionaryMap);
+      LookupTableWrapper lookupTable = new LookupTableWrapper(dictionaryMap);
 
       return lookupTable.readFromStream(
           dis, metadata.getName(), metadata.getStringColumnKeySize(), metadata.getSize());

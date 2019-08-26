@@ -47,7 +47,7 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.LookupTable;
+import tech.tablesaw.columns.strings.LookupTableWrapper;
 import tech.tablesaw.table.Relation;
 
 @SuppressWarnings("WeakerAccess")
@@ -249,7 +249,7 @@ public class SawWriter {
         DataOutputStream dos = new DataOutputStream(sos)) {
 
       // write the strings
-      LookupTable lookupTable = column.getLookupTable();
+      LookupTableWrapper lookupTable = column.getLookupTable();
       lookupTable.writeToStream(dos);
     }
   }
