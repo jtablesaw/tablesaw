@@ -30,6 +30,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.AbstractStringColumn;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
+import tech.tablesaw.columns.strings.LookupTable;
 import tech.tablesaw.columns.strings.NoKeysAvailableException;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -559,8 +560,8 @@ public class StringColumn extends AbstractStringColumn {
     return textColumn;
   }
 
-  /** Don't use this. For tablesaw use only */
-  public DictionaryMap unsafeGetLookupTable() {
-    return lookupTable;
+  /** For tablesaw internal use only */
+  public LookupTable getLookupTable() {
+    return new LookupTable(lookupTable);
   }
 }

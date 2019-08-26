@@ -17,10 +17,6 @@ import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
-import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,10 +47,7 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.ByteDictionaryMap;
-import tech.tablesaw.columns.strings.DictionaryMap;
-import tech.tablesaw.columns.strings.IntDictionaryMap;
-import tech.tablesaw.columns.strings.ShortDictionaryMap;
+import tech.tablesaw.columns.strings.LookupTable;
 import tech.tablesaw.table.Relation;
 
 @SuppressWarnings("WeakerAccess")
@@ -255,47 +248,9 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
 
-      // write the number of unique strings
-      dos.writeInt(column.countUnique());
-
       // write the strings
-      DictionaryMap lookupTable = column.unsafeGetLookupTable();
-
-      if (lookupTable instanceof IntDictionaryMap) {
-        IntDictionaryMap dictionary = (IntDictionaryMap) lookupTable;
-        ObjectSet<Int2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
-
-        for (Int2ObjectMap.Entry<String> entry : entries) {
-          dos.writeInt(entry.getIntKey());
-          dos.writeUTF(entry.getValue());
-        }
-        for (int d : dictionary.values()) {
-          dos.writeInt(d);
-        }
-      } else if (lookupTable instanceof ShortDictionaryMap) {
-        ShortDictionaryMap dictionary = (ShortDictionaryMap) lookupTable;
-        ObjectSet<Short2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
-
-        for (Short2ObjectMap.Entry<String> entry : entries) {
-          dos.writeShort(entry.getShortKey());
-          dos.writeUTF(entry.getValue());
-        }
-        for (short d : dictionary.values()) {
-          dos.writeShort(d);
-        }
-      } else if (lookupTable instanceof ByteDictionaryMap) {
-        ByteDictionaryMap dictionary = (ByteDictionaryMap) lookupTable;
-        ObjectSet<Byte2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
-
-        for (Byte2ObjectMap.Entry<String> entry : entries) {
-          dos.writeByte(entry.getByteKey());
-          dos.writeUTF(entry.getValue());
-        }
-        for (byte d : dictionary.values()) {
-          dos.writeByte(d);
-        }
-      }
-      dos.flush();
+      LookupTable lookupTable = column.getLookupTable();
+      lookupTable.writeToStream(dos);
     }
   }
 

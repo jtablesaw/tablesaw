@@ -93,7 +93,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     return getValueForKey(k);
   }
 
-  public ObjectSet<Short2ObjectMap.Entry<String>> getKeyValueEntries() {
+  ObjectSet<Short2ObjectMap.Entry<String>> getKeyValueEntries() {
     return keyToValue.short2ObjectEntrySet();
   }
 
@@ -101,12 +101,12 @@ public class ShortDictionaryMap implements DictionaryMap {
     return values;
   }
 
-  public void updateMaps(short key, String value) {
+  void updateMaps(short key, String value) {
     put(key, value);
     keyToCount.addTo(key, 1);
   }
 
-  public void addValue(short key) {
+  void addValue(short key) {
     values.add(key);
   }
 

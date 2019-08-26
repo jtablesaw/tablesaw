@@ -12,12 +12,12 @@ import static tech.tablesaw.io.saw.SawUtils.LONG;
 import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
-import static tech.tablesaw.io.saw.SawUtils.separator;
 import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
 import java.io.DataInputStream;
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -50,24 +50,35 @@ import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
-import tech.tablesaw.columns.strings.IntDictionaryMap;
-import tech.tablesaw.columns.strings.ShortDictionaryMap;
+import tech.tablesaw.columns.strings.DictionaryMap;
+import tech.tablesaw.columns.strings.LookupTable;
+import tech.tablesaw.io.DataReader;
+import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.ReaderRegistry;
+import tech.tablesaw.io.Source;
 
 @SuppressWarnings("WeakerAccess")
 @Beta
-public class SawReader {
+public class SawReader implements DataReader {
+
+  private static final SawReader INSTANCE = new SawReader();
 
   private static final int READER_POOL_SIZE = 4;
+
+  public static Table readTable(String path) {
+    Path sawPath = Paths.get(path);
+    return readTable(sawPath.toFile());
+  }
 
   /**
    * Reads a tablesaw table into memory
    *
-   * @param path The location of the table. It is interpreted as relative to the working directory
-   *     if not fully specified. The path will typically end in ".saw", as in
+   * @param file The location of the table data. If not fully specified, it is interpreted as
+   *     relative to the working directory. The path will typically end in ".saw", as in
    *     "mytables/nasdaq-2015.saw"
    * @throws RuntimeException wrapping an IOException if the file cannot be read
    */
-  public static Table readTable(String path) {
+  public static Table readTable(File file) {
 
     ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
     CompletionService<Void> readerCompletionService =
@@ -75,7 +86,7 @@ public class SawReader {
 
     TableMetadata tableMetadata;
 
-    Path sawPath = Paths.get(path);
+    Path sawPath = file.toPath();
 
     try {
       tableMetadata = readTableMetadata(sawPath.resolve(METADATA_FILE_NAME));
@@ -86,13 +97,8 @@ public class SawReader {
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
     Table table = Table.create(tableMetadata.getName());
 
-    // NB: We do some extra work with the hash map to ensure that the columns are returned
+    // Note: We do some extra work with the hash map to ensure that the columns are returned
     // to the table in original order
-
-    // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all
-    //   columns are read
-    //   Problem seems to be mostly with string columns rebuilding the encoding dictionary
-
     ConcurrentLinkedQueue<Column> columnList = new ConcurrentLinkedQueue<>();
     Map<String, Column> columns = new HashMap<>();
     try {
@@ -121,6 +127,11 @@ public class SawReader {
     }
     executorService.shutdown();
     return table;
+  }
+
+  public static void register(ReaderRegistry registry) {
+    registry.registerExtension("saw", INSTANCE);
+    registry.registerMimeType("text/html", INSTANCE);
   }
 
   private static Column readColumn(String fileName, ColumnMetadata columnMetadata)
@@ -333,80 +344,26 @@ public class SawReader {
   private static StringColumn readStringColumn(String fileName, ColumnMetadata metadata)
       throws IOException {
 
-    StringColumn stringColumn;
-
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
 
-      int stringCount = dis.readInt();
+      DictionaryMap dictionaryMap;
 
       if (metadata.getStringColumnKeySize().equals(Integer.class.getSimpleName())) {
-        IntDictionaryMap dictionaryMap =
-            (IntDictionaryMap) new ByteDictionaryMap().promoteYourself().promoteYourself();
-
-        int j = 0;
-        while (j < stringCount) {
-          int key = dis.readInt();
-          String value = dis.readUTF();
-          dictionaryMap.updateMaps(key, value);
-          j++;
-        }
-        // get the column entries
-        int size = metadata.getSize();
-        for (int i = 0; i < size; i++) {
-          dictionaryMap.addValue(dis.readInt());
-        }
-        stringColumn = StringColumn.createInternal(metadata.getName(), dictionaryMap);
-
+        dictionaryMap = new ByteDictionaryMap().promoteYourself().promoteYourself();
       } else if (metadata.getStringColumnKeySize().equals(Short.class.getSimpleName())) {
-        ShortDictionaryMap dictionaryMap =
-            (ShortDictionaryMap) new ByteDictionaryMap().promoteYourself();
-        int j = 0;
-        while (j < stringCount) {
-          short key = dis.readShort();
-          String value = dis.readUTF();
-          dictionaryMap.updateMaps(key, value);
-          j++;
-        }
-        // get the column entries
-        int size = metadata.getSize();
-        for (int i = 0; i < size; i++) {
-          dictionaryMap.addValue(dis.readShort());
-        }
-        stringColumn = StringColumn.createInternal(metadata.getName(), dictionaryMap);
-
+        dictionaryMap = new ByteDictionaryMap().promoteYourself();
       } else if (metadata.getStringColumnKeySize().equals(Byte.class.getSimpleName())) {
-        ByteDictionaryMap dictionaryMap = new ByteDictionaryMap();
-        int j = 0;
-        while (j < stringCount) {
-          byte key = dis.readByte();
-          String value = dis.readUTF();
-          dictionaryMap.updateMaps(key, value);
-          j++;
-        }
-        // get the column entries
-        int size = metadata.getSize();
-        for (int i = 0; i < size; i++) {
-          dictionaryMap.addValue(dis.readByte());
-        }
-        stringColumn = StringColumn.createInternal(metadata.getName(), dictionaryMap);
+        dictionaryMap = new ByteDictionaryMap();
       } else {
         throw new RuntimeException("Unable to match the dictionary map type for StringColum");
       }
+      LookupTable lookupTable = new LookupTable(dictionaryMap);
 
-    } catch (Exception exception) {
-      System.out.println(
-          "Failed reading "
-              + metadata.getName()
-              + " of type "
-              + metadata.getStringColumnKeySize()
-              + " with exception "
-              + exception.getMessage());
-      exception.printStackTrace();
-      throw (exception);
+      return lookupTable.readFromStream(
+          dis, metadata.getName(), metadata.getStringColumnKeySize(), metadata.getSize());
     }
-    return stringColumn;
   }
 
   /** Reads the TextColumn data from the given file and stuffs it into a new TextColumn */
@@ -458,5 +415,15 @@ public class SawReader {
 
     byte[] encoded = Files.readAllBytes(filePath);
     return TableMetadata.fromJson(new String(encoded, StandardCharsets.UTF_8));
+  }
+
+  @Override
+  public Table read(Source source) {
+    return readTable(source.file());
+  }
+
+  @Override
+  public Table read(ReadOptions options) {
+    return null;
   }
 }

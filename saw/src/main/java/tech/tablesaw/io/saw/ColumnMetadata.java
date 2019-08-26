@@ -45,8 +45,8 @@ import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
-import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
+import tech.tablesaw.columns.strings.LookupTable;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
 /** Data about a specific column used in it's persistence */
@@ -68,12 +68,12 @@ public class ColumnMetadata {
     this.size = column.size();
     if (column instanceof StringColumn) {
       StringColumn stringColumn = (StringColumn) column;
-      DictionaryMap lookupTable = stringColumn.unsafeGetLookupTable();
-      if (lookupTable instanceof IntDictionaryMap) {
+      LookupTable lookupTable = stringColumn.getLookupTable();
+      if (lookupTable.dictionaryClass().equals(IntDictionaryMap.class)) {
         stringColumnKeySize = Integer.class.getSimpleName();
-      } else if (lookupTable instanceof ByteDictionaryMap) {
+      } else if (lookupTable.dictionaryClass().equals(ByteDictionaryMap.class)) {
         stringColumnKeySize = Byte.class.getSimpleName();
-      } else if (lookupTable instanceof ShortDictionaryMap) {
+      } else if (lookupTable.dictionaryClass().equals(ShortDictionaryMap.class)) {
         stringColumnKeySize = Short.class.getSimpleName();
       } else {
         stringColumnKeySize = "";

@@ -68,11 +68,6 @@ public class IntDictionaryMap implements DictionaryMap {
     }
   }
 
-  public IntDictionaryMap() {
-    valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
-    keyToCount.defaultReturnValue(0);
-  }
-
   private void put(int key, String value) {
     keyToValue.put(key, value);
     valueToKey.put(value, key);
@@ -98,7 +93,7 @@ public class IntDictionaryMap implements DictionaryMap {
     return getValueForKey(k);
   }
 
-  public ObjectSet<Int2ObjectMap.Entry<String>> getKeyValueEntries() {
+  ObjectSet<Int2ObjectMap.Entry<String>> getKeyValueEntries() {
     return keyToValue.int2ObjectEntrySet();
   }
 
@@ -219,12 +214,12 @@ public class IntDictionaryMap implements DictionaryMap {
     keyToCount.addTo(key, 1);
   }
 
-  public void updateMaps(int key, String value) {
+  void updateMaps(int key, String value) {
     put(key, value);
     keyToCount.addTo(key, 1);
   }
 
-  public void addValue(int key) {
+  void addValue(int key) {
     values.add(key);
   }
 

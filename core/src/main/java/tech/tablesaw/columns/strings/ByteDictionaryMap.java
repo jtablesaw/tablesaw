@@ -67,7 +67,7 @@ public class ByteDictionaryMap implements DictionaryMap {
     valueToKey.put(value, key);
   }
 
-  public void updateMaps(byte key, String value) {
+  void updateMaps(byte key, String value) {
     put(key, value);
     keyToCount.addTo(key, 1);
   }
@@ -76,11 +76,11 @@ public class ByteDictionaryMap implements DictionaryMap {
     return values;
   }
 
-  public void addValue(byte key) {
+  void addValue(byte key) {
     values.add(key);
   }
 
-  public ObjectSet<Byte2ObjectMap.Entry<String>> getKeyValueEntries() {
+  ObjectSet<Byte2ObjectMap.Entry<String>> getKeyValueEntries() {
     return keyToValue.byte2ObjectEntrySet();
   }
 
