@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.FloatColumnType;
@@ -28,14 +29,14 @@ public class FloatColumn extends NumberColumn<Float> {
 
   private final FloatArrayList data;
 
-  private FloatColumn(final String name, FloatArrayList data) {
+  private FloatColumn(String name, FloatArrayList data) {
     super(FloatColumnType.instance(), name);
     setPrintFormatter(NumberColumnFormatter.floatingPointDefault());
     this.data = data;
   }
 
   @Override
-  public String getString(final int row) {
+  public String getString(int row) {
     final float value = getFloat(row);
     if (FloatColumnType.isMissingValue(value)) {
       return "";
@@ -43,15 +44,15 @@ public class FloatColumn extends NumberColumn<Float> {
     return String.valueOf(getPrintFormatter().format(value));
   }
 
-  public static FloatColumn create(final String name) {
+  public static FloatColumn create(String name) {
     return new FloatColumn(name, new FloatArrayList());
   }
 
-  public static FloatColumn create(final String name, final float[] arr) {
+  public static FloatColumn create(String name, float[] arr) {
     return new FloatColumn(name, new FloatArrayList(arr));
   }
 
-  public static FloatColumn create(final String name, final int initialSize) {
+  public static FloatColumn create(String name, int initialSize) {
     FloatColumn column = new FloatColumn(name, new FloatArrayList(initialSize));
     for (int i = 0; i < initialSize; i++) {
       column.appendMissing();
@@ -59,13 +60,27 @@ public class FloatColumn extends NumberColumn<Float> {
     return column;
   }
 
+  public static FloatColumn create(String name, Float[] arr) {
+    FloatColumn column = create(name);
+    for (Float val : arr) {
+      column.append(val);
+    }
+    return column;
+  }
+
+  public static FloatColumn create(String name, Stream<Float> stream) {
+    FloatColumn column = create(name);
+    stream.forEach(val -> column.append(val));
+    return column;
+  }
+
   @Override
-  public FloatColumn createCol(final String name, final int initialSize) {
+  public FloatColumn createCol(String name, int initialSize) {
     return create(name, initialSize);
   }
 
   @Override
-  public FloatColumn createCol(final String name) {
+  public FloatColumn createCol(String name) {
     return create(name);
   }
 
@@ -74,8 +89,12 @@ public class FloatColumn extends NumberColumn<Float> {
     return data.getFloat(index);
   }
 
+  public static boolean valueIsMissing(float value) {
+    return FloatColumnType.isMissingValue(value);
+  }
+
   @Override
-  public FloatColumn subset(final int[] rows) {
+  public FloatColumn subset(int[] rows) {
     final FloatColumn c = this.emptyCopy();
     for (final int row : rows) {
       c.append(getFloat(row));

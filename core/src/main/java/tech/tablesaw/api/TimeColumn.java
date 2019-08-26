@@ -36,6 +36,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -78,8 +79,6 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  /** @deprecated Use TimeColumnType.isMissingValue() instead */
-  @Deprecated
   public static boolean valueIsMissing(int i) {
     return TimeColumnType.isMissingValue(i);
   }
@@ -109,6 +108,12 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     for (int i = 0; i < initialSize; i++) {
       column.appendMissing();
     }
+    return column;
+  }
+
+  public static TimeColumn create(String name, Stream<LocalTime> stream) {
+    TimeColumn column = create(name);
+    stream.forEach(val -> column.append(val));
     return column;
   }
 

@@ -1,10 +1,29 @@
-# Tablesaw Documentation
+## Compiled Docs
 
-* [Introductory Tutorial](https://jtablesaw.github.io/tablesaw/gettingstarted) If you haven't used Tablesaw, or are having trouble 'getting it', you should definitely start here. It covers most everything you need to begin using it productively. 
-* [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc)
-* [Javadoc](http://www.javadoc.io/doc/tech.tablesaw/tablesaw-core/)
-* [Contributor's Guide](https://jtablesaw.github.io/tablesaw/contributing)
-* [Release Notes](https://github.com/jtablesaw/tablesaw/releases)
+There are three important inputs to the docs.
 
-Can't find what you're looking for?
-Ask your questions on the project [Issues page](https://github.com/jtablesaw/tablesaw/issues)
+1) Content files (markdown)
+
+2) src files (java) that hold the compiled code.
+
+3) output of running snippets in the src files. E.G. `table.first(10)`
+
+
+### To update the Docs
+
+1) Navigate to the  `./docs` sub directory (Where POM is located).
+
+2) Runs the src files and save the output snippets to `output/`
+
+    `mvn compile && mvn exec:java`
+
+3) Inject snippets into content files and copy everything the content to `dist/`
+
+    `mvn com.github.ryancerf:choss-maven-plugin:build-docs`
+    
+4) Deploy the docs from `dist/`
+    
+ ### Notes
+ 
+ For more background on injecting snippets see:
+ https://github.com/ryancerf/choss-maven-plugin

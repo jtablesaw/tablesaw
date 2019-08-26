@@ -16,45 +16,45 @@ class WindowFrameTest {
 
     String expectedString = "ROWS BETWEEN UNBOUNDED_PRECEDING AND UNBOUNDED_FOLLOWING";
 
-    assertEquals(WindowBoundTypes.UNBOUNDED_PRECEDING, frame.getFrameStart());
-    assertEquals(WindowBoundTypes.UNBOUNDED_FOLLOWING, frame.getFrameEnd());
+    assertEquals(WindowBoundTypes.UNBOUNDED_PRECEDING, frame.getLeftBoundType());
+    assertEquals(WindowBoundTypes.UNBOUNDED_FOLLOWING, frame.getRightBoundType());
     assertEquals(expectedString, frame.toSqlString());
   }
 
   @Test
   public void testPreceding() {
-    WindowFrame frame = WindowFrame.builder().setStartPreceding(5).setEndPreceding(2).build();
+    WindowFrame frame = WindowFrame.builder().setLeftPreceding(5).setRightPreceding(2).build();
     String expectedString = "ROWS BETWEEN 5 PRECEDING AND 2 PRECEDING";
 
-    assertEquals(WindowBoundTypes.PRECEDING, frame.getFrameStart());
-    assertEquals(-5, frame.getFrameStartShift());
-    assertEquals(WindowBoundTypes.PRECEDING, frame.getFrameEnd());
-    assertEquals(-2, frame.getFrameEndShift());
+    assertEquals(WindowBoundTypes.PRECEDING, frame.getLeftBoundType());
+    assertEquals(-5, frame.getInitialLeftBound());
+    assertEquals(WindowBoundTypes.PRECEDING, frame.getRightBoundType());
+    assertEquals(-2, frame.getInitialRightBound());
     assertEquals(expectedString, frame.toSqlString());
   }
 
   @Test
   public void testCurrentRowToUnbounded() {
-    WindowFrame frame = WindowFrame.builder().setStartCurrentRow().build();
+    WindowFrame frame = WindowFrame.builder().setLeftCurrentRow().build();
 
     String expectedString = "ROWS BETWEEN CURRENT_ROW AND UNBOUNDED_FOLLOWING";
 
-    assertEquals(WindowBoundTypes.CURRENT_ROW, frame.getFrameStart());
-    assertEquals(0, frame.getFrameStartShift());
-    assertEquals(WindowBoundTypes.UNBOUNDED_FOLLOWING, frame.getFrameEnd());
-    assertEquals(0, frame.getFrameEndShift());
+    assertEquals(WindowBoundTypes.CURRENT_ROW, frame.getLeftBoundType());
+    assertEquals(0, frame.getInitialLeftBound());
+    assertEquals(WindowBoundTypes.UNBOUNDED_FOLLOWING, frame.getRightBoundType());
+    assertEquals(0, frame.getInitialRightBound());
     assertEquals(expectedString, frame.toSqlString());
   }
 
   @Test
   public void testFollowing() {
-    WindowFrame frame = WindowFrame.builder().setStartFollowing(2).setEndFollowing(5).build();
+    WindowFrame frame = WindowFrame.builder().setLeftFollowing(2).setRightFollowing(5).build();
     String expectedString = "ROWS BETWEEN 2 FOLLOWING AND 5 FOLLOWING";
 
-    assertEquals(WindowBoundTypes.FOLLOWING, frame.getFrameStart());
-    assertEquals(2, frame.getFrameStartShift());
-    assertEquals(WindowBoundTypes.FOLLOWING, frame.getFrameEnd());
-    assertEquals(5, frame.getFrameEndShift());
+    assertEquals(WindowBoundTypes.FOLLOWING, frame.getLeftBoundType());
+    assertEquals(2, frame.getInitialLeftBound());
+    assertEquals(WindowBoundTypes.FOLLOWING, frame.getRightBoundType());
+    assertEquals(5, frame.getInitialRightBound());
     assertEquals(expectedString, frame.toSqlString());
   }
 
@@ -63,7 +63,7 @@ class WindowFrameTest {
     Throwable thrown =
         assertThrows(
             IllegalArgumentException.class,
-            () -> WindowFrame.builder().setStartFollowing(10).setEndPreceding(10).build());
+            () -> WindowFrame.builder().setLeftFollowing(10).setRightPreceding(10).build());
 
     assertTrue(thrown.getMessage().contains("FOLLOWING cannot come before PRECEDING"));
   }
@@ -73,7 +73,7 @@ class WindowFrameTest {
     Throwable thrown =
         assertThrows(
             IllegalArgumentException.class,
-            () -> WindowFrame.builder().setStartFollowing(10).setEnndCurrentRow().build());
+            () -> WindowFrame.builder().setLeftFollowing(10).setRightCurrentRow().build());
 
     assertTrue(thrown.getMessage().contains("FOLLOWING cannot come before CURRENT_ROW"));
   }
@@ -83,7 +83,7 @@ class WindowFrameTest {
     Throwable thrown =
         assertThrows(
             IllegalArgumentException.class,
-            () -> WindowFrame.builder().setStartPreceding(5).setEndPreceding(10).build());
+            () -> WindowFrame.builder().setLeftPreceding(5).setRightPreceding(10).build());
     assertTrue(
         thrown
             .getMessage()
@@ -95,7 +95,7 @@ class WindowFrameTest {
     Throwable thrown =
         assertThrows(
             IllegalArgumentException.class,
-            () -> WindowFrame.builder().setStartFollowing(10).setEndFollowing(5).build());
+            () -> WindowFrame.builder().setLeftFollowing(10).setRightFollowing(5).build());
     assertTrue(
         thrown
             .getMessage()
@@ -106,7 +106,7 @@ class WindowFrameTest {
   public void rightShiftEqualsThanLeftShift() {
     assertThrows(
         IllegalArgumentException.class,
-        () -> WindowFrame.builder().setStartPreceding(5).setEndPreceding(5).build());
+        () -> WindowFrame.builder().setLeftPreceding(5).setRightPreceding(5).build());
   }
 
   @Test
@@ -118,28 +118,28 @@ class WindowFrameTest {
   @Test
   public void windowGrowthTypeFixedStart() {
     WindowGrowthType growthType =
-        WindowFrame.builder().setEndFollowing(10).build().windowGrowthType();
-    assertEquals(growthType, WindowGrowthType.FIXED_START);
+        WindowFrame.builder().setRightFollowing(10).build().windowGrowthType();
+    assertEquals(growthType, WindowGrowthType.FIXED_LEFT);
   }
 
   @Test
   public void windowGrothTypeFixedEnd() {
     WindowGrowthType growthType =
-        WindowFrame.builder().setStartFollowing(10).build().windowGrowthType();
-    assertEquals(growthType, WindowGrowthType.FIXED_END);
+        WindowFrame.builder().setLeftFollowing(10).build().windowGrowthType();
+    assertEquals(growthType, WindowGrowthType.FIXED_RIGHT);
   }
 
   @Test
   public void windowGrowthTypeSliding() {
     WindowGrowthType growthType =
-        WindowFrame.builder().setStartPreceding(5).setEndFollowing(5).build().windowGrowthType();
+        WindowFrame.builder().setLeftPreceding(5).setRightFollowing(5).build().windowGrowthType();
     assertEquals(growthType, WindowGrowthType.SLIDING);
   }
 
   @Test
   public void windowGrowthTypeSlidingWithCurrentRow() {
     WindowGrowthType growthType =
-        WindowFrame.builder().setStartPreceding(5).setEnndCurrentRow().build().windowGrowthType();
+        WindowFrame.builder().setLeftPreceding(5).setRightCurrentRow().build().windowGrowthType();
     assertEquals(growthType, WindowGrowthType.SLIDING);
   }
 }

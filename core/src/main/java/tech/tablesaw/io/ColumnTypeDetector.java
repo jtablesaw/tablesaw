@@ -145,15 +145,25 @@ public class ColumnTypeDetector {
 
     CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
+    boolean hasNonMissingValues = false;
+
     for (String s : valuesList) {
       for (AbstractColumnParser<?> parser : parsers) {
-        if (!parser.canParse(s)) {
-          typeCandidates.remove(parser.columnType());
-          parsers.remove(parser);
+        if (!parser.isMissing(s)) {
+          hasNonMissingValues = true;
+          if (!parser.canParse(s)) { // we can skip this test if we know the value is missing
+            typeCandidates.remove(parser.columnType());
+            parsers.remove(parser);
+          }
         }
       }
     }
-    return selectType(typeCandidates);
+    if (hasNonMissingValues) {
+      return selectType(typeCandidates);
+    } else {
+      // the last type in the typeArray is the default
+      return typeArray.get(typeArray.size() - 1);
+    }
   }
 
   /**

@@ -315,6 +315,14 @@ public class Row implements Iterator<Row> {
     return this;
   }
 
+  public void setMissing(int columnIndex) {
+    setMissing(columnNames[columnIndex]);
+  }
+
+  public void setMissing(String columnName) {
+    columnMap.get(columnName).setMissing(getIndex(rowNumber));
+  }
+
   public void setBoolean(int columnIndex, boolean value) {
     setBoolean(columnNames[columnIndex], value);
   }

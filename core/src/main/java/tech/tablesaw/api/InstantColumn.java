@@ -43,6 +43,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -108,8 +109,12 @@ public class InstantColumn extends AbstractColumn<Instant>
     return column;
   }
 
-  /** @deprecated Use InstantColumnType.isMissingValue(long) instead */
-  @Deprecated
+  public static InstantColumn create(String name, Stream<Instant> stream) {
+    InstantColumn column = create(name);
+    stream.forEach(val -> column.append(val));
+    return column;
+  }
+
   public static boolean valueIsMissing(long value) {
     return InstantColumnType.isMissingValue(value);
   }

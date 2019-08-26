@@ -1,5 +1,8 @@
 target/
 
+#docs
+/docs/output/*
+
 databases/
 
 data/filtered_bus_stops.csv

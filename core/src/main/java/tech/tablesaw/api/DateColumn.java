@@ -35,6 +35,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -92,6 +93,12 @@ public class DateColumn extends AbstractColumn<LocalDate>
     for (LocalDate date : data) {
       column.append(date);
     }
+    return column;
+  }
+
+  public static DateColumn create(String name, Stream<LocalDate> stream) {
+    DateColumn column = create(name);
+    stream.forEach(val -> column.append(val));
     return column;
   }
 
@@ -410,8 +417,6 @@ public class DateColumn extends AbstractColumn<LocalDate>
     return table;
   }
 
-  /** @deprecated Use DateColumnType.isMissingValue(int) instead */
-  @Deprecated
   public static boolean valueIsMissing(int i) {
     return DateColumnType.isMissingValue(i);
   }

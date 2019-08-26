@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.AbstractStringColumn;
@@ -56,8 +57,6 @@ public class StringColumn extends AbstractStringColumn {
         return f1.compareTo(f2);
       };
 
-  /** @deprecated Use StringColumnType.isMissingValue(int value) instead */
-  @Deprecated
   public static boolean valueIsMissing(String string) {
     return StringColumnType.isMissingValue(string);
   }
@@ -89,6 +88,12 @@ public class StringColumn extends AbstractStringColumn {
     for (int i = 0; i < size; i++) {
       column.appendMissing();
     }
+    return column;
+  }
+
+  public static StringColumn create(String name, Stream<String> stream) {
+    StringColumn column = create(name);
+    stream.forEach(val -> column.append(val));
     return column;
   }
 

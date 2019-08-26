@@ -41,6 +41,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -98,6 +99,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     return column;
   }
 
+  public static DateTimeColumn create(String name, Stream<LocalDateTime> stream) {
+    DateTimeColumn column = create(name);
+    stream.forEach(val -> column.append(val));
+    return column;
+  }
+
   @Override
   public DateTimeColumn plus(long amountToAdd, ChronoUnit unit) {
     DateTimeColumn newColumn = emptyCopy();
@@ -123,8 +130,6 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     return column;
   }
 
-  /** @deprecated Use DateTimeColumnType.isMissingValue(int) instead */
-  @Deprecated
   public static boolean valueIsMissing(long value) {
     return DateTimeColumnType.isMissingValue(value);
   }

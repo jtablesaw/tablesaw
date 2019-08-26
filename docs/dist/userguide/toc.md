@@ -11,7 +11,7 @@ Tablesaw User Guide
     * [Sorting](https://jtablesaw.github.io/tablesaw/userguide/sorting)
     * [Filtering (Queries)](https://jtablesaw.github.io/tablesaw/userguide/filters)
     * [Mapping](https://jtablesaw.github.io/tablesaw/userguide/mapping)
-    * [Summarizing (Aggregation/Reducing)](https://jtablesaw.github.io/tablesaw/userguide/reducing)
+    * [Summarizing (a.k.a. "Aggregation", or "Reducing")](https://jtablesaw.github.io/tablesaw/userguide/reducing)
   * [Working with Rows](https://jtablesaw.github.io/tablesaw/userguide/rows)
 * Plotting and Visualization
   * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_Plotting)
@@ -21,11 +21,11 @@ Tablesaw User Guide
   * [Simple plotting API: Time Series, Line Charts and Area charts](https://jtablesaw.github.io/tablesaw/userguide/TimeSeries)
   * [Writing Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/Visualization_custom)
 * Data Science
-  * Introduction
+  * Introduction (*Not yet available*)
   * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball Linear regression)
-  * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs)
-  * Non-hierarchical clustering (with Smile)
-  * Hierarchical clustering (with Smile)
-  * Classification using Logistic Regression (with Smile)
-  * Classification using Random Forests (with Smile)
-* Using Tablesaw in Jupyter
+  * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs) 
+  * Non-hierarchical clustering (with Smile) (*Not yet available*)
+  * Hierarchical clustering (with Smile) (*Not yet available*)
+  * Classification using Logistic Regression (with Smile) (*Not yet available*)
+  * Classification using Random Forests (with Smile) (*Not yet available*)
+* Using Tablesaw in Jupyter () (*Not yet available*)

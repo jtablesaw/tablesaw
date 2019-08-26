@@ -110,7 +110,7 @@ class ArgumentListTest {
   public void buildWithStagedThrows() {
     Throwable thrown =
         assertThrows(
-            IllegalArgumentException.class,
+            IllegalStateException.class,
             () -> ArgumentList.builder().stageFunction("col1", AggregateFunctions.MAX).build());
 
     assertTrue(thrown.getMessage().contains("Cannot build when a column is staged"));

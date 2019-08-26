@@ -96,6 +96,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>-Duser.language=en-US -Duser.region=US</argLine>
+                    <printSummary>false</printSummary>
                 </configuration>
             </plugin>
         </plugins>
@@ -131,6 +132,10 @@
             <groupId>io.github.classgraph</groupId>
             <artifactId>classgraph</artifactId>
             <version>4.8.22</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.haifengl</groupId>

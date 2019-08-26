@@ -57,6 +57,7 @@
         <module>json</module>
         <module>jsplot</module>
         <module>saw</module>
+        <module>docs</module>
     </modules>
 
     <profiles>
@@ -92,6 +93,9 @@
                     <configuration>
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <failOnError>false</failOnError>
+                        <quiet>true</quiet>
+                        <additionalOptions>-Xdoclint:none</additionalOptions>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
                     </configuration>
                     <executions>
                         <execution>
@@ -245,6 +249,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.28</version>
+            </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
