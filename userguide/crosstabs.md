@@ -19,19 +19,10 @@ table.addColumns(month);
 
 // perform the crossTab operation
 Table counts = table.xTabCounts("month", "who");
-
-// formatting 
-// make table print as integers with no decimals instead of the raw doubles it holds
-counts.columnsOfType(ColumnType.DOUBLE)
-                .forEach(x ->	
-                       ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
-// print
 System.out.println(counts);
 ```
 
-The formatted output is shown below.
-
-```
+```java
                               Crosstab Counts: month x who                              
  [labels]   |  fox  |  gallup  |  newsweek  |  time.cnn  |  upenn  |  zogby  |  total  |
 ----------------------------------------------------------------------------------------
@@ -50,55 +41,59 @@ The formatted output is shown below.
      Total  |   64  |     119  |        55  |        30  |     10  |     45  |    323  |
 ```
 
-Note the total column on the right, which shows that 23 polls were conducted in April, etc., across all pollsters. Similarly, the column totals at the bottom show that, Fox conducted 64 polls, Gallup 119, etc.
+Note the total column on the right, which shows that 23 polls were conducted in April, etc., across all pollsters.
+Similarly, the column totals at the bottom show that, Fox conducted 64 polls, Gallup 119, etc.
 
 ### Single variable totals
 
 You can get single variable counts using the *xTabCounts()* method that takes only one column name argument . 
 
-```Java
+```java
 Table whoCounts = table.xTabCounts("who");
-// formatting and printing as above
 ```
+
 producing:
-```
+
+```java
      Column: who      
  Category  |  Count  |
 ----------------------
-   gallup  |    119  |
     zogby  |     45  |
+    upenn  |     10  |
  time.cnn  |     30  |
       fox  |     64  |
  newsweek  |     55  |
-    upenn  |     10  |
+   gallup  |    119  |
 ```
 
 ### Calculating Percents
 
-You may want to see the percent of polls conducted by each pollster, rather than raw counts. The xTabPercents() method is used for that.
+You may want to see the percent of polls conducted by each pollster, rather than raw counts.
+The xTabPercents() method is used for that.
 
-```Java
+```java
 Table whoPercents = table.xTabPercents("who");
 ```
 
-Actually, percents is a misnomer. The results produced are the proportions in decimal format. To get percent-formatted output we use a different NumericColumnFormatter.
+Actually, percents is a misnomer. The results produced are the proportions in decimal format. To get percent-formatted
+output we use a different NumericColumnFormatter.
 
-```
-whoPercents.columnsOfType(ColumnType.DOUBLE) // format to display as percents
-                .forEach(x ->
-                ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
+```java
+whoPercents
+    .columnsOfType(ColumnType.DOUBLE) // format to display as percents
+    .forEach(x -> ((NumberColumn) x).setPrintFormatter(NumberColumnFormatter.percent(0)));
 ```
 
-```Java
+```java
        Column: who       
  Category  |  Percents  |
 -------------------------
-   gallup  |       37%  |
     zogby  |       14%  |
+    upenn  |        3%  |
  time.cnn  |        9%  |
       fox  |       20%  |
  newsweek  |       17%  |
-    upenn  |        3%  |
+   gallup  |       37%  |
 ```
 
 ### Table Percents
@@ -107,45 +102,55 @@ When you have two variables, you can display the percent that falls into each co
 
 ```java
 Table tablePercents = table.xTabTablePercents("month", "who");
-tablePercents.columnsOfType(ColumnType.DOUBLE)
-                .forEach(x ->
-                ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(1)));
+tablePercents
+    .columnsOfType(ColumnType.DOUBLE)
+    .forEach(x -> ((NumberColumn) x).setPrintFormatter(NumberColumnFormatter.percent(1)));
 ```
 
-Because the percents are small, we updated the formatter to show a single fractional digit after the decimal point. The output can best be understood by looking at an example. Of all the polls in the dataset, 1.9% were conducted by Fox in April, 3.1% by Gallup in April, 0.9% by Fox in August, etc. 
+Because the percents are small, we updated the formatter to show a single fractional digit after the decimal point.
 
-```
+<br>
+
+The output can best be understood by looking at an example. Of all the polls in the dataset, 1.9% were conducted by
+Fox in April, 3.1% by Gallup in April, 0.9% by Fox in August, etc. 
+
+```java
                                Crosstab Table Proportions:                                 
- [labels]   |   fox   |  gallup  | newsweek  |  time.cnn  |  upenn  |  zogby  |  total   |
-------------------------------------------------------------------------------------------
-     APRIL  |   1.9%  |    3.1%  |     0.9%  |      0.3%  |   0.0%  |   0.9%  |    7.1%  |
-    AUGUST  |   0.9%  |    2.5%  |     0.6%  |      0.3%  |   0.0%  |   0.6%  |    5.0%  |
-  DECEMBER  |   1.2%  |    2.8%  |     1.2%  |      0.9%  |   0.6%  |   1.5%  |    8.4%  |
-  FEBRUARY  |   2.2%  |    2.8%  |     1.2%  |      1.2%  |   0.3%  |   1.2%  |    9.0%  |
-   JANUARY  |   2.2%  |    4.0%  |     1.9%  |      0.9%  |   1.5%  |   2.5%  |   13.0%  |
-      JULY  |   1.9%  |    2.8%  |     1.2%  |      0.9%  |   0.0%  |   1.2%  |    8.0%  |
-      JUNE  |   1.9%  |    3.4%  |     0.3%  |      0.3%  |   0.0%  |   1.2%  |    7.1%  |
-     MARCH  |   1.5%  |    3.7%  |     1.2%  |      0.9%  |   0.0%  |   1.9%  |    9.3%  |
-       MAY  |   1.2%  |    2.8%  |     1.5%  |      0.9%  |   0.0%  |   0.3%  |    6.8%  |
-  NOVEMBER  |   1.2%  |    2.8%  |     1.9%  |      0.9%  |   0.3%  |   0.3%  |    7.4%  |
-   OCTOBER  |   2.2%  |    3.1%  |     2.5%  |      0.6%  |   0.3%  |   0.9%  |    9.6%  |
- SEPTEMBER  |   1.5%  |    3.1%  |     2.5%  |      0.9%  |   0.0%  |   1.2%  |    9.3%  |
-     Total  |  19.8%  |   36.8%  |    17.0%  |      9.3%  |   3.1%  |  13.9%  |  100.0%  |
+ [labels]   |   fox   |  gallup  |  newsweek  |  time.cnn  |  upenn  |  zogby  |  total   |
+-------------------------------------------------------------------------------------------
+     APRIL  |   1.9%  |    3.1%  |      0.9%  |      0.3%  |   0.0%  |   0.9%  |    7.1%  |
+    AUGUST  |   0.9%  |    2.5%  |      0.6%  |      0.3%  |   0.0%  |   0.6%  |    5.0%  |
+  DECEMBER  |   1.2%  |    2.8%  |      1.2%  |      0.9%  |   0.6%  |   1.5%  |    8.4%  |
+  FEBRUARY  |   2.2%  |    2.8%  |      1.2%  |      1.2%  |   0.3%  |   1.2%  |    9.0%  |
+   JANUARY  |   2.2%  |    4.0%  |      1.9%  |      0.9%  |   1.5%  |   2.5%  |   13.0%  |
+      JULY  |   1.9%  |    2.8%  |      1.2%  |      0.9%  |   0.0%  |   1.2%  |    8.0%  |
+      JUNE  |   1.9%  |    3.4%  |      0.3%  |      0.3%  |   0.0%  |   1.2%  |    7.1%  |
+     MARCH  |   1.5%  |    3.7%  |      1.2%  |      0.9%  |   0.0%  |   1.9%  |    9.3%  |
+       MAY  |   1.2%  |    2.8%  |      1.5%  |      0.9%  |   0.0%  |   0.3%  |    6.8%  |
+  NOVEMBER  |   1.2%  |    2.8%  |      1.9%  |      0.9%  |   0.3%  |   0.3%  |    7.4%  |
+   OCTOBER  |   2.2%  |    3.1%  |      2.5%  |      0.6%  |   0.3%  |   0.9%  |    9.6%  |
+ SEPTEMBER  |   1.5%  |    3.1%  |      2.5%  |      0.9%  |   0.0%  |   1.2%  |    9.3%  |
+     Total  |  19.8%  |   36.8%  |     17.0%  |      9.3%  |   3.1%  |  13.9%  |  100.0%  |
 ```
 
 As you can see, this also gives you the 'total' percents by month and pollster.
 
 ### Column Percents and Row Percents
 
-The final option is to show column percents or row percents. We'll start with column percents. You calculate them as shown below.
+The final option is to show column percents or row percents. We'll start with column percents.
+You calculate them as shown below.
 
-```Java
+```java
 Table columnPercents = table.xTabColumnPercents("month", "who");
 ```
 
-This produces the following table. If you look at the column for "fox", the values you see are the percentages for fox alone: 9% of fox's polls were conducted in April, 5% in August, etc.  Looking across the columns on the other hand is not very intuitive (or useful, probably) until you get to the total, which shows the average across all pollsters by month.
+Look at the column for "fox", the values you see are the percentages for fox alone: 9% of fox's polls were conducted
+in April, 5% in August, etc. 
 
-```
+Looking across the columns on the other hand is not very intuitive (or useful, probably)
+until you get to the total, which shows the average across all pollsters by month.
+
+```java
                               Crosstab Column Proportions:                               
  [labels]   |  fox   |  gallup  |  newsweek  |  time.cnn  |  upenn  |  zogby  |  total  |
 -----------------------------------------------------------------------------------------
@@ -163,15 +168,17 @@ This produces the following table. If you look at the column for "fox", the valu
  SEPTEMBER  |    8%  |      8%  |       15%  |       10%  |     0%  |     9%  |     9%  |
      Total  |  100%  |    100%  |      100%  |      100%  |   100%  |   100%  |   100%  |
 ```
+
 Row percents show the opposite viewpoint. 
 
-```Java
+```java
 Table rowPercents = table.xTabRowPercents("month", "who");
 ```
 
-Here we see that, of all the polls conducted in April, fox conducted 26%, Gallup 43%, and The University of Pennsylvania conducted 0% with rounding. 
+Here we see that, of all the polls conducted in April, fox conducted 26%, Gallup 43%, and The University of Pennsylvania
+conducted 0% with rounding. 
 
-```
+```java
                                Crosstab Row Proportions:                                
  [labels]   |  fox  |  gallup  |  newsweek  |  time.cnn  |  upenn  |  zogby  |  total  |
 ----------------------------------------------------------------------------------------
