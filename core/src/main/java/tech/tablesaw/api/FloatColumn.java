@@ -38,7 +38,7 @@ public class FloatColumn extends NumberColumn<Float> {
   @Override
   public String getString(int row) {
     final float value = getFloat(row);
-    if (FloatColumnType.isMissingValue(value)) {
+    if (FloatColumnType.valueIsMissing(value)) {
       return "";
     }
     return String.valueOf(getPrintFormatter().format(value));
@@ -90,7 +90,7 @@ public class FloatColumn extends NumberColumn<Float> {
   }
 
   public static boolean valueIsMissing(float value) {
-    return FloatColumnType.isMissingValue(value);
+    return FloatColumnType.valueIsMissing(value);
   }
 
   @Override
@@ -299,7 +299,7 @@ public class FloatColumn extends NumberColumn<Float> {
   }
 
   public boolean isMissingValue(float value) {
-    return FloatColumnType.isMissingValue(value);
+    return FloatColumnType.valueIsMissing(value);
   }
 
   @Override
@@ -361,7 +361,7 @@ public class FloatColumn extends NumberColumn<Float> {
   @Override
   public String getUnformattedString(final int row) {
     final float value = getFloat(row);
-    if (FloatColumnType.isMissingValue(value)) {
+    if (FloatColumnType.valueIsMissing(value)) {
       return "";
     }
     return String.valueOf(value);
@@ -473,7 +473,7 @@ public class FloatColumn extends NumberColumn<Float> {
   public LongColumn asLongColumn() {
     LongColumn result = LongColumn.create(name());
     for (float d : data) {
-      if (FloatColumnType.isMissingValue(d)) {
+      if (FloatColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append((long) d);
@@ -503,7 +503,7 @@ public class FloatColumn extends NumberColumn<Float> {
   public IntColumn asIntColumn() {
     IntColumn result = IntColumn.create(name());
     for (float d : data) {
-      if (FloatColumnType.isMissingValue(d)) {
+      if (FloatColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append((int) d);
@@ -533,7 +533,7 @@ public class FloatColumn extends NumberColumn<Float> {
   public ShortColumn asShortColumn() {
     ShortColumn result = ShortColumn.create(name());
     for (float d : data) {
-      if (FloatColumnType.isMissingValue(d)) {
+      if (FloatColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append((short) d);
@@ -553,7 +553,7 @@ public class FloatColumn extends NumberColumn<Float> {
   public DoubleColumn asDoubleColumn() {
     DoubleColumn result = DoubleColumn.create(name());
     for (float d : data) {
-      if (FloatColumnType.isMissingValue(d)) {
+      if (FloatColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append(d);

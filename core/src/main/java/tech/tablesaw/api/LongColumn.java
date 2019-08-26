@@ -86,14 +86,14 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   @Override
   public String getString(final int row) {
     final long value = getLong(row);
-    if (LongColumnType.isMissingValue(value)) {
+    if (LongColumnType.valueIsMissing(value)) {
       return "";
     }
     return String.valueOf(getPrintFormatter().format(value));
   }
 
   public static boolean valueIsMissing(long value) {
-    return LongColumnType.isMissingValue(value);
+    return LongColumnType.valueIsMissing(value);
   }
 
   @Override
@@ -354,7 +354,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   }
 
   public boolean isMissingValue(long value) {
-    return LongColumnType.isMissingValue(value);
+    return LongColumnType.valueIsMissing(value);
   }
 
   @Override
@@ -411,7 +411,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   @Override
   public String getUnformattedString(final int row) {
     final long value = getLong(row);
-    if (LongColumnType.isMissingValue(value)) {
+    if (LongColumnType.valueIsMissing(value)) {
       return "";
     }
     return String.valueOf(value);
@@ -527,7 +527,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   public IntColumn asIntColumn() {
     IntColumn result = IntColumn.create(name());
     for (long d : data) {
-      if (LongColumnType.isMissingValue(d)) {
+      if (LongColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append((int) d);
@@ -556,7 +556,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   public ShortColumn asShortColumn() {
     ShortColumn result = ShortColumn.create(name());
     for (long d : data) {
-      if (LongColumnType.isMissingValue(d)) {
+      if (LongColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append((short) d);
@@ -583,7 +583,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   public FloatColumn asFloatColumn() {
     FloatColumn result = FloatColumn.create(name());
     for (long d : data) {
-      if (LongColumnType.isMissingValue(d)) {
+      if (LongColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append(d);
@@ -610,7 +610,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   public DoubleColumn asDoubleColumn() {
     DoubleColumn result = DoubleColumn.create(name());
     for (long d : data) {
-      if (LongColumnType.isMissingValue(d)) {
+      if (LongColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append(d);

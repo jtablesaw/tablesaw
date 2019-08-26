@@ -124,7 +124,7 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMost(T newValue) {
-          if (DoubleColumnType.isMissingValue(sum)) {
+          if (DoubleColumnType.valueIsMissing(sum)) {
             this.sum = 0.0;
           }
           this.sum += newValue.doubleValue();
@@ -142,7 +142,7 @@ enum AggregateFunctions implements FunctionMetaData {
         @Override
         public void removeLeftMost() {
           Double removed = queue.remove();
-          if (DoubleColumnType.isMissingValue(removed)) {
+          if (DoubleColumnType.valueIsMissing(removed)) {
             missingCount--;
           } else {
             this.sum -= removed;
@@ -182,7 +182,7 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMost(T newValue) {
-          if (DoubleColumnType.isMissingValue(max)) {
+          if (DoubleColumnType.valueIsMissing(max)) {
             max = newValue.doubleValue();
             return;
           }
@@ -224,7 +224,7 @@ enum AggregateFunctions implements FunctionMetaData {
           // This could be faster, but probably does not matter in practice because sliding windows
           // will be small.
           return queue.stream()
-              .filter(d -> !DoubleColumnType.isMissingValue(d))
+              .filter(d -> !DoubleColumnType.valueIsMissing(d))
               .mapToDouble(Number::doubleValue)
               .max()
               .orElse(DoubleColumnType.missingValueIndicator());
@@ -241,7 +241,7 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMost(T newValue) {
-          if (DoubleColumnType.isMissingValue(min)) {
+          if (DoubleColumnType.valueIsMissing(min)) {
             min = newValue.doubleValue();
             return;
           }
@@ -283,7 +283,7 @@ enum AggregateFunctions implements FunctionMetaData {
           // This could be faster, but probably does not matter in practice because sliding windows
           // will be small.
           return queue.stream()
-              .filter(d -> !DoubleColumnType.isMissingValue(d))
+              .filter(d -> !DoubleColumnType.valueIsMissing(d))
               .mapToDouble(Number::doubleValue)
               .min()
               .orElse(DoubleColumnType.missingValueIndicator());
@@ -313,7 +313,7 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public void addRightMost(T newValue) {
-          if (DoubleColumnType.isMissingValue(sum)) {
+          if (DoubleColumnType.valueIsMissing(sum)) {
             this.sum = 0.0;
           }
           this.sum += newValue.doubleValue();
@@ -332,7 +332,7 @@ enum AggregateFunctions implements FunctionMetaData {
         @Override
         public void removeLeftMost() {
           Double removed = queue.remove();
-          if (DoubleColumnType.isMissingValue(removed)) {
+          if (DoubleColumnType.valueIsMissing(removed)) {
             missingCount--;
           } else {
             this.sum -= removed;

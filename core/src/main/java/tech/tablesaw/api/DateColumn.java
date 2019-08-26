@@ -418,7 +418,7 @@ public class DateColumn extends AbstractColumn<LocalDate>
   }
 
   public static boolean valueIsMissing(int i) {
-    return DateColumnType.isMissingValue(i);
+    return DateColumnType.valueIsMissing(i);
   }
 
   /** Returns the count of missing values in this column */
