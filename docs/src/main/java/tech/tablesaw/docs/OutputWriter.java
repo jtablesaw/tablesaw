@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Saves string snippets to an output file so they can be used in the docs.
  *
- * <p> TODO clean this up. It is a bit of a hack.
+ * <p>TODO clean this up. It is a bit of a hack.
  */
 public class OutputWriter {
   private final Class<?> clazz;
