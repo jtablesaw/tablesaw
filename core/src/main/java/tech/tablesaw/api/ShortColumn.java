@@ -1,6 +1,7 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
+import com.google.common.primitives.Shorts;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
@@ -8,11 +9,13 @@ import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -46,6 +49,16 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     for (int i = 0; i < initialSize; i++) {
       column.appendMissing();
     }
+    return column;
+  }
+
+  public static ShortColumn create(final String name, final Short[] arr) {
+    return new ShortColumn(name, new ShortArrayList(Shorts.toArray(Arrays.asList(arr))));
+  }
+
+  public static ShortColumn create(String name, Stream<Short> stream) {
+    ShortColumn column = create(name);
+    stream.forEach(val -> column.append(val));
     return column;
   }
 

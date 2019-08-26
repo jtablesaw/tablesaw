@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -49,7 +50,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     return newColumn;
   }
 
-  public static IntColumn create(final String name, final int initialSize) {
+  public static IntColumn create(String name, int initialSize) {
     IntColumn column = new IntColumn(name, new IntArrayList(initialSize));
     for (int i = 0; i < initialSize; i++) {
       column.appendMissing();
@@ -57,13 +58,19 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     return column;
   }
 
+  public static IntColumn create(String name, IntStream stream) {
+    IntArrayList list = new IntArrayList();
+    stream.forEach(val -> list.add(val));
+    return new IntColumn(name, list);
+  }
+
   @Override
-  public IntColumn createCol(final String name, final int initialSize) {
+  public IntColumn createCol(String name, int initialSize) {
     return create(name, initialSize);
   }
 
   @Override
-  public IntColumn createCol(final String name) {
+  public IntColumn createCol(String name) {
     return create(name);
   }
 

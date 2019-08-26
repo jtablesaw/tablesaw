@@ -15,24 +15,34 @@
 package tech.tablesaw.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 public class FloatColumnTest {
 
   @Test
-  public void testAppendFloat() {
-    final FloatColumn floatColumn = FloatColumn.create("floats");
-    final Float floatValue = 2.5f;
+  public void appendFloat() {
+    FloatColumn floatColumn = FloatColumn.create("floats");
+    Float floatValue = 2.5f;
     floatColumn.append(floatValue);
     assertEquals(floatValue, floatColumn.get(0));
   }
 
   @Test
-  public void testAppendFloatObject() {
-    final FloatColumn floatColumn = FloatColumn.create("floats");
-    final Float floatObject = 2.5f;
+  public void appendFloatObject() {
+    FloatColumn floatColumn = FloatColumn.create("floats");
+    Float floatObject = 2.5f;
     floatColumn.append(floatObject);
     assertEquals(floatObject, floatColumn.get(0));
+  }
+
+  @Test
+  public void createFromObjectArray() {
+    Float[] floats = new Float[] {2.5f, null, 4.0f};
+    FloatColumn floatColumn = FloatColumn.create("floats", floats);
+    assertEquals(2.5f, floatColumn.get(0));
+    assertTrue(floatColumn.isMissing(1));
+    assertEquals(4.0f, floatColumn.get(2));
   }
 }
