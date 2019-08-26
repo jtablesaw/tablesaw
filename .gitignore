@@ -1,7 +1,6 @@
 target/
 
 #docs
-/docs/dist/*
 /docs/output/*
 
 databases/
