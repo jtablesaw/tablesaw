@@ -52,16 +52,10 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.LookupTableWrapper;
-import tech.tablesaw.io.DataReader;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.ReaderRegistry;
-import tech.tablesaw.io.Source;
 
 @SuppressWarnings("WeakerAccess")
 @Beta
-public class SawReader implements DataReader {
-
-  private static final SawReader INSTANCE = new SawReader();
+public class SawReader {
 
   private static final int READER_POOL_SIZE = 4;
 
@@ -127,11 +121,6 @@ public class SawReader implements DataReader {
     }
     executorService.shutdown();
     return table;
-  }
-
-  public static void register(ReaderRegistry registry) {
-    registry.registerExtension("saw", INSTANCE);
-    registry.registerMimeType("text/html", INSTANCE);
   }
 
   private static Column readColumn(String fileName, ColumnMetadata columnMetadata)
@@ -415,15 +404,5 @@ public class SawReader implements DataReader {
 
     byte[] encoded = Files.readAllBytes(filePath);
     return TableMetadata.fromJson(new String(encoded, StandardCharsets.UTF_8));
-  }
-
-  @Override
-  public Table read(Source source) {
-    return readTable(source.file());
-  }
-
-  @Override
-  public Table read(ReadOptions options) {
-    return null;
   }
 }
