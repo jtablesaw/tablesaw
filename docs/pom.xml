@@ -11,12 +11,12 @@
 
     <artifactId>tablesaw-docs</artifactId>
 
-    <repositories>
-        <repository>
+    <pluginRepositories>
+        <pluginRepository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <plugins>
@@ -48,7 +48,7 @@
             <plugin>
                 <groupId>com.github.ryancerf</groupId>
                 <artifactId>choss-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>v0.02</version>
                 <configuration>
                     <docsSourceDirectory>./main/</docsSourceDirectory>
                     <docsTargetDirectory>./dist/</docsTargetDirectory>
@@ -74,11 +74,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>com.github.ryancerf</groupId>
-            <artifactId>choss-maven-plugin</artifactId>
-            <version>a0ed0b0582003a355e93897b4a638289cbe3b814</version>
-        </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-core</artifactId>
