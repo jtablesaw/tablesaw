@@ -97,7 +97,7 @@ public class IntDictionaryMap implements DictionaryMap {
     return keyToValue.int2ObjectEntrySet();
   }
 
-  public IntArrayList values() {
+  IntArrayList values() {
     return values;
   }
 

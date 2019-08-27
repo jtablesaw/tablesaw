@@ -72,7 +72,7 @@ public class ByteDictionaryMap implements DictionaryMap {
     keyToCount.addTo(key, 1);
   }
 
-  public ByteArrayList values() {
+  ByteArrayList values() {
     return values;
   }
 

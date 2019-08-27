@@ -100,7 +100,7 @@ public class SawReader {
         readerCompletionService.submit(
             () -> {
               Path columnPath = sawPath.resolve(column.getId());
-              columnList.add(readColumn(columnPath.toString(), column));
+              columnList.add(readColumn(columnPath.toString(), tableMetadata, column));
               return null;
             });
       }
@@ -123,7 +123,8 @@ public class SawReader {
     return table;
   }
 
-  private static Column readColumn(String fileName, ColumnMetadata columnMetadata)
+  private static Column readColumn(
+      String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
       throws IOException {
 
     final String typeString = columnMetadata.getType();
@@ -146,9 +147,9 @@ public class SawReader {
       case INSTANT:
         return readInstantColumn(fileName, columnMetadata);
       case STRING:
-        return readStringColumn(fileName, columnMetadata);
+        return readStringColumn(fileName, tableMetadata, columnMetadata);
       case TEXT:
-        return readTextColumn(fileName, columnMetadata);
+        return readTextColumn(fileName, tableMetadata, columnMetadata);
       case SHORT:
         return readShortColumn(fileName, columnMetadata);
       case LONG:
@@ -330,7 +331,8 @@ public class SawReader {
    * Reads the encoded StringColumn from the given file and stuffs it into a new StringColumn,
    * saving time by updating the dictionary directly and just writing ints to the column's data
    */
-  private static StringColumn readStringColumn(String fileName, ColumnMetadata metadata)
+  private static StringColumn readStringColumn(
+      String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
       throws IOException {
 
     try (FileInputStream fis = new FileInputStream(fileName);
@@ -339,11 +341,11 @@ public class SawReader {
 
       DictionaryMap dictionaryMap;
 
-      if (metadata.getStringColumnKeySize().equals(Integer.class.getSimpleName())) {
+      if (columnMetadata.getStringColumnKeySize().equals(Integer.class.getSimpleName())) {
         dictionaryMap = new ByteDictionaryMap().promoteYourself().promoteYourself();
-      } else if (metadata.getStringColumnKeySize().equals(Short.class.getSimpleName())) {
+      } else if (columnMetadata.getStringColumnKeySize().equals(Short.class.getSimpleName())) {
         dictionaryMap = new ByteDictionaryMap().promoteYourself();
-      } else if (metadata.getStringColumnKeySize().equals(Byte.class.getSimpleName())) {
+      } else if (columnMetadata.getStringColumnKeySize().equals(Byte.class.getSimpleName())) {
         dictionaryMap = new ByteDictionaryMap();
       } else {
         throw new RuntimeException("Unable to match the dictionary map type for StringColum");
@@ -351,21 +353,25 @@ public class SawReader {
       LookupTableWrapper lookupTable = new LookupTableWrapper(dictionaryMap);
 
       return lookupTable.readFromStream(
-          dis, metadata.getName(), metadata.getStringColumnKeySize(), metadata.getSize());
+          dis,
+          columnMetadata.getName(),
+          columnMetadata.getStringColumnKeySize(),
+          tableMetadata.getRowCount());
     }
   }
 
   /** Reads the TextColumn data from the given file and stuffs it into a new TextColumn */
-  private static TextColumn readTextColumn(String fileName, ColumnMetadata metadata)
+  private static TextColumn readTextColumn(
+      String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
       throws IOException {
 
-    TextColumn textColumn = TextColumn.create(metadata.getName());
+    TextColumn textColumn = TextColumn.create(columnMetadata.getName());
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
 
       int j = 0;
-      while (j < metadata.getSize()) {
+      while (j < tableMetadata.getRowCount()) {
         textColumn.append(dis.readUTF());
         j++;
       }

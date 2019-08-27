@@ -97,7 +97,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     return keyToValue.short2ObjectEntrySet();
   }
 
-  public ShortArrayList values() {
+  ShortArrayList values() {
     return values;
   }
 

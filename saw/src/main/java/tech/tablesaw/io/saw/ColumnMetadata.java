@@ -135,10 +135,6 @@ public class ColumnMetadata {
     return stringColumnKeySize;
   }
 
-  public int getSize() {
-    return size;
-  }
-
   public Column createColumn() {
     final String typeString = getType();
     switch (typeString) {
