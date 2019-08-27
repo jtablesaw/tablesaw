@@ -88,10 +88,12 @@ public class TableMetadata {
     return Objects.hash(name, rowCount, columnMetadataList);
   }
 
+  @SuppressWarnings("WeakerAccess")
   public String getName() {
     return name;
   }
 
+  @SuppressWarnings("WeakerAccess")
   public int getRowCount() {
     return rowCount;
   }

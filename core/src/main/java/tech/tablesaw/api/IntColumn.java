@@ -28,10 +28,6 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
 
   private final IntArrayList data;
 
-  public IntArrayList data() {
-    return data;
-  }
-
   protected IntColumn(final String name, IntArrayList data) {
     super(IntColumnType.instance(), name);
     setPrintFormatter(NumberColumnFormatter.ints());

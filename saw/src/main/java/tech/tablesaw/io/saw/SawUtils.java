@@ -15,8 +15,6 @@ package tech.tablesaw.io.saw;
  */
 
 import com.google.common.annotations.Beta;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 
 /**
  * Utilities and constants for reading and writing data in Tablesaw's own compressed,
@@ -37,10 +35,4 @@ class SawUtils {
   static final String LOCAL_TIME = "LOCAL_TIME";
   static final String LOCAL_DATE_TIME = "LOCAL_DATE_TIME";
   static final String BOOLEAN = "BOOLEAN";
-
-  /** TODO: This is no way to get a File system separator */
-  static String separator() {
-    FileSystem fileSystem = FileSystems.getDefault();
-    return fileSystem.getSeparator();
-  }
 }

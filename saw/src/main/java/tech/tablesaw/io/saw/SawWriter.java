@@ -12,7 +12,6 @@ import static tech.tablesaw.io.saw.SawUtils.LONG;
 import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
-import static tech.tablesaw.io.saw.SawUtils.separator;
 import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
@@ -22,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,6 +33,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.floats.FloatIterator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -57,7 +62,8 @@ public class SawWriter {
   private static final int FLUSH_AFTER_ITERATIONS = 10_000;
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
   private static final String FILE_EXTENSION = "saw";
-  private static final Pattern SEPARATOR_PATTERN = Pattern.compile(Pattern.quote(separator()));
+  private static final Pattern SEPARATOR_PATTERN =
+          Pattern.compile(Pattern.quote(FileSystems.getDefault().getSeparator()));
 
   /**
    * Saves the data from the given table in the location specified by parentFolderName. Within that
@@ -207,12 +213,14 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (float d : column) {
-        dos.writeFloat(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
+      FloatIterator iterator = (FloatIterator) column.iterator();
+      while (iterator.hasNext()) {
+        dos.writeFloat(iterator.nextFloat());
         i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }
@@ -225,10 +233,11 @@ public class SawWriter {
       int i = 0;
       for (double d : column) {
         dos.writeDouble(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
         i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }
@@ -280,12 +289,14 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (int d : column.data()) {
-        dos.writeInt(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) { // TODO does this break the pipelining?
-          dos.flush();
-        }
+      IntIterator iterator = (IntIterator) column.iterator();
+      while (iterator.hasNext()) {
+        dos.writeInt(iterator.nextInt());
         i++;
+        if (i == FLUSH_AFTER_ITERATIONS) { // TODO does this break the pipelining?
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }
@@ -296,12 +307,14 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (short d : column) {
-        dos.writeShort(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
+      ShortIterator iterator = (ShortIterator) column.iterator();
+      while (iterator.hasNext()) {
+        dos.writeShort(iterator.nextShort());
         i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }
@@ -312,18 +325,20 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (long d : column) {
-        dos.writeLong(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
+      LongIterator iterator = (LongIterator) column.iterator();
+      while (iterator.hasNext()) {
+        dos.writeLong(iterator.nextLong());
         i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }
   }
 
-  // TODO(lwhite): saveTable the column using integer compression
+  // TODO(lwhite): saveTable the column using integer compression?
   private static void writeColumn(String fileName, DateColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -331,10 +346,11 @@ public class SawWriter {
       int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
         i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }
@@ -347,10 +363,11 @@ public class SawWriter {
       int i = 0;
       for (long d : column.data()) {
         dos.writeLong(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
         i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }
@@ -363,10 +380,11 @@ public class SawWriter {
       int i = 0;
       for (long d : column.data()) {
         dos.writeLong(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
         i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }
@@ -380,10 +398,11 @@ public class SawWriter {
       int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
         i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }
@@ -395,10 +414,11 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       for (int i = 0; i < column.size(); i++) {
-        byte value = column.getByte(i);
-        dos.writeByte(value);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
+        dos.writeByte(column.getByte(i));
+        i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
           dos.flush();
+          i = 0;
         }
       }
       dos.flush();

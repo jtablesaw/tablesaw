@@ -105,11 +105,6 @@ class SawStorageTest {
   }
 
   @Test
-  void testSeparator() {
-    assertNotNull(SawUtils.separator());
-  }
-
-  @Test
   void saveEmptyTable() {
     String path = SawWriter.saveTable("../testoutput", empty);
     Table table = SawReader.readTable(path);
