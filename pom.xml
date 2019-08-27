@@ -51,7 +51,6 @@
         <module>json</module>
         <module>jsplot</module>
         <module>saw</module>
-        <module>docs</module>
         <module>docs-src</module>
     </modules>
 
