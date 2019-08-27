@@ -131,7 +131,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
   }
 
   public static boolean valueIsMissing(long value) {
-    return DateTimeColumnType.isMissingValue(value);
+    return DateTimeColumnType.valueIsMissing(value);
   }
 
   @Override

@@ -77,7 +77,7 @@ public class TextColumn extends AbstractStringColumn {
   }
 
   public static boolean valueIsMissing(String string) {
-    return TextColumnType.isMissingValue(string);
+    return TextColumnType.valueIsMissing(string);
   }
 
   @Override
@@ -358,7 +358,7 @@ public class TextColumn extends AbstractStringColumn {
   public TextColumn removeMissing() {
     TextColumn noMissing = emptyCopy();
     for (String v : this) {
-      if (!TextColumnType.isMissingValue(v)) {
+      if (!TextColumnType.valueIsMissing(v)) {
         noMissing.append(v);
       }
     }

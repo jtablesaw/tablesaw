@@ -25,6 +25,12 @@ public class InstantColumnType extends AbstractColumnType {
     return INSTANCE;
   }
 
+  public static boolean valueIsMissing(long value) {
+    return value == missingValueIndicator();
+  }
+
+  /** @deprecated Please use valueIsMissing(int) instead */
+  @Deprecated
   public static boolean isMissingValue(long value) {
     return value == missingValueIndicator();
   }

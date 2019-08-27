@@ -34,6 +34,12 @@ public class DoubleColumnType extends AbstractColumnType {
     return new DoubleParser(this, options);
   }
 
+  public static boolean valueIsMissing(double value) {
+    return Double.isNaN(value);
+  }
+
+  /** @deprecated Please use valueIsMissing(double) instead */
+  @Deprecated
   public static boolean isMissingValue(double value) {
     return Double.isNaN(value);
   }

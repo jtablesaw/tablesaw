@@ -34,6 +34,12 @@ public class FloatColumnType extends AbstractColumnType {
     return new FloatParser(this, options);
   }
 
+  public static boolean valueIsMissing(float value) {
+    return Float.isNaN(value);
+  }
+
+  /** @deprecated Please use valueIsMissing(float) instead */
+  @Deprecated
   public static boolean isMissingValue(float value) {
     return Float.isNaN(value);
   }

@@ -38,6 +38,12 @@ public class LongColumnType extends AbstractColumnType {
     return new LongParser(this, options);
   }
 
+  public static boolean valueIsMissing(long value) {
+    return value == missingValueIndicator();
+  }
+
+  /** @deprecated Please use valueIsMissing(long) instead */
+  @Deprecated
   public static boolean isMissingValue(long value) {
     return value == missingValueIndicator();
   }

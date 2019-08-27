@@ -158,21 +158,21 @@ public interface NumberMapFunctions {
   }
 
   default double add(double val1, double val2) {
-    if (DoubleColumnType.isMissingValue(val1) || DoubleColumnType.isMissingValue(val2)) {
+    if (DoubleColumnType.valueIsMissing(val1) || DoubleColumnType.valueIsMissing(val2)) {
       return DoubleColumnType.missingValueIndicator();
     }
     return val1 + val2;
   }
 
   default double multiply(double val1, double val2) {
-    if (DoubleColumnType.isMissingValue(val1) || DoubleColumnType.isMissingValue(val2)) {
+    if (DoubleColumnType.valueIsMissing(val1) || DoubleColumnType.valueIsMissing(val2)) {
       return DoubleColumnType.missingValueIndicator();
     }
     return val1 * val2;
   }
 
   default double divide(double val1, double val2) {
-    if (DoubleColumnType.isMissingValue(val1) || DoubleColumnType.isMissingValue(val2)) {
+    if (DoubleColumnType.valueIsMissing(val1) || DoubleColumnType.valueIsMissing(val2)) {
       return DoubleColumnType.missingValueIndicator();
     }
     return val1 / val2;
@@ -180,7 +180,7 @@ public interface NumberMapFunctions {
 
   /** Returns the result of subtracting val2 from val1, after handling missing values */
   default double subtract(double val1, double val2) {
-    if (DoubleColumnType.isMissingValue(val1) || DoubleColumnType.isMissingValue(val2)) {
+    if (DoubleColumnType.valueIsMissing(val1) || DoubleColumnType.valueIsMissing(val2)) {
       return DoubleColumnType.missingValueIndicator();
     }
     return val1 - val2;
@@ -250,7 +250,7 @@ public interface NumberMapFunctions {
     for (int r = 0; r < size(); r++) {
       double val1 = getDouble(r);
       double val2 = column2.getDouble(r);
-      if (DoubleColumnType.isMissingValue(val1) || DoubleColumnType.isMissingValue(val2)) {
+      if (DoubleColumnType.valueIsMissing(val1) || DoubleColumnType.valueIsMissing(val2)) {
         result.setMissing(r);
       } else {
         result.set(r, getDouble(r) % column2.getDouble(r));
@@ -263,7 +263,7 @@ public interface NumberMapFunctions {
     DoubleColumn result = DoubleColumn.create(name() + " % " + val2, size());
     for (int r = 0; r < size(); r++) {
       double val1 = getDouble(r);
-      if (DoubleColumnType.isMissingValue(val1) || DoubleColumnType.isMissingValue(val2)) {
+      if (DoubleColumnType.valueIsMissing(val1) || DoubleColumnType.valueIsMissing(val2)) {
         result.setMissing(r);
       } else {
         result.set(r, getDouble(r) % val2);
@@ -363,7 +363,7 @@ public interface NumberMapFunctions {
     DoubleColumn newColumn = DoubleColumn.create(name() + "[cumSum]", size());
     for (int i = 0; i < size(); i++) {
       double value = getDouble(i);
-      if (!DoubleColumnType.isMissingValue(value)) {
+      if (!DoubleColumnType.valueIsMissing(value)) {
         total += value;
       }
       newColumn.set(i, total);
@@ -377,7 +377,7 @@ public interface NumberMapFunctions {
     DoubleColumn newColumn = DoubleColumn.create(name() + "[cumProd]", size());
     for (int i = 0; i < size(); i++) {
       double value = getDouble(i);
-      if (!DoubleColumnType.isMissingValue(value)) {
+      if (!DoubleColumnType.valueIsMissing(value)) {
         total *= value;
       }
       newColumn.set(i, total);

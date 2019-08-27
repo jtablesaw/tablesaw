@@ -80,7 +80,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
   }
 
   public static boolean valueIsMissing(int i) {
-    return TimeColumnType.isMissingValue(i);
+    return TimeColumnType.valueIsMissing(i);
   }
 
   public static TimeColumn create(String name) {

@@ -33,6 +33,12 @@ public class ShortColumnType extends AbstractColumnType {
     return new ShortParser(this, options);
   }
 
+  public static boolean valueIsMissing(int value) {
+    return value == missingValueIndicator();
+  }
+
+  /** @deprecated Please use valueIsMissing(int) instead */
+  @Deprecated
   public static boolean isMissingValue(int value) {
     return value == missingValueIndicator();
   }

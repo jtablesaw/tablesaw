@@ -87,7 +87,7 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T>
   @Override
   public String getString(final int row) {
     final double value = getDouble(row);
-    if (DoubleColumnType.isMissingValue(value)) {
+    if (DoubleColumnType.valueIsMissing(value)) {
       return "";
     }
     return String.valueOf(printFormatter.format(value));
