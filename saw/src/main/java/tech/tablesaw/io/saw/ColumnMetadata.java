@@ -58,14 +58,12 @@ public class ColumnMetadata {
   private String id;
   private String name;
   private String type;
-  private int size;
   private String stringColumnKeySize;
 
   ColumnMetadata(Column column) {
     this.id = UUID.randomUUID().toString();
     this.name = column.name();
     this.type = column.type().name();
-    this.size = column.size();
     if (column instanceof StringColumn) {
       StringColumn stringColumn = (StringColumn) column;
       LookupTableWrapper lookupTable = stringColumn.getLookupTable();
@@ -114,8 +112,6 @@ public class ColumnMetadata {
         + '\''
         + ", type="
         + type
-        + ", size="
-        + size
         + '}';
   }
 
