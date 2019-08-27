@@ -31,6 +31,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.AbstractStringColumn;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
+import tech.tablesaw.columns.strings.LookupTableWrapper;
 import tech.tablesaw.columns.strings.NoKeysAvailableException;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -78,6 +79,10 @@ public class StringColumn extends AbstractStringColumn {
     return new StringColumn(name, strings);
   }
 
+  public static StringColumn createInternal(String name, DictionaryMap map) {
+    return new StringColumn(name, map);
+  }
+
   public static StringColumn create(String name, int size) {
     StringColumn column = new StringColumn(name, new ArrayList<>(size));
     for (int i = 0; i < size; i++) {
@@ -97,6 +102,11 @@ public class StringColumn extends AbstractStringColumn {
     for (String string : strings) {
       append(string);
     }
+  }
+
+  private StringColumn(String name, DictionaryMap map) {
+    super(StringColumnType.instance(), name);
+    lookupTable = map;
   }
 
   private StringColumn(String name) {
@@ -553,5 +563,10 @@ public class StringColumn extends AbstractStringColumn {
       textColumn.set(i, get(i));
     }
     return textColumn;
+  }
+
+  /** For tablesaw internal use only */
+  public LookupTableWrapper getLookupTable() {
+    return new LookupTableWrapper(lookupTable);
   }
 }

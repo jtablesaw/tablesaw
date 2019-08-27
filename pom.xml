@@ -50,6 +50,7 @@
         <module>html</module>
         <module>json</module>
         <module>jsplot</module>
+        <module>saw</module>
         <module>docs-src</module>
     </modules>
 
@@ -236,6 +237,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Duser.language=en-US -Duser.region=US</argLine>
+                    <printSummary>false</printSummary>
+                </configuration>
             </plugin>
         </plugins>
     </build>
