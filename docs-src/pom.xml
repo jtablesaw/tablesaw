@@ -51,7 +51,7 @@
                 <version>v0.02</version>
                 <configuration>
                     <docsSourceDirectory>./main/</docsSourceDirectory>
-                    <docsTargetDirectory>../docs/</docsTargetDirectory>
+                    <docsTargetDirectory>./dist/</docsTargetDirectory>
                 </configuration>
                 <!--Add configuraton to set docsSourceDirectory-->
                 <executions>
