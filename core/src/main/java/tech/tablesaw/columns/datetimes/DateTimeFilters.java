@@ -49,7 +49,7 @@ public interface DateTimeFilters
   default Selection isAfter(DateTimeColumn column) {
     Selection results = new BitmapBackedSelection();
     for (int i = 0; i < size(); i++) {
-      if (getLongInternal(i) > getLongInternal(i)) {
+      if (getLongInternal(i) > column.getLongInternal(i)) {
         results.add(i);
       }
     }
@@ -59,7 +59,7 @@ public interface DateTimeFilters
   default Selection isBefore(DateTimeColumn column) {
     Selection results = new BitmapBackedSelection();
     for (int i = 0; i < size(); i++) {
-      if (getLongInternal(i) < getLongInternal(i)) {
+      if (getLongInternal(i) < column.getLongInternal(i)) {
         results.add(i);
       }
     }
@@ -79,7 +79,7 @@ public interface DateTimeFilters
   default Selection isEqualTo(DateTimeColumn column) {
     Selection results = new BitmapBackedSelection();
     for (int i = 0; i < size(); i++) {
-      if (getLongInternal(i) == getLongInternal(i)) {
+      if (getLongInternal(i) == column.getLongInternal(i)) {
         results.add(i);
       }
     }
