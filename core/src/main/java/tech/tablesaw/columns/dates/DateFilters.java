@@ -57,13 +57,10 @@ public interface DateFilters extends Column<LocalDate>, DateAndDateTimeFilterSpe
   default Selection eval(IntBiPredicate predicate, DateColumn otherColumn) {
     Selection selection = new BitmapBackedSelection();
     IntIterator iterator = intIterator();
-    int idx = 0;
-    while (iterator.hasNext()) {
-      int next = iterator.nextInt();
-      if (predicate.test(next, otherColumn.getIntInternal(idx))) {
+    for (int idx = 0; idx < size(); idx++) {
+      if (predicate.test(getIntInternal(idx), otherColumn.getIntInternal(idx))) {
         selection.add(idx);
       }
-      idx++;
     }
     return selection;
   }
