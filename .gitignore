@@ -1,7 +1,7 @@
 target/
 
 #docs
-/docs/output/*
+/docs-src/output/*
 
 databases/
 

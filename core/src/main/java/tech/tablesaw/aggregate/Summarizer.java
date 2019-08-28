@@ -359,7 +359,7 @@ public class Summarizer {
 
   private Table removeLastRowIfMissingGroup(IntColumn groupColumn, Table t) {
     int i = t.row(t.rowCount() - 1).getInt(groupColumn.name());
-    if (IntColumnType.isMissingValue(i)) {
+    if (IntColumnType.valueIsMissing(i)) {
       t = t.dropWhere(Selection.with(t.rowCount() - 1));
     }
     return t;

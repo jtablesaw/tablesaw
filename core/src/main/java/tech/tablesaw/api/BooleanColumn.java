@@ -81,7 +81,7 @@ public class BooleanColumn extends AbstractColumn<Boolean>
   }
 
   public static boolean valueIsMissing(byte b) {
-    return BooleanColumnType.isMissingValue(b);
+    return BooleanColumnType.valueIsMissing(b);
   }
 
   @Override

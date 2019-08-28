@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.dates.DateColumnType;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 
 public class DateColumnTest {
   private DateColumn column1;
@@ -23,6 +24,7 @@ public class DateColumnTest {
   public void testCreate1() {
     LocalDate[] dates = new LocalDate[5];
     DateColumn column = DateColumn.create("Game date", dates);
+    column.valueIsMissing(PackedLocalDate.pack(LocalDate.now()));
     assertEquals(DateColumnType.missingValueIndicator(), column.getIntInternal(0));
   }
 

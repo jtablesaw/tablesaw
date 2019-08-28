@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +65,23 @@ public class ByteDictionaryMap implements DictionaryMap {
   private void put(byte key, String value) {
     keyToValue.put(key, value);
     valueToKey.put(value, key);
+  }
+
+  void updateMaps(byte key, String value) {
+    put(key, value);
+    keyToCount.addTo(key, 1);
+  }
+
+  ByteArrayList values() {
+    return values;
+  }
+
+  void addValue(byte key) {
+    values.add(key);
+  }
+
+  ObjectSet<Byte2ObjectMap.Entry<String>> getKeyValueEntries() {
+    return keyToValue.byte2ObjectEntrySet();
   }
 
   private byte getKeyForValue(String value) {

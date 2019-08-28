@@ -44,13 +44,13 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   }
 
   public static boolean valueIsMissing(double value) {
-    return DoubleColumnType.isMissingValue(value);
+    return DoubleColumnType.valueIsMissing(value);
   }
 
   @Override
   public String getString(int row) {
     final double value = getDouble(row);
-    if (DoubleColumnType.isMissingValue(value)) {
+    if (DoubleColumnType.valueIsMissing(value)) {
       return "";
     }
     return String.valueOf(getPrintFormatter().format(value));
@@ -393,7 +393,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   }
 
   public boolean isMissingValue(double value) {
-    return DoubleColumnType.isMissingValue(value);
+    return DoubleColumnType.valueIsMissing(value);
   }
 
   @Override
@@ -453,7 +453,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   @Override
   public String getUnformattedString(final int row) {
     final double value = getDouble(row);
-    if (DoubleColumnType.isMissingValue(value)) {
+    if (DoubleColumnType.valueIsMissing(value)) {
       return "";
     }
     return String.valueOf(value);
@@ -603,7 +603,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public LongColumn asLongColumn() {
     LongColumn result = LongColumn.create(name());
     for (double d : data) {
-      if (DoubleColumnType.isMissingValue(d)) {
+      if (DoubleColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append((long) d);
@@ -633,7 +633,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public IntColumn asIntColumn() {
     IntColumn result = IntColumn.create(name());
     for (double d : data) {
-      if (DoubleColumnType.isMissingValue(d)) {
+      if (DoubleColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append((int) d);
@@ -663,7 +663,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public ShortColumn asShortColumn() {
     ShortColumn result = ShortColumn.create(name());
     for (double d : data) {
-      if (DoubleColumnType.isMissingValue(d)) {
+      if (DoubleColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append((short) d);
@@ -693,7 +693,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   public FloatColumn asFloatColumn() {
     FloatColumn result = FloatColumn.create(name());
     for (double d : data) {
-      if (DoubleColumnType.isMissingValue(d)) {
+      if (DoubleColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append((float) d);

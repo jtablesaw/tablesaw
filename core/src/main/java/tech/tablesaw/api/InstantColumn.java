@@ -116,7 +116,7 @@ public class InstantColumn extends AbstractColumn<Instant>
   }
 
   public static boolean valueIsMissing(long value) {
-    return InstantColumnType.isMissingValue(value);
+    return InstantColumnType.valueIsMissing(value);
   }
 
   @Override

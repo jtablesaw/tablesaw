@@ -73,7 +73,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   }
 
   public static boolean valueIsMissing(int value) {
-    return ShortColumnType.isMissingValue(value);
+    return ShortColumnType.valueIsMissing(value);
   }
 
   @Override
@@ -247,7 +247,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   @Override
   public String getString(final int row) {
     final short value = getShort(row);
-    if (ShortColumnType.isMissingValue(value)) {
+    if (ShortColumnType.valueIsMissing(value)) {
       return "";
     }
     return String.valueOf(getPrintFormatter().format(value));
@@ -320,7 +320,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   }
 
   public boolean isMissingValue(short value) {
-    return ShortColumnType.isMissingValue(value);
+    return ShortColumnType.valueIsMissing(value);
   }
 
   @Override
@@ -377,7 +377,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   @Override
   public String getUnformattedString(final int row) {
     final int value = getInt(row);
-    if (ShortColumnType.isMissingValue(value)) {
+    if (ShortColumnType.valueIsMissing(value)) {
       return "";
     }
     return String.valueOf(value);
@@ -480,7 +480,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   public LongColumn asLongColumn() {
     LongColumn result = LongColumn.create(name());
     for (short d : data) {
-      if (ShortColumnType.isMissingValue(d)) {
+      if (ShortColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append(d);
@@ -508,7 +508,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   public FloatColumn asFloatColumn() {
     FloatColumn result = FloatColumn.create(name());
     for (short d : data) {
-      if (ShortColumnType.isMissingValue(d)) {
+      if (ShortColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append(d);
@@ -536,7 +536,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   public DoubleColumn asDoubleColumn() {
     DoubleColumn result = DoubleColumn.create(name());
     for (short d : data) {
-      if (ShortColumnType.isMissingValue(d)) {
+      if (ShortColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append(d);
@@ -549,7 +549,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
   public IntColumn asIntColumn() {
     IntColumn result = IntColumn.create(name());
     for (short d : data) {
-      if (ShortColumnType.isMissingValue(d)) {
+      if (ShortColumnType.valueIsMissing(d)) {
         result.appendMissing();
       } else {
         result.append(d);
