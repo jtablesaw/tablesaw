@@ -126,7 +126,8 @@ public class DateColumn extends AbstractColumn<LocalDate>
     return this;
   }
 
-  @Override
+  /** @deprecated Use intIterator(), or getIntInternal() instead */
+  @Deprecated
   public IntArrayList data() {
     return data;
   }
@@ -508,7 +509,7 @@ public class DateColumn extends AbstractColumn<LocalDate>
 
   public boolean contains(LocalDate localDate) {
     int date = PackedLocalDate.pack(localDate);
-    return data().contains(date);
+    return data.contains(date);
   }
 
   @Override

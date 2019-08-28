@@ -390,6 +390,8 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     return comparator;
   }
 
+  /** @deprecated Use intIterator(), or getIntInternal() instead) */
+  @Deprecated
   public IntArrayList data() {
     return data;
   }
@@ -509,7 +511,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
 
   public boolean contains(LocalTime time) {
     int t = PackedLocalTime.pack(time);
-    return data().contains(t);
+    return data.contains(t);
   }
 
   @Override

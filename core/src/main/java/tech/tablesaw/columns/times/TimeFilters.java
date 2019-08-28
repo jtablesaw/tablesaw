@@ -3,8 +3,6 @@ package tech.tablesaw.columns.times;
 import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThan;
 import static tech.tablesaw.columns.DateAndTimePredicates.isLessThan;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.time.LocalTime;
 import java.util.function.BiPredicate;
 import java.util.function.IntPredicate;
@@ -32,7 +30,7 @@ public interface TimeFilters extends Column<LocalTime> {
   default Selection eval(IntPredicate predicate) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < size(); idx++) {
-      int next = data().getInt(idx);
+      int next = getIntInternal(idx);
       if (predicate.test(next)) {
         selection.add(idx);
       }
@@ -43,7 +41,7 @@ public interface TimeFilters extends Column<LocalTime> {
   default Selection eval(IntBiPredicate predicate, int value) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < size(); idx++) {
-      int next = data().getInt(idx);
+      int next = getIntInternal(idx);
       if (predicate.test(next, value)) {
         selection.add(idx);
       }
@@ -132,12 +130,10 @@ public interface TimeFilters extends Column<LocalTime> {
   default Selection isNotEqualTo(LocalTime value) {
     Selection results = new BitmapBackedSelection();
     int packedLocalTime = PackedLocalTime.pack(value);
-    int i = 0;
-    for (int next : data()) {
-      if (packedLocalTime != next) {
+    for (int i = 0; i < size(); i++) {
+      if (packedLocalTime != getIntInternal(i)) {
         results.add(i);
       }
-      i++;
     }
     return results;
   }
@@ -145,12 +141,10 @@ public interface TimeFilters extends Column<LocalTime> {
   default Selection isEqualTo(LocalTime value) {
     Selection results = new BitmapBackedSelection();
     int packedLocalTime = PackedLocalTime.pack(value);
-    int i = 0;
-    for (int next : data()) {
-      if (packedLocalTime == next) {
+    for (int i = 0; i < size(); i++) {
+      if (packedLocalTime == getIntInternal(i)) {
         results.add(i);
       }
-      i++;
     }
     return results;
   }
@@ -161,13 +155,10 @@ public interface TimeFilters extends Column<LocalTime> {
    */
   default Selection isEqualTo(TimeColumn column) {
     Selection results = new BitmapBackedSelection();
-    int i = 0;
-    IntIterator intIterator = column.intIterator();
-    for (int next : data()) {
-      if (next == intIterator.nextInt()) {
+    for (int i = 0; i < size(); i++) {
+      if (getIntInternal(i) == column.getIntInternal(i)) {
         results.add(i);
       }
-      i++;
     }
     return results;
   }
@@ -195,8 +186,6 @@ public interface TimeFilters extends Column<LocalTime> {
   default Selection isNotEqualTo(TimeColumn column) {
     return Selection.withRange(0, size()).andNot(isEqualTo(column));
   }
-
-  IntArrayList data();
 
   LocalTime get(int index);
 
