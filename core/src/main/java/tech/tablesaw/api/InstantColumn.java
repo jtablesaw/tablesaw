@@ -241,7 +241,7 @@ public class InstantColumn extends AbstractColumn<Instant>
     return data.size();
   }
 
-  /** @deprecated Please use the longIterator() or getIntInternal() methods */
+  /** @deprecated Please use the longIterator() or getLongInternal() methods */
   @Deprecated
   public LongArrayList data() {
     return data;
