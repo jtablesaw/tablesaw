@@ -165,7 +165,7 @@ public class InstantColumn extends AbstractColumn<Instant>
 
   public boolean contains(Instant dateTime) {
     long dt = PackedInstant.pack(dateTime);
-    return data().contains(dt);
+    return data.contains(dt);
   }
 
   @Override
@@ -241,6 +241,8 @@ public class InstantColumn extends AbstractColumn<Instant>
     return data.size();
   }
 
+  /** @deprecated Please use the longIterator() or getIntInternal() methods */
+  @Deprecated
   public LongArrayList data() {
     return data;
   }

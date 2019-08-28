@@ -16,6 +16,10 @@ import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.floats.FloatIterator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,11 +37,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
-
-import it.unimi.dsi.fastutil.floats.FloatIterator;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.longs.LongIterator;
-import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -59,11 +58,13 @@ import tech.tablesaw.table.Relation;
 @Beta
 public class SawWriter {
 
-  private static final int FLUSH_AFTER_ITERATIONS = 10_000;
+  private static final int FLUSH_AFTER_ITERATIONS = 20_000;
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
   private static final String FILE_EXTENSION = "saw";
   private static final Pattern SEPARATOR_PATTERN =
-          Pattern.compile(Pattern.quote(FileSystems.getDefault().getSeparator()));
+      Pattern.compile(Pattern.quote(FileSystems.getDefault().getSeparator()));
+
+  private static final int WRITER_POOL_SIZE = 10;
 
   /**
    * Saves the data from the given table in the location specified by parentFolderName. Within that
@@ -87,7 +88,7 @@ public class SawWriter {
     Preconditions.checkArgument(
         !parentFolderName.isEmpty(), "The folder name for the saw output cannot be empty");
 
-    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    ExecutorService executorService = Executors.newFixedThreadPool(WRITER_POOL_SIZE);
     CompletionService<Void> writerCompletionService =
         new ExecutorCompletionService<>(executorService);
 
@@ -344,8 +345,9 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (int d : column.data()) {
-        dos.writeInt(d);
+      IntIterator iterator = column.intIterator();
+      while (iterator.hasNext()) {
+        dos.writeInt(iterator.nextInt());
         i++;
         if (i == FLUSH_AFTER_ITERATIONS) {
           dos.flush();
@@ -361,8 +363,9 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (long d : column.data()) {
-        dos.writeLong(d);
+      LongIterator iterator = column.longIterator();
+      while (iterator.hasNext()) {
+        dos.writeLong(iterator.nextLong());
         i++;
         if (i == FLUSH_AFTER_ITERATIONS) {
           dos.flush();
@@ -378,8 +381,9 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (long d : column.data()) {
-        dos.writeLong(d);
+      LongIterator iterator = column.longIterator();
+      while (iterator.hasNext()) {
+        dos.writeLong(iterator.nextLong());
         i++;
         if (i == FLUSH_AFTER_ITERATIONS) {
           dos.flush();
@@ -396,8 +400,9 @@ public class SawWriter {
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (int d : column.data()) {
-        dos.writeInt(d);
+      IntIterator iterator = column.intIterator();
+      while (iterator.hasNext()) {
+        dos.writeInt(iterator.nextInt());
         i++;
         if (i == FLUSH_AFTER_ITERATIONS) {
           dos.flush();
