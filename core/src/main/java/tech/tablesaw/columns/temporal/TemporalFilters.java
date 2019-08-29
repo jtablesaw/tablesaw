@@ -2,7 +2,6 @@ package tech.tablesaw.columns.temporal;
 
 import static tech.tablesaw.columns.temporal.TemporalPredicates.*;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
 import java.time.Instant;
 import java.time.temporal.Temporal;
 import java.util.function.BiPredicate;
@@ -22,7 +21,7 @@ public interface TemporalFilters<T extends Temporal>
   default Selection eval(LongPredicate predicate) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < size(); idx++) {
-      long next = data().getLong(idx);
+      long next = getLongInternal(idx);
       if (predicate.test(next)) {
         bitmap.add(idx);
       }
@@ -33,7 +32,7 @@ public interface TemporalFilters<T extends Temporal>
   default Selection eval(LongBiPredicate predicate, long value) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < size(); idx++) {
-      long next = data().getLong(idx);
+      long next = getLongInternal(idx);
       if (predicate.test(next, value)) {
         bitmap.add(idx);
       }
@@ -94,8 +93,6 @@ public interface TemporalFilters<T extends Temporal>
   }
 
   int size();
-
-  LongArrayList data();
 
   long getLongInternal(int index);
 
