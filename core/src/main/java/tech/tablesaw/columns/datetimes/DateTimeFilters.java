@@ -3,7 +3,6 @@ package tech.tablesaw.columns.datetimes;
 import static tech.tablesaw.columns.datetimes.DateTimePredicates.isInYear;
 import static tech.tablesaw.columns.temporal.TemporalPredicates.*;
 
-import it.unimi.dsi.fastutil.longs.LongIterator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import tech.tablesaw.api.DateTimeColumn;
@@ -49,26 +48,20 @@ public interface DateTimeFilters
 
   default Selection isAfter(DateTimeColumn column) {
     Selection results = new BitmapBackedSelection();
-    int i = 0;
-    LongIterator intIterator = column.longIterator();
-    for (long next : data()) {
-      if (next > intIterator.nextLong()) {
+    for (int i = 0; i < size(); i++) {
+      if (getLongInternal(i) > column.getLongInternal(i)) {
         results.add(i);
       }
-      i++;
     }
     return results;
   }
 
   default Selection isBefore(DateTimeColumn column) {
     Selection results = new BitmapBackedSelection();
-    int i = 0;
-    LongIterator intIterator = column.longIterator();
-    for (long next : data()) {
-      if (next < intIterator.nextLong()) {
+    for (int i = 0; i < size(); i++) {
+      if (getLongInternal(i) < column.getLongInternal(i)) {
         results.add(i);
       }
-      i++;
     }
     return results;
   }
@@ -85,13 +78,10 @@ public interface DateTimeFilters
 
   default Selection isEqualTo(DateTimeColumn column) {
     Selection results = new BitmapBackedSelection();
-    int i = 0;
-    LongIterator intIterator = column.longIterator();
-    for (long next : data()) {
-      if (next == intIterator.nextLong()) {
+    for (int i = 0; i < size(); i++) {
+      if (getLongInternal(i) == column.getLongInternal(i)) {
         results.add(i);
       }
-      i++;
     }
     return results;
   }

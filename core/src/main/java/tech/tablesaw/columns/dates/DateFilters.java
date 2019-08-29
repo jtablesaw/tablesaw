@@ -5,7 +5,6 @@ import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThanOrEqualTo
 import static tech.tablesaw.columns.DateAndTimePredicates.isMissing;
 import static tech.tablesaw.columns.DateAndTimePredicates.isNotMissing;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.time.LocalDate;
 import java.util.function.BiPredicate;
@@ -29,22 +28,28 @@ public interface DateFilters extends Column<LocalDate>, DateAndDateTimeFilterSpe
    */
   default Selection eval(IntPredicate predicate) {
     Selection selection = new BitmapBackedSelection();
-    for (int idx = 0; idx < data().size(); idx++) {
-      int next = data().getInt(idx);
+    IntIterator iterator = intIterator();
+    int idx = 0;
+    while (iterator.hasNext()) {
+      int next = iterator.nextInt();
       if (predicate.test(next)) {
         selection.add(idx);
       }
+      idx++;
     }
     return selection;
   }
 
   default Selection eval(IntBiPredicate predicate, int value) {
     Selection selection = new BitmapBackedSelection();
-    for (int idx = 0; idx < data().size(); idx++) {
-      int next = data().getInt(idx);
+    IntIterator iterator = intIterator();
+    int idx = 0;
+    while (iterator.hasNext()) {
+      int next = iterator.nextInt();
       if (predicate.test(next, value)) {
         selection.add(idx);
       }
+      idx++;
     }
     return selection;
   }
@@ -52,7 +57,7 @@ public interface DateFilters extends Column<LocalDate>, DateAndDateTimeFilterSpe
   default Selection eval(IntBiPredicate predicate, DateColumn otherColumn) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < size(); idx++) {
-      if (predicate.test(this.getIntInternal(idx), otherColumn.getIntInternal(idx))) {
+      if (predicate.test(getIntInternal(idx), otherColumn.getIntInternal(idx))) {
         selection.add(idx);
       }
     }
@@ -245,17 +250,14 @@ public interface DateFilters extends Column<LocalDate>, DateAndDateTimeFilterSpe
 
   /**
    * Returns a bitmap flagging the records for which the value in this column is equal to the value
-   * in the given column Columnwise isEqualTo.
+   * in the given column Column-wise isEqualTo.
    */
   default Selection isEqualTo(DateColumn column) {
     Selection results = new BitmapBackedSelection();
-    int i = 0;
-    IntIterator intIterator = column.intIterator();
-    for (int next : data()) {
-      if (next == intIterator.nextInt()) {
+    for (int i = 0; i < size(); i++) {
+      if (getIntInternal(i) == column.getIntInternal(i)) {
         results.add(i);
       }
-      i++;
     }
     return results;
   }
@@ -277,26 +279,20 @@ public interface DateFilters extends Column<LocalDate>, DateAndDateTimeFilterSpe
 
   default Selection isAfter(DateColumn column) {
     Selection results = new BitmapBackedSelection();
-    int i = 0;
-    IntIterator intIterator = column.intIterator();
-    for (long next : data()) {
-      if (next > intIterator.nextInt()) {
+    for (int i = 0; i < size(); i++) {
+      if (getIntInternal(i) > column.getIntInternal(i)) {
         results.add(i);
       }
-      i++;
     }
     return results;
   }
 
   default Selection isBefore(DateColumn column) {
     Selection results = new BitmapBackedSelection();
-    int i = 0;
-    IntIterator intIterator = column.intIterator();
-    for (long next : data()) {
-      if (next < intIterator.nextInt()) {
+    for (int i = 0; i < size(); i++) {
+      if (getIntInternal(i) < column.getIntInternal(i)) {
         results.add(i);
       }
-      i++;
     }
     return results;
   }
@@ -311,5 +307,5 @@ public interface DateFilters extends Column<LocalDate>, DateAndDateTimeFilterSpe
     return eval(isNotMissing);
   }
 
-  IntArrayList data();
+  IntIterator intIterator();
 }

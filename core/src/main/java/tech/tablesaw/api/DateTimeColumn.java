@@ -163,7 +163,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
   public boolean contains(LocalDateTime dateTime) {
     long dt = PackedLocalDateTime.pack(dateTime);
-    return data().contains(dt);
+    return data.contains(dt);
   }
 
   @Override
@@ -251,6 +251,8 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     return data.size();
   }
 
+  /** @deprecated Please use the longIterator() or getLongInternal() methods */
+  @Deprecated
   public LongArrayList data() {
     return data;
   }

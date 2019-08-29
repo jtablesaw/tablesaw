@@ -57,7 +57,7 @@ import tech.tablesaw.columns.strings.LookupTableWrapper;
 @Beta
 public class SawReader {
 
-  private static final int READER_POOL_SIZE = 4;
+  private static final int READER_POOL_SIZE = 10;
 
   public static Table readTable(String path) {
     Path sawPath = Paths.get(path);
