@@ -1,21 +1,20 @@
 package tech.tablesaw.io;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
-
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 
 class DataFrameReaderTest {
 
@@ -42,26 +41,30 @@ class DataFrameReaderTest {
   @Test
   public void csv() throws IOException {
     Path path = mockFileHelper("/data/file.csv", ImmutableList.of("region", "canada", "us"));
-    Table expected = Table.create(StringColumn.create("region", new String[]{"canada", "us"}));
-    Table actual =  Table.read().csv(Files.newInputStream(path));
+    Table expected = Table.create(StringColumn.create("region", new String[] {"canada", "us"}));
+    Table actual = Table.read().csv(Files.newInputStream(path));
     assertEquals(expected.columnNames(), actual.columnNames());
     assertEquals(expected.stringColumn(0).asList(), actual.stringColumn(0).asList());
   }
 
   @Test
   public void readUrlWithExtension() throws Exception {
-    URL url = mockUrlHelper("http://something.other.com/file.csv", ImmutableList.of("region", "canada", "us"));
-    Table expected = Table.create(StringColumn.create("region", new String[]{"canada", "us"}));
-    Table actual =  Table.read().url(url);
+    URL url =
+        mockUrlHelper(
+            "http://something.other.com/file.csv", ImmutableList.of("region", "canada", "us"));
+    Table expected = Table.create(StringColumn.create("region", new String[] {"canada", "us"}));
+    Table actual = Table.read().url(url);
     assertEquals(expected.columnNames(), actual.columnNames());
     assertEquals(expected.stringColumn(0).asList(), actual.stringColumn(0).asList());
   }
 
   @Test
   public void readCsvUrl() throws Exception {
-    URL url = mockUrlHelper("http://something.other.com/file", ImmutableList.of("region", "canada", "us"));
-    Table expected = Table.create(StringColumn.create("region", new String[]{"canada", "us"}));
-    Table actual =  Table.read().csv(url);
+    URL url =
+        mockUrlHelper(
+            "http://something.other.com/file", ImmutableList.of("region", "canada", "us"));
+    Table expected = Table.create(StringColumn.create("region", new String[] {"canada", "us"}));
+    Table actual = Table.read().csv(url);
     assertEquals(expected.columnNames(), actual.columnNames());
     assertEquals(expected.stringColumn(0).asList(), actual.stringColumn(0).asList());
   }
@@ -72,7 +75,9 @@ class DataFrameReaderTest {
     URL url = mockUrlHelper("http://something.other.com/file", ImmutableList.of());
     Throwable thrown = assertThrows(IllegalArgumentException.class, () -> Table.read().url(url));
 
-    assertTrue(thrown.getMessage().contains("No reader registered for mime-type application/octet-stream"));
+    assertTrue(
+        thrown
+            .getMessage()
+            .contains("No reader registered for mime-type application/octet-stream"));
   }
-
 }

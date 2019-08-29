@@ -26,7 +26,6 @@ import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvReader;
@@ -60,15 +59,17 @@ public class DataFrameReader {
 
   private Table url(URL url, Charset charset, String mimeType) throws IOException {
     Optional<DataReader<?>> reader = registry.getReaderForMimeType(mimeType);
-    if(reader.isPresent()) {
+    if (reader.isPresent()) {
       return readUrl(url, charset, reader.get());
     }
     reader = registry.getReaderForExtension(getExtension(url));
-    if(reader.isPresent()) {
+    if (reader.isPresent()) {
       return readUrl(url, charset, reader.get());
     }
-    throw new IllegalArgumentException("No reader registered for mime-type " + mimeType
-        + " If trying to read a csv use the .csv method that accepts a URL object");
+    throw new IllegalArgumentException(
+        "No reader registered for mime-type "
+            + mimeType
+            + " If trying to read a csv use the .csv method that accepts a URL object");
   }
 
   private Table readUrl(URL url, Charset charset, DataReader<?> reader) throws IOException {
@@ -82,7 +83,9 @@ public class DataFrameReader {
 
   private Charset getCharset(String contentType) {
     String[] pair = contentType.split(";");
-    return pair.length == 1 ? Charset.defaultCharset() : Charset.forName(pair[1].split("=")[1].trim());
+    return pair.length == 1
+        ? Charset.defaultCharset()
+        : Charset.forName(pair[1].split("=")[1].trim());
   }
 
   /**
@@ -102,7 +105,7 @@ public class DataFrameReader {
    */
   public Table string(String s, String fileExtension) {
     Optional<DataReader<?>> reader = registry.getReaderForExtension(fileExtension);
-    if(!reader.isPresent()) {
+    if (!reader.isPresent()) {
       throw new IllegalArgumentException("No reader registered for extension " + fileExtension);
     }
 
@@ -128,7 +131,7 @@ public class DataFrameReader {
   public Table file(File file) throws IOException {
     String extension = Files.getFileExtension(file.getCanonicalPath());
     Optional<DataReader<?>> reader = registry.getReaderForExtension(extension);
-    if(reader.isPresent()) {
+    if (reader.isPresent()) {
       return reader.get().read(new Source(file));
     }
     throw new IllegalArgumentException("No reader registered for extension " + extension);
