@@ -39,9 +39,9 @@ public class OutputWriter {
   public void write(Object object, String tag) throws IOException {
     List<String> lines = new ArrayList<>();
     lines.add("// @@ " + tag);
-    lines.addAll(Arrays.asList(object.toString().split(System.lineSeparator())));
+    lines.addAll(Arrays.asList(object.toString().split(java.lang.System.lineSeparator())));
     lines.add("// @@ " + tag);
-    lines.add(System.lineSeparator());
+    lines.add(java.lang.System.lineSeparator());
     Files.write(getPath(), lines, UTF_8, APPEND);
   }
 
@@ -61,5 +61,22 @@ public class OutputWriter {
       Files.createDirectories(getPath().getParent());
     }
     Files.createFile(getPath());
+  }
+
+  /**
+   * Class to mock System.out.println()
+   *
+   * <p>This class is non-blocking and returns a String.
+   */
+  public static class System {
+    public static final Printer out = new Printer();
+
+    public static class Printer {
+      private Printer() {};
+
+      public String println(Object obj) {
+        return obj.toString();
+      }
+    }
   }
 }

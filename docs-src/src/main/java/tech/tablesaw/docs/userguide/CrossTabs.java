@@ -8,6 +8,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.docs.DocsSourceFile;
 import tech.tablesaw.docs.OutputWriter;
+import tech.tablesaw.docs.OutputWriter.System;
 
 public class CrossTabs implements DocsSourceFile {
 
