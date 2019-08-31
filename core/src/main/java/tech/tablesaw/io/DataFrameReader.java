@@ -66,10 +66,7 @@ public class DataFrameReader {
     if (reader.isPresent()) {
       return readUrl(url, charset, reader.get());
     }
-    throw new IllegalArgumentException(
-        "No reader registered for mime-type "
-            + mimeType
-            + " If trying to read a csv use the .csv method that accepts a URL object");
+    throw new IllegalArgumentException("No reader registered for mime-type " + mimeType);
   }
 
   private Table readUrl(URL url, Charset charset, DataReader<?> reader) throws IOException {
