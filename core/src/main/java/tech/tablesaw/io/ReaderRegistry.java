@@ -2,6 +2,7 @@ package tech.tablesaw.io;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ReaderRegistry {
 
@@ -33,19 +34,11 @@ public class ReaderRegistry {
     return reader;
   }
 
-  public DataReader<?> getReaderForExtension(String extension) {
-    DataReader<?> reader = extensionsRegistry.get(extension);
-    if (reader == null) {
-      throw new IllegalArgumentException("No reader registered for extension " + extension);
-    }
-    return reader;
+  public Optional<DataReader<?>> getReaderForExtension(String extension) {
+    return Optional.ofNullable(extensionsRegistry.get(extension));
   }
 
-  public DataReader<?> getReaderForMimeType(String mimeType) {
-    DataReader<?> reader = mimeTypesRegistry.get(mimeType);
-    if (reader == null) {
-      throw new IllegalArgumentException("No reader registered for mime-type " + mimeType);
-    }
-    return reader;
+  public Optional<DataReader<?>> getReaderForMimeType(String mimeType) {
+    return Optional.ofNullable(mimeTypesRegistry.get(mimeType));
   }
 }
