@@ -18,6 +18,19 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <properties>
+        <!-- 
+            this property prevents the Nexus Staging Maven Plugin from
+            deploying this module's artifacts to Maven Central's staging repo
+         -->
+        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+        <!-- 
+            this property prevents the Nexus Staging Maven Plugin from
+            deploying this module's artifacts to Maven Central's staging repo
+         -->
+        <skipStaging>true</skipStaging>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
