@@ -1,5 +1,6 @@
 package tech.tablesaw.io;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 import java.io.ByteArrayInputStream;
@@ -97,13 +98,14 @@ public class Source {
 
   /**
    * Returns the likely charset for the given file, if it can be determined. A confidence score is
-   * calculated. If the score is 60 or lower (on a 1 to 100 interval) the system default charset is
+   * calculated. If the score is less than 60 (on a 1 to 100 interval) the system default charset is
    * returned instead.
    *
    * @param file The file to be evaluated
    * @return The likely charset, or the system default charset
    */
-  private static Charset getCharSet(File file) {
+  @VisibleForTesting
+  static Charset getCharSet(File file) {
     long bufferSize = file.length() < 9999 ? file.length() : 9999;
     byte[] buffer = new byte[(int) bufferSize];
     try (InputStream initialStream = new FileInputStream(file)) {
@@ -116,7 +118,7 @@ public class Source {
 
   /**
    * Returns the likely charset for the given byte[], if it can be determined. A confidence score is
-   * calculated. If the score is 60 or lower (on a 1 to 100 interval) the system default charset is
+   * calculated. If the score is less than 60 (on a 1 to 100 interval) the system default charset is
    * returned instead.
    *
    * @param buffer The byte array to evaluate
