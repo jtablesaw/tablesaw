@@ -11,15 +11,11 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.QuerySupport;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.docs.OutputWriter.System;
 
 public class Tutorial implements DocsSourceFile {
 
   public static OutputWriter outputWriter = new OutputWriter(Tutorial.class);
-
-  public static void main(String[] args) throws IOException {
-    Tutorial tutorial = new Tutorial();
-    tutorial.run();
-  }
 
   public void run() throws IOException {
     // @@ table_read
