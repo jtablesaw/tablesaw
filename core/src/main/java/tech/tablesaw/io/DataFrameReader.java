@@ -25,6 +25,7 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvReader;
@@ -53,12 +54,45 @@ public class DataFrameReader {
   public Table url(URL url) throws IOException {
     URLConnection connection = url.openConnection();
     String contentType = connection.getContentType();
+    return url(url, getCharset(contentType), getMimeType(contentType));
+  }
+
+  private Table url(URL url, Charset charset, String mimeType) throws IOException {
+    Optional<DataReader<?>> reader = registry.getReaderForMimeType(mimeType);
+    if (reader.isPresent()) {
+      return readUrl(url, charset, reader.get());
+    }
+    reader = registry.getReaderForExtension(getExtension(url));
+    if (reader.isPresent()) {
+      return readUrl(url, charset, reader.get());
+    }
+    throw new IllegalArgumentException("No reader registered for mime-type " + mimeType);
+  }
+
+  private Table readUrl(URL url, Charset charset, DataReader<?> reader) throws IOException {
+    return reader.read(new Source(url.openConnection().getInputStream(), charset));
+  }
+
+  private String getMimeType(String contentType) {
     String[] pair = contentType.split(";");
-    String mimeType = pair[0].trim();
-    Charset charset =
-        pair.length == 0 ? Charset.defaultCharset() : Charset.forName(pair[1].split("=")[1].trim());
-    DataReader<?> reader = registry.getReaderForMimeType(mimeType);
-    return reader.read(new Source(connection.getInputStream(), charset));
+    return pair[0].trim();
+  }
+
+  private Charset getCharset(String contentType) {
+    String[] pair = contentType.split(";");
+    return pair.length == 1
+        ? Charset.defaultCharset()
+        : Charset.forName(pair[1].split("=")[1].trim());
+  }
+
+  /**
+   * Best effort method to get the extension from a URL.
+   *
+   * @param url the url to pull the extension from.
+   * @return the extension.
+   */
+  private String getExtension(URL url) {
+    return Files.getFileExtension(url.getPath());
   }
 
   /**
@@ -67,9 +101,13 @@ public class DataFrameReader {
    * non-default options
    */
   public Table string(String s, String fileExtension) {
-    DataReader<?> reader = registry.getReaderForExtension(fileExtension);
+    Optional<DataReader<?>> reader = registry.getReaderForExtension(fileExtension);
+    if (!reader.isPresent()) {
+      throw new IllegalArgumentException("No reader registered for extension " + fileExtension);
+    }
+
     try {
-      return reader.read(Source.fromString(s));
+      return reader.get().read(Source.fromString(s));
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
@@ -89,8 +127,11 @@ public class DataFrameReader {
    */
   public Table file(File file) throws IOException {
     String extension = Files.getFileExtension(file.getCanonicalPath());
-    DataReader<?> reader = registry.getReaderForExtension(extension);
-    return reader.read(new Source(file));
+    Optional<DataReader<?>> reader = registry.getReaderForExtension(extension);
+    if (reader.isPresent()) {
+      return reader.get().read(new Source(file));
+    }
+    throw new IllegalArgumentException("No reader registered for extension " + extension);
   }
 
   public <T extends ReadOptions> Table usingOptions(T options) throws IOException {
@@ -132,6 +173,10 @@ public class DataFrameReader {
 
   public Table csv(InputStream stream) throws IOException {
     return csv(CsvReadOptions.builder(stream));
+  }
+
+  public Table csv(URL url) throws IOException {
+    return readUrl(url, getCharset(url.openConnection().getContentType()), new CsvReader());
   }
 
   public Table csv(InputStream stream, String name) throws IOException {
