@@ -20,7 +20,11 @@ public class PopulationExample {
 
     // Top 10 cities by pop in 2017:
     System.out.println(
-        cities.where(cities.stringColumn("key").containsString("January")
+        cities
+            .where(
+                cities
+                    .stringColumn("key")
+                    .containsString("January")
                     .and(cities.stringColumn("key").containsString("total"))
                     .and(cities.nCol("2017").isNotMissing()))
             .sortDescendingOn("2017")
@@ -31,7 +35,11 @@ public class PopulationExample {
         (cities.nCol("2016").divide(cities.nCol("2010").subtract(1)).multiply(100))
             .setName("growth"));
     System.out.println(
-        cities.where(cities.stringColumn("key").containsString("January")
+        cities
+            .where(
+                cities
+                    .stringColumn("key")
+                    .containsString("January")
                     .and(cities.stringColumn("key").containsString("total"))
                     .and(cities.nCol("growth").isNotMissing()))
             .sortDescendingOn("growth")
