@@ -233,7 +233,7 @@ public class CsvReaderTest {
     CsvReadOptions options =
         CsvReadOptions.builder(reader)
             .header(header)
-            .dateTimeFormat("dd-MMM-yyyy HH:mm:ss")
+            .dateTimeFormat(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss"))
             .build();
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
@@ -418,7 +418,7 @@ public class CsvReaderTest {
 
     CsvReadOptions options =
         CsvReadOptions.builder("../data/missing_values.csv")
-            .dateFormat("yyyy.MM.dd")
+            .dateFormat(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
             .header(true)
             .missingValueIndicator("-")
             .build();
@@ -468,7 +468,7 @@ public class CsvReaderTest {
             .header(header)
             .separator(delimiter)
             .sample(useSampling)
-            .dateFormat("yyyy.MM.dd")
+            .dateFormat(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
             .build();
 
     final Table table = Table.read().csv(options);
