@@ -213,7 +213,9 @@ public class ColumnTest {
     assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).noneMatch(isNegative));
   }
 
-  private <T> void assertContentEquals(Column<T> column, @SuppressWarnings("unchecked") T... ts) {
+  @SafeVarargs
+  private final <T> void assertContentEquals(
+      Column<T> column, @SuppressWarnings("unchecked") T... ts) {
     assertEquals(ts.length, column.size());
     for (int i = 0; i < ts.length; i++) {
       assertEquals(ts[i], column.get(i));
