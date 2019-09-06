@@ -64,6 +64,8 @@ public abstract class FileReader {
       for (int i = 0; i < headerNames.length; i++) {
         if (headerNames[i] == null) {
           headerNames[i] = "C" + i;
+        } else {
+          headerNames[i] = headerNames[i].trim();
         }
       }
       return headerNames;
