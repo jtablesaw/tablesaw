@@ -1,9 +1,9 @@
 package tech.tablesaw.io;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Table;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class FileReaderTest {
 

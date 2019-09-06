@@ -62,9 +62,10 @@ public abstract class FileReader {
       String[] headerNames = parser.parseNext();
       // work around issue where Univocity returns null if a column has no header.
       for (int i = 0; i < headerNames.length; i++) {
-        headerNames[i] = headerNames[i].trim();
         if (headerNames[i] == null) {
           headerNames[i] = "C" + i;
+        } else {
+          headerNames[i] = headerNames[i].trim();
         }
       }
       return headerNames;
