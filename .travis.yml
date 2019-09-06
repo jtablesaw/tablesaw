@@ -5,6 +5,8 @@ before_install:
   - sudo apt-get install jq
   - LATEST_VERSION="$(curl -Ls https://api.bintray.com/packages/codacy/Binaries/codacy-coverage-reporter/versions/_latest | jq -r .name)"
   - curl -Ls -o codacy-coverage-reporter-assembly.jar "https://dl.bintray.com/codacy/Binaries/${LATEST_VERSION}/codacy-coverage-reporter-assembly.jar"
-install: mvn install -DskipTests -Dgpg.skip
+install:
+  - export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+  - mvn -B install -DskipTests -Dgpg.skip
 script: mvn -B verify
 after_success: java -jar codacy-coverage-reporter-assembly.jar report --language Java --coverage-report aggregate/target/site/jacoco-aggregate/jacoco.xml
