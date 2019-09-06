@@ -209,6 +209,12 @@ public class CsvReadOptions extends ReadOptions {
     }
 
     @Override
+    public Builder trimHeaders(boolean trimHeaders) {
+      super.trimHeaders(trimHeaders);
+      return this;
+    }
+
+    @Override
     public Builder tableName(String tableName) {
       super.tableName(tableName);
       return this;

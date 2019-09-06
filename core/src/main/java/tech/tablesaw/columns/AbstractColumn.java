@@ -43,7 +43,7 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C setName(final String name) {
-    this.name = name.trim();
+    this.name = name;
     return (C) this;
   }
 

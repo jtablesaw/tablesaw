@@ -101,7 +101,7 @@ public abstract class Relation implements Iterable<Row> {
   /** Returns the column with the given columnName, ignoring case */
   public Column<?> column(String columnName) {
     for (Column<?> column : columns()) {
-      String name = column.name().trim();
+      String name = column.name();
       if (name.equalsIgnoreCase(columnName)) {
         return column;
       }

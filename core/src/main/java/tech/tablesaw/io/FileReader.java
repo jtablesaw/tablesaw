@@ -65,7 +65,9 @@ public abstract class FileReader {
         if (headerNames[i] == null) {
           headerNames[i] = "C" + i;
         } else {
-          headerNames[i] = headerNames[i].trim();
+          if (options.trimHeaders()) {
+            headerNames[i] = headerNames[i].trim();
+          }
         }
       }
       return headerNames;
@@ -92,7 +94,7 @@ public abstract class FileReader {
 
     for (int x = 0; x < types.length; x++) {
       if (types[x] != SKIP) {
-        String columnName = cleanName(headerRow.get(x));
+        String columnName = headerRow.get(x);
         if (Strings.isNullOrEmpty(columnName)) {
           columnName = "Column " + table.columnCount();
         }
@@ -188,7 +190,6 @@ public abstract class FileReader {
     for (int i = 0; i < types.length; i++) {
       if (types[i] != SKIP) {
         String name = names.get(i);
-        name = name.trim();
         header.add(name);
       }
     }
