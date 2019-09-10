@@ -72,7 +72,7 @@ class SawStorageTest {
       localDateColumn.append(LocalDate.now());
       categoryColumn.append("Category " + i);
       longColumn.append(i);
-      booleanColumn.append(i%2 == 0);
+      booleanColumn.append(i % 2 == 0);
     }
     table.addColumns(floatColumn);
     table.addColumns(localDateColumn);
