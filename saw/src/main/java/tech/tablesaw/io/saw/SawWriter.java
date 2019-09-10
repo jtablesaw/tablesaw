@@ -16,6 +16,7 @@ import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.longs.LongIterator;
@@ -418,8 +419,10 @@ public class SawWriter {
     try (FileOutputStream fos = new FileOutputStream(fileName);
         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(sos)) {
-      for (int i = 0; i < column.size(); i++) {
-        dos.writeByte(column.getByte(i));
+      int i = 0;
+      ByteIterator iterator = column.byteIterator();
+      while (iterator.hasNext()) {
+        dos.writeByte(iterator.nextByte());
         i++;
         if (i == FLUSH_AFTER_ITERATIONS) {
           dos.flush();

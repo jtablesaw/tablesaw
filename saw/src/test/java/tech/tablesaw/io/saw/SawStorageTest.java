@@ -22,6 +22,7 @@ import static tech.tablesaw.api.ColumnType.TEXT;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
@@ -58,6 +59,7 @@ class SawStorageTest {
   private StringColumn categoryColumn = StringColumn.create("string");
   private DateColumn localDateColumn = DateColumn.create("date");
   private LongColumn longColumn = LongColumn.create("long");
+  private BooleanColumn booleanColumn = BooleanColumn.create("bool");
 
   @BeforeEach
   void setUp() {
@@ -70,11 +72,13 @@ class SawStorageTest {
       localDateColumn.append(LocalDate.now());
       categoryColumn.append("Category " + i);
       longColumn.append(i);
+      booleanColumn.append(i%2 == 0);
     }
     table.addColumns(floatColumn);
     table.addColumns(localDateColumn);
     table.addColumns(categoryColumn);
     table.addColumns(longColumn);
+    table.addColumns(booleanColumn);
   }
 
   @Test
@@ -85,6 +89,19 @@ class SawStorageTest {
     assertEquals(table.rowCount(), t.rowCount());
     for (int i = 0; i < table.rowCount(); i++) {
       assertEquals(categoryColumn.get(i), t.stringColumn("string").get(i));
+    }
+    t.sortOn("string"); // exercise the column a bit
+  }
+
+  @Test
+  void testWriteTable2() {
+
+    SawWriter.saveTable(tempDir + "/zeta", table);
+    Table t = SawReader.readTable(tempDir + "/zeta/t.saw");
+    assertEquals(table.columnCount(), t.columnCount());
+    assertEquals(table.rowCount(), t.rowCount());
+    for (int i = 0; i < table.rowCount(); i++) {
+      assertEquals(booleanColumn.get(i), t.booleanColumn("bool").get(i));
     }
     t.sortOn("string"); // exercise the column a bit
   }
