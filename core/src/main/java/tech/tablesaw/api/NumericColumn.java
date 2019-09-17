@@ -21,6 +21,7 @@ import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFilters;
+import tech.tablesaw.columns.numbers.NumberInterpolator;
 import tech.tablesaw.columns.numbers.NumberMapFunctions;
 import tech.tablesaw.columns.numbers.NumberRollingColumn;
 import tech.tablesaw.columns.numbers.Stats;
@@ -275,6 +276,11 @@ public interface NumericColumn<T extends Number>
   @Override
   default NumericColumn<T> where(final Selection selection) {
     return (NumericColumn<T>) subset(selection.toArray());
+  }
+
+  @Override
+  default NumberInterpolator<T> interpolate() {
+    return new NumberInterpolator<T>(this);
   }
 
   /**
