@@ -34,7 +34,7 @@ public class CsvWriteOptions extends WriteOptions {
   }
 
   public boolean ignoreLeadingWhitespaces() {
-    return ignoreTrailingWhitespaces;
+    return ignoreLeadingWhitespaces;
   }
 
   public boolean ignoreTrailingWhitespaces() {
