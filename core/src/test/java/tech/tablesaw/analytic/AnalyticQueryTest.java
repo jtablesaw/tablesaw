@@ -5,17 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableList;
-import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
 class AnalyticQueryTest {
-
-  private static final Consumer<Iterable<Row>> consumer1 = iterable -> {};
 
   @Test
   public void testToSqlString() {

@@ -29,7 +29,6 @@ import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
@@ -355,14 +354,6 @@ public class Summarizer {
     }
     temp.addColumns(IntColumn.indexColumn("index", temp.rowCount(), 1));
     return groupColumn;
-  }
-
-  private Table removeLastRowIfMissingGroup(IntColumn groupColumn, Table t) {
-    int i = t.row(t.rowCount() - 1).getInt(groupColumn.name());
-    if (IntColumnType.valueIsMissing(i)) {
-      t = t.dropWhere(Selection.with(t.rowCount() - 1));
-    }
-    return t;
   }
 
   /**
