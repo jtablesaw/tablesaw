@@ -73,7 +73,7 @@ public class LookupTableWrapper {
     }
   }
 
-  public Class dictionaryClass() {
+  public Class<? extends DictionaryMap> dictionaryClass() {
     return dictionaryMap.getClass();
   }
 
