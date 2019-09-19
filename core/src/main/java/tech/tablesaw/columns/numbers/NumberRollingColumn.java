@@ -44,6 +44,10 @@ public class NumberRollingColumn extends RollingColumn {
     return (DoubleColumn) calc(AggregateFunctions.countNonMissing);
   }
 
+  public DoubleColumn stdDev() {
+    return (DoubleColumn) calc(AggregateFunctions.stdDev);
+  }
+
   public DoubleColumn variance() {
     return (DoubleColumn) calc(AggregateFunctions.variance);
   }
