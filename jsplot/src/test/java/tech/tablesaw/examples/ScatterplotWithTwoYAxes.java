@@ -14,7 +14,7 @@
 
 package tech.tablesaw.examples;
 
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
@@ -38,9 +38,9 @@ public class ScatterplotWithTwoYAxes {
 
   public static void main(String[] args) throws Exception {
     Table baseball = Table.read().csv("../data/baseball.csv");
-    NumberColumn<?> x = baseball.nCol("BA");
-    NumberColumn<?> y = baseball.nCol("W");
-    NumberColumn<?> y2 = baseball.nCol("SLG");
+    NumericColumn<?> x = baseball.nCol("BA");
+    NumericColumn<?> y = baseball.nCol("W");
+    NumericColumn<?> y2 = baseball.nCol("SLG");
 
     Layout layout =
         Layout.builder()

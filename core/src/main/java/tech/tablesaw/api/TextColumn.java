@@ -41,7 +41,7 @@ import tech.tablesaw.selection.Selection;
  * <p>Because the MISSING_VALUE for this column type is an empty string, there is little or no need
  * for special handling of missing values in this class's methods.
  */
-public class TextColumn extends AbstractStringColumn {
+public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   // holds each element in the column.
   private List<String> values;

@@ -25,6 +25,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -56,7 +57,7 @@ public class Example1 extends AbstractExample {
     out("Column names: " + table1.columnNames());
 
     // Get the approval column.
-    NumberColumn<?> approval = table1.numberColumn("approval");
+    NumericColumn<?> approval = table1.numberColumn("approval");
 
     // Column Operation Examples
 
@@ -135,13 +136,13 @@ public class Example1 extends AbstractExample {
 
     Table xtab = CrossTab.counts(table1, month, who);
     xtab.columnsOfType(ColumnType.DOUBLE)
-        .forEach(x -> ((NumberColumn<?>) x).setPrintFormatter(NumberColumnFormatter.ints()));
+        .forEach(x -> ((NumberColumn<?, ?>) x).setPrintFormatter(NumberColumnFormatter.ints()));
     out(xtab);
 
     Table percents = table1.xTabTablePercents("month", "who");
     percents
         .columnsOfType(ColumnType.DOUBLE)
-        .forEach(x -> ((NumberColumn<?>) x).setPrintFormatter(NumberColumnFormatter.percent(0)));
+        .forEach(x -> ((NumberColumn<?, ?>) x).setPrintFormatter(NumberColumnFormatter.percent(0)));
     out(percents);
 
     out(table1.retainColumns("who", "approval").first(10));

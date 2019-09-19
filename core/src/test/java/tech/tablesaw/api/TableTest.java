@@ -664,7 +664,7 @@ public class TableTest {
     DoubleColumn result = DoubleColumn.create("sum", size);
     for (int r = 0; r < size; r++) {
       double sum = 0;
-      for (NumberColumn<Double> nc : columns) {
+      for (DoubleColumn nc : columns) {
         sum += nc.get(r);
       }
       result.set(r, sum);

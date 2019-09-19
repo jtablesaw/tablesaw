@@ -25,7 +25,7 @@ import java.util.PrimitiveIterator;
 import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -214,7 +214,7 @@ public class TableSlice extends Relation {
    *     table
    */
   public double reduce(String numberColumnName, NumericAggregateFunction function) {
-    NumberColumn<?> column = table.numberColumn(numberColumnName);
+    NumericColumn<?> column = table.numberColumn(numberColumnName);
     if (hasSelection()) {
       return function.summarize(column.where(selection));
     }

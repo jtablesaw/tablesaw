@@ -45,7 +45,7 @@ public class TableMetadata {
     this.name = table.name();
     this.rowCount = table.rowCount();
 
-    for (Column column : table.columns()) {
+    for (Column<?> column : table.columns()) {
       ColumnMetadata metadata = new ColumnMetadata(column);
       columnMetadataList.add(metadata);
     }
@@ -53,7 +53,7 @@ public class TableMetadata {
   }
 
   /** Default constructor for Jackson json serialization */
-  private TableMetadata() {}
+  protected TableMetadata() {}
 
   static TableMetadata fromJson(String jsonString) {
     try {

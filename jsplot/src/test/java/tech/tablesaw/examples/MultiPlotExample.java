@@ -1,7 +1,7 @@
 package tech.tablesaw.examples;
 
 import java.util.List;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
@@ -67,11 +67,11 @@ public class MultiPlotExample {
     Table league2 = leagueTables.get(1);
 
     // 3. Get the columns we're going to use in the plot as x1, y1, x2, y2
-    NumberColumn<?> x1 = league1.nCol("BA");
-    NumberColumn<?> y1 = league1.nCol("W");
+    NumericColumn<?> x1 = league1.nCol("BA");
+    NumericColumn<?> y1 = league1.nCol("W");
 
-    NumberColumn<?> x2 = league2.nCol("BA");
-    NumberColumn<?> y2 = league2.nCol("W");
+    NumericColumn<?> x2 = league2.nCol("BA");
+    NumericColumn<?> y2 = league2.nCol("W");
 
     // 4. Create a layout for each plot
     Layout layout1 =

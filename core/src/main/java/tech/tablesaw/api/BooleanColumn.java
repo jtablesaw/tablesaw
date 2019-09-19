@@ -30,13 +30,11 @@ import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
 import it.unimi.dsi.fastutil.bytes.ByteSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -55,7 +53,7 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 /** A column in a base table that contains float values */
-public class BooleanColumn extends AbstractColumn<Boolean>
+public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     implements BooleanFilterSpec<Selection>,
         BooleanMapUtils,
         CategoricalColumn<Boolean>,
@@ -150,71 +148,6 @@ public class BooleanColumn extends AbstractColumn<Boolean>
     BooleanColumn column = create(name);
     stream.forEach(val -> column.append(val));
     return column;
-  }
-
-  @Override
-  public BooleanColumn setName(String name) {
-    return (BooleanColumn) super.setName(name);
-  }
-
-  @Override
-  public BooleanColumn subset(int[] rows) {
-    return (BooleanColumn) super.subset(rows);
-  }
-
-  @Override
-  public BooleanColumn set(Selection rowSelection, Boolean newValue) {
-    return (BooleanColumn) super.set(rowSelection, newValue);
-  }
-
-  @Override
-  public BooleanColumn first(int numRows) {
-    return (BooleanColumn) super.first(numRows);
-  }
-
-  @Override
-  public BooleanColumn last(int numRows) {
-    return (BooleanColumn) super.last(numRows);
-  }
-
-  @Override
-  public BooleanColumn inRange(int start, int end) {
-    return (BooleanColumn) super.inRange(start, end);
-  }
-
-  @Override
-  public BooleanColumn sampleN(int n) {
-    return (BooleanColumn) super.sampleN(n);
-  }
-
-  @Override
-  public BooleanColumn sampleX(double proportion) {
-    return (BooleanColumn) super.sampleX(proportion);
-  }
-
-  @Override
-  public BooleanColumn set(Selection condition, Column<Boolean> other) {
-    return (BooleanColumn) super.set(condition, other);
-  }
-
-  @Override
-  public BooleanColumn min(Column<Boolean> other) {
-    return (BooleanColumn) super.min(other);
-  }
-
-  @Override
-  public BooleanColumn max(Column<Boolean> other) {
-    return (BooleanColumn) super.max(other);
-  }
-
-  @Override
-  public BooleanColumn map(Function<? super Boolean, ? extends Boolean> fun) {
-    return (BooleanColumn) super.map(fun);
-  }
-
-  @Override
-  public BooleanColumn sorted(Comparator<? super Boolean> comp) {
-    return (BooleanColumn) super.sorted(comp);
   }
 
   public void setPrintFormatter(BooleanFormatter formatter) {
@@ -560,11 +493,6 @@ public class BooleanColumn extends AbstractColumn<Boolean>
       set(row, newValue);
     }
     return this;
-  }
-
-  @Override
-  public BooleanColumn filter(Predicate<? super Boolean> test) {
-    return (BooleanColumn) super.filter(test);
   }
 
   public double getDouble(int row) {

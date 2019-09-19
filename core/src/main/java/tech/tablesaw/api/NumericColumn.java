@@ -27,7 +27,8 @@ import tech.tablesaw.columns.numbers.Stats;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberFilters {
+public interface NumericColumn<T extends Number>
+    extends Column<T>, NumberMapFunctions, NumberFilters {
 
   @Override
   default boolean isEmpty() {
@@ -139,6 +140,36 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
       }
     }
     return count;
+  }
+
+  /**
+   * Returns true if all rows satisfy the predicate, false otherwise
+   *
+   * @param test the predicate
+   * @return true if all rows satisfy the predicate, false otherwise
+   */
+  default boolean allMatch(DoublePredicate test) {
+    return count(test.negate(), 1) == 0;
+  }
+
+  /**
+   * Returns true if any row satisfies the predicate, false otherwise
+   *
+   * @param test the predicate
+   * @return true if any rows satisfies the predicate, false otherwise
+   */
+  default boolean anyMatch(DoublePredicate test) {
+    return count(test, 1) > 0;
+  }
+
+  /**
+   * Returns true if no row satisfies the predicate, false otherwise
+   *
+   * @param test the predicate
+   * @return true if no row satisfies the predicate, false otherwise
+   */
+  default boolean noneMatch(DoublePredicate test) {
+    return count(test, 1) == 0;
   }
 
   /**
@@ -443,6 +474,9 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
   default ShortColumn asShortColumn() {
     return (ShortColumn) this.copy();
   }
+
+  @Override
+  NumericColumn<T> copy();
 
   StringColumn asStringColumn();
 }

@@ -132,7 +132,7 @@ public class SawWriter {
 
       List<Column<?>> columns = table.columns();
       for (int i = 0; i < columns.size(); i++) {
-        Column column = columns.get(i);
+        Column<?> column = columns.get(i);
         String pathString = tableMetadata.getColumnMetadataList().get(i).getId();
 
         writerCompletionService.submit(
@@ -161,7 +161,7 @@ public class SawWriter {
     return name + '.' + FILE_EXTENSION;
   }
 
-  private static void writeColumn(String fileName, Column column) {
+  private static void writeColumn(String fileName, Column<?> column) {
     try {
       final String typeName = column.type().name();
       switch (typeName) {

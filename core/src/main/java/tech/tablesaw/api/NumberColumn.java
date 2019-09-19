@@ -8,8 +8,8 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
-public abstract class NumberColumn<T extends Number> extends AbstractColumn<T>
-    implements NumericColumn<T> {
+public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Number>
+    extends AbstractColumn<C, T> implements NumericColumn<T> {
 
   private NumberColumnFormatter printFormatter = new NumberColumnFormatter();
 
@@ -26,15 +26,15 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T>
     super(type, name);
   }
 
-  protected abstract NumberColumn<T> createCol(final String name, int size);
+  protected abstract C createCol(final String name, int size);
 
-  protected abstract NumberColumn<T> createCol(final String name);
+  protected abstract C createCol(final String name);
 
   /**
    * Updates this column where values matching the selection are replaced with the corresponding
    * value from the given column
    */
-  public NumberColumn<T> set(DoublePredicate condition, NumberColumn<T> other) {
+  public NumberColumn<C, T> set(DoublePredicate condition, NumberColumn<C, T> other) {
     for (int row = 0; row < size(); row++) {
       if (condition.test(getDouble(row))) {
         set(row, other.get(row));
@@ -43,7 +43,7 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T>
     return this;
   }
 
-  public NumberColumn<T> set(DoublePredicate condition, T newValue) {
+  public NumberColumn<C, T> set(DoublePredicate condition, T newValue) {
     for (int row = 0; row < size(); row++) {
       if (condition.test(getDouble(row))) {
         set(row, newValue);
@@ -94,27 +94,22 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T>
   }
 
   @Override
-  public NumberColumn<T> inRange(int start, int end) {
-    return (NumberColumn<T>) super.inRange(start, end);
-  }
-
-  @Override
-  public NumberColumn<T> emptyCopy() {
-    final NumberColumn<T> column = createCol(name());
+  public C emptyCopy() {
+    final C column = createCol(name());
     column.setPrintFormatter(printFormatter);
     column.locale = locale;
     return column;
   }
 
   @Override
-  public NumberColumn<T> emptyCopy(final int rowSize) {
-    final NumberColumn<T> column = createCol(name(), rowSize);
+  public C emptyCopy(final int rowSize) {
+    final C column = createCol(name(), rowSize);
     column.setPrintFormatter(printFormatter);
     column.locale = locale;
     return column;
   }
 
-  public abstract NumberColumn<T> copy();
+  public abstract C copy();
 
   /**
    * Compares the given ints, which refer to the indexes of the doubles in this column, according to
@@ -135,7 +130,7 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T>
   public abstract byte[] asBytes(final int rowNumber);
 
   @Override
-  public abstract NumberColumn<T> appendMissing();
+  public abstract C appendMissing();
 
   /** Returns the count of missing values in this column */
   @Override
@@ -147,35 +142,5 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T>
       }
     }
     return count;
-  }
-
-  /**
-   * Returns true if all rows satisfy the predicate, false otherwise
-   *
-   * @param test the predicate
-   * @return true if all rows satisfy the predicate, false otherwise
-   */
-  public boolean allMatch(DoublePredicate test) {
-    return count(test.negate(), 1) == 0;
-  }
-
-  /**
-   * Returns true if any row satisfies the predicate, false otherwise
-   *
-   * @param test the predicate
-   * @return true if any rows satisfies the predicate, false otherwise
-   */
-  public boolean anyMatch(DoublePredicate test) {
-    return count(test, 1) > 0;
-  }
-
-  /**
-   * Returns true if no row satisfies the predicate, false otherwise
-   *
-   * @param test the predicate
-   * @return true if no row satisfies the predicate, false otherwise
-   */
-  public boolean noneMatch(DoublePredicate test) {
-    return count(test, 1) == 0;
   }
 }

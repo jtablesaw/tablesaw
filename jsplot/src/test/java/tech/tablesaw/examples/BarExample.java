@@ -17,7 +17,7 @@ package tech.tablesaw.examples;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
 import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.plotly.Plot;
@@ -34,7 +34,7 @@ public class BarExample {
 
   public static void main(String[] args) throws Exception {
     Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-    NumberColumn<?> logNInjuries = table.numberColumn("injuries").add(1).logN();
+    NumericColumn<?> logNInjuries = table.numberColumn("injuries").add(1).logN();
     logNInjuries.setName("log injuries");
     table.addColumns(logNInjuries);
     IntColumn scale = table.intColumn("scale");

@@ -19,12 +19,9 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -45,7 +42,7 @@ import tech.tablesaw.selection.Selection;
  * <p>Because the MISSING_VALUE for this column type is an empty string, there is little or no need
  * for special handling of missing values in this class's methods.
  */
-public class StringColumn extends AbstractStringColumn {
+public class StringColumn extends AbstractStringColumn<StringColumn> {
 
   // a bidirectional map of keys to backing string values.
   private DictionaryMap lookupTable = new ByteDictionaryMap();
@@ -485,71 +482,6 @@ public class StringColumn extends AbstractStringColumn {
   @Override
   public String[] asObjectArray() {
     return lookupTable.asObjectArray();
-  }
-
-  @Override
-  public StringColumn setName(String name) {
-    return (StringColumn) super.setName(name);
-  }
-
-  @Override
-  public StringColumn filter(Predicate<? super String> test) {
-    return (StringColumn) super.filter(test);
-  }
-
-  @Override
-  public StringColumn subset(int[] rows) {
-    return (StringColumn) super.subset(rows);
-  }
-
-  @Override
-  public StringColumn sorted(Comparator<? super String> comp) {
-    return (StringColumn) super.sorted(comp);
-  }
-
-  @Override
-  public StringColumn map(Function<? super String, ? extends String> fun) {
-    return (StringColumn) super.map(fun);
-  }
-
-  @Override
-  public StringColumn min(Column<String> other) {
-    return (StringColumn) super.min(other);
-  }
-
-  @Override
-  public StringColumn max(Column<String> other) {
-    return (StringColumn) super.max(other);
-  }
-
-  @Override
-  public StringColumn set(Selection condition, Column<String> other) {
-    return (StringColumn) super.set(condition, other);
-  }
-
-  @Override
-  public StringColumn first(int numRows) {
-    return (StringColumn) super.first(numRows);
-  }
-
-  @Override
-  public StringColumn last(int numRows) {
-    return (StringColumn) super.last(numRows);
-  }
-
-  @Override
-  public StringColumn inRange(int start, int end) {
-    return (StringColumn) super.inRange(start, end);
-  }
-
-  @Override
-  public StringColumn sampleN(int n) {
-    return (StringColumn) super.sampleN(n);
-  }
-
-  @Override
-  public StringColumn sampleX(double proportion) {
-    return (StringColumn) super.sampleX(proportion);
   }
 
   @Override

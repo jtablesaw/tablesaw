@@ -380,7 +380,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     return result;
   }
 
-  default Column<T> subset(final int[] rows) {
+  default Column<T> subset(int[] rows) {
     final Column<T> c = this.emptyCopy();
     for (final int row : rows) {
       c.appendObj(get(row));

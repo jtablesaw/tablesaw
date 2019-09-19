@@ -700,7 +700,7 @@ public class Table extends Relation implements Iterable<Row> {
   public Table pivot(
       CategoricalColumn<?> column1,
       CategoricalColumn<?> column2,
-      NumberColumn<?> column3,
+      NumericColumn<?> column3,
       AggregateFunction<?, ?> aggregateFunction) {
     return PivotTable.pivot(this, column1, column2, column3, aggregateFunction);
   }
