@@ -264,6 +264,30 @@ public class Table extends Relation implements Iterable<Row> {
     return replaceColumn(colIndex, newColumn);
   }
 
+  /**
+   * Replaces an existing column (by index) in this table by applying the given function to it
+   *
+   * @param colIndex Zero-based index of the column to be replaced
+   * @param operation Function to apply to transform the column
+   */
+  public Table replaceColumn(final int colIndex, Function<Column<?>, Column<?>> operation) {
+    Column<?> oldColumn = column(colIndex);
+    Column<?> newColumn = operation.apply(oldColumn);
+    removeColumns(oldColumn);
+    return insertColumn(colIndex, newColumn);
+  }
+
+  /**
+   * Replaces an existing column (by name) in this table by applying the given function to it
+   *
+   * @param columnName String name of the column to be replaced
+   * @param operation Function to apply to transform the column
+   */
+  public Table replaceColumn(final String columnName, Function<Column<?>, Column<?>> operation) {
+    int colIndex = columnIndex(columnName);
+    return replaceColumn(colIndex, operation);
+  }
+  
   /** Sets the name of the table */
   @Override
   public Table setName(String name) {
