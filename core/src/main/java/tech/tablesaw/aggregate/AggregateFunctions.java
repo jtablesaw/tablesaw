@@ -417,11 +417,8 @@ public class AggregateFunctions {
         }
       };
 
-  /**
-   * @deprecated use {@link #stdDev} instead
-   */
-  @Deprecated
-  public static final NumericAggregateFunction standardDeviation = stdDev;
+  /** @deprecated use {@link #stdDev} instead */
+  @Deprecated public static final NumericAggregateFunction standardDeviation = stdDev;
 
   public static Double percentile(NumericColumn<?> data, Double percentile) {
     return StatUtils.percentile(removeMissing(data), percentile);

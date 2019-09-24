@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.interpolation.Interpolator;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
 import tech.tablesaw.util.StringUtils;
@@ -615,6 +616,14 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
     int tableSize = (int) Math.round(size() * proportion);
     return where(selectNRowsAtRandom(tableSize, size()));
+  }
+
+  /**
+   * Provides the ability to create a new column with missing cells filled based off the value of
+   * nearby cells.
+   */
+  default Interpolator<T> interpolate() {
+    return new Interpolator<T>(this);
   }
 
   /**
