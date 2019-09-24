@@ -10,14 +10,11 @@ import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.DoubleStream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -28,7 +25,8 @@ import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.fillers.DoubleRangeIterable;
 import tech.tablesaw.selection.Selection;
 
-public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<DoubleColumn> {
+public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
+    implements NumberFillers<DoubleColumn> {
 
   /**
    * Compares two doubles, such that a sort based on this comparator would sort in descending order
@@ -155,6 +153,11 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   }
 
   @Override
+  public DoubleColumn where(Selection selection) {
+    return (DoubleColumn) super.where(selection);
+  }
+
+  @Override
   public DoubleColumn subset(int[] rows) {
     final DoubleColumn c = this.emptyCopy();
     for (final int row : rows) {
@@ -264,16 +267,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
   }
 
   @Override
-  public DoubleColumn emptyCopy() {
-    return (DoubleColumn) super.emptyCopy();
-  }
-
-  @Override
-  public DoubleColumn emptyCopy(final int rowSize) {
-    return (DoubleColumn) super.emptyCopy(rowSize);
-  }
-
-  @Override
   public DoubleColumn copy() {
     return new DoubleColumn(name(), data.clone());
   }
@@ -322,11 +315,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
       }
     }
     return this;
-  }
-
-  @Override
-  public DoubleColumn set(DoublePredicate condition, Double newValue) {
-    return (DoubleColumn) super.set(condition, newValue);
   }
 
   @Override
@@ -505,81 +493,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
       set(r, d);
     }
     return this;
-  }
-
-  @Override
-  public DoubleColumn inRange(int start, int end) {
-    return (DoubleColumn) super.inRange(start, end);
-  }
-
-  @Override
-  public DoubleColumn where(Selection selection) {
-    return (DoubleColumn) super.where(selection);
-  }
-
-  @Override
-  public DoubleColumn lead(int n) {
-    return (DoubleColumn) super.lead(n);
-  }
-
-  @Override
-  public DoubleColumn setName(String name) {
-    return (DoubleColumn) super.setName(name);
-  }
-
-  @Override
-  public DoubleColumn filter(Predicate<? super Double> test) {
-    return (DoubleColumn) super.filter(test);
-  }
-
-  @Override
-  public DoubleColumn sorted(Comparator<? super Double> comp) {
-    return (DoubleColumn) super.sorted(comp);
-  }
-
-  @Override
-  public DoubleColumn map(Function<? super Double, ? extends Double> fun) {
-    return (DoubleColumn) super.map(fun);
-  }
-
-  @Override
-  public DoubleColumn min(Column<Double> other) {
-    return (DoubleColumn) super.min(other);
-  }
-
-  @Override
-  public DoubleColumn max(Column<Double> other) {
-    return (DoubleColumn) super.max(other);
-  }
-
-  @Override
-  public DoubleColumn set(Selection condition, Column<Double> other) {
-    return (DoubleColumn) super.set(condition, other);
-  }
-
-  @Override
-  public DoubleColumn set(Selection rowSelection, Double newValue) {
-    return (DoubleColumn) super.set(rowSelection, newValue);
-  }
-
-  @Override
-  public DoubleColumn first(int numRows) {
-    return (DoubleColumn) super.first(numRows);
-  }
-
-  @Override
-  public DoubleColumn last(int numRows) {
-    return (DoubleColumn) super.last(numRows);
-  }
-
-  @Override
-  public DoubleColumn sampleN(int n) {
-    return (DoubleColumn) super.sampleN(n);
-  }
-
-  @Override
-  public DoubleColumn sampleX(double proportion) {
-    return (DoubleColumn) super.sampleX(proportion);
   }
 
   /**

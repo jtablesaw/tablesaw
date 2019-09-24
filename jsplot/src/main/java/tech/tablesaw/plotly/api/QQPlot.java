@@ -3,7 +3,7 @@ package tech.tablesaw.plotly.api;
 import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import org.apache.commons.math3.stat.StatUtils;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
@@ -24,8 +24,8 @@ public class QQPlot {
    */
   public static Figure create(String title, Table table, String columnName1, String columnName2) {
 
-    NumberColumn<?> xCol = table.nCol(columnName1);
-    NumberColumn<?> yCol = table.nCol(columnName2);
+    NumericColumn<?> xCol = table.nCol(columnName1);
+    NumericColumn<?> yCol = table.nCol(columnName2);
 
     return create(title, xCol.name(), xCol.asDoubleArray(), yCol.name(), yCol.asDoubleArray());
   }

@@ -10,20 +10,15 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.function.DoublePredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.LongStream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.selection.Selection;
 
-public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<Long> {
+public class LongColumn extends NumberColumn<LongColumn, Long> implements CategoricalColumn<Long> {
 
   /** Compares two ints, such that a sort based on this comparator would sort in descending order */
   private final LongComparator descendingComparator = (o2, o1) -> (Long.compare(o1, o2));
@@ -418,93 +413,8 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
   }
 
   @Override
-  public LongColumn inRange(int start, int end) {
-    return (LongColumn) super.inRange(start, end);
-  }
-
-  @Override
-  public LongColumn where(Selection selection) {
-    return (LongColumn) super.where(selection);
-  }
-
-  @Override
-  public LongColumn lead(int n) {
-    return (LongColumn) super.lead(n);
-  }
-
-  @Override
-  public LongColumn setName(String name) {
-    return (LongColumn) super.setName(name);
-  }
-
-  @Override
-  public LongColumn filter(Predicate<? super Long> test) {
-    return (LongColumn) super.filter(test);
-  }
-
-  @Override
-  public LongColumn sorted(Comparator<? super Long> comp) {
-    return (LongColumn) super.sorted(comp);
-  }
-
-  @Override
-  public LongColumn map(Function<? super Long, ? extends Long> fun) {
-    return (LongColumn) super.map(fun);
-  }
-
-  @Override
-  public LongColumn min(Column<Long> other) {
-    return (LongColumn) super.min(other);
-  }
-
-  @Override
-  public LongColumn max(Column<Long> other) {
-    return (LongColumn) super.max(other);
-  }
-
-  @Override
-  public LongColumn set(Selection condition, Column<Long> other) {
-    return (LongColumn) super.set(condition, other);
-  }
-
-  @Override
   public Table countByCategory() {
     return null;
-  }
-
-  @Override
-  public LongColumn set(Selection rowSelection, Long newValue) {
-    return (LongColumn) super.set(rowSelection, newValue);
-  }
-
-  @Override
-  public LongColumn set(DoublePredicate condition, Long newValue) {
-    return (LongColumn) super.set(condition, newValue);
-  }
-
-  @Override
-  public LongColumn set(DoublePredicate condition, NumberColumn<Long> other) {
-    return (LongColumn) super.set(condition, other);
-  }
-
-  @Override
-  public LongColumn first(int numRows) {
-    return (LongColumn) super.first(numRows);
-  }
-
-  @Override
-  public LongColumn last(int numRows) {
-    return (LongColumn) super.last(numRows);
-  }
-
-  @Override
-  public LongColumn sampleN(int n) {
-    return (LongColumn) super.sampleN(n);
-  }
-
-  @Override
-  public LongColumn sampleX(double proportion) {
-    return (LongColumn) super.sampleX(proportion);
   }
 
   /**

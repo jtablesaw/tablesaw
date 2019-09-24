@@ -1,7 +1,7 @@
 package tech.tablesaw.examples;
 
 import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
@@ -18,8 +18,8 @@ import tech.tablesaw.plotly.traces.Trace;
 public class MarkerOptionsExample {
 
   private final Table baseball;
-  private final NumberColumn<?> x;
-  private final NumberColumn<?> y;
+  private final NumericColumn<?> x;
+  private final NumericColumn<?> y;
 
   private MarkerOptionsExample() throws Exception {
     this.baseball = Table.read().csv("../data/baseball.csv");

@@ -60,7 +60,7 @@ public class ColumnMetadata {
   private String type;
   private String stringColumnKeySize;
 
-  ColumnMetadata(Column column) {
+  ColumnMetadata(Column<?> column) {
     this.id = UUID.randomUUID().toString();
     this.name = column.name();
     this.type = column.type().name();
@@ -81,7 +81,7 @@ public class ColumnMetadata {
     }
   }
 
-  private ColumnMetadata() {}
+  protected ColumnMetadata() {}
 
   public static ColumnMetadata fromJson(String jsonString) {
     try {
@@ -131,7 +131,7 @@ public class ColumnMetadata {
     return stringColumnKeySize;
   }
 
-  public Column createColumn() {
+  public Column<?> createColumn() {
     final String typeString = getType();
     switch (typeString) {
       case FLOAT:

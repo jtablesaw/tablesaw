@@ -3,7 +3,7 @@ package tech.tablesaw.examples;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
@@ -18,7 +18,7 @@ public class DotPlotExample {
 
     Table bush = Table.read().csv("../data/bush.csv");
 
-    NumberColumn<?> x = bush.nCol("approval");
+    NumericColumn<?> x = bush.nCol("approval");
     CategoricalColumn<?> y = bush.stringColumn("who");
 
     Layout layout = Layout.builder().title("Approval ratings by agency").build();

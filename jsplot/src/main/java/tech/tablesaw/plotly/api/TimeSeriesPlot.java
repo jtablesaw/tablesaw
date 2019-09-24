@@ -3,7 +3,7 @@ package tech.tablesaw.plotly.api;
 import java.util.List;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -43,14 +43,14 @@ public class TimeSeriesPlot {
   }
 
   public static Figure create(
-      String title, String xTitle, DateColumn xCol, String yTitle, NumberColumn<?> yCol) {
+      String title, String xTitle, DateColumn xCol, String yTitle, NumericColumn<?> yCol) {
     Layout layout = Layout.builder(title, xTitle, yTitle).build();
     ScatterTrace trace = ScatterTrace.builder(xCol, yCol).mode(ScatterTrace.Mode.LINE).build();
     return new Figure(layout, trace);
   }
 
   public static Figure create(
-      String title, String xTitle, DateTimeColumn xCol, String yTitle, NumberColumn<?> yCol) {
+      String title, String xTitle, DateTimeColumn xCol, String yTitle, NumericColumn<?> yCol) {
     Layout layout = Layout.builder(title, xTitle, yTitle).build();
     ScatterTrace trace = ScatterTrace.builder(xCol, yCol).mode(ScatterTrace.Mode.LINE).build();
     return new Figure(layout, trace);
@@ -69,7 +69,7 @@ public class TimeSeriesPlot {
       String title, Table table, String dateTimeColumnName, String numberColumnName) {
 
     DateTimeColumn xCol = table.dateTimeColumn(dateTimeColumnName);
-    NumberColumn<?> yCol = table.numberColumn(numberColumnName);
+    NumericColumn<?> yCol = table.numberColumn(numberColumnName);
 
     Layout layout = Layout.builder(title, xCol.name(), yCol.name()).build();
 

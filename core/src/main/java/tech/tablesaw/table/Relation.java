@@ -30,7 +30,6 @@ import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.ShortColumn;
@@ -273,7 +272,7 @@ public abstract class Relation implements Iterable<Row> {
    * @return A number column
    * @throws ClassCastException if the cast to NumberColumn fails
    */
-  public NumberColumn<?> numberColumn(int columnIndex) {
+  public NumericColumn<?> numberColumn(int columnIndex) {
     Column<?> c = column(columnIndex);
     if (c.type() == ColumnType.STRING) {
       return ((StringColumn) c).asDoubleColumn();
@@ -288,10 +287,10 @@ public abstract class Relation implements Iterable<Row> {
     } else if (c.type() == ColumnType.LOCAL_TIME) {
       return ((TimeColumn) c).asDoubleColumn();
     }
-    return (NumberColumn<?>) column(columnIndex);
+    return (NumericColumn<?>) column(columnIndex);
   }
 
-  public NumberColumn<?> numberColumn(String columnName) {
+  public NumericColumn<?> numberColumn(String columnName) {
     return numberColumn(columnIndex(columnName));
   }
 
@@ -392,7 +391,7 @@ public abstract class Relation implements Iterable<Row> {
    *
    * <p>Shorthand for numberColumn()
    */
-  public NumberColumn<?> nCol(String columnName) {
+  public NumericColumn<?> nCol(String columnName) {
     return numberColumn(columnName);
   }
 
@@ -401,7 +400,7 @@ public abstract class Relation implements Iterable<Row> {
    *
    * <p>Shorthand for numberColumn()
    */
-  public NumberColumn<?> nCol(int columnIndex) {
+  public NumericColumn<?> nCol(int columnIndex) {
     return numberColumn(columnIndex);
   }
 

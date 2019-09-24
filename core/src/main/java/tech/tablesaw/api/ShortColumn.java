@@ -10,20 +10,16 @@ import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.function.DoublePredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.ShortColumnType;
-import tech.tablesaw.selection.Selection;
 
-public class ShortColumn extends NumberColumn<Short> implements CategoricalColumn<Short> {
+public class ShortColumn extends NumberColumn<ShortColumn, Short>
+    implements CategoricalColumn<Short> {
 
   /** Compares two ints, such that a sort based on this comparator would sort in descending order */
   private final ShortComparator descendingComparator = (o2, o1) -> (Short.compare(o1, o2));
@@ -381,91 +377,6 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
       return "";
     }
     return String.valueOf(value);
-  }
-
-  @Override
-  public ShortColumn inRange(int start, int end) {
-    return (ShortColumn) super.inRange(start, end);
-  }
-
-  @Override
-  public ShortColumn where(Selection selection) {
-    return (ShortColumn) super.where(selection);
-  }
-
-  @Override
-  public ShortColumn lead(int n) {
-    return (ShortColumn) super.lead(n);
-  }
-
-  @Override
-  public ShortColumn setName(String name) {
-    return (ShortColumn) super.setName(name);
-  }
-
-  @Override
-  public ShortColumn filter(Predicate<? super Short> test) {
-    return (ShortColumn) super.filter(test);
-  }
-
-  @Override
-  public ShortColumn sorted(Comparator<? super Short> comp) {
-    return (ShortColumn) super.sorted(comp);
-  }
-
-  @Override
-  public ShortColumn map(Function<? super Short, ? extends Short> fun) {
-    return (ShortColumn) super.map(fun);
-  }
-
-  @Override
-  public ShortColumn min(Column<Short> other) {
-    return (ShortColumn) super.min(other);
-  }
-
-  @Override
-  public ShortColumn max(Column<Short> other) {
-    return (ShortColumn) super.max(other);
-  }
-
-  @Override
-  public ShortColumn set(Selection condition, Column<Short> other) {
-    return (ShortColumn) super.set(condition, other);
-  }
-
-  @Override
-  public ShortColumn set(Selection rowSelection, Short newValue) {
-    return (ShortColumn) super.set(rowSelection, newValue);
-  }
-
-  @Override
-  public ShortColumn set(DoublePredicate condition, Short newValue) {
-    return (ShortColumn) super.set(condition, newValue);
-  }
-
-  @Override
-  public ShortColumn set(DoublePredicate condition, NumberColumn<Short> other) {
-    return (ShortColumn) super.set(condition, other);
-  }
-
-  @Override
-  public ShortColumn first(int numRows) {
-    return (ShortColumn) super.first(numRows);
-  }
-
-  @Override
-  public ShortColumn last(int numRows) {
-    return (ShortColumn) super.last(numRows);
-  }
-
-  @Override
-  public ShortColumn sampleN(int n) {
-    return (ShortColumn) super.sampleN(n);
-  }
-
-  @Override
-  public ShortColumn sampleX(double proportion) {
-    return (ShortColumn) super.sampleX(proportion);
   }
 
   /**

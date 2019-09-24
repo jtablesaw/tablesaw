@@ -93,8 +93,8 @@ public class SawReader {
 
     // Note: We do some extra work with the hash map to ensure that the columns are returned
     // to the table in original order
-    ConcurrentLinkedQueue<Column> columnList = new ConcurrentLinkedQueue<>();
-    Map<String, Column> columns = new HashMap<>();
+    ConcurrentLinkedQueue<Column<?>> columnList = new ConcurrentLinkedQueue<>();
+    Map<String, Column<?>> columns = new HashMap<>();
     try {
       for (ColumnMetadata column : columnMetadata) {
         readerCompletionService.submit(
@@ -108,7 +108,7 @@ public class SawReader {
         Future<Void> future = readerCompletionService.take();
         future.get();
       }
-      for (Column c : columnList) {
+      for (Column<?> c : columnList) {
         columns.put(c.name(), c);
       }
 
@@ -123,7 +123,7 @@ public class SawReader {
     return table;
   }
 
-  private static Column readColumn(
+  private static Column<?> readColumn(
       String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
       throws IOException {
 

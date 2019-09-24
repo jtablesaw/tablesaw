@@ -1,6 +1,6 @@
 package tech.tablesaw.examples;
 
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
@@ -10,8 +10,8 @@ import tech.tablesaw.plotly.traces.ScatterTrace;
 
 public class LineOptionsExample {
 
-  private final NumberColumn<?> x;
-  private final NumberColumn<?> y;
+  private final NumericColumn<?> x;
+  private final NumericColumn<?> y;
 
   private LineOptionsExample() throws Exception {
     Table robberies = Table.read().csv("../data/boston-robberies.csv");

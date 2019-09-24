@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.TableSliceGroup;
@@ -25,7 +25,7 @@ public class PivotTable {
       Table table,
       CategoricalColumn<?> column1,
       CategoricalColumn<?> column2,
-      NumberColumn<?> values,
+      NumericColumn<?> values,
       AggregateFunction<?, ?> aggregateFunction) {
 
     TableSliceGroup tsg = table.splitOn(column1);
@@ -53,7 +53,7 @@ public class PivotTable {
 
       for (String columnName : valueColumnNames) {
         Double aDouble = valueMap.get(columnName);
-        NumberColumn<?> pivotValueColumn = pivotTable.numberColumn(columnName);
+        NumericColumn<?> pivotValueColumn = pivotTable.numberColumn(columnName);
         if (aDouble == null) {
           pivotValueColumn.appendMissing();
         } else {
@@ -68,7 +68,7 @@ public class PivotTable {
   private static Map<String, Double> getValueMap(
       CategoricalColumn<?> column1,
       CategoricalColumn<?> column2,
-      NumberColumn<?> values,
+      NumericColumn<?> values,
       int valueIndex,
       TableSlice slice,
       AggregateFunction<?, ?> function) {
@@ -77,7 +77,7 @@ public class PivotTable {
     Table summary = temp.summarize(values.name(), function).by(column1.name(), column2.name());
 
     Map<String, Double> valueMap = new HashMap<>();
-    NumberColumn<?> nc = summary.numberColumn(summary.columnCount() - 1);
+    NumericColumn<?> nc = summary.numberColumn(summary.columnCount() - 1);
     for (int i = 0; i < summary.rowCount(); i++) {
       valueMap.put(String.valueOf(summary.get(i, 1)), nc.getDouble(i));
     }

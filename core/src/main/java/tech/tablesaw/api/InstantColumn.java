@@ -34,14 +34,11 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
@@ -57,7 +54,7 @@ import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 /** A column in a table that contains long-integer encoded (packed) local date-time values */
-public class InstantColumn extends AbstractColumn<Instant>
+public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     implements InstantMapFunctions,
         TemporalFillers<Instant, InstantColumn>,
         TemporalFilters<Instant>,
@@ -715,66 +712,6 @@ public class InstantColumn extends AbstractColumn<Instant>
   @Override
   public int compare(Instant o1, Instant o2) {
     return o1.compareTo(o2);
-  }
-
-  @Override
-  public InstantColumn setName(String name) {
-    return (InstantColumn) super.setName(name);
-  }
-
-  @Override
-  public InstantColumn filter(Predicate<? super Instant> test) {
-    return (InstantColumn) super.filter(test);
-  }
-
-  @Override
-  public InstantColumn sorted(Comparator<? super Instant> comp) {
-    return (InstantColumn) super.sorted(comp);
-  }
-
-  @Override
-  public InstantColumn map(Function<? super Instant, ? extends Instant> fun) {
-    return (InstantColumn) super.map(fun);
-  }
-
-  @Override
-  public InstantColumn min(Column<Instant> other) {
-    return (InstantColumn) super.min(other);
-  }
-
-  @Override
-  public InstantColumn max(Column<Instant> other) {
-    return (InstantColumn) super.max(other);
-  }
-
-  @Override
-  public InstantColumn set(Selection condition, Column<Instant> other) {
-    return (InstantColumn) super.set(condition, other);
-  }
-
-  @Override
-  public InstantColumn first(int numRows) {
-    return (InstantColumn) super.first(numRows);
-  }
-
-  @Override
-  public InstantColumn last(int numRows) {
-    return (InstantColumn) super.last(numRows);
-  }
-
-  @Override
-  public InstantColumn inRange(int start, int end) {
-    return (InstantColumn) super.inRange(start, end);
-  }
-
-  @Override
-  public InstantColumn sampleN(int n) {
-    return (InstantColumn) super.sampleN(n);
-  }
-
-  @Override
-  public InstantColumn sampleX(double proportion) {
-    return (InstantColumn) super.sampleX(proportion);
   }
 
   @Override

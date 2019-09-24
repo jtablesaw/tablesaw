@@ -16,7 +16,6 @@ package tech.tablesaw.util;
 
 import com.google.common.base.Preconditions;
 import java.util.List;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.TableSliceGroup;
@@ -57,7 +56,7 @@ public class DoubleArrays {
     for (int viewNumber = 0; viewNumber < viewCount; viewNumber++) {
       TableSlice view = views.get(viewNumber);
       allVals[viewNumber] = new double[view.rowCount()];
-      NumberColumn<?> numberColumn = view.numberColumn(columnNumber);
+      NumericColumn<?> numberColumn = view.numberColumn(columnNumber);
       for (int r = 0; r < view.rowCount(); r++) {
         allVals[viewNumber][r] = numberColumn.getDouble(r);
       }

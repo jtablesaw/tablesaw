@@ -10,7 +10,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.plotly.Utils;
 
 public class Marker extends Component {
@@ -186,7 +186,7 @@ public class Marker extends Component {
       return this;
     }
 
-    public MarkerBuilder size(NumberColumn<?> size) {
+    public MarkerBuilder size(NumericColumn<?> size) {
       return size(size.asDoubleArray());
     }
 

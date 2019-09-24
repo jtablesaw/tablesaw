@@ -1,6 +1,6 @@
 package tech.tablesaw.examples;
 
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
@@ -14,8 +14,8 @@ public class ScatterLegendExample {
   public static void main(String[] args) throws Exception {
     Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
     tornadoes = tornadoes.where(tornadoes.nCol("Start lat").isGreaterThan(20));
-    NumberColumn<?> x = tornadoes.nCol("Start lon");
-    NumberColumn<?> y = tornadoes.nCol("Start lat");
+    NumericColumn<?> x = tornadoes.nCol("Start lon");
+    NumericColumn<?> y = tornadoes.nCol("Start lat");
 
     // show a legend even though there's only one trace, by setting showLegend explicitly to true
     Layout layout =

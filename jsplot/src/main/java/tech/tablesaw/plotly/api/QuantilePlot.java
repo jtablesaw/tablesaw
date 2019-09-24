@@ -1,6 +1,6 @@
 package tech.tablesaw.plotly.api;
 
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -19,7 +19,7 @@ public class QuantilePlot {
    */
   public static Figure create(String title, Table table, String columnName) {
 
-    NumberColumn<?> xCol = table.nCol(columnName);
+    NumericColumn<?> xCol = table.nCol(columnName);
 
     double[] x = new double[xCol.size()];
 
@@ -27,7 +27,7 @@ public class QuantilePlot {
       x[i] = i / (float) x.length;
     }
 
-    NumberColumn<?> copy = xCol.copy();
+    NumericColumn<?> copy = xCol.copy();
     copy.sortAscending();
 
     ScatterTrace trace = ScatterTrace.builder(x, copy.asDoubleArray()).build();

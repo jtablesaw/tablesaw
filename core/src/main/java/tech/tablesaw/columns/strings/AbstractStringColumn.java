@@ -9,7 +9,8 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 
 /** Abstract super class for Text like columns. */
-public abstract class AbstractStringColumn extends AbstractColumn<String>
+public abstract class AbstractStringColumn<C extends AbstractColumn<C, String>>
+    extends AbstractColumn<C, String>
     implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
   private StringColumnFormatter printFormatter = new StringColumnFormatter();
 

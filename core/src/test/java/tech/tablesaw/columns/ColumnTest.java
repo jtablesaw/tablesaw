@@ -214,8 +214,7 @@ public class ColumnTest {
   }
 
   @SafeVarargs
-  private final <T> void assertContentEquals(
-      Column<T> column, @SuppressWarnings("unchecked") T... ts) {
+  private final <T> void assertContentEquals(Column<T> column, T... ts) {
     assertEquals(ts.length, column.size());
     for (int i = 0; i < ts.length; i++) {
       assertEquals(ts[i], column.get(i));
