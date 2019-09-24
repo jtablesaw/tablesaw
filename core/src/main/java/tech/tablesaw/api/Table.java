@@ -62,7 +62,7 @@ import tech.tablesaw.table.TableSliceGroup;
  * All the data in a column has the same type: integer, float, category, etc., but a table may
  * contain an arbitrary number of columns of any type.
  *
- * <p>Tables are the main data-type and primary focus of Airframe.
+ * <p>Tables are the main data-type and primary focus of Tablesaw.
  */
 public class Table extends Relation implements Iterable<Row> {
 
