@@ -31,7 +31,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.Selection;
 
-/** Example code for: Learning Data Science with Java and Airframe */
+/** Example code for: Learning Data Science with Java and Tablesaw */
 public class Example1 extends AbstractExample {
 
   public static void main(String[] args) throws Exception {

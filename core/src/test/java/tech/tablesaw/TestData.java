@@ -23,7 +23,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 /**
- * This class setup Airframe Table from test data sources. It purpose is to make easy for tests or
+ * This class setup Tablesaw Tables from test data sources. It purpose is to make easy for tests or
  * example code get data to work with.
  */
 public enum TestData {
@@ -169,7 +169,7 @@ public enum TestData {
     this.source = Paths.get(csvSource);
   }
 
-  /** @return The Airframe instance for a specific data set */
+  /** @return The Table for a specific data set */
   public Table getTable() {
     return table;
   }
