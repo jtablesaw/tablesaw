@@ -333,16 +333,12 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    * @param into Column to which results are appended
    * @return the provided Column, to which results are appended
    */
-  default <R> Column<R> mapInto(Function<? super T, ? extends R> fun, Column<R> into) {
+  default <R, C extends Column<R>> C mapInto(Function<? super T, ? extends R> fun, C into) {
     for (int i = 0; i < size(); i++) {
       if (isMissing(i)) {
         into.setMissing(i);
       } else {
-        try {
-          into.set(i, fun.apply(get(i)));
-        } catch (Exception e) {
-          into.setMissing(i);
-        }
+        into.set(i, fun.apply(get(i)));
       }
     }
     return into;

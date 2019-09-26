@@ -391,16 +391,8 @@ public interface DateMapFunctions extends Column<LocalDate> {
   }
 
   default DateTimeColumn atStartOfDay() {
-    DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + " start");
-    for (int r = 0; r < this.size(); r++) {
-      LocalDate c1 = this.get(r);
-      if (c1 == null) {
-        newColumn.appendMissing();
-      } else {
-        newColumn.append(c1.atStartOfDay());
-      }
-    }
-    return newColumn;
+    return mapInto(
+        d -> d.atStartOfDay(), DateTimeColumn.create(this.name() + " start", this.size()));
   }
 
   /**
