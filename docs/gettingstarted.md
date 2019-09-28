@@ -309,11 +309,11 @@ destinationTable.addRow(43, sourceTable);	// adds row 43 from sourceTable to the
 table.sample(200);				// select 200 rows at random from table 
 ```
 
-You can also perform arbitrary operations on each row in the table.  One way is to just iterate over the rows and work with each column individually, using Row::rowNumber() as the index:
+You can also perform arbitrary operations on each row in the table.  One way is to just iterate over the rows and work with each column individually, using Row::getRowNumber() as the index:
 
 ```java
 for (Row row : table) {
-    System.out.println(column1.get(row.rowNumber())); // etc.
+    System.out.println(column1.get(row.getRowNumber())); // etc.
 }
 ```
 
