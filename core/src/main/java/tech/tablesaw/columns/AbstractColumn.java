@@ -146,5 +146,4 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
     }
     return sc;
   }
-
 }

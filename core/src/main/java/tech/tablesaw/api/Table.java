@@ -264,6 +264,15 @@ public class Table extends Relation implements Iterable<Row> {
     return replaceColumn(colIndex, newColumn);
   }
 
+  /**
+   * Replaces an existing column having the same name of the given column with the given column
+   *
+   * @param newColumn Column to be added
+   */
+  public Table replaceColumn(Column<?> newColumn) {
+    return replaceColumn(newColumn.name(), newColumn);
+  }
+
   /** Sets the name of the table */
   @Override
   public Table setName(String name) {
