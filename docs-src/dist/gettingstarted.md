@@ -385,7 +385,7 @@ table.sampleN(200); // select 200 rows at random from table
 ```
 
 You can also perform arbitrary operations on each row in the table.  One way is to just iterate over the rows and
-work with each column individually, using Row::rowNumber() as the index:
+work with each column individually.
 
 ```java
 for (Row row : table) {

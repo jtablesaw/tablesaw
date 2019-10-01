@@ -309,7 +309,7 @@ As with columns, many options exist for working with tables in row-wise fashion.
 ```
 
 You can also perform arbitrary operations on each row in the table.  One way is to just iterate over the rows and
-work with each column individually, using Row::rowNumber() as the index:
+work with each column individually.
 
 ```java
 @@snip [for_loop](./src/main/java/tech/tablesaw/docs/GettingStarted.java)
