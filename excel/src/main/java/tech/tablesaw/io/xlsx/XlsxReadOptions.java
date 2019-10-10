@@ -12,8 +12,12 @@ import tech.tablesaw.io.Source;
 
 public class XlsxReadOptions extends ReadOptions {
 
+  /** The sheet to read. Null means no specific index was set. First sheet has index 0. */
+  protected Integer sheetIndex;
+
   protected XlsxReadOptions(Builder builder) {
     super(builder);
+    sheetIndex = builder.sheetIndex;
   }
 
   public static Builder builder(Source source) {
@@ -40,7 +44,13 @@ public class XlsxReadOptions extends ReadOptions {
     return new Builder(new URL(url));
   }
 
+  public Integer sheetIndex() {
+    return sheetIndex;
+  }
+
   public static class Builder extends ReadOptions.Builder {
+
+    protected Integer sheetIndex;
 
     protected Builder(Source source) {
       super(source);
@@ -141,6 +151,11 @@ public class XlsxReadOptions extends ReadOptions {
     @Override
     public Builder minimizeColumnSizes() {
       super.minimizeColumnSizes();
+      return this;
+    }
+
+    public Builder sheetIndex(int sheetIndex) {
+      this.sheetIndex = sheetIndex;
       return this;
     }
   }

@@ -127,4 +127,34 @@ public class XlsxReaderTest {
     assertColumnValues(
         table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
   }
+
+  @Test
+  public void testSheetIndex() throws IOException {
+    Table table =
+        new XlsxReader()
+            .read(XlsxReadOptions.builder("../data/multiplesheets.xlsx").sheetIndex(1).build());
+    assertNotNull(table, "No table read from multiplesheets.xlsx");
+    assertColumnValues(table.stringColumn("stringcol"), "John", "Doe");
+
+    Table tableImplicit =
+        new XlsxReader().read(XlsxReadOptions.builder("../data/multiplesheets.xlsx").build());
+    // the table from the 2nd sheet should be picked up
+    assertNotNull(tableImplicit, "No table read from multiplesheets.xlsx");
+
+    try {
+      new XlsxReader()
+          .read(XlsxReadOptions.builder("../data/multiplesheets.xlsx").sheetIndex(0).build());
+      fail("First sheet is empty, no table should be found");
+    } catch (IllegalArgumentException iae) {
+      // expected
+    }
+
+    try {
+      new XlsxReader()
+          .read(XlsxReadOptions.builder("../data/multiplesheets.xlsx").sheetIndex(5).build());
+      fail("Only 2 sheets exist, no sheet 5");
+    } catch (IndexOutOfBoundsException iobe) {
+      // expected
+    }
+  }
 }
