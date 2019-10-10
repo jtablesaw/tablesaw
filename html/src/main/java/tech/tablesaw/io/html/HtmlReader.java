@@ -42,14 +42,20 @@ public class HtmlReader implements DataReader<HtmlReadOptions> {
       doc = Parser.htmlParser().parseInput(options.source().createReader(null), "");
     }
     Elements tables = doc.select("table");
+    int tableIndex = 0;
     if (tables.size() != 1) {
-      throw new IllegalStateException(
-          "Reading html to table currently works if there is exactly 1 html table on the page. "
-              + " The URL you passed has "
-              + tables.size()
-              + ". You may file a feature request with the URL if you'd like your pagae to be supported");
+      if (options.tableIndex() != null) {
+        if (options.tableIndex() >= 0 && options.tableIndex() < tables.size()) {
+          tableIndex = options.tableIndex();
+        } else {
+          throw new IndexOutOfBoundsException(
+              "Table index outside bounds. The URL has " + tables.size() + " tables");
+        }
+      } else {
+          throw new IllegalStateException(tables.size() + " tables found. When more than one html table is present on the page you must specify the index of the table to read from.");
+      }
     }
-    Element htmlTable = tables.get(0);
+    Element htmlTable = tables.get(tableIndex);
 
     List<String[]> rows = new ArrayList<>();
     for (Element row : htmlTable.select("tr")) {

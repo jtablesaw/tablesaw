@@ -12,9 +12,12 @@ import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.Source;
 
 public class HtmlReadOptions extends ReadOptions {
+  /** Which table from the page should be read? Null means no specific index was set. */
+  protected Integer tableIndex;
 
   protected HtmlReadOptions(Builder builder) {
     super(builder);
+    tableIndex = builder.tableIndex;
   }
 
   public static Builder builder(Source source) {
@@ -68,7 +71,13 @@ public class HtmlReadOptions extends ReadOptions {
     return builder.tableName(tableName);
   }
 
+  public Integer tableIndex() {
+    return tableIndex;
+  }
+
   public static class Builder extends ReadOptions.Builder {
+
+    protected Integer tableIndex;
 
     protected Builder(Source source) {
       super(source);
@@ -168,6 +177,11 @@ public class HtmlReadOptions extends ReadOptions {
     @Override
     public Builder minimizeColumnSizes() {
       super.minimizeColumnSizes();
+      return this;
+    }
+
+    public Builder tableIndex(int tableIndex) {
+      this.tableIndex = tableIndex;
       return this;
     }
   }
