@@ -52,11 +52,7 @@ public class HtmlReader implements DataReader<HtmlReadOptions> {
               "Table index outside bounds. The URL has " + tables.size() + " tables");
         }
       } else {
-        throw new IllegalStateException(
-            "Reading html to table currently works if there is exactly 1 html table on the page or if you specify a tableIndex in HtmlReadOptions. "
-                + " The URL you passed has "
-                + tables.size()
-                + ". You may file a feature request with the URL if you'd like your pagae to be supported");
+          throw new IllegalStateException(tables.size() + " tables found. When more than one html table is present on the page you must specify the index of the table to read from.");
       }
     }
     Element htmlTable = tables.get(tableIndex);
