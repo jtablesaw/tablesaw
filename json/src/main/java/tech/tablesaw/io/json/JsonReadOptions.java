@@ -13,8 +13,11 @@ import tech.tablesaw.io.Source;
 
 public class JsonReadOptions extends ReadOptions {
 
+  private final String path;
+
   protected JsonReadOptions(Builder builder) {
     super(builder);
+    this.path = builder.path;
   }
 
   public static Builder builder(Source source) {
@@ -67,7 +70,13 @@ public class JsonReadOptions extends ReadOptions {
     return new Builder(reader);
   }
 
+  public String path() {
+    return path;
+  }
+
   public static class Builder extends ReadOptions.Builder {
+
+    private String path;
 
     protected Builder(Source source) {
       super(source);
@@ -167,6 +176,12 @@ public class JsonReadOptions extends ReadOptions {
     @Override
     public Builder minimizeColumnSizes() {
       super.minimizeColumnSizes();
+      return this;
+    }
+
+    /** @param path the JSON Pointer path used to select a sub-tree in the main document */
+    public Builder path(String path) {
+      this.path = path;
       return this;
     }
   }
