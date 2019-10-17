@@ -61,9 +61,6 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   @Override
   public Table read(XlsxReadOptions options) throws IOException {
     List<Table> tables = readMultiple(options, true);
-    if (tables.isEmpty()) {
-      throw new IllegalArgumentException("No tables found.");
-    }
     if (options.sheetIndex() != null) {
       int index = options.sheetIndex();
       if (index < 0 || index >= tables.size()) {
