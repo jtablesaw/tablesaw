@@ -70,7 +70,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
 
       Table table = tables.get(index);
       if (table == null) {
-        throw new IllegalArgumentException("No tables found.");
+        throw new IllegalArgumentException("No table found at sheet index " + index);
       }
       return table;
     }
