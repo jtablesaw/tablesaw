@@ -65,12 +65,13 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
       int index = options.sheetIndex();
       if (index < 0 || index >= tables.size()) {
         throw new IndexOutOfBoundsException(
-            "Sheet index outside bounds. " + tables.size() + " sheets found.");
+            String.format("Sheet index %d outside bounds. %d sheets found.", index, tables.size()));
       }
 
       Table table = tables.get(index);
       if (table == null) {
-        throw new IllegalArgumentException("No table found at sheet index " + index);
+        throw new IllegalArgumentException(
+            String.format("No table found at sheet index %d.", index));
       }
       return table;
     }
