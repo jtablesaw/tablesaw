@@ -60,14 +60,40 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
 
   @Override
   public Table read(XlsxReadOptions options) throws IOException {
-    List<Table> tables = readMultiple(options);
-    if (tables.isEmpty()) {
-      throw new IllegalArgumentException("No tables found.");
+    List<Table> tables = readMultiple(options, true);
+    if (options.sheetIndex() != null) {
+      int index = options.sheetIndex();
+      if (index < 0 || index >= tables.size()) {
+        throw new IndexOutOfBoundsException(
+            String.format("Sheet index %d outside bounds. %d sheets found.", index, tables.size()));
+      }
+
+      Table table = tables.get(index);
+      if (table == null) {
+        throw new IllegalArgumentException(
+            String.format("No table found at sheet index %d.", index));
+      }
+      return table;
     }
-    return tables.get(0);
+    // since no specific sheetIndex asked, return first table
+    return tables.stream()
+        .filter(t -> t != null)
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("No tables found."));
   }
 
   public List<Table> readMultiple(XlsxReadOptions options) throws IOException {
+    return readMultiple(options, false);
+  }
+
+  /**
+   * Read at most a table from every sheet.
+   *
+   * @param includeNulls include nulls for sheets without a table
+   * @return a list of tables, at most one for every sheet
+   */
+  protected List<Table> readMultiple(XlsxReadOptions options, boolean includeNulls)
+      throws IOException {
     byte[] bytes = null;
     InputStream input = getInputStream(options, bytes);
     List<Table> tables = new ArrayList<Table>();
@@ -77,6 +103,8 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
         if (tableArea != null) {
           Table table = createTable(sheet, tableArea, options);
           tables.add(table);
+        } else if (includeNulls) {
+          tables.add(null);
         }
       }
       return tables;
