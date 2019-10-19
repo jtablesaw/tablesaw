@@ -17,6 +17,14 @@ class FileReaderTest {
   }
 
   @Test
+  void shouldTrimWhitespacesOutsideQuotes() throws Exception {
+    Builder builder = CsvReadOptions.builder("../data/2017_Climate_Investment_Funds.csv");
+    String columnName = "Reporting year";
+    Column<?> c = Table.read().csv(builder).column(columnName);
+    assertNotNull(c);
+  }
+
+  @Test
   void ignoreTrailingWhitespacesInQuotes() throws Exception {
     Builder builder = CsvReadOptions.builder("../data/2017_Climate_Investment_Funds.csv");
     String columnName = "Actual  Annual Electricity Output (Latest Year, MWh)";
