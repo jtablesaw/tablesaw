@@ -149,6 +149,8 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
     settings.setLineSeparatorDetectionEnabled(options.lineSeparatorDetectionEnabled());
     settings.setFormat(csvFormat(options));
     settings.setMaxCharsPerColumn(options.maxCharsPerColumn());
+    settings.setIgnoreLeadingWhitespacesInQuotes(options.ignoreLeadingWhitespacesInQuotes());
+    settings.setIgnoreTrailingWhitespacesInQuotes(options.ignoreTrailingWhitespacesInQuotes());
     if (options.maxNumberOfColumns() != null) {
       settings.setMaxColumns(options.maxNumberOfColumns());
     }

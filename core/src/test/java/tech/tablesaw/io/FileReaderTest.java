@@ -17,19 +17,37 @@ class FileReaderTest {
   }
 
   @Test
-  void trimHeadersWithEmptyTrailingSpace() throws Exception {
+  void ignoreTrailingWhitespacesInQuotes() throws Exception {
     Builder builder = CsvReadOptions.builder("../data/2017_Climate_Investment_Funds.csv");
     String columnName = "Actual  Annual Electricity Output (Latest Year, MWh)";
-    builder.trimHeaders(true);
+    builder.ignoreTrailingWhitespacesInQuotes(true);
     Column<?> c = Table.read().csv(builder).column(columnName);
     assertNotNull(c);
   }
 
   @Test
-  void shouldNotTrimHeadersWithEmptyTrailingSpace() throws Exception {
+  void shouldNotIgnoreTrailingWhitespacesInQuotes() throws Exception {
     Builder builder = CsvReadOptions.builder("../data/2017_Climate_Investment_Funds.csv");
-    builder.trimHeaders(false);
+    builder.ignoreTrailingWhitespacesInQuotes(false);
     String columnName = "Actual  Annual Electricity Output (Latest Year, MWh) ";
+    Column<?> c = Table.read().csv(builder).column(columnName);
+    assertNotNull(c);
+  }
+
+  @Test
+  void ignoreLeadingWhitespacesInQuotes() throws Exception {
+    Builder builder = CsvReadOptions.builder("../data/2017_Climate_Investment_Funds.csv");
+    String columnName = "Project Title";
+    builder.ignoreLeadingWhitespacesInQuotes(true);
+    Column<?> c = Table.read().csv(builder).column(columnName);
+    assertNotNull(c);
+  }
+
+  @Test
+  void shouldNotIgnoreLeadingWhitespacesInQuotes() throws Exception {
+    Builder builder = CsvReadOptions.builder("../data/2017_Climate_Investment_Funds.csv");
+    builder.ignoreLeadingWhitespacesInQuotes(false);
+    String columnName = " Project Title";
     Column<?> c = Table.read().csv(builder).column(columnName);
     assertNotNull(c);
   }

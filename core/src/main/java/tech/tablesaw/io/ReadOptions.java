@@ -81,7 +81,6 @@ public class ReadOptions {
   protected final DateTimeFormatter timeFormatter;
 
   protected final boolean header;
-  protected final boolean trimHeaders;
 
   protected ReadOptions(ReadOptions.Builder builder) {
     source = builder.source;
@@ -94,7 +93,6 @@ public class ReadOptions {
     missingValueIndicator = builder.missingValueIndicator;
     minimizeColumnSizes = builder.minimizeColumnSizes;
     header = builder.header;
-    trimHeaders = builder.trimHeaders;
     maxCharsPerColumn = builder.maxCharsPerColumn;
 
     dateFormatter = builder.dateFormatter;
@@ -138,10 +136,6 @@ public class ReadOptions {
 
   public boolean header() {
     return header;
-  }
-
-  public boolean trimHeaders() {
-    return trimHeaders;
   }
 
   public DateTimeFormatter dateTimeFormatter() {
@@ -191,7 +185,6 @@ public class ReadOptions {
     protected String missingValueIndicator;
     protected boolean minimizeColumnSizes = false;
     protected boolean header = true;
-    protected boolean trimHeaders = true;
     protected int maxCharsPerColumn = 4096;
 
     protected Builder() {
@@ -227,11 +220,6 @@ public class ReadOptions {
 
     public Builder header(boolean hasHeader) {
       this.header = hasHeader;
-      return this;
-    }
-
-    public Builder trimHeaders(boolean trimHeaders) {
-      this.trimHeaders = trimHeaders;
       return this;
     }
 

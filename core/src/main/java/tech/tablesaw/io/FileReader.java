@@ -52,10 +52,6 @@ public abstract class FileReader {
         options);
   }
 
-  private String cleanName(String name) {
-    return name.trim();
-  }
-
   private String[] getHeaderNames(
       ReadOptions options, ColumnType[] types, AbstractParser<?> parser) {
     if (options.header()) {
@@ -65,9 +61,7 @@ public abstract class FileReader {
         if (headerNames[i] == null) {
           headerNames[i] = "C" + i;
         } else {
-          if (options.trimHeaders()) {
-            headerNames[i] = headerNames[i].trim();
-          }
+          headerNames[i] = headerNames[i];
         }
       }
       return headerNames;

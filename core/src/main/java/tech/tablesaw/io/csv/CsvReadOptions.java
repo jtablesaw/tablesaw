@@ -35,6 +35,8 @@ public class CsvReadOptions extends ReadOptions {
   private final Integer maxNumberOfColumns;
   private final Character commentPrefix;
   private final boolean lineSeparatorDetectionEnabled;
+  private final boolean ignoreLeadingWhitespacesInQuotes;
+  private final boolean ignoreTrailingWhitespacesInQuotes;
 
   private CsvReadOptions(CsvReadOptions.Builder builder) {
     super(builder);
@@ -46,6 +48,8 @@ public class CsvReadOptions extends ReadOptions {
     maxNumberOfColumns = builder.maxNumberOfColumns;
     commentPrefix = builder.commentPrefix;
     lineSeparatorDetectionEnabled = builder.lineSeparatorDetectionEnabled;
+    ignoreTrailingWhitespacesInQuotes = builder.ignoreTrailingWhitespacesInQuotes;
+    ignoreLeadingWhitespacesInQuotes = builder.ignoreLeadingWhitespacesInQuotes;
   }
 
   public static Builder builder(Source source) {
@@ -130,6 +134,14 @@ public class CsvReadOptions extends ReadOptions {
     return maxCharsPerColumn;
   }
 
+  public boolean ignoreLeadingWhitespacesInQuotes() {
+    return ignoreLeadingWhitespacesInQuotes;
+  }
+
+  public boolean ignoreTrailingWhitespacesInQuotes() {
+    return ignoreTrailingWhitespacesInQuotes;
+  }
+
   public static class Builder extends ReadOptions.Builder {
 
     private Character separator = ',';
@@ -139,6 +151,8 @@ public class CsvReadOptions extends ReadOptions {
     private Integer maxNumberOfColumns = 10_000;
     private Character commentPrefix;
     private boolean lineSeparatorDetectionEnabled = true;
+    private boolean ignoreTrailingWhitespacesInQuotes = true;
+    private boolean ignoreLeadingWhitespacesInQuotes = true;
 
     protected Builder(Source source) {
       super(source);
@@ -196,6 +210,16 @@ public class CsvReadOptions extends ReadOptions {
       return this;
     }
 
+    public Builder ignoreLeadingWhitespacesInQuotes(boolean ignoreLeadingWhitespacesInQuotes) {
+      this.ignoreLeadingWhitespacesInQuotes = ignoreLeadingWhitespacesInQuotes;
+      return this;
+    }
+
+    public Builder ignoreTrailingWhitespacesInQuotes(boolean ignoreTrailingWhitespacesInQuotes) {
+      this.ignoreTrailingWhitespacesInQuotes = ignoreTrailingWhitespacesInQuotes;
+      return this;
+    }
+
     public CsvReadOptions build() {
       return new CsvReadOptions(this);
     }
@@ -205,12 +229,6 @@ public class CsvReadOptions extends ReadOptions {
     @Override
     public Builder header(boolean header) {
       super.header(header);
-      return this;
-    }
-
-    @Override
-    public Builder trimHeaders(boolean trimHeaders) {
-      super.trimHeaders(trimHeaders);
       return this;
     }
 
