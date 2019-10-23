@@ -21,6 +21,16 @@ class BarPlot {
 
     Layout layout = standardLayout(title).build();
 
+    return create(orientation, layout, table, groupColName, numberColName);
+  }
+
+  protected static Figure create(
+      Orientation orientation,
+      Layout layout,
+      Table table,
+      String groupColName,
+      String numberColName) {
+
     BarTrace trace =
         BarTrace.builder(table.categoricalColumn(groupColName), table.numberColumn(numberColName))
             .orientation(orientation)
@@ -37,6 +47,16 @@ class BarPlot {
       String... numberColNames) {
 
     Layout layout = standardLayout(title).barMode(barMode).showLegend(true).build();
+
+    return create(orientation, layout, table, groupColName, numberColNames);
+  }
+
+  protected static Figure create(
+      Orientation orientation,
+      Layout layout,
+      Table table,
+      String groupColName,
+      String... numberColNames) {
 
     Trace[] traces = new Trace[numberColNames.length];
     for (int i = 0; i < numberColNames.length; i++) {

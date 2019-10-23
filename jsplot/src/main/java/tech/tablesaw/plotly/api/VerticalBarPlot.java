@@ -13,6 +13,11 @@ public class VerticalBarPlot extends BarPlot {
   }
 
   public static Figure create(
+      Layout layout, Table table, String groupColName, String numberColName) {
+    return BarPlot.create(Orientation.VERTICAL, layout, table, groupColName, numberColName);
+  }
+
+  public static Figure create(
       String title,
       Table table,
       String groupColName,
@@ -20,5 +25,10 @@ public class VerticalBarPlot extends BarPlot {
       String... numberColNames) {
     return BarPlot.create(
         Orientation.VERTICAL, title, table, groupColName, barMode, numberColNames);
+  }
+
+  public static Figure create(
+      Layout layout, Table table, String groupColName, String... numberColNames) {
+    return BarPlot.create(Orientation.VERTICAL, layout, table, groupColName, numberColNames);
   }
 }
