@@ -42,26 +42,24 @@ public class Figure {
   }
 
   public Figure(Trace... traces) {
-    this.data = traces;
-    this.layout = null;
-    this.config = null;
-    this.eventHandlers = null;
+    this((Layout) null, traces);
   }
 
   public Figure(Layout layout, Trace... traces) {
+    this(layout, (Config) null, traces);
+  }
+
+  public Figure(Layout layout, Config config, Trace... traces) {
     this.data = traces;
     this.layout = layout;
-    this.config = (layout != null && layout.getConfig() != null) ? layout.getConfig() : null;
+    this.config = config;
     this.eventHandlers = null;
   }
 
   /** @deprecated Use the FigureBuilder instead */
   @Deprecated
   public Figure(Layout layout, EventHandler eventHandler, Trace... traces) {
-    this.data = traces;
-    this.layout = layout;
-    this.config = (layout != null && layout.getConfig() != null) ? layout.getConfig() : null;
-    this.eventHandlers = new EventHandler[] {eventHandler};
+    this(layout, new EventHandler[] {eventHandler}, traces);
   }
 
   /** @deprecated Use the FigureBuilder instead */
@@ -182,9 +180,6 @@ public class Figure {
 
     public FigureBuilder layout(Layout layout) {
       this.layout = layout;
-      if (layout.getConfig() != null) {
-        return config(layout.getConfig());
-      }
       return this;
     }
 

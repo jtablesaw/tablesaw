@@ -175,10 +175,6 @@ public class Layout {
 
   private final BarMode barMode;
 
-  // XXX: Config is not part of layout in plotly but seems simpler to have a single place for all
-  // these options. Does not get saved to the context!
-  private final Config config;
-
   private Layout(LayoutBuilder builder) {
     this.title = builder.title;
     this.autoSize = builder.autoSize;
@@ -204,11 +200,6 @@ public class Layout {
     this.barMode = builder.barMode;
     this.scene = builder.scene;
     this.grid = builder.grid;
-    this.config = builder.config;
-  }
-
-  public Config getConfig() {
-    return config;
   }
 
   public String getTitle() {
@@ -370,8 +361,6 @@ public class Layout {
     /** Define grid to use when creating subplots */
     private Grid grid;
 
-    private Config config;
-
     public Layout build() {
       return new Layout(this);
     }
@@ -470,11 +459,6 @@ public class Layout {
 
     public LayoutBuilder grid(Grid grid) {
       this.grid = grid;
-      return this;
-    }
-
-    public LayoutBuilder config(Config config) {
-      this.config = config;
       return this;
     }
   }
