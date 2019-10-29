@@ -1,6 +1,8 @@
 var {{variableName}} =
 {
+{% if x is not null %}
 x: {{x | raw}},
+{% endif %}
 {% if y is not null %}
 y: {{y | raw}},
 {% endif %}
@@ -60,6 +62,12 @@ nbinsy: {{nBinsY}},
 {% endif %}
 {% if autoBinY is not null %}
 autobiny: {{autoBinY}},
+{% endif %}
+{% if histnorm is not null %}
+    histnorm: '{{histnorm}}',
+{% endif %}
+{% if histfunc is not null %}
+    histfunc: '{{histfunc}}',
 {% endif %}
 {% if visible is not null %}
 visible: '{{visible}}',
