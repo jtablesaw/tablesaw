@@ -27,6 +27,7 @@ public class Figure {
 
   private final Trace[] data;
   private final Layout layout;
+  private final Config config;
   private final EventHandler[] eventHandlers;
 
   private final Map<String, Object> context = new HashMap<>();
@@ -36,27 +37,29 @@ public class Figure {
   public Figure(FigureBuilder builder) {
     this.data = builder.traces();
     this.layout = builder.layout;
+    this.config = builder.config;
     this.eventHandlers = builder.eventHandlers();
   }
 
   public Figure(Trace... traces) {
-    this.data = traces;
-    this.layout = null;
-    this.eventHandlers = null;
+    this((Layout) null, traces);
   }
 
   public Figure(Layout layout, Trace... traces) {
+    this(layout, (Config) null, traces);
+  }
+
+  public Figure(Layout layout, Config config, Trace... traces) {
     this.data = traces;
     this.layout = layout;
+    this.config = config;
     this.eventHandlers = null;
   }
 
   /** @deprecated Use the FigureBuilder instead */
   @Deprecated
   public Figure(Layout layout, EventHandler eventHandler, Trace... traces) {
-    this.data = traces;
-    this.layout = layout;
-    this.eventHandlers = new EventHandler[] {eventHandler};
+    this(layout, new EventHandler[] {eventHandler}, traces);
   }
 
   /** @deprecated Use the FigureBuilder instead */
@@ -64,6 +67,7 @@ public class Figure {
   public Figure(Layout layout, EventHandler[] eventHandlers, Trace... traces) {
     this.data = traces;
     this.layout = layout;
+    this.config = null;
     this.eventHandlers = eventHandlers;
   }
 
@@ -101,6 +105,9 @@ public class Figure {
     if (layout != null) {
       builder.append(layout.asJavascript());
     }
+    if (config != null) {
+      builder.append(config.asJavascript());
+    }
     builder.append(System.lineSeparator());
     for (int i = 0; i < data.length; i++) {
       Trace trace = data[i];
@@ -131,6 +138,10 @@ public class Figure {
     if (layout != null) {
       builder.append(", ");
       builder.append("layout");
+    }
+    if (config != null) {
+      builder.append(", ");
+      builder.append("config");
     }
 
     builder.append(");");
@@ -163,11 +174,17 @@ public class Figure {
   public static class FigureBuilder {
 
     private Layout layout;
+    private Config config;
     private List<Trace> traces = new ArrayList<>();
     private List<EventHandler> eventHandlers = new ArrayList<>();
 
     public FigureBuilder layout(Layout layout) {
       this.layout = layout;
+      return this;
+    }
+
+    public FigureBuilder config(Config config) {
+      this.config = config;
       return this;
     }
 
