@@ -422,8 +422,8 @@ public class AggregateFunctions {
   /** @deprecated use {@link #stdDev} instead */
   @Deprecated public static final NumericAggregateFunction standardDeviation = stdDev;
 
-  public static final AggregateFunction<Column<?>, String> top1 =
-      new AggregateFunction<Column<?>, String>("Top 1") {
+  public static final AggregateFunction<Column<?>, String> firstString =
+      new AggregateFunction<Column<?>, String>("First (as String)") {
 
         @Override
         public String summarize(Column<?> column) {

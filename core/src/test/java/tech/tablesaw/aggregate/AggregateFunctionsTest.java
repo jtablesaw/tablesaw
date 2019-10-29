@@ -25,6 +25,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.countTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.countUnique;
 import static tech.tablesaw.aggregate.AggregateFunctions.countWithMissing;
 import static tech.tablesaw.aggregate.AggregateFunctions.earliestDate;
+import static tech.tablesaw.aggregate.AggregateFunctions.firstString;
 import static tech.tablesaw.aggregate.AggregateFunctions.latestDate;
 import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 import static tech.tablesaw.aggregate.AggregateFunctions.noneTrue;
@@ -36,7 +37,6 @@ import static tech.tablesaw.aggregate.AggregateFunctions.proportionTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.standardDeviation;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
-import static tech.tablesaw.aggregate.AggregateFunctions.top1;
 import static tech.tablesaw.api.QuerySupport.and;
 import static tech.tablesaw.api.QuerySupport.date;
 import static tech.tablesaw.api.QuerySupport.num;
@@ -111,7 +111,7 @@ class AggregateFunctionsTest {
   }
 
   @Test
-  void testTop1() {
+  void testFirstString() {
     StringColumn company = StringColumn.create("Company");
     StringColumn sector = StringColumn.create("Sector");
     Table t = Table.create(company, sector);
@@ -125,7 +125,7 @@ class AggregateFunctionsTest {
       r.setString(0, "Facebook");
       r.setString(1, "Technology");
     }
-    Table result = t.summarize("Company", top1).by("Sector");
+    Table result = t.summarize("Company", firstString).by("Sector");
     assertEquals(1, result.rowCount());
     assertEquals("Technology", result.get(0, 0));
     assertEquals("Google", result.get(0, 1));
