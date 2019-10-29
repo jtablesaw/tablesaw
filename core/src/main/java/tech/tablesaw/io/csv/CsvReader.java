@@ -137,7 +137,7 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
     CsvParser parser = csvParser(options);
 
     try {
-      return getTypes(reader, options, linesToSkip, parser);
+      return getColumnTypes(reader, options, linesToSkip, parser);
     } finally {
       parser.stopParsing();
       // we don't close the reader since we didn't create it
