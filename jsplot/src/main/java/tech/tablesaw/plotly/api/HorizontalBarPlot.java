@@ -13,11 +13,6 @@ public class HorizontalBarPlot extends BarPlot {
   }
 
   public static Figure create(
-      Layout layout, Table table, String groupColName, String numberColName) {
-    return BarPlot.create(Orientation.HORIZONTAL, layout, table, groupColName, numberColName);
-  }
-
-  public static Figure create(
       String title,
       Table table,
       String groupColName,
@@ -25,10 +20,5 @@ public class HorizontalBarPlot extends BarPlot {
       String... numberColNames) {
     return BarPlot.create(
         Orientation.HORIZONTAL, title, table, groupColName, barMode, numberColNames);
-  }
-
-  public static Figure create(
-      Layout layout, Table table, String groupColName, String... numberColNames) {
-    return BarPlot.create(Orientation.HORIZONTAL, layout, table, groupColName, numberColNames);
   }
 }
