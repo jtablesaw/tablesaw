@@ -26,7 +26,7 @@ import tech.tablesaw.plotly.traces.Trace;
 public class Figure {
 
   private final Trace[] data;
-  private final Layout layout;
+  private Layout layout;
   private final EventHandler[] eventHandlers;
 
   private final Map<String, Object> context = new HashMap<>();
@@ -73,6 +73,10 @@ public class Figure {
 
   public Layout getLayout() {
     return layout;
+  }
+
+  public void setLayout(Layout layout) {
+    this.layout = layout;
   }
 
   public String asJavascript(String divName) {
