@@ -138,7 +138,7 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
     AbstractParser<?> parser = fixedWidthParser(options);
 
     try {
-      return getTypes(reader, options, linesToSkip, parser);
+      return getColumnTypes(reader, options, linesToSkip, parser);
     } finally {
       parser.stopParsing();
       // we don't close the reader since we didn't create it

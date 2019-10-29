@@ -21,7 +21,11 @@ public abstract class FileReader {
   /** Constructs a CsvReader */
   public FileReader() {}
 
-  protected ColumnType[] getTypes(
+  /**
+   * Returns an array containing the inferred columnTypes for the file being read, as calculated by
+   * the ColumnType inference logic. These types may not be correct.
+   */
+  public ColumnType[] getColumnTypes(
       Reader reader, ReadOptions options, int linesToSkip, AbstractParser<?> parser) {
 
     parser.beginParsing(reader);
@@ -56,7 +60,8 @@ public abstract class FileReader {
     return name.trim();
   }
 
-  private String[] getHeaderNames(
+  /** Returns the column names for each column in the source. */
+  public String[] getColumnNames(
       ReadOptions options, ColumnType[] types, AbstractParser<?> parser) {
     if (options.header()) {
       String[] headerNames = parser.parseNext();
@@ -88,7 +93,7 @@ public abstract class FileReader {
     parser.beginParsing(reader);
     Table table = Table.create(options.tableName());
 
-    List<String> headerRow = Lists.newArrayList(getHeaderNames(options, types, parser));
+    List<String> headerRow = Lists.newArrayList(getColumnNames(options, types, parser));
 
     for (int x = 0; x < types.length; x++) {
       if (types[x] != SKIP) {
