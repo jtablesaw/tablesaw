@@ -7,11 +7,13 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
 import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.strings.StringColumnType;
 
 public class AggregateFunctions {
 
@@ -419,6 +421,25 @@ public class AggregateFunctions {
 
   /** @deprecated use {@link #stdDev} instead */
   @Deprecated public static final NumericAggregateFunction standardDeviation = stdDev;
+
+  public static final AggregateFunction<Column<?>, String> top1 =
+      new AggregateFunction<Column<?>, String>("Top 1") {
+
+        @Override
+        public String summarize(Column<?> column) {
+          return column.isEmpty() ? StringColumnType.missingValueIndicator() : column.getString(0);
+        }
+
+        @Override
+        public boolean isCompatibleColumn(ColumnType type) {
+          return true;
+        }
+
+        @Override
+        public ColumnType returnType() {
+          return ColumnType.STRING;
+        }
+      };
 
   public static Double percentile(NumericColumn<?> data, Double percentile) {
     return StatUtils.percentile(removeMissing(data), percentile);

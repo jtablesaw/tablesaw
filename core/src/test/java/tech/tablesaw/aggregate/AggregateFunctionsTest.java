@@ -36,6 +36,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.proportionTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.standardDeviation;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.aggregate.AggregateFunctions.top1;
 import static tech.tablesaw.api.QuerySupport.and;
 import static tech.tablesaw.api.QuerySupport.date;
 import static tech.tablesaw.api.QuerySupport.num;
@@ -48,6 +49,7 @@ import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -106,6 +108,27 @@ class AggregateFunctionsTest {
 
     result = table.summarize("approval", mean, AggregateFunctions.count).groupBy(byColumn).apply();
     assertEquals(13, result.rowCount());
+  }
+
+  @Test
+  void testTop1() {
+    StringColumn company = StringColumn.create("Company");
+    StringColumn sector = StringColumn.create("Sector");
+    Table t = Table.create(company, sector);
+    {
+      Row r = t.appendRow();
+      r.setString(0, "Google");
+      r.setString(1, "Technology");
+    }
+    {
+      Row r = t.appendRow();
+      r.setString(0, "Facebook");
+      r.setString(1, "Technology");
+    }
+    Table result = t.summarize("Company", top1).by("Sector");
+    assertEquals(1, result.rowCount());
+    assertEquals("Technology", result.get(0, 0));
+    assertEquals("Google", result.get(0, 1));
   }
 
   @Test
