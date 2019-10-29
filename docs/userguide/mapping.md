@@ -42,35 +42,29 @@ The new Column is not added to the original columns table by default. To add it,
 
 ## Custom map functions 
 
-You can create functions that build new columns using *doWithEach():*
+You can create functions that build new columns using *map():*
 
 ```java
 Table table = Table.read().csv("../data/bush.csv");
 
 DateColumn dc1 = table.dateColumn("date");
-DateColumn dc2 = DateColumn.create("100 days later");
-
-dc1.doWithEach(localDate -> dc2.append(localDate.plusDays(100)));
+DateColumn dc2 = dc1.map(localDate -> localDate.plusDays(100)).setName("100 days later");
+table.addColumns(dc2);
 ```
 
-The method *doWithEach(Consumer<T>)* is defined on AbstractColumn. It takes a Consumer that accepts values of the same type as the column holds: LocalDates in the case of DateColumn. If the lambda syntax above is a bit too cryptic, here's a version that does the same thing with the Consumer written out as an anonymous class:
+The method *map(Function<? super T, ? extends T>)* is defined on AbstractColumn. It takes a Function that accepts values of the same type as the column holds: LocalDates in the case of DateColumn. If the lambda syntax above is a bit too cryptic, here's a version that does the same thing with the Consumer written out as an anonymous class:
 
 ```java
-DateColumn dc2 = DateColumn.create("100 days later");
-
-dc1.doWithEach(new Consumer<LocalDate>() {
+DateColumn dc2 = dc1.map(new Function<LocalDate, LocalDate>() {
     @Override
-    public void accept(LocalDate localDate) {
-        if (localDate == null) {
-            dc2.appendMissing();
-        } else {
-        	dc2.append(localDate.plusDays(100));
-        }
+    public LocalDate apply(LocalDate localDate) {
+        return localDate == null ? null : localDate.plusDays(100);
     }
-});
+}).setName("100 days later");
+table.addColumns(dc2);
 ```
 
-The accept() method here calls *plusDays(100)*  on each value in the column that receives the doWithEach method invocation and appends each result to the column d2. The results are added to the column dc2 declared just before the method is called. 
+The apply() method here calls *plusDays(100)*  on each value in the column that receives the map method invocation and appends each result to the column d2. The results are added to the column dc2 declared just before the method is called. 
 
 In writing your own map functions it's good practice to handle missing data as we do above.
 
