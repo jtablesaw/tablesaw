@@ -13,8 +13,9 @@ public class Utils {
     return "'" + string + "'";
   }
 
+  /** Escapes backslash (\) and single quote ('). */
   private static String escape(String s) {
-    return s.replaceAll("\\'", "\\\\'");
+    return s.replaceAll("\\\\", "\\\\\\\\").replaceAll("\\'", "\\\\'");
   }
 
   /** @return a Javascript array of strings (escaped if needed) */
