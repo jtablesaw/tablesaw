@@ -422,7 +422,7 @@ public class AggregateFunctions {
   /** @deprecated use {@link #stdDev} instead */
   @Deprecated public static final NumericAggregateFunction standardDeviation = stdDev;
 
-  public static final AggregateFunction<Column<?>, String> firstString =
+  public static final AggregateFunction<Column<?>, String> firstAsString =
       new AggregateFunction<Column<?>, String>("First (as String)") {
 
         @Override
