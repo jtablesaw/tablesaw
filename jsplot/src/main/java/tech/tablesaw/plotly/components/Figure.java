@@ -27,7 +27,7 @@ public class Figure {
 
   private final Trace[] data;
   private Layout layout;
-  private final Config config;
+  private Config config;
   private final EventHandler[] eventHandlers;
 
   private final Map<String, Object> context = new HashMap<>();
@@ -81,6 +81,14 @@ public class Figure {
 
   public void setLayout(Layout layout) {
     this.layout = layout;
+  }
+
+  public Config getConfig() {
+    return config;
+  }
+
+  public void setConfig(Config config) {
+    this.config = config;
   }
 
   public String asJavascript(String divName) {
