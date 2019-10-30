@@ -79,6 +79,7 @@ public class ReadOptions {
   protected final DateTimeFormatter dateFormatter;
   protected final DateTimeFormatter dateTimeFormatter;
   protected final DateTimeFormatter timeFormatter;
+  protected final boolean percentage;
 
   protected final boolean header;
 
@@ -104,6 +105,7 @@ public class ReadOptions {
     } else {
       locale = builder.locale;
     }
+    percentage = builder.percentage;
   }
 
   public Source source() {
@@ -169,6 +171,10 @@ public class ReadOptions {
     return DateTimeFormatter.ofPattern(dateFormat, locale);
   }
 
+  public boolean percentage() {
+    return percentage;
+  }
+
   protected static class Builder {
 
     protected final Source source;
@@ -186,6 +192,7 @@ public class ReadOptions {
     protected boolean minimizeColumnSizes = false;
     protected boolean header = true;
     protected int maxCharsPerColumn = 4096;
+    protected boolean percentage = false;
 
     protected Builder() {
       source = null;
@@ -291,6 +298,15 @@ public class ReadOptions {
      */
     public Builder minimizeColumnSizes() {
       this.columnTypesToDetect = EXTENDED_TYPES;
+      return this;
+    }
+
+    /**
+     * @param b if true, reads strings that appear as percentages (eg. 10%) as numbers (0.1)
+     * @return
+     */
+    public Builder percentage(boolean b) {
+      this.percentage = b;
       return this;
     }
 

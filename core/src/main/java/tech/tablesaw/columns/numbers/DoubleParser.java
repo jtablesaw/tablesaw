@@ -7,6 +7,8 @@ import tech.tablesaw.io.ReadOptions;
 
 public class DoubleParser extends AbstractColumnParser<Double> {
 
+  private boolean percentage = false;
+
   public DoubleParser(ColumnType columnType) {
     super(columnType);
   }
@@ -16,15 +18,13 @@ public class DoubleParser extends AbstractColumnParser<Double> {
     if (readOptions.missingValueIndicator() != null) {
       missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
     }
+    percentage = readOptions.percentage();
   }
 
   @Override
   public boolean canParse(String s) {
-    if (isMissing(s)) {
-      return true;
-    }
     try {
-      Double.parseDouble(AbstractColumnParser.remove(s, ','));
+      parseDouble(s);
       return true;
     } catch (NumberFormatException e) {
       // it's all part of the plan
@@ -42,6 +42,12 @@ public class DoubleParser extends AbstractColumnParser<Double> {
     if (isMissing(s)) {
       return DoubleColumnType.missingValueIndicator();
     }
-    return Double.parseDouble(AbstractColumnParser.remove(s, ','));
+    boolean isPercentage = false;
+    if (percentage && s.endsWith("%")) {
+      isPercentage = true;
+      s = s.substring(0, s.length() - 1);
+    }
+    double d = Double.parseDouble(AbstractColumnParser.remove(s, ','));
+    return isPercentage ? d / 100.0 : d;
   }
 }
