@@ -8,16 +8,22 @@ public class Utils {
     return Arrays.toString(data);
   }
 
+  /** @return un-escaped quote of argument */
   public static String quote(String string) {
     return "'" + string + "'";
   }
 
+  private static String escape(String s) {
+    return s.replaceAll("\\'", "\\\\'");
+  }
+
+  /** @return a Javascript array of strings (escaped if needed) */
   public static String dataAsString(Object[] data) {
     StringBuilder builder = new StringBuilder("[");
     for (int i = 0; i < data.length; i++) {
       Object o = data[i];
       builder.append("'");
-      builder.append(o);
+      builder.append(escape(String.valueOf(o)));
       builder.append("'");
       if (i < data.length - 1) {
         builder.append(",");
