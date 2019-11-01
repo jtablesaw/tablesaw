@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -327,11 +328,13 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   }
 
   /**
-   * Maps the function across all rows, appending the results to the provided Column
+   * Maps the function across all rows, storing the results into the provided Column.
+   *
+   * <p>The target column must have at least the same number of rows.
    *
    * @param fun function to map
-   * @param into Column to which results are appended
-   * @return the provided Column, to which results are appended
+   * @param into Column into which results are set
+   * @return the provided Column
    */
   default <R, C extends Column<R>> C mapInto(Function<? super T, ? extends R> fun, C into) {
     for (int i = 0; i < size(); i++) {
@@ -339,6 +342,34 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         into.setMissing(i);
       } else {
         into.set(i, fun.apply(get(i)));
+      }
+    }
+    return into;
+  }
+
+  /**
+   * Maps the function across all rows, appending the results to the created Column.
+   *
+   * <p>Example:
+   *
+   * <pre>
+   * DoubleColumn d;
+   * StringColumn s = d.map(String::valueOf, StringColumn::create);
+   * </pre>
+   *
+   * @param fun function to map
+   * @param creator the creator of the Column. Its String argument will be the name of the current
+   *     column (see {@link #name()})
+   * @return the Column with the results
+   */
+  default <R, C extends Column<R>> C map(
+      Function<? super T, ? extends R> fun, Function<String, C> creator) {
+    C into = creator.apply(name());
+    for (int i = 0; i < size(); i++) {
+      if (isMissing(i)) {
+        into.appendMissing();
+      } else {
+        into.append(fun.apply(get(i)));
       }
     }
     return into;
