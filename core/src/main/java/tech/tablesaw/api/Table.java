@@ -41,12 +41,7 @@ import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.aggregate.PivotTable;
 import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.DataFrameReader;
-import tech.tablesaw.io.DataFrameWriter;
-import tech.tablesaw.io.DataReader;
-import tech.tablesaw.io.DataWriter;
-import tech.tablesaw.io.ReaderRegistry;
-import tech.tablesaw.io.WriterRegistry;
+import tech.tablesaw.io.*;
 import tech.tablesaw.joining.DataFrameJoiner;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -1133,6 +1128,43 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public Stream<Row[]> rollingStream(int n) {
     return Streams.stream(rollingIterator(n));
+  }
+
+  public Table transpose()
+  {
+      Table transposed = Table.create(this.name);
+      Column firstColumn = this.column(0);
+
+      ColumnType[] types = this.columnTypes();
+      //If all columns are of the same type
+      long distinctColumnTypesCount = Arrays.stream(types).skip(1).distinct().count();
+
+      if (distinctColumnTypesCount == 1) {
+          ColumnType resultType = types[1];
+
+          StringColumn labelColumn = StringColumn.create(this.column(0).name());
+          transposed.addColumns(labelColumn);
+          for(String label : firstColumn.asStringColumn())
+          {
+              transposed.addColumns(resultType.create(label));
+          }
+
+          for (int i = 1; i < this.columnCount(); i++) {
+              Column columnToTranspose = this.column(i);
+              labelColumn.append(columnToTranspose.name());
+          }
+
+          for(int i = 1; i <transposed.columnCount(); i++) {
+              Column column = transposed.column(i);
+              int row = i - 1;
+              for(int col =1; col<this.columnCount();col++)
+              {
+                   //todo:optimize for primitives
+                    column.appendObj(this.get(row, col));
+              }
+          }
+      }
+      return transposed;
   }
 
   /**
