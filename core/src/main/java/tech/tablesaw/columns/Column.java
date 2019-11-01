@@ -348,24 +348,6 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   }
 
   /**
-   * Maps the function across all rows, appending the results to the supplied Column.
-   *
-   * <p>Example:
-   *
-   * <pre>
-   * DoubleColumn d;
-   * StringColumn s = d.map(String::valueOf, () -> StringColumn.create("x"));
-   * </pre>
-   *
-   * @param fun function to map
-   * @param supplier the supplier for the column where results are appended to
-   * @return the Column with the results
-   */
-  default <R, C extends Column<R>> C map(Function<? super T, ? extends R> fun, Supplier<C> supplier) {
-    return map(fun, (name) -> supplier.get());
-  }
-
-  /**
    * Maps the function across all rows, appending the results to the created Column.
    *
    * <p>Example:
