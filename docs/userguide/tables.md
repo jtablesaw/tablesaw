@@ -171,8 +171,51 @@ Tablesaw supports inner and outer joins between tables.
 
 
 ## Add and remove rows
+###Adding New Row
 
+To add a new row into the table you simply need to call
+```java
+Row newRow = aTable.appendRow();
+```
+then just set the values of each column in the row
+```java
+newRow.setString("s","value1");
+newRow.setDate("d",LocalDate.now());
+```
 
+###Adding row at certain index
+
+Adding row at certain index is bit tricky as it involves splitting the table into 2 at the index you 
+want to insert the row at. Then you need to append the row to first part and combine the both part again.
+
+```java
+int index = 3;
+Table top = aTable.first(index);
+Table bottom = aTable.last(source.rowCount() - index);
+Row newRow = top.appendRow();
+newRow.setString("s","value1");
+newRow.setDate("d",LocalDate.now());
+Table newTableWithRowAtGivenIndex = top.append(bottom);
+```  
+
+###Remove rows from table
+
+To remove rows from table you need to call *dropRows()* on table with indexes that you want to drop
+```java
+Table newTableWithRemainingRows = table.dropRows(1,2,..);
+``` 
+
+###Remove rows based on given query
+
+Suppose table *aTable* consists of 2 columns 
+1. *IntColumn* named *ages*
+2. *StringColumn* named *names*
+
+then you can remove all the rows with age greater then 20 in the following manner
+
+```java
+Table newTableWithFilteredValues = aTable.dropWhere(ages.isGreaterThan(20)); 
+```
 
 ## Filter
 
