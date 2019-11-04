@@ -8,7 +8,9 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.plotly.Utils;
@@ -75,6 +77,8 @@ public class Marker extends Component {
   private final Line line;
   private final String[] color;
   private final Palette colorScalePalette;
+  private final List<Double> colorScaleCustomRange;
+  private final List<Color> colorScaleCustomRGB;
   private final boolean cAuto;
   private final double cMin;
   private final double cMax;
@@ -100,6 +104,8 @@ public class Marker extends Component {
     colorArray = builder.colorArray;
     gradient = builder.gradient;
     colorScalePalette = builder.colorScalePalette;
+    colorScaleCustomRange = builder.colorScaleCustomRange;
+    colorScaleCustomRGB = builder.colorScaleCustomRGB;
     cAuto = builder.cAuto;
     cMin = builder.cMin;
     cMax = builder.cMax;
@@ -129,7 +135,9 @@ public class Marker extends Component {
     Map<String, Object> context = new HashMap<>();
     context.put("size", size.length == 1 ? size[0] : Utils.dataAsString(size));
     if (colorScalePalette != null) {
-      context.put("colorScale", colorScalePalette);
+      context.put("colorScale", "'" + colorScalePalette + "'");
+    } else if (colorScaleCustomRange != null && !colorScaleCustomRange.isEmpty()) {
+      context.put("colorScale", asColorScaleString(colorScaleCustomRange, colorScaleCustomRGB));
     }
     if (cAuto != DEFAULT_C_AUTO) context.put("cAuto", cAuto);
     if (color != null && color.length > 0) {
@@ -155,6 +163,39 @@ public class Marker extends Component {
     return context;
   }
 
+  static class Color {
+
+    final int r, g, b;
+
+    public Color(int r, int g, int b) {
+      this.r = r;
+      this.g = g;
+      this.b = b;
+    }
+  }
+
+  private static String asColorScaleString(List<Double> values, List<Color> colors) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("[\n");
+    for (int i = 0; i < values.size(); i++) {
+      Color c = colors.get(i);
+      if (i != 0) {
+        sb.append(",\n");
+      }
+      sb.append("['")
+          .append(values.get(i))
+          .append("', 'rgb(")
+          .append(c.r)
+          .append(",")
+          .append(c.g)
+          .append(",")
+          .append(c.b)
+          .append(")']");
+    }
+    sb.append("\n]");
+    return sb.toString();
+  }
+
   public static class MarkerBuilder {
 
     private double[] size = {6};
@@ -165,6 +206,8 @@ public class Marker extends Component {
 
     private Gradient gradient;
     private Palette colorScalePalette;
+    private List<Double> colorScaleCustomRange;
+    private List<Color> colorScaleCustomRGB;
     private boolean cAuto = DEFAULT_C_AUTO;
     private double cMin;
     private double cMax;
@@ -277,6 +320,16 @@ public class Marker extends Component {
      */
     public MarkerBuilder colorScale(Palette palette) {
       this.colorScalePalette = palette;
+      return this;
+    }
+
+    public MarkerBuilder addColorScale(double value, int r, int g, int b) {
+      if (colorScaleCustomRange == null) {
+        colorScaleCustomRange = new ArrayList<>();
+        colorScaleCustomRGB = new ArrayList<>();
+      }
+      this.colorScaleCustomRange.add(value);
+      this.colorScaleCustomRGB.add(new Color(r, g, b));
       return this;
     }
 

@@ -9,7 +9,7 @@
     color: {{colorArray | raw}},
 {% endif %}
 {% if colorScale is not null %}
-    colorscale: '{{colorScale | raw}}',
+    colorscale: {{colorScale | raw}},
 {% endif %}
 {% if colorBar is not null %}
     colorbar: {{colorBar | raw}},
