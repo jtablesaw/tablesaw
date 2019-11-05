@@ -119,6 +119,9 @@ public class Layout {
    */
   private final boolean autoSize;
 
+  private final boolean heightSet;
+  private final boolean widthSet;
+
   /** The width of the plot in pixels */
   private final int width;
 
@@ -178,6 +181,8 @@ public class Layout {
   private Layout(LayoutBuilder builder) {
     this.title = builder.title;
     this.autoSize = builder.autoSize;
+    this.widthSet = builder.widthSet;
+    this.heightSet = builder.heightSet;
     this.decimalSeparator = builder.decimalSeparator;
     this.thousandsSeparator = builder.thousandsSeparator;
     this.dragMode = builder.dragMode;
@@ -222,10 +227,21 @@ public class Layout {
     Map<String, Object> context = new HashMap<>();
     if (!title.equals(DEFAULT_TITLE)) context.put("title", title);
     if (!titleFont.equals(DEFAULT_TITLE_FONT)) context.put("titlefont", titleFont);
-    context.put("width", width);
-    context.put("height", height);
     if (!font.equals(DEFAULT_FONT)) context.put("font", font);
-    if (!autoSize == DEFAULT_AUTO_SIZE) context.put("autosize", autoSize);
+    if (autoSize != DEFAULT_AUTO_SIZE) {
+      context.put("autosize", autoSize);
+      // since autosize is true, we assume the default width / height values are not wanted, not
+      // serialize them, and let Plotly compute them
+      if (widthSet) {
+        context.put("width", width);
+      }
+      if (heightSet) {
+        context.put("height", height);
+      }
+    } else {
+      context.put("width", width);
+      context.put("height", height);
+    }
     if (hoverDistance != DEFAULT_HOVER_DISTANCE) context.put("hoverdistance", hoverDistance);
     if (!hoverMode.equals(DEFAULT_HOVER_MODE)) context.put("hoverMode", hoverMode);
     if (margin != null) {
@@ -300,7 +316,10 @@ public class Layout {
      * is initialized on each relayout. Note that, regardless of this attribute, an undefined layout
      * width or height is always initialized on the first call to plot.
      */
-    private final boolean autoSize = false;
+    private boolean autoSize = false;
+
+    private boolean widthSet = false;
+    private boolean heightSet = false;
 
     /** The width of the plot in pixels */
     private int width = 700;
@@ -409,11 +428,18 @@ public class Layout {
 
     public LayoutBuilder height(int height) {
       this.height = height;
+      this.heightSet = true;
       return this;
     }
 
     public LayoutBuilder width(int width) {
       this.width = width;
+      this.widthSet = true;
+      return this;
+    }
+
+    public LayoutBuilder autosize(boolean autosize) {
+      this.autoSize = autosize;
       return this;
     }
 
