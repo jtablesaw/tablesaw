@@ -1178,8 +1178,26 @@ public class Table extends Relation implements Iterable<Row> {
         Column column = transposed.column(i);
         int row = i - 1;
         for (int col = 1; col < this.columnCount(); col++) {
-          //todo:optimize for primitives
-          column.appendObj(this.get(row, col));
+          //Avoid boxing for primitives
+          if(ColumnType.DOUBLE == column.type()) {
+            ((DoubleColumn)column).append(this.doubleColumn(col).getDouble(row));
+          }
+          else if(ColumnType.FLOAT == column.type()) {
+            ((FloatColumn)column).append(this.floatColumn(col).getFloat(row));
+          }
+          else if(ColumnType.INTEGER == column.type()) {
+            ((IntColumn)column).append(this.intColumn(col).getInt(row));
+          }
+          else if(ColumnType.LONG == column.type()) {
+            ((LongColumn)column).append(this.longColumn(col).getLong(row));
+          }
+          else if(ColumnType.BOOLEAN == column.type()) {
+            ((BooleanColumn)column).append(this.booleanColumn(col).getByte(row));
+          }
+          else {
+            //default
+            column.appendObj(this.get(row, col));
+          }
         }
       }
     } else {
