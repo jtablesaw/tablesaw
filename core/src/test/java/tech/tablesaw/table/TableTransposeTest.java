@@ -1,5 +1,8 @@
 package tech.tablesaw.table;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DoubleColumn;
@@ -8,9 +11,6 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class TableTransposeTest {
 
@@ -26,11 +26,13 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals("                Data                 \n" +
-        " label   |  row1  |  row2  |  row3  |\n" +
-        "-------------------------------------\n" +
-        " value1  |     1  |   1.1  |   1.2  |\n" +
-        " value2  |     2  |   2.1  |   2.2  |", result.print());
+    assertEquals(
+        "                Data                 \n"
+            + " label   |  row1  |  row2  |  row3  |\n"
+            + "-------------------------------------\n"
+            + " value1  |     1  |   1.1  |   1.2  |\n"
+            + " value2  |     2  |   2.1  |   2.2  |",
+        result.print());
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -46,11 +48,13 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals("                Data                 \n" +
-        " label   |  row1  |  row2  |  row3  |\n" +
-        "-------------------------------------\n" +
-        " value1  |     1  |        |   1.2  |\n" +
-        " value2  |     2  |   2.1  |   2.2  |", result.print());
+    assertEquals(
+        "                Data                 \n"
+            + " label   |  row1  |  row2  |  row3  |\n"
+            + "-------------------------------------\n"
+            + " value1  |     1  |        |   1.2  |\n"
+            + " value2  |     2  |   2.1  |   2.2  |",
+        result.print());
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -80,11 +84,13 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals("                Data                 \n"
-        + " label   |  row1  |  row2  |  row3  |\n"
-        + "-------------------------------------\n"
-        + " value1  |     1  |     2  |     3  |\n"
-        + " value2  |     4  |     5  |     6  |", result.print());
+    assertEquals(
+        "                Data                 \n"
+            + " label   |  row1  |  row2  |  row3  |\n"
+            + "-------------------------------------\n"
+            + " value1  |     1  |     2  |     3  |\n"
+            + " value2  |     4  |     5  |     6  |",
+        result.print());
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -100,11 +106,13 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals("                Data                 \n"
-        + " label   |  row1  |  row2  |  row3  |\n"
-        + "-------------------------------------\n"
-        + " value1  |     1  |     2  |     3  |\n"
-        + " value2  |     4  |     5  |     6  |", result.print());
+    assertEquals(
+        "                Data                 \n"
+            + " label   |  row1  |  row2  |  row3  |\n"
+            + "-------------------------------------\n"
+            + " value1  |     1  |     2  |     3  |\n"
+            + " value2  |     4  |     5  |     6  |",
+        result.print());
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -120,21 +128,23 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals("                  Data                  \n"
-        + " label   |  row1   |  row2   |  row3   |\n"
-        + "----------------------------------------\n"
-        + " value1  |   true  |   true  |   true  |\n"
-        + " value2  |  false  |  false  |  false  |", result.print());
+    assertEquals(
+        "                  Data                  \n"
+            + " label   |  row1   |  row2   |  row3   |\n"
+            + "----------------------------------------\n"
+            + " value1  |   true  |   true  |   true  |\n"
+            + " value2  |  false  |  false  |  false  |",
+        result.print());
     assertEquals(testTable.print(), result.transpose().print());
   }
 
   @Test
   void transposeStrings() {
     StringColumn label = StringColumn.create("label").append("row1").append("row2").append("row3");
-    StringColumn value = StringColumn.create("fruit").append("apple").append("banana")
-        .append("pear");
-    StringColumn value2 = StringColumn.create("colour").append("red").append("yellow")
-        .append("green");
+    StringColumn value =
+        StringColumn.create("fruit").append("apple").append("banana").append("pear");
+    StringColumn value2 =
+        StringColumn.create("colour").append("red").append("yellow").append("green");
 
     Table testTable = Table.create("Data");
     testTable.addColumns(label);
@@ -142,11 +152,13 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals("                  Data                   \n"
-        + " label   |  row1   |   row2   |  row3   |\n"
-        + "-----------------------------------------\n"
-        + "  fruit  |  apple  |  banana  |   pear  |\n"
-        + " colour  |    red  |  yellow  |  green  |", result.print());
+    assertEquals(
+        "                  Data                   \n"
+            + " label   |  row1   |   row2   |  row3   |\n"
+            + "-----------------------------------------\n"
+            + "  fruit  |  apple  |  banana  |   pear  |\n"
+            + " colour  |    red  |  yellow  |  green  |",
+        result.print());
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -154,8 +166,8 @@ public class TableTransposeTest {
   void transposeMixedTypes() {
     StringColumn label = StringColumn.create("label").append("row1").append("row2").append("row3");
     DoubleColumn value = DoubleColumn.create("value1").append(1.0).append(1.1).append(1.2);
-    StringColumn value2 = StringColumn.create("colour").append("red").append("yellow")
-        .append("green");
+    StringColumn value2 =
+        StringColumn.create("colour").append("red").append("yellow").append("green");
 
     Table testTable = Table.create("Data");
     testTable.addColumns(label);
@@ -171,5 +183,4 @@ public class TableTransposeTest {
           ex.getMessage());
     }
   }
-
 }

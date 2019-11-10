@@ -1136,19 +1136,18 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Transposes data in the table, switching rows for columns.
-   * For example, a table like this.
-   *  label  |  value1  |  value2  |
-   * -------------------------------
-   *   row1  |       1  |       2  |
-   *   row2  |     1.1  |     2.1  |
-   *   row3  |     1.2  |     2.2  |
+   * Transposes data in the table, switching rows for columns. For example, a table like this.<br>
+   * label | value1 | value2 |<br>
+   * -------------------------------<br>
+   * row1 | 1 | 2 |<br>
+   * row2 | 1.1 | 2.1 |<br>
+   * row3 | 1.2 | 2.2 |<br>
    *
-   *  Is transposed into the following
-   *  label   |  row1  |  row2  |  row3  |
-   * -------------------------------------
-   *  value1  |     1  |   1.1  |   1.2  |
-   *  value2  |     2  |   2.1  |   2.2  |
+   * <p>Is transposed into the following<br>
+   * label | row1 | row2 | row3 |<br>
+   * -------------------------------------<br>
+   * value1 | 1 | 1.1 | 1.2 |<br>
+   * value2 | 2 | 2.1 | 2.2 |<br>
    *
    * @return The transposed table
    */
@@ -1157,7 +1156,7 @@ public class Table extends Relation implements Iterable<Row> {
     Column firstColumn = this.column(0);
 
     ColumnType[] types = this.columnTypes();
-    //If all columns are of the same type
+    // If all columns are of the same type
     long distinctColumnTypesCount = Arrays.stream(types).skip(1).distinct().count();
     if (distinctColumnTypesCount > 1) {
       throw new IllegalArgumentException(
@@ -1180,7 +1179,7 @@ public class Table extends Relation implements Iterable<Row> {
       Column column = transposed.column(i);
       int row = i - 1;
       for (int col = 1; col < this.columnCount(); col++) {
-        //Avoid boxing for primitives
+        // Avoid boxing for primitives
         if (ColumnType.DOUBLE == column.type()) {
           ((DoubleColumn) column).append(this.doubleColumn(col).getDouble(row));
         } else if (ColumnType.FLOAT == column.type()) {
@@ -1192,7 +1191,7 @@ public class Table extends Relation implements Iterable<Row> {
         } else if (ColumnType.BOOLEAN == column.type()) {
           ((BooleanColumn) column).append(this.booleanColumn(col).getByte(row));
         } else {
-          //default
+          // default
           column.appendObj(this.get(row, col));
         }
       }
