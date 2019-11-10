@@ -1159,50 +1159,43 @@ public class Table extends Relation implements Iterable<Row> {
     ColumnType[] types = this.columnTypes();
     //If all columns are of the same type
     long distinctColumnTypesCount = Arrays.stream(types).skip(1).distinct().count();
+    if (distinctColumnTypesCount > 1) {
+      throw new IllegalArgumentException(
+          "Transpose currently only supports tables where value columns are of the same type");
+    }
 
-    if (distinctColumnTypesCount == 1) {
-      ColumnType resultType = types[1];
+    ColumnType resultType = types[1];
+    StringColumn labelColumn = StringColumn.create(this.column(0).name());
+    transposed.addColumns(labelColumn);
+    for (String label : firstColumn.asStringColumn()) {
+      transposed.addColumns(resultType.create(label));
+    }
 
-      StringColumn labelColumn = StringColumn.create(this.column(0).name());
-      transposed.addColumns(labelColumn);
-      for (String label : firstColumn.asStringColumn()) {
-        transposed.addColumns(resultType.create(label));
-      }
+    for (int i = 1; i < this.columnCount(); i++) {
+      Column columnToTranspose = this.column(i);
+      labelColumn.append(columnToTranspose.name());
+    }
 
-      for (int i = 1; i < this.columnCount(); i++) {
-        Column columnToTranspose = this.column(i);
-        labelColumn.append(columnToTranspose.name());
-      }
-
-      for (int i = 1; i < transposed.columnCount(); i++) {
-        Column column = transposed.column(i);
-        int row = i - 1;
-        for (int col = 1; col < this.columnCount(); col++) {
-          //Avoid boxing for primitives
-          if(ColumnType.DOUBLE == column.type()) {
-            ((DoubleColumn)column).append(this.doubleColumn(col).getDouble(row));
-          }
-          else if(ColumnType.FLOAT == column.type()) {
-            ((FloatColumn)column).append(this.floatColumn(col).getFloat(row));
-          }
-          else if(ColumnType.INTEGER == column.type()) {
-            ((IntColumn)column).append(this.intColumn(col).getInt(row));
-          }
-          else if(ColumnType.LONG == column.type()) {
-            ((LongColumn)column).append(this.longColumn(col).getLong(row));
-          }
-          else if(ColumnType.BOOLEAN == column.type()) {
-            ((BooleanColumn)column).append(this.booleanColumn(col).getByte(row));
-          }
-          else {
-            //default
-            column.appendObj(this.get(row, col));
-          }
+    for (int i = 1; i < transposed.columnCount(); i++) {
+      Column column = transposed.column(i);
+      int row = i - 1;
+      for (int col = 1; col < this.columnCount(); col++) {
+        //Avoid boxing for primitives
+        if (ColumnType.DOUBLE == column.type()) {
+          ((DoubleColumn) column).append(this.doubleColumn(col).getDouble(row));
+        } else if (ColumnType.FLOAT == column.type()) {
+          ((FloatColumn) column).append(this.floatColumn(col).getFloat(row));
+        } else if (ColumnType.INTEGER == column.type()) {
+          ((IntColumn) column).append(this.intColumn(col).getInt(row));
+        } else if (ColumnType.LONG == column.type()) {
+          ((LongColumn) column).append(this.longColumn(col).getLong(row));
+        } else if (ColumnType.BOOLEAN == column.type()) {
+          ((BooleanColumn) column).append(this.booleanColumn(col).getByte(row));
+        } else {
+          //default
+          column.appendObj(this.get(row, col));
         }
       }
-    } else {
-      throw new IllegalArgumentException(
-          "Transpose currently only works where value columns are of the same type");
     }
     return transposed;
   }
