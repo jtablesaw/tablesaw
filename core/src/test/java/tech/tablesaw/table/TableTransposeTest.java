@@ -10,6 +10,7 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TableTransposeTest {
 
@@ -147,6 +148,28 @@ public class TableTransposeTest {
         + "  fruit  |  apple  |  banana  |   pear  |\n"
         + " colour  |    red  |  yellow  |  green  |", result.print());
     assertEquals(testTable.print(), result.transpose().print());
+  }
+
+  @Test
+  void transposeMixedTypes() {
+    StringColumn label = StringColumn.create("label").append("row1").append("row2").append("row3");
+    DoubleColumn value = DoubleColumn.create("value1").append(1.0).append(1.1).append(1.2);
+    StringColumn value2 = StringColumn.create("colour").append("red").append("yellow")
+        .append("green");
+
+    Table testTable = Table.create("Data");
+    testTable.addColumns(label);
+    testTable.addColumns(value);
+    testTable.addColumns(value2);
+
+    try {
+      testTable.transpose();
+      fail("Should throw and exception");
+    } catch (IllegalArgumentException ex) {
+      assertEquals(
+          "Transpose currently only supports tables where value columns are of the same type",
+          ex.getMessage());
+    }
   }
 
 }
