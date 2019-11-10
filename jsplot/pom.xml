@@ -91,6 +91,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.pebbletemplates</groupId>
             <artifactId>pebble</artifactId>
             <version>3.0.8</version>
