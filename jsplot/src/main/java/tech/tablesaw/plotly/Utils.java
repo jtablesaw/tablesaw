@@ -1,6 +1,6 @@
 package tech.tablesaw.plotly;
 
-import com.fasterxml.jackson.core.util.BufferRecyclers;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import java.util.Arrays;
 
 public class Utils {
@@ -19,7 +19,7 @@ public class Utils {
    * saves to output to the given StringBuilder.
    */
   private static void escape(String s, StringBuilder sb) {
-    BufferRecyclers.quoteAsJsonText(s, sb);
+    JsonStringEncoder.getInstance().quoteAsString(s, sb);
   }
 
   /** @return a Javascript array of strings (escaped if needed) */
