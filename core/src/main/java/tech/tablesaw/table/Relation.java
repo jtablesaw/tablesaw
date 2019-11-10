@@ -240,36 +240,6 @@ public abstract class Relation implements Iterable<Row> {
     return structure;
   }
 
-  /*public Table summary() {
-    Table summaryTable = null;
-    ColumnType firstColumnType = null;
-
-    for(int i=0; i<this.columnCount(); i++)
-    {
-      Table columnSummary = this.column(i).summary();
-
-      if(summaryTable == null)
-      {
-        //First column, so just create the table from this
-        summaryTable = columnSummary;
-        summaryTable.column(0).setName("");
-        firstColumnType = this.column(i).type();
-      }
-      else {
-        //Same as what we started with
-        if(this.column(i).type() == firstColumnType)
-        {
-          for(int j=1; j<columnSummary.columnCount(); j++) {
-            Column value = columnSummary.column(j);
-            value.setName(this.column(i).name());
-            summaryTable.addColumns(value);
-          }
-        }
-      }
-    }
-    return summaryTable;
-  }*/
-
   public Table summary() {
     Table summaryTable = null;
 
