@@ -130,8 +130,10 @@ public class TableTransposeTest {
   @Test
   void transposeStrings() {
     StringColumn label = StringColumn.create("label").append("row1").append("row2").append("row3");
-    StringColumn value = StringColumn.create("fruit").append("apple").append("banana").append("pear");
-    StringColumn value2 = StringColumn.create("colour").append("red").append("yellow").append("green");
+    StringColumn value = StringColumn.create("fruit").append("apple").append("banana")
+        .append("pear");
+    StringColumn value2 = StringColumn.create("colour").append("red").append("yellow")
+        .append("green");
 
     Table testTable = Table.create("Data");
     testTable.addColumns(label);
