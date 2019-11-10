@@ -240,19 +240,55 @@ public abstract class Relation implements Iterable<Row> {
     return structure;
   }
 
-  public String summary() {
-    StringBuilder builder = new StringBuilder();
-    builder
-        .append(System.lineSeparator())
-        .append("Table summary for: ")
-        .append(name())
-        .append(System.lineSeparator());
-    for (Column<?> column : columns()) {
-      builder.append(column.summary().print());
-      builder.append(System.lineSeparator());
+  /*public Table summary() {
+    Table summaryTable = null;
+    ColumnType firstColumnType = null;
+
+    for(int i=0; i<this.columnCount(); i++)
+    {
+      Table columnSummary = this.column(i).summary();
+
+      if(summaryTable == null)
+      {
+        //First column, so just create the table from this
+        summaryTable = columnSummary;
+        summaryTable.column(0).setName("");
+        firstColumnType = this.column(i).type();
+      }
+      else {
+        //Same as what we started with
+        if(this.column(i).type() == firstColumnType)
+        {
+          for(int j=1; j<columnSummary.columnCount(); j++) {
+            Column value = columnSummary.column(j);
+            value.setName(this.column(i).name());
+            summaryTable.addColumns(value);
+          }
+        }
+      }
     }
-    builder.append(System.lineSeparator());
-    return builder.toString();
+    return summaryTable;
+  }*/
+
+  public Table summary() {
+    Table summaryTable = null;
+
+    for (int i = 0; i < this.columnCount(); i++) {
+      Table columnSummary = this.column(i).summary();
+      columnSummary.column(1).setName(this.column(i).name());
+
+      if (summaryTable == null) {
+        // First column, so just create the table from this
+        summaryTable = columnSummary;
+        summaryTable.setName(this.name());
+      } else {
+        String name = summaryTable.column(0).name();
+        summaryTable =
+            summaryTable.joinOn(name).fullOuter(columnSummary, columnSummary.column(0).name());
+      }
+    }
+    summaryTable.column(0).setName("Summary");
+    return summaryTable;
   }
 
   public BooleanColumn booleanColumn(int columnIndex) {
