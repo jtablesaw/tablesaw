@@ -1130,41 +1130,58 @@ public class Table extends Relation implements Iterable<Row> {
     return Streams.stream(rollingIterator(n));
   }
 
-  public Table transpose()
-  {
-      Table transposed = Table.create(this.name);
-      Column firstColumn = this.column(0);
+  /**
+   * Transposes data in the table, switching rows for columns.
+   * For example, a table like this.
+   *  label  |  value1  |  value2  |
+   * -------------------------------
+   *   row1  |       1  |       2  |
+   *   row2  |     1.1  |     2.1  |
+   *   row3  |     1.2  |     2.2  |
+   *
+   *  Is transposed into the following
+   *  label   |  row1  |  row2  |  row3  |
+   * -------------------------------------
+   *  value1  |     1  |   1.1  |   1.2  |
+   *  value2  |     2  |   2.1  |   2.2  |
+   *
+   * @return The transposed table
+   */
+  public Table transpose() {
+    Table transposed = Table.create(this.name);
+    Column firstColumn = this.column(0);
 
-      ColumnType[] types = this.columnTypes();
-      //If all columns are of the same type
-      long distinctColumnTypesCount = Arrays.stream(types).skip(1).distinct().count();
+    ColumnType[] types = this.columnTypes();
+    //If all columns are of the same type
+    long distinctColumnTypesCount = Arrays.stream(types).skip(1).distinct().count();
 
-      if (distinctColumnTypesCount == 1) {
-          ColumnType resultType = types[1];
+    if (distinctColumnTypesCount == 1) {
+      ColumnType resultType = types[1];
 
-          StringColumn labelColumn = StringColumn.create(this.column(0).name());
-          transposed.addColumns(labelColumn);
-          for(String label : firstColumn.asStringColumn())
-          {
-              transposed.addColumns(resultType.create(label));
-          }
-
-          for (int i = 1; i < this.columnCount(); i++) {
-              Column columnToTranspose = this.column(i);
-              labelColumn.append(columnToTranspose.name());
-          }
-
-          for(int i = 1; i <transposed.columnCount(); i++) {
-              Column column = transposed.column(i);
-              int row = i - 1;
-              for(int col =1; col<this.columnCount();col++)
-              {
-                   //todo:optimize for primitives
-                    column.appendObj(this.get(row, col));
-              }
-          }
+      StringColumn labelColumn = StringColumn.create(this.column(0).name());
+      transposed.addColumns(labelColumn);
+      for (String label : firstColumn.asStringColumn()) {
+        transposed.addColumns(resultType.create(label));
       }
-      return transposed;
+
+      for (int i = 1; i < this.columnCount(); i++) {
+        Column columnToTranspose = this.column(i);
+        labelColumn.append(columnToTranspose.name());
+      }
+
+      for (int i = 1; i < transposed.columnCount(); i++) {
+        Column column = transposed.column(i);
+        int row = i - 1;
+        for (int col = 1; col < this.columnCount(); col++) {
+          //todo:optimize for primitives
+          column.appendObj(this.get(row, col));
+        }
+      }
+    } else {
+      throw new IllegalArgumentException(
+          "Transpose currently only works where value columns are of the same type");
+    }
+    return transposed;
   }
 
   /**
