@@ -95,7 +95,7 @@ public class Figure {
     return eventHandlers;
   }
 
-  public void setEventHandlers(EventHandler[] handlers) {
+  public void setEventHandlers(EventHandler... handlers) {
     eventHandlers = handlers;
   }
 
@@ -103,7 +103,7 @@ public class Figure {
     return data;
   }
 
-  public void setTraces(Trace[] data) {
+  public void setTraces(Trace... data) {
     this.data = data;
   }
 
