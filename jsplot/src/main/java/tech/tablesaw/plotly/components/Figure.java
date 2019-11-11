@@ -25,10 +25,10 @@ import tech.tablesaw.plotly.traces.Trace;
  */
 public class Figure {
 
-  private final Trace[] data;
+  private Trace[] data;
   private Layout layout;
   private Config config;
-  private final EventHandler[] eventHandlers;
+  private EventHandler[] eventHandlers;
 
   private final Map<String, Object> context = new HashMap<>();
 
@@ -91,6 +91,22 @@ public class Figure {
     this.config = config;
   }
 
+  public EventHandler[] getEventHandlers() {
+    return eventHandlers;
+  }
+
+  public void setEventHandlers(EventHandler[] handlers) {
+    eventHandlers = handlers;
+  }
+
+  public Trace[] getTraces() {
+    return data;
+  }
+
+  public void setTraces(Trace[] data) {
+    this.data = data;
+  }
+
   public String asJavascript(String divName) {
     Writer writer = new StringWriter();
     PebbleTemplate compiledTemplate;
@@ -106,7 +122,7 @@ public class Figure {
     return writer.toString();
   }
 
-  private void buildContext(String divName) {
+  protected void buildContext(String divName) {
 
     String targetName = "target_" + divName;
     context.put("divName", divName);
@@ -133,7 +149,7 @@ public class Figure {
     context.put("eventHandlerFunction", eventHandlerFunction(targetName, divName));
   }
 
-  private String plotFunction(String divName) {
+  protected String plotFunction(String divName) {
     StringBuilder builder = new StringBuilder();
 
     builder.append("var data = [ ");
@@ -161,7 +177,7 @@ public class Figure {
     return builder.toString();
   }
 
-  private String eventHandlerFunction(String targetName, String divName) {
+  protected String eventHandlerFunction(String targetName, String divName) {
     StringBuilder builder = new StringBuilder();
 
     if (eventHandlers != null) {
