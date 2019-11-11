@@ -279,6 +279,14 @@ public class ColumnTest {
   }
 
   @Test
+  public void testMap2() {
+    StringColumn c =
+        DoubleColumn.create("t1", new double[] {-1, 0, 1})
+            .map(String::valueOf, StringColumn::create);
+    assertContentEquals(c, "-1.0", "0.0", "1.0");
+  }
+
+  @Test
   public void testMaxComparator() {
     assertEquals(
         Double.valueOf(1.0),
