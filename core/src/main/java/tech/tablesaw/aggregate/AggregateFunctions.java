@@ -1,14 +1,17 @@
 package tech.tablesaw.aggregate;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
+
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -48,6 +51,21 @@ public class AggregateFunctions {
         @Override
         public LocalDateTime summarize(DateTimeColumn column) {
           return column.max();
+        }
+      };
+
+  public static InstantAggregateFunction maxInstant =
+      new InstantAggregateFunction("Max Instant") {
+        @Override
+        public Instant summarize(InstantColumn column) {
+          return column.max();
+        }
+      };
+  public static InstantAggregateFunction minInstant =
+      new InstantAggregateFunction("Min Instant") {
+        @Override
+        public Instant summarize(InstantColumn column) {
+          return column.min();
         }
       };
 
