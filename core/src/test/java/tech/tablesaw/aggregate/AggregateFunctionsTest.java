@@ -93,7 +93,7 @@ class AggregateFunctionsTest {
     Instant i3 = Instant.ofEpochMilli(30_000L);
     Instant i4 = null;
 
-    // Explicitly test havin
+    // Explicitly test having a first value of missing 
     InstantColumn ic = InstantColumn.create("instants", 5);
     ic.appendMissing();
     ic.append(i3);
