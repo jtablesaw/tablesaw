@@ -185,7 +185,7 @@ newRow.setDate("d",LocalDate.now());
 
 ###Remove rows from table
 
-To remove rows from table you need to call *dropRows()* on table with indexes that you want to drop
+To remove rows call *dropRows()* with indexes that you want to drop
 ```java
 Table newTableWithRemainingRows = table.dropRows(1,2);
 ``` 
