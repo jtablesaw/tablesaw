@@ -486,19 +486,18 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   }
 
   public Instant max() {
-    long max;
-    if (!isEmpty()) {
-      max = getPackedDateTime(0);
-    } else {
+    if (isEmpty()) {
       return null;
     }
+    long max = Long.MIN_VALUE;
+    boolean allMissing = true;
     for (long aData : data) {
       if (InstantColumnType.missingValueIndicator() != aData) {
-        max = (max > aData) ? max : aData;
+        max = Math.max(max , aData);
+        allMissing = false;
       }
     }
-
-    if (InstantColumnType.missingValueIndicator() == max) {
+    if (allMissing) {
       return null;
     }
     return PackedInstant.asInstant(max);
@@ -512,19 +511,18 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   @Override
   public Instant min() {
-    long min;
-
-    if (!isEmpty()) {
-      min = getPackedDateTime(0);
-    } else {
+    if (isEmpty()) {
       return null;
     }
+    long min = Long.MAX_VALUE;
+    boolean allMissing = true;
     for (long aData : data) {
       if (InstantColumnType.missingValueIndicator() != aData) {
-        min = (min < aData) ? min : aData;
+        min = Math.min(min, aData);
+        allMissing = false;
       }
     }
-    if (Integer.MIN_VALUE == min) {
+    if (allMissing) {
       return null;
     }
     return PackedInstant.asInstant(min);
