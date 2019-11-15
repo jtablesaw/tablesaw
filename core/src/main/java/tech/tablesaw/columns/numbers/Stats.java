@@ -130,7 +130,7 @@ public class Stats {
     t.addColumns(measure);
     t.addColumns(value);
 
-    measure.append("n");
+    measure.append("Count");
     value.append(n);
 
     measure.append("sum");
