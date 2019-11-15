@@ -1,14 +1,17 @@
 package tech.tablesaw.table;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
@@ -26,13 +29,14 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals(
-        "                Data                 \n"
-            + " label   |  row1  |  row2  |  row3  |\n"
-            + "-------------------------------------\n"
-            + " value1  |     1  |   1.1  |   1.2  |\n"
-            + " value2  |     2  |   2.1  |   2.2  |",
-        result.print());
+    assertTableContents(
+        new Object[][] {
+          {"label", "row1", "row2", "row3"},
+          {"value1", 1.0, 1.1, 1.2},
+          {"value2", 2.0, 2.1, 2.2},
+        },
+        result);
+    assertEquals(testTable.name(), result.name());
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -48,13 +52,14 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals(
-        "                Data                 \n"
-            + " label   |  row1  |  row2  |  row3  |\n"
-            + "-------------------------------------\n"
-            + " value1  |     1  |        |   1.2  |\n"
-            + " value2  |     2  |   2.1  |   2.2  |",
-        result.print());
+    assertTableContents(
+        new Object[][] {
+          {"label", "row1", "row2", "row3"},
+          {"value1", 1.0, Double.NaN, 1.2},
+          {"value2", 2.0, 2.1, 2.2},
+        },
+        result);
+
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -84,13 +89,14 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals(
-        "                Data                 \n"
-            + " label   |  row1  |  row2  |  row3  |\n"
-            + "-------------------------------------\n"
-            + " value1  |     1  |     2  |     3  |\n"
-            + " value2  |     4  |     5  |     6  |",
-        result.print());
+    assertTableContents(
+        new Object[][] {
+          {"label", "row1", "row2", "row3"},
+          {"value1", 1, 2, 3},
+          {"value2", 4, 5, 6}
+        },
+        result);
+
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -106,13 +112,14 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals(
-        "                Data                 \n"
-            + " label   |  row1  |  row2  |  row3  |\n"
-            + "-------------------------------------\n"
-            + " value1  |     1  |     2  |     3  |\n"
-            + " value2  |     4  |     5  |     6  |",
-        result.print());
+    assertTableContents(
+        new Object[][] {
+          {"label", "row1", "row2", "row3"},
+          {"value1", 1L, 2L, 3L},
+          {"value2", 4L, 5L, 6L}
+        },
+        result);
+
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -128,13 +135,14 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals(
-        "                  Data                  \n"
-            + " label   |  row1   |  row2   |  row3   |\n"
-            + "----------------------------------------\n"
-            + " value1  |   true  |   true  |   true  |\n"
-            + " value2  |  false  |  false  |  false  |",
-        result.print());
+    assertTableContents(
+        new Object[][] {
+          {"label", "row1", "row2", "row3"},
+          {"value1", true, true, true},
+          {"value2", false, false, false}
+        },
+        result);
+
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -152,13 +160,14 @@ public class TableTransposeTest {
     testTable.addColumns(value2);
     Table result = testTable.transpose();
 
-    assertEquals(
-        "                  Data                   \n"
-            + " label   |  row1   |   row2   |  row3   |\n"
-            + "-----------------------------------------\n"
-            + "  fruit  |  apple  |  banana  |   pear  |\n"
-            + " colour  |    red  |  yellow  |  green  |",
-        result.print());
+    assertTableContents(
+        new Object[][] {
+          {"label", "row1", "row2", "row3"},
+          {"fruit", "apple", "banana", "pear"},
+          {"colour", "red", "yellow", "green"}
+        },
+        result);
+
     assertEquals(testTable.print(), result.transpose().print());
   }
 
@@ -181,6 +190,35 @@ public class TableTransposeTest {
       assertEquals(
           "Transpose currently only supports tables where value columns are of the same type",
           ex.getMessage());
+    }
+  }
+
+  private static void assertTableContents(Object[][] expected, Table result) {
+    assertEquals(
+        expected.length - 1, result.rowCount(), "Table does not have the same number of rows");
+
+    assertArrayEquals(
+        expected[0],
+        result.columnNames().toArray(),
+        String.format(
+            "Column names are not equal.\nexpected: %s\nactual:   %s",
+            Arrays.toString(expected[0]), Arrays.toString(result.columnNames().toArray())));
+
+    int expectedRowIndex = 1;
+    for (Row actualRow : result) {
+      Object[] expectedRowData = expected[expectedRowIndex];
+      assertEquals(
+          expectedRowData.length,
+          actualRow.columnCount(),
+          "Row has the expected number of columns");
+
+      for (int colIndex = 0; colIndex < expectedRowData.length; colIndex++) {
+        assertEquals(
+            expectedRowData[colIndex],
+            actualRow.getObject(colIndex),
+            String.format("Value at row %d column %d not equal", expectedRowIndex - 1, colIndex));
+      }
+      expectedRowIndex++;
     }
   }
 }
