@@ -21,12 +21,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
 
+@Disabled
 public class HtmlWriterTest {
 
   private static final String LINE_END = System.lineSeparator();
