@@ -16,13 +16,10 @@ import tech.tablesaw.io.Source;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class OrcReader implements DataReader<OrcReadOptions> {
@@ -55,12 +52,12 @@ public class OrcReader implements DataReader<OrcReadOptions> {
     public Table read(OrcReadOptions options) throws IOException {
         Configuration configuration = new Configuration();
         OrcFile.ReaderOptions readerOptions = OrcFile.readerOptions(configuration);
-        if(options.orcReaderOptions() != null){
+        if (options.orcReaderOptions() != null) {
             readerOptions = options.orcReaderOptions();
         }
-        try(Reader reader = OrcFile.createReader(new Path(options.source().file().getAbsolutePath()),
-                readerOptions)){
-            return readFromOrcFile(reader,options);
+        try (Reader reader = OrcFile.createReader(new Path(options.source().file().getAbsolutePath()),
+                readerOptions)) {
+            return readFromOrcFile(reader, options);
         }
     }
 
@@ -69,11 +66,11 @@ public class OrcReader implements DataReader<OrcReadOptions> {
         List<String> columnTypes = reader.getSchema().getChildren()
                 .stream()
                 .map(TypeDescription::toString)
-                .map(value -> value.replaceAll("\\(.*\\)",""))//transform all types from char(5) to char
+                .map(value -> value.replaceAll("\\(.*\\)", ""))//transform all types from char(5) to char
                 .collect(Collectors.toList());
         List<String> unsupportedTypes = getUnsupportedTypes(columnTypes);
-        if(!unsupportedTypes.isEmpty()){
-            throw new IllegalArgumentException("Unknown types present: "+unsupportedTypes);
+        if (!unsupportedTypes.isEmpty()) {
+            throw new IllegalArgumentException("Unknown types present: " + unsupportedTypes);
         }
         RecordReader rows = reader.rows();
         VectorizedRowBatch readBatch = reader.getSchema().createRowBatch();
@@ -82,14 +79,14 @@ public class OrcReader implements DataReader<OrcReadOptions> {
 
         List<Column<?>> columns = new ArrayList<>(Collections.nCopies(columnName.size(), null));
         while (rows.nextBatch(readBatch)) {
-            for(int r=0; r < readBatch.size; ++r) {
-                for(int i=0; i<columnName.size();i++){
+            for (int r = 0; r < readBatch.size; ++r) {
+                for (int i = 0; i < columnName.size(); i++) {
                     Column<?> column = columns.get(i);
                     if (column == null) {
-                        column = createColumn(columnName.get(i),columnTypes.get(i));
-                        columns.set(i,column);
+                        column = createColumn(columnName.get(i), columnTypes.get(i));
+                        columns.set(i, column);
                     }
-                    appendValue(column,readBatch,r,i,columnTypes.get(i));
+                    appendValue(column, readBatch, r, i, columnTypes.get(i));
                 }
             }
         }
@@ -104,10 +101,10 @@ public class OrcReader implements DataReader<OrcReadOptions> {
 
     private void appendValue(Column<?> column, VectorizedRowBatch readBatch, int rowIndex, int columnIndex
             , String type) {
-        if(readBatch.cols[columnIndex].isRepeating){
+        if (readBatch.cols[columnIndex].isRepeating) {
             rowIndex = 0;
         }
-        if(!readBatch.cols[columnIndex].isNull[rowIndex] || readBatch.cols[columnIndex].noNulls) {
+        if (!readBatch.cols[columnIndex].isNull[rowIndex] || readBatch.cols[columnIndex].noNulls) {
             switch (type) {
                 case "boolean":
                     LongColumnVector boolColumnVector = (LongColumnVector) readBatch.cols[columnIndex];
@@ -164,14 +161,14 @@ public class OrcReader implements DataReader<OrcReadOptions> {
                     String str = new String(strCol.vector[rowIndex], strCol.start[rowIndex], strCol.length[rowIndex]);
                     column.appendCell(str);
             }
-        }else{
+        } else {
             column.appendCell(null);
         }
     }
 
     private Column<?> createColumn(String name, String type) {
         ColumnType columnType = null;
-        switch (type.toLowerCase()){
+        switch (type.toLowerCase()) {
             case "boolean":
                 columnType = ColumnType.BOOLEAN;
                 break;
