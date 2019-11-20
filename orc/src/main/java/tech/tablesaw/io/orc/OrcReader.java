@@ -101,64 +101,69 @@ public class OrcReader implements DataReader<OrcReadOptions> {
 
     private void appendValue(Column<?> column, VectorizedRowBatch readBatch, int rowIndex, int columnIndex
             , String type) {
+        int currentRowIndex = rowIndex;
         if (readBatch.cols[columnIndex].isRepeating) {
-            rowIndex = 0;
+            currentRowIndex = 0;
         }
-        if (!readBatch.cols[columnIndex].isNull[rowIndex] || readBatch.cols[columnIndex].noNulls) {
+        if (!readBatch.cols[columnIndex].isNull[currentRowIndex] || readBatch.cols[columnIndex].noNulls) {
             switch (type) {
                 case "boolean":
                     LongColumnVector boolColumnVector = (LongColumnVector) readBatch.cols[columnIndex];
-                    boolean value = boolColumnVector.vector[rowIndex] == 1;
+                    boolean value = boolColumnVector.vector[currentRowIndex] == 1;
                     ((BooleanColumn) column).append(value);
                     break;
                 case "date":
                     LongColumnVector dateVector = (LongColumnVector) readBatch.cols[columnIndex];
-                    long dateValue = dateVector.vector[rowIndex];
+                    long dateValue = dateVector.vector[currentRowIndex];
                     ((DateColumn) column).append(LocalDate.ofEpochDay(dateValue));
                     break;
                 case "decimal":
                     //Decimal can hold values of many types such as float, int, byte, short etc for simplicity
                     //we will store values in double
                     DecimalColumnVector decimalColumnVector = (DecimalColumnVector) readBatch.cols[columnIndex];
-                    double decimalValue = decimalColumnVector.vector[rowIndex].doubleValue();
+                    double decimalValue = decimalColumnVector.vector[currentRowIndex].doubleValue();
                     ((DoubleColumn) column).append(decimalValue);
                     break;
                 case "double":
                     DoubleColumnVector doubleColumnVector = (DoubleColumnVector) readBatch.cols[columnIndex];
-                    double doubleValue = doubleColumnVector.vector[rowIndex];
+                    double doubleValue = doubleColumnVector.vector[currentRowIndex];
                     ((DoubleColumn) column).append(doubleValue);
                     break;
                 case "float":
                     DoubleColumnVector floatColumnVector = (DoubleColumnVector) readBatch.cols[columnIndex];
-                    float floatValue = (float) floatColumnVector.vector[rowIndex];
+                    float floatValue = (float) floatColumnVector.vector[currentRowIndex];
                     ((FloatColumn) column).append(floatValue);
                     break;
                 case "int":
                     LongColumnVector intColumnVector = (LongColumnVector) readBatch.cols[columnIndex];
-                    int intValue = (int) intColumnVector.vector[rowIndex];
+                    int intValue = (int) intColumnVector.vector[currentRowIndex];
                     ((IntColumn) column).append(intValue);
                     break;
                 case "timestamp":
                     TimestampColumnVector k1 = (TimestampColumnVector) readBatch.cols[columnIndex];
                     Timestamp timestamp = new Timestamp(0);
-                    timestamp.setTime(k1.time[rowIndex]);
-                    timestamp.setNanos(k1.nanos[rowIndex]);
+                    timestamp.setTime(k1.time[currentRowIndex]);
+                    timestamp.setNanos(k1.nanos[currentRowIndex]);
                     ((DateTimeColumn) column).append(timestamp.toLocalDateTime());
                     break;
                 case "tinyint":
-                case "smallint":
                     LongColumnVector shortColumnVector = (LongColumnVector) readBatch.cols[columnIndex];
-                    short shortValue = (short) shortColumnVector.vector[rowIndex];
+                    short shortValue = (short) shortColumnVector.vector[currentRowIndex];
+                    ((ShortColumn) column).append(shortValue);
+                    break;
+                case "smallint":
+                    shortColumnVector = (LongColumnVector) readBatch.cols[columnIndex];
+                    shortValue = (short) shortColumnVector.vector[currentRowIndex];
                     ((ShortColumn) column).append(shortValue);
                     break;
                 case "bigint":
                     LongColumnVector longColumnVector = (LongColumnVector) readBatch.cols[columnIndex];
-                    long longValue = longColumnVector.vector[rowIndex];
+                    long longValue = longColumnVector.vector[currentRowIndex];
                     ((LongColumn) column).append(longValue);
                     break;
                 default:
                     BytesColumnVector strCol = (BytesColumnVector) readBatch.cols[columnIndex];
-                    String str = new String(strCol.vector[rowIndex], strCol.start[rowIndex], strCol.length[rowIndex]);
+                    String str = new String(strCol.vector[currentRowIndex], strCol.start[currentRowIndex], strCol.length[currentRowIndex]);
                     column.appendCell(str);
             }
         } else {
@@ -176,6 +181,8 @@ public class OrcReader implements DataReader<OrcReadOptions> {
                 columnType = ColumnType.LOCAL_DATE;
                 break;
             case "decimal":
+                columnType = ColumnType.DOUBLE;
+                break;
             case "double":
                 columnType = ColumnType.DOUBLE;
                 break;
@@ -189,6 +196,8 @@ public class OrcReader implements DataReader<OrcReadOptions> {
                 columnType = ColumnType.LOCAL_DATE_TIME;
                 break;
             case "tinyint":
+                columnType = ColumnType.SHORT;
+                break;
             case "smallint":
                 columnType = ColumnType.SHORT;
                 break;
