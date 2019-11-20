@@ -99,8 +99,8 @@ public class OrcReader implements DataReader<OrcReadOptions> {
         return columnTypes.stream().filter(str -> !supportedTypes.contains(str)).collect(Collectors.toList());
     }
 
-    private void appendValue(Column<?> column, VectorizedRowBatch readBatch, int rowIndex, int columnIndex
-            , String type) {
+    private void appendValue(final Column<?> column,final VectorizedRowBatch readBatch,final int rowIndex,final int columnIndex
+            ,final String type) {
         int currentRowIndex = rowIndex;
         if (readBatch.cols[columnIndex].isRepeating) {
             currentRowIndex = 0;
@@ -165,13 +165,14 @@ public class OrcReader implements DataReader<OrcReadOptions> {
                     BytesColumnVector strCol = (BytesColumnVector) readBatch.cols[columnIndex];
                     String str = new String(strCol.vector[currentRowIndex], strCol.start[currentRowIndex], strCol.length[currentRowIndex]);
                     column.appendCell(str);
+                    break;
             }
         } else {
             column.appendCell(null);
         }
     }
 
-    private Column<?> createColumn(String name, String type) {
+    private Column<?> createColumn(final String name,final String type) {
         ColumnType columnType = null;
         switch (type.toLowerCase()) {
             case "boolean":
@@ -181,8 +182,6 @@ public class OrcReader implements DataReader<OrcReadOptions> {
                 columnType = ColumnType.LOCAL_DATE;
                 break;
             case "decimal":
-                columnType = ColumnType.DOUBLE;
-                break;
             case "double":
                 columnType = ColumnType.DOUBLE;
                 break;
@@ -196,8 +195,6 @@ public class OrcReader implements DataReader<OrcReadOptions> {
                 columnType = ColumnType.LOCAL_DATE_TIME;
                 break;
             case "tinyint":
-                columnType = ColumnType.SHORT;
-                break;
             case "smallint":
                 columnType = ColumnType.SHORT;
                 break;
@@ -206,6 +203,7 @@ public class OrcReader implements DataReader<OrcReadOptions> {
                 break;
             default:
                 columnType = ColumnType.STRING;
+                break;
         }
         return columnType.create(name);
     }
