@@ -16,30 +16,29 @@ import tech.tablesaw.io.Source;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OrcReader implements DataReader<OrcReadOptions> {
     private static final OrcReader INSTANCE = new OrcReader();
-    private static final List<String> supportedTypes = Arrays.asList("boolean",
-            "date",
-            "decimal",
-            "double",
-            "float",
-            "int",
-            "timestamp",
-            "tinyint",
-            "smallint",
-            "bigint",
-            "string",
-            "varchar",
-            "char");
+    private static final Map<String,ColumnType> supportedTypeMap;
 
     static {
         register(Table.defaultReaderRegistry);
+        supportedTypeMap = new HashMap<>();
+        supportedTypeMap.put("boolean",ColumnType.BOOLEAN);
+        supportedTypeMap.put("date",ColumnType.LOCAL_DATE);
+        supportedTypeMap.put("decimal",ColumnType.DOUBLE);
+        supportedTypeMap.put("double",ColumnType.DOUBLE);
+        supportedTypeMap.put("float",ColumnType.FLOAT);
+        supportedTypeMap.put("int",ColumnType.INTEGER);
+        supportedTypeMap.put("timestamp",ColumnType.LOCAL_DATE_TIME);
+        supportedTypeMap.put("tinyint",ColumnType.SHORT);
+        supportedTypeMap.put("smallint",ColumnType.SHORT);
+        supportedTypeMap.put("bigint",ColumnType.LONG);
+        supportedTypeMap.put("string",ColumnType.STRING);
+        supportedTypeMap.put("varchar",ColumnType.STRING);
+        supportedTypeMap.put("char",ColumnType.STRING);
     }
 
     public static void register(ReaderRegistry registry) {
@@ -83,7 +82,7 @@ public class OrcReader implements DataReader<OrcReadOptions> {
                 for (int i = 0; i < columnName.size(); i++) {
                     Column<?> column = columns.get(i);
                     if (column == null) {
-                        column = createColumn(columnName.get(i), columnTypes.get(i));
+                        column = supportedTypeMap.get(columnTypes.get(i)).create(columnName.get(i));
                         columns.set(i, column);
                     }
                     appendValue(column, readBatch, r, i, columnTypes.get(i));
@@ -96,7 +95,7 @@ public class OrcReader implements DataReader<OrcReadOptions> {
     }
 
     private List<String> getUnsupportedTypes(List<String> columnTypes) {
-        return columnTypes.stream().filter(str -> !supportedTypes.contains(str)).collect(Collectors.toList());
+        return columnTypes.stream().filter(str -> !supportedTypeMap.containsKey(str)).collect(Collectors.toList());
     }
 
     private void appendValue(final Column<?> column,final VectorizedRowBatch readBatch,final int rowIndex,final int columnIndex
@@ -170,42 +169,6 @@ public class OrcReader implements DataReader<OrcReadOptions> {
         } else {
             column.appendCell(null);
         }
-    }
-
-    private Column<?> createColumn(final String name,final String type) {
-        ColumnType columnType = null;
-        switch (type.toLowerCase()) {
-            case "boolean":
-                columnType = ColumnType.BOOLEAN;
-                break;
-            case "date":
-                columnType = ColumnType.LOCAL_DATE;
-                break;
-            case "decimal":
-            case "double":
-                columnType = ColumnType.DOUBLE;
-                break;
-            case "float":
-                columnType = ColumnType.FLOAT;
-                break;
-            case "int":
-                columnType = ColumnType.INTEGER;
-                break;
-            case "timestamp":
-                columnType = ColumnType.LOCAL_DATE_TIME;
-                break;
-            case "tinyint":
-            case "smallint":
-                columnType = ColumnType.SHORT;
-                break;
-            case "bigint":
-                columnType = ColumnType.LONG;
-                break;
-            default:
-                columnType = ColumnType.STRING;
-                break;
-        }
-        return columnType.create(name);
     }
 
     @Override
