@@ -5,7 +5,6 @@ import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.*;
-import tech.tablesaw.columns.Column;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,29 +14,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.LongStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class OrcWriterTest {
-
-  private final <T> void assertColumnValues(Column<T> column, Column<T> columnRight) {
-    for (int i = 0; i < column.size(); i++) {
-      if (columnRight.get(i) == null) {
-        assertTrue(
-            column.isMissing(i),
-            "Should be missing value in row "
-                + i
-                + " of column "
-                + column.name()
-                + ", but it was "
-                + column.get(i));
-      } else {
-        assertEquals(
-            column.get(i),
-            columnRight.get(i),
-            "Wrong value in row " + i + " of column " + column.name());
-      }
-    }
-  }
 
   @Test
   public void testWritePositive() {
