@@ -1,10 +1,5 @@
 package tech.tablesaw.io.orc;
 
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.vector.*;
@@ -17,6 +12,12 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class OrcReader implements DataReader<OrcReadOptions> {
   private static final OrcReader INSTANCE = new OrcReader();
@@ -32,6 +33,7 @@ public class OrcReader implements DataReader<OrcReadOptions> {
     supportedTypeMap.put("float", ColumnType.FLOAT);
     supportedTypeMap.put("int", ColumnType.INTEGER);
     supportedTypeMap.put("timestamp", ColumnType.LOCAL_DATE_TIME);
+    supportedTypeMap.put("timestamp with local time zone", ColumnType.INSTANT);
     supportedTypeMap.put("tinyint", ColumnType.SHORT);
     supportedTypeMap.put("smallint", ColumnType.SHORT);
     supportedTypeMap.put("bigint", ColumnType.LONG);
@@ -66,7 +68,7 @@ public class OrcReader implements DataReader<OrcReadOptions> {
             .map(TypeDescription::toString)
             .map(
                 value ->
-                    value.replaceAll("\\(.*\\)", "")) // transform all types from char(5) to char
+                    value.replaceAll("\\(.*\\)", "")) // normalize type names e.g., char(5) to char
             .collect(Collectors.toList());
     List<String> unsupportedTypes = getUnsupportedTypes(columnTypes);
     if (!unsupportedTypes.isEmpty()) {
@@ -155,14 +157,17 @@ public class OrcReader implements DataReader<OrcReadOptions> {
           timestamp.setNanos(k1.nanos[currentRowIndex]);
           ((DateTimeColumn) column).append(timestamp.toLocalDateTime());
           break;
+        case "timestamp with local time zone":
+          TimestampColumnVector instantColumn = (TimestampColumnVector) readBatch.cols[columnIndex];
+          Timestamp instantTimestamp = new Timestamp(0);
+          instantTimestamp.setTime(instantColumn.time[currentRowIndex]);
+          instantTimestamp.setNanos(instantColumn.nanos[currentRowIndex]);
+          ((InstantColumn) column).append(instantTimestamp.toInstant());
+          break;
         case "tinyint":
+        case "smallint":
           LongColumnVector shortColumnVector = (LongColumnVector) readBatch.cols[columnIndex];
           short shortValue = (short) shortColumnVector.vector[currentRowIndex];
-          ((ShortColumn) column).append(shortValue);
-          break;
-        case "smallint":
-          shortColumnVector = (LongColumnVector) readBatch.cols[columnIndex];
-          shortValue = (short) shortColumnVector.vector[currentRowIndex];
           ((ShortColumn) column).append(shortValue);
           break;
         case "bigint":
@@ -181,7 +186,7 @@ public class OrcReader implements DataReader<OrcReadOptions> {
           break;
       }
     } else {
-      column.appendCell(null);
+      column.appendMissing();
     }
   }
 
