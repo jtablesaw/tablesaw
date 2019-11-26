@@ -379,6 +379,21 @@ public interface NumericColumn<T extends Number>
     return new PearsonsCorrelation().correlation(x, y);
   }
 
+  default double autoCorrelation(){
+    int defaultLag = 1;
+    return autoCorrelation(defaultLag);
+  }
+
+  default double autoCorrelation(int lag){
+    int slice = this.size() - lag;
+    if(slice <= 1){
+      return Double.NaN;
+    }
+    NumericColumn<?> x = (NumericColumn<?>)this.first(slice);
+    NumericColumn<?> y = (NumericColumn<?>)this.last(slice);
+    return new PearsonsCorrelation().correlation(x.asDoubleArray(), y.asDoubleArray());
+  }
+
   /**
    * Returns the Spearman's Rank correlation between the receiver and the otherColumn
    *
