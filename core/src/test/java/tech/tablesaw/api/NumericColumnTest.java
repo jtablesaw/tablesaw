@@ -1,11 +1,11 @@
 package tech.tablesaw.api;
 
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+
 import static java.lang.Double.NaN;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
 
 class NumericColumnTest {
 
@@ -29,7 +29,8 @@ class NumericColumnTest {
 
   @Test
   void testAutoCorrelation() {
-    double[] sample = new double[] {0.397,0.157,-0.083,-0.243,-0.323,-0.243,-0.083,0.077,0.347};
+    double[] sample =
+        new double[] {0.397, 0.157, -0.083, -0.243, -0.323, -0.243, -0.083, 0.077, 0.347};
     DoubleColumn x = DoubleColumn.create("x", sample);
     double roundOff = (double) Math.round(x.autoCorrelation() * 100) / 100;
     double expected = 0.64;
@@ -43,7 +44,7 @@ class NumericColumnTest {
     expected = NaN;
     assertEquals(expected, actual);
 
-    double[] sample2 = new double[] {0,0,0,0};
+    double[] sample2 = new double[] {0, 0, 0, 0};
     DoubleColumn y = DoubleColumn.create("y", sample2);
     actual = y.autoCorrelation();
     expected = NaN;
