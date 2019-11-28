@@ -40,6 +40,17 @@ import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.aggregate.PivotTable;
 import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.booleans.BooleanColumnType;
+import tech.tablesaw.columns.dates.DateColumnType;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
+import tech.tablesaw.columns.instant.InstantColumnType;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.FloatColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
+import tech.tablesaw.columns.numbers.LongColumnType;
+import tech.tablesaw.columns.strings.StringColumnType;
+import tech.tablesaw.columns.strings.TextColumnType;
+import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
 import tech.tablesaw.io.DataReader;
@@ -1125,6 +1136,54 @@ public class Table extends Relation implements Iterable<Row> {
     return Streams.stream(rollingIterator(n));
   }
 
+  public List<?> unique(String columnName)
+  {
+      Column<?> col = column(columnName).unique();
+      ColumnType type = col.type();
+  
+      List<?> values = null;
+  
+      if(type instanceof StringColumnType)
+      {
+          values = ((StringColumn) col).asList();
+      }else if(type instanceof DateTimeColumnType)
+      {
+          values = ((DateTimeColumn) col).asList();
+      }else if(type instanceof DateColumnType)
+      {
+          values = ((DateColumn) col).asList();
+      }else if(type instanceof LongColumnType)
+      {
+          values = ((LongColumn) col).asList();
+      }else if(type instanceof DoubleColumnType)
+      {
+          values = ((DoubleColumn) col).asList();
+      }else if(type instanceof IntColumnType)
+      {
+          values = ((IntColumn) col).asList();
+      }else if(type instanceof InstantColumnType)
+      {
+          values = ((InstantColumn) col).asList();
+      }else if(type instanceof BooleanColumnType)
+      {
+          values = ((BooleanColumn) col).asList();
+      }else if(type instanceof TimeColumnType)
+      {
+          values = ((TimeColumn) col).asList();
+      }else if (type instanceof TextColumnType)
+      {
+          values = ((TextColumn) col).asList();
+      }else if (type instanceof FloatColumnType)
+      {
+          values = ((FloatColumn) col).asList();
+      }
+  
+      values.sort(null);
+  
+      return values;
+  }
+  
+  
   /**
    * Applies the operation in {@code doable} to every row in the table
    *
