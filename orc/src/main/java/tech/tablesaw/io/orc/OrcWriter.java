@@ -89,7 +89,8 @@ public class OrcWriter implements DataWriter<OrcWriteOptions> {
     }
     try (Writer writer =
         OrcFile.createWriter(
-            new Path(options.getOutputPath().getAbsolutePath()), writeOptions.overwrite(true))) {
+            new Path(options.destination().getFile().getAbsolutePath()),
+            writeOptions.overwrite(true))) {
       VectorizedRowBatch batch = typeDescription.createRowBatch();
       int row = 0;
       for (int i = 0; i < table.rowCount(); i++) {

@@ -36,5 +36,9 @@ public class WriteOptions {
     protected Builder(File dest) throws IOException {
       this.dest = new Destination(dest);
     }
+
+    protected Builder(String stringPath) throws IOException {
+      this.dest = new Destination(stringPath);
+    }
   }
 }

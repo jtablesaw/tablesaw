@@ -1,21 +1,19 @@
 package tech.tablesaw.io.orc;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.orc.OrcFile;
-import org.apache.orc.TypeDescription;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.api.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.LongStream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.orc.OrcFile;
+import org.apache.orc.TypeDescription;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.*;
 
 public class OrcWriterTest {
 
@@ -77,8 +75,7 @@ public class OrcWriterTest {
 
     String pathToFile = "../data/orc-write-p.orc";
     try {
-      File outFile = new File(pathToFile);
-      table.write().usingOptions(OrcWriteOptions.builder(outFile).build());
+      table.write().usingOptions(OrcWriteOptions.builder(pathToFile).build());
       Table readTable = new OrcReader().read(OrcReadOptions.builder(pathToFile).build());
       assertEquals(table.columnCount(), readTable.columnCount());
       assertEquals(table.rowCount(), readTable.rowCount());
@@ -161,11 +158,10 @@ public class OrcWriterTest {
 
     String pathToFile = "../data/orc-write-p-2.orc";
     try {
-      File outFile = new File(pathToFile);
       table
           .write()
           .usingOptions(
-              OrcWriteOptions.builder(outFile)
+              OrcWriteOptions.builder(pathToFile)
                   .ocrWriteOptions(writeOptions.setSchema(schema))
                   .build());
       Table readTable = new OrcReader().read(OrcReadOptions.builder(pathToFile).build());
@@ -228,8 +224,7 @@ public class OrcWriterTest {
 
     String pathToFile = "../data/orc-write-p-null.orc";
     try {
-      File outFile = new File(pathToFile);
-      table.write().usingOptions(OrcWriteOptions.builder(outFile).build());
+      table.write().usingOptions(OrcWriteOptions.builder(pathToFile).build());
       Table readTable = new OrcReader().read(OrcReadOptions.builder(pathToFile).build());
       assertEquals(table.columnCount(), readTable.columnCount());
       assertEquals(table.rowCount(), readTable.rowCount());

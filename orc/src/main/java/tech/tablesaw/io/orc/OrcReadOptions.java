@@ -1,5 +1,9 @@
 package tech.tablesaw.io.orc;
 
+import org.apache.orc.OrcFile;
+import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.Source;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,9 +11,6 @@ import java.io.Reader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import org.apache.orc.OrcFile;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.Source;
 
 public class OrcReadOptions extends ReadOptions {
 
@@ -32,16 +33,8 @@ public class OrcReadOptions extends ReadOptions {
     return new Builder(new File(fileName));
   }
 
-  public static Builder builder(URL url) throws IOException {
-    return new Builder(url);
-  }
-
   public static Builder builderFromFile(String fileName) {
     return new Builder(new File(fileName));
-  }
-
-  public static Builder builderFromUrl(String url) throws IOException {
-    return new Builder(new URL(url));
   }
 
   public OrcFile.ReaderOptions orcReaderOptions() {
