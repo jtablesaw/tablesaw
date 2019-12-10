@@ -37,7 +37,7 @@ And here's the code to create and display it. In the simple API, rendering a bub
 
 You can find example code for all kinds of plots in the test folder of the jsplot project. The code for this specific plot is in the class BubbleExample2:
 
-https://://github.com/jtablesaw/tablesaw/tree/master/jsplot/src/test/java/tech/tablesaw/examples/BubbleExample2.java
+https://github.com/jtablesaw/tablesaw/tree/master/jsplot/src/test/java/tech/tablesaw/examples/BubbleExample2.java
 
 This writes a generated HTML page containing the necessary JavaScript to a file on the local filesystem, and opens it in a browser window.
 
