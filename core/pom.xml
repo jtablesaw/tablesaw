@@ -140,7 +140,7 @@
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-data</artifactId>
-            <version>2.0.0</version>
+            <version>1.5.3</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
@@ -181,7 +181,7 @@
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
-            <version>2.0.0</version>
+            <version>1.5.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
