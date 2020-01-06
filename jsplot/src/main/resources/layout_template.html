@@ -5,8 +5,12 @@ var layout = {
 {% if titlefont is not null %}
     titlefont: {{titlefont | raw}},
 {% endif %}
+{% if height is not null %}
     height: {{height}},
+{% endif %}
+{% if width is not null %}
     width: {{width}},
+{% endif %}
 {% if showlegend is not null %}
     showlegend: {{showlegend}},
 {% endif %}
