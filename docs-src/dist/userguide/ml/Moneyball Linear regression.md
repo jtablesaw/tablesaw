@@ -18,7 +18,7 @@ To do regression modeling in Tablesaw, we'll first need to import Smile:
 <dependency>
   <groupId>com.github.haifengl</groupId>
   <artifactId>smile-core</artifactId>
-  <version>1.5.3</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -107,7 +107,7 @@ Our plot shows a strong linear relation between the two.
 Let's create our first predictive model using linear regression, with runDifference as the sole explanatory variable. Here we use Smile's OLS (Ordinary Least Squares) regression model.
 
 ```Java
-OLS winsModel = new OLS(moneyball.select("W", "RD").smile().numericDataset("RD"));
+LinearModel winsModel = OLS.fit(Formula.lhs("RD"), moneyball.select("W", "RD").smile().toDataFrame());
 ```
 
 If we print our "winsModel", it produces the output below:
@@ -152,7 +152,7 @@ We'd expect 95 wins when we outscore opponents by 135 runs.
 It's time to go deeper again and see how we can model Runs Scored and Runs Allowed. The approach the A's took was to model Runs Scored using team On-base percent (OBP) and team Slugging Average (SLG). In Tablesaw, we write:
 
 ```java
-OLS runsScored = new OLS(moneyball.smile().numericDataset("RS", "OBP", "SLG"));
+LinearModel runsScored = OLS.fit(Formula.lhs("RS"), moneyball.select("RS", "OBP", "SLG").smile().toDataFrame());
 ```
 
 
@@ -188,7 +188,7 @@ It looks great.  It's also important to plot the predicted (or "fitted") value
 Our Scatter class can create this plot directly from the model:
 
 ```java
-double[] fitted = runsScored2.fitted();
+double[] fitted = runsScored2.fittedValues();
 double[] resids = runsScored2.residuals();
 
 ScatterPlot.show("Runs Scored from OBP and SLG", "Fitted", fitted, "Residuals", resids);
@@ -207,7 +207,7 @@ SLG &amp; OBP -&gt; Runs Scored -&gt; Run Difference -&gt; Regular Season Wins
 Of course, we haven't modeled the Runs Allowed side of Run Difference. We could use pitching and field stats to do this, but the A's cleverly used the same two variables (SLG and OBP), but now looked at how their opponent's performed against the A's. We could do the same as these data are encoded in the dataset as OOBP and OSLG.
 
 ```java
-OLS runsAllowed = new OLS(moneyball.smile().numericDataset("RA", "OOBP", "OSLG"));
+LinearModel runsAllowed = OLS.fit(Formula.lhs("RA"), moneyball.select("RA", "OOBP", "OSLG").smile().toDataFrame());
 
 > Linear Model:
 
@@ -233,7 +233,7 @@ This model also looks good, but you'd want to look at the plots again, and do ot
 Finally, we can tie this all together and see how well wins is predicted when we consider both offensive and defensive stats. 
 
 ```java
-OLS winsFinal = new OLS(moneyball.smile().numericDataset("W", "OOBP", "OBP", "OSLG", "SLG"));
+LinearModel winsFinal = new OLS(Formula.lhs("W"), moneyball.select("W", "OOBP", "OBP", "OSLG", "SLG").smile().toDataFrame());
 ```
 
 The output isn't shown, but we get an R squared of .89. Again this is quite good. 
