@@ -41,6 +41,7 @@ import static tech.tablesaw.api.QuerySupport.date;
 import static tech.tablesaw.api.QuerySupport.num;
 import static tech.tablesaw.api.QuerySupport.str;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +49,7 @@ import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -82,6 +84,66 @@ class AggregateFunctionsTest {
     Table result = table.summarize("approval", "date", mean, earliestDate).by(byColumn);
     assertEquals(3, result.columnCount());
     assertEquals(13, result.rowCount());
+  }
+
+  @Test
+  void testInstantMinMax() {
+    Instant i1 = Instant.ofEpochMilli(10_000L);
+    Instant i2 = Instant.ofEpochMilli(20_000L);
+    Instant i3 = Instant.ofEpochMilli(30_000L);
+    Instant i4 = null;
+
+    // Explicitly test having a first value of missing 
+    InstantColumn ic = InstantColumn.create("instants", 5);
+    ic.appendMissing();
+    ic.append(i3);
+    ic.append(i1);
+    ic.append(i2);
+    ic.appendMissing();
+    ic.append(i4);
+    Table test = Table.create("testInstantMath", ic);
+    Table minI = test.summarize("instants", AggregateFunctions.minInstant).apply();
+    Table maxI = test.summarize("instants", AggregateFunctions.maxInstant).apply();
+    assertEquals(i1, minI.get(0, 0));
+    assertEquals(i3, maxI.get(0, 0));
+  }
+
+  @Test
+  void testInstantMinWorksWithLeadingNull() {
+    Instant i1 = null;
+    Instant i2 = Instant.ofEpochMilli(20_000L);
+    Instant i3 = Instant.ofEpochMilli(30_000L);
+
+    InstantColumn ic1 = InstantColumn.create("instants", 3);
+    ic1.append(i1);
+    ic1.append(i2);
+    ic1.append(i3);
+    assertEquals(i2, ic1.min());
+
+    InstantColumn ic2 = InstantColumn.create("instants", 3);
+    ic2.appendMissing();
+    ic2.append(i2);
+    ic2.append(i3);
+    assertEquals(i2, ic2.min());
+  }
+
+  @Test
+  void testInstantMaxWorksWithLeadingNull() {
+    Instant i1 = null;
+    Instant i2 = Instant.ofEpochMilli(20_000L);
+    Instant i3 = Instant.ofEpochMilli(30_000L);
+
+    InstantColumn ic1 = InstantColumn.create("instants", 3);
+    ic1.append(i1);
+    ic1.append(i2);
+    ic1.append(i3);
+    assertEquals(i3, ic1.max());
+
+    InstantColumn ic2 = InstantColumn.create("instants", 3);
+    ic2.appendMissing();
+    ic2.append(i2);
+    ic2.append(i3);
+    assertEquals(i3, ic2.max());
   }
 
   @Test
