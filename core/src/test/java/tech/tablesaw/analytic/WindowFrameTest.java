@@ -112,34 +112,34 @@ class WindowFrameTest {
   @Test
   public void windowGrowthTypeUnbounded() {
     WindowGrowthType growthType = WindowFrame.builder().build().windowGrowthType();
-    assertEquals(growthType, WindowGrowthType.FIXED);
+    assertEquals(WindowGrowthType.FIXED, growthType);
   }
 
   @Test
   public void windowGrowthTypeFixedStart() {
     WindowGrowthType growthType =
         WindowFrame.builder().setRightFollowing(10).build().windowGrowthType();
-    assertEquals(growthType, WindowGrowthType.FIXED_LEFT);
+    assertEquals(WindowGrowthType.FIXED_LEFT, growthType);
   }
 
   @Test
   public void windowGrothTypeFixedEnd() {
     WindowGrowthType growthType =
         WindowFrame.builder().setLeftFollowing(10).build().windowGrowthType();
-    assertEquals(growthType, WindowGrowthType.FIXED_RIGHT);
+    assertEquals(WindowGrowthType.FIXED_RIGHT, growthType);
   }
 
   @Test
   public void windowGrowthTypeSliding() {
     WindowGrowthType growthType =
         WindowFrame.builder().setLeftPreceding(5).setRightFollowing(5).build().windowGrowthType();
-    assertEquals(growthType, WindowGrowthType.SLIDING);
+    assertEquals(WindowGrowthType.SLIDING, growthType);
   }
 
   @Test
   public void windowGrowthTypeSlidingWithCurrentRow() {
     WindowGrowthType growthType =
         WindowFrame.builder().setLeftPreceding(5).setRightCurrentRow().build().windowGrowthType();
-    assertEquals(growthType, WindowGrowthType.SLIDING);
+    assertEquals(WindowGrowthType.SLIDING, growthType);
   }
 }

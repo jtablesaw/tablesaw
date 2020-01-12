@@ -184,7 +184,7 @@ public class TableSliceTest {
       assertEquals(count + 3, row.getInt(3));
       count++;
     }
-    assertEquals(count, 2);
+    assertEquals(2, count);
   }
 
   @Test

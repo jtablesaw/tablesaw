@@ -373,7 +373,7 @@ public class CsvReaderTest {
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-    assertEquals(actual, Collections.singletonList(LOCAL_DATE));
+    assertEquals(Collections.singletonList(LOCAL_DATE), actual);
   }
 
   @Test
@@ -410,7 +410,7 @@ public class CsvReaderTest {
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-    assertEquals(actual, Collections.singletonList(LOCAL_DATE_TIME));
+    assertEquals(Collections.singletonList(LOCAL_DATE_TIME), actual);
   }
 
   @Test

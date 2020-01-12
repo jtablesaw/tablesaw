@@ -24,7 +24,7 @@ class DeferredColumnTest {
     assertEquals(table.rowCount(), t.rowCount());
 
     t = table.where(stringColumn("who").isNotEqualTo("fox"));
-    assertNotEquals(t.stringColumn("who").get(10), "fox");
+    assertNotEquals("fox", t.stringColumn("who").get(10));
 
     t = table.where(num("approval").isLessThan(55));
     assertTrue(t.intColumn("approval").get(10) < 55);

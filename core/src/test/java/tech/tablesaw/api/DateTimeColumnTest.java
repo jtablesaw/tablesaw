@@ -81,7 +81,7 @@ public class DateTimeColumnTest {
     column1.appendCell("2015-01-03T10:15:30");
     Table result =
         t.where(t.dateTimeColumn("Game date").isAfter(LocalDateTime.of(2015, 2, 2, 0, 0)));
-    assertEquals(result.rowCount(), 1);
+    assertEquals(1, result.rowCount());
   }
 
   @Test
