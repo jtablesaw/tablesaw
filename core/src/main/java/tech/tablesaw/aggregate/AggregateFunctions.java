@@ -7,7 +7,6 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
-
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
@@ -18,7 +17,7 @@ import tech.tablesaw.columns.numbers.DoubleColumnType;
 
 public class AggregateFunctions {
 
-  public static DateTimeAggregateFunction earliestDateTime =
+  public static final DateTimeAggregateFunction earliestDateTime =
       new DateTimeAggregateFunction("Earliest Date-Time") {
 
         @Override
@@ -27,7 +26,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static DateAggregateFunction earliestDate =
+  public static final DateAggregateFunction earliestDate =
       new DateAggregateFunction("Earliest Date") {
 
         @Override
@@ -36,7 +35,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static DateAggregateFunction latestDate =
+  public static final DateAggregateFunction latestDate =
       new DateAggregateFunction("Latest Date") {
 
         @Override
@@ -45,7 +44,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static DateTimeAggregateFunction latestDateTime =
+  public static final DateTimeAggregateFunction latestDateTime =
       new DateTimeAggregateFunction("Latest Date-Time") {
 
         @Override
@@ -54,14 +53,14 @@ public class AggregateFunctions {
         }
       };
 
-  public static InstantAggregateFunction maxInstant =
+  public static final InstantAggregateFunction maxInstant =
       new InstantAggregateFunction("Max Instant") {
         @Override
         public Instant summarize(InstantColumn column) {
           return column.max();
         }
       };
-  public static InstantAggregateFunction minInstant =
+  public static final InstantAggregateFunction minInstant =
       new InstantAggregateFunction("Min Instant") {
         @Override
         public Instant summarize(InstantColumn column) {
@@ -69,7 +68,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static BooleanCountFunction countTrue =
+  public static final BooleanCountFunction countTrue =
       new BooleanCountFunction("Number True") {
 
         @Override
@@ -78,7 +77,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static BooleanAggregateFunction allTrue =
+  public static final BooleanAggregateFunction allTrue =
       new BooleanAggregateFunction("All True") {
 
         @Override
@@ -87,7 +86,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static BooleanAggregateFunction anyTrue =
+  public static final BooleanAggregateFunction anyTrue =
       new BooleanAggregateFunction("Any True") {
 
         @Override
@@ -96,7 +95,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static BooleanAggregateFunction noneTrue =
+  public static final BooleanAggregateFunction noneTrue =
       new BooleanAggregateFunction("None True") {
 
         @Override
@@ -105,7 +104,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static BooleanCountFunction countFalse =
+  public static final BooleanCountFunction countFalse =
       new BooleanCountFunction("Number False") {
         @Override
         public Integer summarize(BooleanColumn column) {
@@ -113,7 +112,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static BooleanNumericFunction proportionTrue =
+  public static final BooleanNumericFunction proportionTrue =
       new BooleanNumericFunction("Proportion True") {
         @Override
         public Double summarize(BooleanColumn column) {
@@ -121,7 +120,7 @@ public class AggregateFunctions {
         }
       };
 
-  public static BooleanNumericFunction proportionFalse =
+  public static final BooleanNumericFunction proportionFalse =
       new BooleanNumericFunction("Proportion False") {
         @Override
         public Double summarize(BooleanColumn column) {
@@ -130,7 +129,7 @@ public class AggregateFunctions {
       };
 
   /** A function that returns the first item */
-  public static NumericAggregateFunction first =
+  public static final NumericAggregateFunction first =
       new NumericAggregateFunction("First") {
 
         @Override
@@ -140,7 +139,7 @@ public class AggregateFunctions {
       };
 
   /** A function that returns the last item */
-  public static NumericAggregateFunction last =
+  public static final NumericAggregateFunction last =
       new NumericAggregateFunction("Last") {
 
         @Override
@@ -152,7 +151,7 @@ public class AggregateFunctions {
       };
 
   /** A function that returns the difference between the last and first items */
-  public static NumericAggregateFunction change =
+  public static final NumericAggregateFunction change =
       new NumericAggregateFunction("Change") {
 
         @Override
@@ -164,7 +163,7 @@ public class AggregateFunctions {
       };
 
   /** A function that returns the difference between the last and first items */
-  public static NumericAggregateFunction pctChange =
+  public static final NumericAggregateFunction pctChange =
       new NumericAggregateFunction("Percent Change") {
 
         @Override
@@ -176,7 +175,7 @@ public class AggregateFunctions {
       };
 
   /** A function that calculates the count of values in the column excluding missing values */
-  public static CountFunction countNonMissing =
+  public static final CountFunction countNonMissing =
       new CountFunction("Count") {
 
         @Override
@@ -192,7 +191,7 @@ public class AggregateFunctions {
   public static final CountFunction count = countNonMissing;
 
   /** A function that calculates the count of values in the column excluding missing values */
-  public static CountFunction countMissing =
+  public static final CountFunction countMissing =
       new CountFunction("Missing Values") {
 
         @Override
@@ -202,7 +201,7 @@ public class AggregateFunctions {
       };
 
   /** A function that returns the number of non-missing unique values in the column param */
-  public static CountFunction countUnique =
+  public static final CountFunction countUnique =
       new CountFunction("Count Unique") {
 
         @Override

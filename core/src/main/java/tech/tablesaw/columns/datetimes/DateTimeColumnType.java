@@ -7,7 +7,7 @@ import tech.tablesaw.io.ReadOptions;
 
 public class DateTimeColumnType extends AbstractColumnType {
 
-  public static int BYTE_SIZE = 8;
+  public static final int BYTE_SIZE = 8;
 
   public static final DateTimeParser DEFAULT_PARSER =
       new DateTimeParser(ColumnType.LOCAL_DATE_TIME);

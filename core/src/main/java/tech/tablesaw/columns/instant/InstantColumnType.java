@@ -7,7 +7,7 @@ import tech.tablesaw.io.ReadOptions;
 
 public class InstantColumnType extends AbstractColumnType {
 
-  public static int BYTE_SIZE = 8;
+  public static final int BYTE_SIZE = 8;
 
   public static final InstantParser DEFAULT_PARSER = new InstantParser(ColumnType.INSTANT);
 
