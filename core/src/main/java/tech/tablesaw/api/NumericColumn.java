@@ -1,7 +1,18 @@
 package tech.tablesaw.api;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isNotMissing;
+
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
 import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
+import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.BiPredicate;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleFunction;
+import java.util.function.DoublePredicate;
 import org.apache.commons.math3.exception.NotANumberException;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
@@ -12,18 +23,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.*;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.function.BiPredicate;
-import java.util.function.DoubleBinaryOperator;
-import java.util.function.DoubleFunction;
-import java.util.function.DoublePredicate;
-
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isNotMissing;
 
 public interface NumericColumn<T extends Number>
     extends Column<T>, NumberMapFunctions, NumberFilters {
@@ -418,6 +417,7 @@ public interface NumericColumn<T extends Number>
     return Stats.create(this);
   }
 
+  @Override
   default NumberRollingColumn rolling(final int windowSize) {
     return new NumberRollingColumn(this, windowSize);
   }

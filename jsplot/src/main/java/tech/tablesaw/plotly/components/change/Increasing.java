@@ -12,11 +12,13 @@ public class Increasing extends Change {
 
   public static class IncreasingBuilder extends ChangeBuilder {
 
+    @Override
     public Increasing.IncreasingBuilder fillColor(String color) {
       this.fillColor = color;
       return this;
     }
 
+    @Override
     public Increasing.IncreasingBuilder changeLine(ChangeLine line) {
       this.changeLine = line;
       return this;

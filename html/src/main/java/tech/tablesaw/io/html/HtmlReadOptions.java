@@ -99,6 +99,7 @@ public class HtmlReadOptions extends ReadOptions {
       super(stream);
     }
 
+    @Override
     public HtmlReadOptions build() {
       return new HtmlReadOptions(this);
     }

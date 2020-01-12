@@ -196,6 +196,7 @@ public class CsvReadOptions extends ReadOptions {
       return this;
     }
 
+    @Override
     public CsvReadOptions build() {
       return new CsvReadOptions(this);
     }
@@ -259,6 +260,7 @@ public class CsvReadOptions extends ReadOptions {
       return this;
     }
 
+    @Override
     public Builder maxCharsPerColumn(int maxCharsPerColumn) {
       super.maxCharsPerColumn(maxCharsPerColumn);
       return this;

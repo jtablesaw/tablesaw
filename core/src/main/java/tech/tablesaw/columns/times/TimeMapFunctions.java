@@ -50,6 +50,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
     return difference(column2, HOURS);
   }
 
+  @Override
   default TimeColumn lead(int n) {
     TimeColumn column = lag(-n);
     column.setName(name() + " lead(" + n + ")");

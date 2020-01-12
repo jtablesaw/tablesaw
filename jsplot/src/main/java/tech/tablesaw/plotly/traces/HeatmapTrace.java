@@ -38,6 +38,7 @@ public class HeatmapTrace extends AbstractTrace {
     return writer.toString();
   }
 
+  @Override
   protected Map<String, Object> getContext() {
 
     Map<String, Object> context = super.getContext();

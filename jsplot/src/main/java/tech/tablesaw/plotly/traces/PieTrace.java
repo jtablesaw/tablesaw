@@ -74,6 +74,7 @@ public class PieTrace extends AbstractTrace {
       return type;
     }
 
+    @Override
     public PieTrace.PieBuilder showLegend(boolean b) {
       super.showLegend(b);
       return this;

@@ -362,27 +362,33 @@ public class ScatterTrace extends AbstractTrace {
       return type;
     }
 
+    @Override
     public ScatterBuilder name(String name) {
       return (ScatterBuilder) super.name(name);
     }
 
+    @Override
     public ScatterBuilder opacity(double n) {
       Preconditions.checkArgument(n >= 0 && n <= 1);
       return (ScatterBuilder) super.opacity(n);
     }
 
+    @Override
     public ScatterBuilder legendGroup(String group) {
       return (ScatterBuilder) super.legendGroup(group);
     }
 
+    @Override
     public ScatterBuilder showLegend(boolean showLegend) {
       return (ScatterBuilder) super.showLegend(showLegend);
     }
 
+    @Override
     public ScatterBuilder visible(Visibility visibility) {
       return (ScatterBuilder) super.visible(visibility);
     }
 
+    @Override
     public ScatterBuilder hoverLabel(HoverLabel hoverLabel) {
       return (ScatterBuilder) super.hoverLabel(hoverLabel);
     }

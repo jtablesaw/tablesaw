@@ -160,6 +160,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return noMissing;
   }
 
+  @Override
   public boolean contains(Instant dateTime) {
     long dt = PackedInstant.pack(dateTime);
     return data.contains(dt);
@@ -367,6 +368,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
    *
    * <p>Example: myColumn.set(myColumn.valueIsMissing(), Instant.now()); // no more missing values
    */
+  @Override
   public InstantColumn set(Selection rowSelection, Instant newValue) {
     for (int row : rowSelection) {
       set(row, newValue);
@@ -493,7 +495,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     boolean allMissing = true;
     for (long aData : data) {
       if (InstantColumnType.missingValueIndicator() != aData) {
-        max = Math.max(max , aData);
+        max = Math.max(max, aData);
         allMissing = false;
       }
     }

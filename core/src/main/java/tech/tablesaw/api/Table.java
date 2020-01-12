@@ -319,6 +319,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /** Returns only the columns whose names are given in the input array */
+  @Override
   public List<CategoricalColumn<?>> categoricalColumns(String... columnNames) {
     List<CategoricalColumn<?>> columns = new ArrayList<>();
     for (String columnName : columnNames) {
@@ -332,6 +333,7 @@ public class Table extends Relation implements Iterable<Row> {
    *
    * @throws IllegalArgumentException if the input string is not the name of any column in the table
    */
+  @Override
   public int columnIndex(String columnName) {
     int columnIndex = -1;
     for (int i = 0; i < columnList.size(); i++) {
@@ -763,6 +765,7 @@ public class Table extends Relation implements Iterable<Row> {
     return StandardTableSliceGroup.create(this, columns);
   }
 
+  @Override
   public Table structure() {
     Table t = new Table("Structure of " + name());
 

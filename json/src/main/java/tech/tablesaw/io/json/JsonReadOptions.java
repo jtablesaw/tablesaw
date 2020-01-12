@@ -98,6 +98,7 @@ public class JsonReadOptions extends ReadOptions {
       super(stream);
     }
 
+    @Override
     public JsonReadOptions build() {
       return new JsonReadOptions(this);
     }

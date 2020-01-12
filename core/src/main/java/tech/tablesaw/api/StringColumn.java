@@ -171,6 +171,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
    *
    * @return values as a list of String.
    */
+  @Override
   public List<String> asList() {
     List<String> strings = new ArrayList<>();
     for (String category : this) {
@@ -272,6 +273,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
    * @param aString the value to look for
    * @return true if contains, false otherwise
    */
+  @Override
   public boolean contains(String aString) {
     return firstIndexOf(aString) >= 0;
   }

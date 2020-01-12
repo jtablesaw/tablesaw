@@ -318,6 +318,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
    *
    * <p>Example: myColumn.set(myColumn.valueIsMissing(), LocalDate.now()); // no more missing values
    */
+  @Override
   public DateColumn set(Selection rowSelection, LocalDate newValue) {
     int packed = PackedLocalDate.pack(newValue);
     for (int row : rowSelection) {
@@ -482,6 +483,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return noMissing;
   }
 
+  @Override
   public List<LocalDate> asList() {
     List<LocalDate> dates = new ArrayList<>(size());
     for (LocalDate localDate : this) {
@@ -504,6 +506,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return dates;
   }
 
+  @Override
   public boolean contains(LocalDate localDate) {
     int date = PackedLocalDate.pack(localDate);
     return data.contains(date);

@@ -153,15 +153,18 @@ public class Scatter3DTrace extends AbstractTrace {
       return type;
     }
 
+    @Override
     public Scatter3DBuilder name(String name) {
       return (Scatter3DBuilder) super.name(name);
     }
 
+    @Override
     public Scatter3DBuilder opacity(double n) {
       Preconditions.checkArgument(n >= 0 && n <= 1);
       return (Scatter3DBuilder) super.opacity(n);
     }
 
+    @Override
     public Scatter3DBuilder legendGroup(String group) {
       return (Scatter3DBuilder) super.legendGroup(group);
     }
@@ -171,14 +174,17 @@ public class Scatter3DTrace extends AbstractTrace {
       return this;
     }
 
+    @Override
     public Scatter3DBuilder showLegend(boolean showLegend) {
       return (Scatter3DBuilder) super.showLegend(showLegend);
     }
 
+    @Override
     public Scatter3DBuilder visible(Visibility visibility) {
       return (Scatter3DBuilder) super.visible(visibility);
     }
 
+    @Override
     public Scatter3DBuilder hoverLabel(HoverLabel hoverLabel) {
       return (Scatter3DBuilder) super.hoverLabel(hoverLabel);
     }

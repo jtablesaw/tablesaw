@@ -115,16 +115,19 @@ public class BarTrace extends AbstractTrace {
       return this;
     }
 
+    @Override
     public BarBuilder opacity(double opacity) {
       super.opacity(opacity);
       return this;
     }
 
+    @Override
     public BarBuilder name(String name) {
       super.name(name);
       return this;
     }
 
+    @Override
     public BarBuilder showLegend(boolean b) {
       super.showLegend(b);
       return this;
@@ -135,11 +138,13 @@ public class BarTrace extends AbstractTrace {
       return this;
     }
 
+    @Override
     public BarBuilder xAxis(String xAxis) {
       super.xAxis(xAxis);
       return this;
     }
 
+    @Override
     public BarBuilder yAxis(String yAxis) {
       super.yAxis(yAxis);
       return this;

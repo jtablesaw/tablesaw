@@ -158,6 +158,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return noMissing;
   }
 
+  @Override
   public boolean contains(LocalDateTime dateTime) {
     long dt = PackedLocalDateTime.pack(dateTime);
     return data.contains(dt);
@@ -378,6 +379,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
    * <p>Example: myColumn.set(myColumn.valueIsMissing(), LocalDateTime.now()); // no more missing
    * values
    */
+  @Override
   public DateTimeColumn set(Selection rowSelection, LocalDateTime newValue) {
     for (int row : rowSelection) {
       set(row, newValue);

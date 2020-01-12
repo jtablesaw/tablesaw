@@ -166,6 +166,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    *
    * @return values as a list of String.
    */
+  @Override
   public List<String> asList() {
     return new ArrayList<>(values);
   }
@@ -262,6 +263,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    * @param aString the value to look for
    * @return true if contains, false otherwise
    */
+  @Override
   public boolean contains(String aString) {
     return values.contains(aString);
   }

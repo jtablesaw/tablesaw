@@ -158,6 +158,7 @@ public class FixedWidthReadOptions extends ReadOptions {
       return this;
     }
 
+    @Override
     public Builder maxCharsPerColumn(int maxCharsPerColumn) {
       super.maxCharsPerColumn(maxCharsPerColumn);
       return this;
@@ -212,6 +213,7 @@ public class FixedWidthReadOptions extends ReadOptions {
       return this;
     }
 
+    @Override
     public FixedWidthReadOptions build() {
       return new FixedWidthReadOptions(this);
     }

@@ -246,6 +246,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
   }
 
   /** Returns the entire contents of this column as a list */
+  @Override
   public List<LocalTime> asList() {
     List<LocalTime> times = new ArrayList<>();
     for (LocalTime time : this) {
@@ -495,6 +496,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
    *
    * <p>Example: myColumn.set(myColumn.valueIsMissing(), LocalTime.now()); // no more missing values
    */
+  @Override
   public TimeColumn set(Selection rowSelection, LocalTime newValue) {
     for (int row : rowSelection) {
       set(row, newValue);
@@ -506,6 +508,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return data.iterator();
   }
 
+  @Override
   public boolean contains(LocalTime time) {
     int t = PackedLocalTime.pack(time);
     return data.contains(t);
