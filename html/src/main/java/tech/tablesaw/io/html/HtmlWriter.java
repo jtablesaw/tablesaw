@@ -50,9 +50,9 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
       tbody.appendChild(row(row, table, elements, options));
     }
 
-    Writer writer = options.destination().createWriter();
-    writer.write(html.toString());
-    writer.flush();
+    try (Writer writer = options.destination().createWriter()) {
+      writer.write(html.toString());
+    }
   }
 
   /** Returns a string containing the html output of one table row */

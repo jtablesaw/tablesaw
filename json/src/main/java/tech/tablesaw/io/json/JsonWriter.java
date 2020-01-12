@@ -67,9 +67,9 @@ public class JsonWriter implements DataWriter<JsonWriteOptions> {
     }
 
     String str = mapper.writeValueAsString(output);
-    Writer writer = options.destination().createWriter();
-    writer.write(str);
-    writer.flush();
+    try (Writer writer = options.destination().createWriter()) {
+      writer.write(str);
+    }
   }
 
   @Override
