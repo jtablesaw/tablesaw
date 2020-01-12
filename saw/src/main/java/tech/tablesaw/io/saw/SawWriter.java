@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -444,9 +445,12 @@ public class SawWriter {
    * @throws IOException if the file can not be read
    */
   private static void writeTableMetadata(Path filePath, TableMetadata metadata) throws IOException {
-    File myFile = filePath.toFile();
-    myFile.createNewFile();
-    try (FileOutputStream fOut = new FileOutputStream(myFile);
+    try {
+      Files.createFile(filePath);
+    } catch (FileAlreadyExistsException e) {
+      // do nothing. overwrite existing file
+    }
+    try (FileOutputStream fOut = new FileOutputStream(filePath.toFile());
         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
       String output = metadata.toJson();
       myOutWriter.append(output);
