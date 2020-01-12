@@ -25,7 +25,7 @@ public class TemplateUtils {
     PebbleEngine engine;
     try {
       Loader<?> loader = new ClasspathLoader();
-      if (templateLocations != null && templateLocations.size() > 0) {
+      if (templateLocations != null && !templateLocations.isEmpty()) {
         List<Loader<?>> loaders = new ArrayList<>();
         for (String templateLocation : templateLocations) {
           FileLoader fileLoader = new FileLoader();

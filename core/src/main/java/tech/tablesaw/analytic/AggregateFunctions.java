@@ -164,7 +164,7 @@ enum AggregateFunctions implements FunctionMetaData {
 
         @Override
         public Double getValue() {
-          if (queue.size() == 0 || missingCount == queue.size()) {
+          if (queue.isEmpty() || missingCount == queue.size()) {
             return DoubleColumnType.missingValueIndicator();
           }
           return sum;

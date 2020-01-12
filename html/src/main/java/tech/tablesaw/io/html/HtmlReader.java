@@ -72,7 +72,7 @@ public class HtmlReader implements DataReader<HtmlReadOptions> {
 
     Table table = Table.create(options.tableName());
 
-    if (rows.size() == 0) {
+    if (rows.isEmpty()) {
       return table;
     }
 

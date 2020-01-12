@@ -11,7 +11,7 @@ public class TableBuildingUtils {
       List<String> columnNames, List<String[]> dataRows, ReadOptions options) {
     Table table = Table.create(options.tableName());
 
-    if (dataRows.size() == 0) {
+    if (dataRows.isEmpty()) {
       return table;
     }
 

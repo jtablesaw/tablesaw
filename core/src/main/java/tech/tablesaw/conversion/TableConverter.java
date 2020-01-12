@@ -50,7 +50,7 @@ public class TableConverter {
   }
 
   private static double[][] doubleMatrix(List<NumericColumn<?>> numberColumns) {
-    Preconditions.checkArgument(numberColumns.size() >= 1);
+    Preconditions.checkArgument(!numberColumns.isEmpty());
     int obs = numberColumns.get(0).size();
     double[][] allVals = new double[obs][numberColumns.size()];
 
@@ -63,7 +63,7 @@ public class TableConverter {
   }
 
   private static float[][] floatMatrix(List<NumericColumn<?>> numberColumns) {
-    Preconditions.checkArgument(numberColumns.size() >= 1);
+    Preconditions.checkArgument(!numberColumns.isEmpty());
     int obs = numberColumns.get(0).size();
     float[][] allVals = new float[obs][numberColumns.size()];
 
@@ -76,7 +76,7 @@ public class TableConverter {
   }
 
   private static int[][] intMatrix(List<NumericColumn<?>> numberColumns) {
-    Preconditions.checkArgument(numberColumns.size() >= 1);
+    Preconditions.checkArgument(!numberColumns.isEmpty());
     int obs = numberColumns.get(0).size();
     int[][] allVals = new int[obs][numberColumns.size()];
 

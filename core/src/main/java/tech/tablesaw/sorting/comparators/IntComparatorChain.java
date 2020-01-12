@@ -60,7 +60,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
   }
 
   private void checkChainIntegrity() {
-    if (this.comparatorChain.size() == 0) {
+    if (this.comparatorChain.isEmpty()) {
       throw new UnsupportedOperationException(
           "ComparatorChains must contain at least one Comparator");
     }
