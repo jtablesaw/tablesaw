@@ -30,6 +30,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -112,7 +113,7 @@ public class SawWriter {
       try {
         Files.walk(filePath)
             .map(Path::toFile)
-            .sorted((o1, o2) -> -o1.compareTo(o2))
+            .sorted((o1, o2) -> Comparator.<File>reverseOrder().compare(o1, o2))
             .forEach(File::delete);
       } catch (IOException e) {
         e.printStackTrace();
