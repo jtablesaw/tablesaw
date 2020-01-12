@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 public class Utils {
 
+  private Utils() {}
+
   public static String dataAsString(double[] data) {
     return Arrays.toString(data);
   }

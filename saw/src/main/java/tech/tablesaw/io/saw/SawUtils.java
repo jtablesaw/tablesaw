@@ -23,6 +23,8 @@ import com.google.common.annotations.Beta;
 @Beta
 class SawUtils {
 
+  private SawUtils() {}
+
   static final String FLOAT = "FLOAT";
   static final String DOUBLE = "DOUBLE";
   static final String INTEGER = "INTEGER";

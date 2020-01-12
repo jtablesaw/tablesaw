@@ -13,6 +13,8 @@ import java.util.List;
 
 public class TemplateUtils {
 
+  private TemplateUtils() {}
+
   private static Collection<String> templateLocations = new ArrayList<>();
 
   public static void setTemplateLocations(String... locations) {

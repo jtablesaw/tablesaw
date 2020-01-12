@@ -10,6 +10,8 @@ import tech.tablesaw.sorting.comparators.ReversingIntComparator;
 
 public class SortUtils {
 
+  private SortUtils() {}
+
   /** Returns a comparator chain for sorting according to the given key */
   public static IntComparatorChain getChain(Table table, Sort key) {
     Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();

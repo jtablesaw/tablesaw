@@ -26,6 +26,8 @@ import tech.tablesaw.filtering.predicates.IntBiPredicate;
  */
 public class DateAndTimePredicates {
 
+  private DateAndTimePredicates() {}
+
   public static final IntPredicate isMissing = i -> i == TimeColumnType.missingValueIndicator();
 
   public static final IntPredicate isNotMissing = i -> i != TimeColumnType.missingValueIndicator();

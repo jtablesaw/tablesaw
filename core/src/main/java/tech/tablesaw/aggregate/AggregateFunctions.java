@@ -17,6 +17,8 @@ import tech.tablesaw.columns.numbers.DoubleColumnType;
 
 public class AggregateFunctions {
 
+  private AggregateFunctions() {}
+
   public static final DateTimeAggregateFunction earliestDateTime =
       new DateTimeAggregateFunction("Earliest Date-Time") {
 

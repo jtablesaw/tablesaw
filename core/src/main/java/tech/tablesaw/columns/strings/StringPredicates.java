@@ -22,6 +22,8 @@ import tech.tablesaw.util.StringUtils;
 
 public class StringPredicates {
 
+  private StringPredicates() {}
+
   public static final Predicate<String> isMissing =
       i -> i.equals(StringColumnType.missingValueIndicator());
 

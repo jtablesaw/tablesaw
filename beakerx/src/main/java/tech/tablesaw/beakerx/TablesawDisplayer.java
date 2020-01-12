@@ -25,18 +25,19 @@ import tech.tablesaw.columns.Column;
 
 public class TablesawDisplayer {
 
+  private TablesawDisplayer() {}
+
   /**
-   * Registers {@link Table} and {@link Column} for display in Jupyter.
-   * Call {@link #registerTable()} or {@link #registerColumns()} instead if you'd like to only display one or the other.
+   * Registers {@link Table} and {@link Column} for display in Jupyter. Call {@link
+   * #registerTable()} or {@link #registerColumns()} instead if you'd like to only display one or
+   * the other.
    */
   public static void register() {
     registerTable();
     registerColumns();
   }
 
-  /**
-   * Registers {@link Table} for display in Jupyter.
-   */
+  /** Registers {@link Table} for display in Jupyter. */
   public static void registerTable() {
     Displayers.register(
         Table.class,
@@ -60,8 +61,8 @@ public class TablesawDisplayer {
   }
 
   /**
-   * Registers and {@link Column} for display in Jupyter.
-   * Call {@link #registerTable()} or {@link #registerColumns()} instead if you'd like to only display one or the other.
+   * Registers and {@link Column} for display in Jupyter. Call {@link #registerTable()} or {@link
+   * #registerColumns()} instead if you'd like to only display one or the other.
    */
   // TODO: remove rawtypes warnings suppression after PR below is merged
   // https://github.com/jupyter/jvm-repr/pull/22
@@ -87,5 +88,4 @@ public class TablesawDisplayer {
           }
         });
   }
-
 }

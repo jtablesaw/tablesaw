@@ -26,6 +26,8 @@ import tech.tablesaw.columns.Column;
 /** Utilities for creating frequency and proportion cross tabs */
 public final class CrossTab {
 
+  private CrossTab() {}
+
   private static final String LABEL_COLUMN_NAME = "[labels]";
 
   /**

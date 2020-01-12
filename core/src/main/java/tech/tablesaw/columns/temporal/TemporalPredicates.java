@@ -20,6 +20,8 @@ import tech.tablesaw.filtering.predicates.LongBiPredicate;
 
 public class TemporalPredicates {
 
+  private TemporalPredicates() {}
+
   public static final LongPredicate isMissing = i -> i == InstantColumnType.missingValueIndicator();
 
   public static final LongPredicate isNotMissing =
