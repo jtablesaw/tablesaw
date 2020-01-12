@@ -1,12 +1,6 @@
 package tech.tablesaw.plotly.components.change;
 
 import com.google.common.base.Preconditions;
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import tech.tablesaw.plotly.components.Component;
@@ -20,28 +14,17 @@ public class ChangeLine extends Component {
   private final int width;
 
   private ChangeLine(LineBuilder lineBuilder) {
-
     color = lineBuilder.color;
     width = lineBuilder.width;
   }
 
   @Override
   public String asJavascript() {
-    Writer writer = new StringWriter();
-    PebbleTemplate compiledTemplate;
-
-    try {
-      compiledTemplate = engine.getTemplate("changeLine_template.html");
-      compiledTemplate.evaluate(writer, getContext());
-    } catch (PebbleException e) {
-      throw new IllegalStateException(e);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-    return writer.toString();
+    return asJavascript("changeLine_template.html");
   }
 
-  private Map<String, Object> getContext() {
+  @Override
+  protected Map<String, Object> getContext() {
     Map<String, Object> context = new HashMap<>();
     if (!color.equals(DEFAULT_COLOR)) context.put("color", color);
     if (width != DEFAULT_WIDTH) context.put("width", width);

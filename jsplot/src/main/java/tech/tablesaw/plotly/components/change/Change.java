@@ -1,11 +1,5 @@
 package tech.tablesaw.plotly.components.change;
 
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import tech.tablesaw.plotly.components.Component;
@@ -19,19 +13,7 @@ public abstract class Change extends Component {
 
   @Override
   public String asJavascript() {
-    Writer writer = new StringWriter();
-    PebbleTemplate compiledTemplate;
-
-    try {
-      compiledTemplate = engine.getTemplate("change_template.html");
-
-      compiledTemplate.evaluate(writer, getContext());
-    } catch (PebbleException e) {
-      throw new IllegalStateException(e);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-    return writer.toString();
+    return asJavascript("change_template.html");
   }
 
   Change(ChangeBuilder builder) {
@@ -39,7 +21,8 @@ public abstract class Change extends Component {
     this.fillColor = builder.fillColor;
   }
 
-  private Map<String, Object> getContext() {
+  @Override
+  protected Map<String, Object> getContext() {
     Map<String, Object> context = new HashMap<>();
     if (changeLine != null) context.put("changeLine", changeLine);
     if (fillColor != null) context.put("fillColor", fillColor);

@@ -1,11 +1,5 @@
 package tech.tablesaw.plotly.components;
 
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,21 +19,11 @@ public class Page extends Component {
 
   @Override
   public String asJavascript() {
-    Writer writer = new StringWriter();
-    PebbleTemplate compiledTemplate;
-
-    try {
-      compiledTemplate = engine.getTemplate("page_template.html");
-      compiledTemplate.evaluate(writer, getContext());
-    } catch (PebbleException e) {
-      throw new IllegalStateException(e);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-    return writer.toString();
+    return asJavascript("page_template.html");
   }
 
-  private Map<String, Object> getContext() {
+  @Override
+  protected Map<String, Object> getContext() {
     Map<String, Object> context = new HashMap<>();
     context.put("figureScript", figure.asJavascript(divName));
     context.put("targetDiv", figure.divString(divName));
