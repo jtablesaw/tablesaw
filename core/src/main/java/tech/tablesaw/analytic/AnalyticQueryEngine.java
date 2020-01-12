@@ -149,6 +149,6 @@ final class AnalyticQueryEngine {
 
   /** Order the tableSlice in place. Does not modify the underlying table. */
   private void orderBy(TableSlice tableSlice) {
-    query.getSort().ifPresent(sort -> tableSlice.sortOn(sort));
+    query.getSort().ifPresent(tableSlice::sortOn);
   }
 }
