@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.AbstractColumnParser;
@@ -48,6 +49,9 @@ public abstract class FileReader {
 
           @Override
           public String[] next() {
+            if (!hasNext()) {
+              throw new NoSuchElementException();
+            }
             String[] tmp = nextRow;
             nextRow = parser.parseNext();
             return tmp;

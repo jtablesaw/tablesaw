@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -1058,6 +1059,9 @@ public class Table extends Relation implements Iterable<Row> {
 
       @Override
       public Row[] next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
         Row[] rows = new Row[n];
         for (int i = 0; i < n; i++) {
           rows[i] = new Row(Table.this, currRow + i);
@@ -1087,6 +1091,9 @@ public class Table extends Relation implements Iterable<Row> {
 
       @Override
       public Row[] next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
         Row[] rows = new Row[n];
         for (int i = 0; i < n; i++) {
           rows[i] = new Row(Table.this, currRow + i);

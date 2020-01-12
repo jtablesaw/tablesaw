@@ -3,6 +3,7 @@ package tech.tablesaw.columns.temporal.fillers;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class TemporalRangeIterable<T extends Temporal> implements Iterable<T> {
 
@@ -59,6 +60,9 @@ public class TemporalRangeIterable<T extends Temporal> implements Iterable<T> {
       @Override
       @SuppressWarnings("unchecked")
       public T next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
         final T current = next;
         next = (T) next.plus(by, byUnit);
         num++;

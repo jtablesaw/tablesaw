@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
 
@@ -311,6 +312,9 @@ public class Row implements Iterator<Row> {
 
   @Override
   public Row next() {
+    if (!hasNext()) {
+      throw new NoSuchElementException();
+    }
     rowNumber++;
     return this;
   }
