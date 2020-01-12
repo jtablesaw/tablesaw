@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -110,8 +111,8 @@ public class SawWriter {
     Path filePath = folderPath.resolve(sawFolderName);
 
     if (Files.exists(filePath)) {
-      try {
-        Files.walk(filePath)
+      try (Stream<Path> stream = Files.walk(filePath)) {
+        stream
             .map(Path::toFile)
             .sorted((o1, o2) -> Comparator.<File>reverseOrder().compare(o1, o2))
             .forEach(File::delete);
