@@ -31,6 +31,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.UUID;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -87,8 +88,7 @@ public class ColumnMetadata {
     try {
       return objectMapper.readValue(jsonString, ColumnMetadata.class);
     } catch (IOException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -96,8 +96,7 @@ public class ColumnMetadata {
     try {
       return objectMapper.writeValueAsString(this);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
+      throw new IllegalStateException(e);
     }
   }
 

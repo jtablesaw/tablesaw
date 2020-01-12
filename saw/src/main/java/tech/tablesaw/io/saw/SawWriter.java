@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UncheckedIOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -102,7 +103,7 @@ public class SawWriter {
       try {
         Files.createDirectories(folderPath);
       } catch (IOException e) {
-        e.printStackTrace();
+        throw new UncheckedIOException(e);
       }
     }
 
@@ -117,13 +118,13 @@ public class SawWriter {
             .sorted((o1, o2) -> Comparator.<File>reverseOrder().compare(o1, o2))
             .forEach(File::delete);
       } catch (IOException e) {
-        e.printStackTrace();
+        throw new UncheckedIOException(e);
       }
     }
     try {
       Files.createDirectories(filePath);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new UncheckedIOException(e);
     }
 
     try {

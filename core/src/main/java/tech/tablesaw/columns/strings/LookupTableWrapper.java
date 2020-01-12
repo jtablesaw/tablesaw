@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import tech.tablesaw.api.StringColumn;
 
 /**
@@ -134,19 +135,13 @@ public class LookupTableWrapper {
         }
         stringColumn = StringColumn.createInternal(name, dictionaryMap);
       } else {
-        throw new RuntimeException("Unable to match the dictionary map type for StringColum");
+        throw new IllegalArgumentException(
+            "Unable to match the dictionary map type " + dictionarySizeString + " for StringColum");
       }
 
-    } catch (Exception exception) {
-      System.out.println(
-          "Failed reading "
-              + name
-              + " of type "
-              + dictionarySizeString
-              + " with exception "
-              + exception.getMessage());
-      exception.printStackTrace();
-      throw new RuntimeException(exception);
+    } catch (IOException e) {
+      throw new UncheckedIOException(
+          "Failed reading " + name + " of type " + dictionarySizeString, e);
     }
     return stringColumn;
   }
