@@ -93,7 +93,7 @@ class AggregateFunctionsTest {
     Instant i3 = Instant.ofEpochMilli(30_000L);
     Instant i4 = null;
 
-    // Explicitly test having a first value of missing 
+    // Explicitly test having a first value of missing
     InstantColumn ic = InstantColumn.create("instants", 5);
     ic.appendMissing();
     ic.append(i3);
@@ -189,13 +189,6 @@ class AggregateFunctionsTest {
   void testApplyWithNonNumericResults() {
     Table result = table.summarize("date", earliestDate, latestDate).apply();
     assertEquals(2, result.columnCount());
-  }
-
-  @Test
-  void testGroupMean3() {
-    Summarizer function = table.summarize("approval", mean, stdDev);
-    Table result = function.by("Group", 10);
-    assertEquals(32, result.rowCount());
   }
 
   @Test

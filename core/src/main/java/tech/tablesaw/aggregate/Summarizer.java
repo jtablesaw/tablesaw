@@ -26,7 +26,6 @@ import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Row;
-import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
@@ -165,35 +164,6 @@ public class Summarizer {
     }
     TableSliceGroup group = StandardTableSliceGroup.create(temp, columns);
     return summarize(group);
-  }
-
-  /**
-   * Returns a summary of the records grouped into subsets of the same size, in the order they
-   * appear
-   *
-   * <p>All groups have the same number of records. If the final group has fewer than step records
-   * it is dropped.
-   *
-   * @deprecated Use by(step) instead.
-   * @param groupNameTemplate a prefix for the group name
-   * @param step the number or records to include in each group
-   */
-  @Deprecated
-  public Table by(String groupNameTemplate, int step) {
-
-    IntColumn groupColumn = assignToGroupsByStep(step);
-    Table t = getSummaryTable(groupColumn);
-
-    StringColumn groupNameColumn = StringColumn.create("Group", t.rowCount());
-
-    for (Row row : t) {
-      int id = row.getInt(groupColumn.name());
-      String name = groupNameTemplate + ": " + id;
-      groupNameColumn.set(row.getRowNumber(), name);
-    }
-
-    t.replaceColumn(0, groupNameColumn);
-    return t;
   }
 
   private Table getSummaryTable(IntColumn groupColumn) {
