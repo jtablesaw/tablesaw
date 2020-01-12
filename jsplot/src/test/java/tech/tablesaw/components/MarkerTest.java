@@ -16,4 +16,18 @@ public class MarkerTest {
     assertTrue(x.asJavascript().contains("symbol"));
     assertTrue(x.asJavascript().contains("size"));
   }
+
+  @Test
+  public void testCustomPalette() {
+    Marker palette = Marker.builder().colorScale(Marker.Palette.JET).build();
+    assertTrue(palette.asJavascript().contains("colorscale: 'Jet'"), palette.asJavascript());
+    Marker x = Marker.builder().addColorScale(0, 255, 0, 0).addColorScale(1, 0, 255, 0).build();
+    assertTrue(
+        x.asJavascript()
+            .contains(
+                "colorscale: [\n"
+                    + "['0.0', 'rgb(255,0,0)'],\n"
+                    + "['1.0', 'rgb(0,255,0)']\n"
+                    + "]"));
+  }
 }
