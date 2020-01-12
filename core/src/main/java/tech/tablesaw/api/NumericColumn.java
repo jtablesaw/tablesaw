@@ -276,7 +276,7 @@ public interface NumericColumn<T extends Number>
 
   @Override
   default NumberInterpolator<T> interpolate() {
-    return new NumberInterpolator<T>(this);
+    return new NumberInterpolator<>(this);
   }
 
   /**

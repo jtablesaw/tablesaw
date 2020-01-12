@@ -96,7 +96,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
       throws IOException {
     byte[] bytes = null;
     InputStream input = getInputStream(options, bytes);
-    List<Table> tables = new ArrayList<Table>();
+    List<Table> tables = new ArrayList<>();
     try (XSSFWorkbook workbook = new XSSFWorkbook(input)) {
       for (Sheet sheet : workbook) {
         TableRange tableArea = findTableArea(sheet);

@@ -649,7 +649,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    * nearby cells.
    */
   default Interpolator<T> interpolate() {
-    return new Interpolator<T>(this);
+    return new Interpolator<>(this);
   }
 
   /**

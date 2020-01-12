@@ -30,7 +30,7 @@ public class TemporalRangeIterable<T extends Temporal> implements Iterable<T> {
 
   private static <T extends Temporal> TemporalRangeIterable<T> range(
       final T from, final T to, final long by, final TemporalUnit byUnit, final int count) {
-    return new TemporalRangeIterable<T>(from, to, false, by, byUnit, count);
+    return new TemporalRangeIterable<>(from, to, false, by, byUnit, count);
   }
 
   public static <T extends Temporal> TemporalRangeIterable<T> range(
