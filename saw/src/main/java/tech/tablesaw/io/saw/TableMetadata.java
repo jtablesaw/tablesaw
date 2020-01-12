@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -59,8 +60,7 @@ public class TableMetadata {
     try {
       return objectMapper.readValue(jsonString, TableMetadata.class);
     } catch (IOException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -68,8 +68,7 @@ public class TableMetadata {
     try {
       return objectMapper.writeValueAsString(this);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 

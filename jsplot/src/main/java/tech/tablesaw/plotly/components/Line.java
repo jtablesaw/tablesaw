@@ -5,6 +5,7 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,8 +68,10 @@ public class Line extends Component {
       compiledTemplate = engine.getTemplate("line_template.html");
 
       compiledTemplate.evaluate(writer, getContext());
-    } catch (PebbleException | IOException e) {
-      e.printStackTrace();
+    } catch (PebbleException e) {
+      throw new IllegalStateException(e);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
     return writer.toString();
   }

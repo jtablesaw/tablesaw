@@ -4,6 +4,7 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
 import tech.tablesaw.api.NumericColumn;
@@ -37,8 +38,10 @@ public class Histogram2DTrace extends AbstractTrace {
     try {
       compiledTemplate = engine.getTemplate("trace_template.html");
       compiledTemplate.evaluate(writer, getContext(i));
-    } catch (PebbleException | IOException e) {
-      e.printStackTrace();
+    } catch (PebbleException e) {
+      throw new IllegalStateException(e);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
     return writer.toString();
   }

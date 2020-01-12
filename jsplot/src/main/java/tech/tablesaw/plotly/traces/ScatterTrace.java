@@ -7,6 +7,7 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
 import tech.tablesaw.api.NumericColumn;
@@ -185,8 +186,10 @@ public class ScatterTrace extends AbstractTrace {
       compiledTemplate = engine.getTemplate("trace_template.html");
       Map<String, Object> context = getContext(i);
       compiledTemplate.evaluate(writer, context);
-    } catch (PebbleException | IOException e) {
-      e.printStackTrace();
+    } catch (PebbleException e) {
+      throw new IllegalStateException(e);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
     return writer.toString();
   }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -36,7 +37,7 @@ public class Plot {
       }
       new Browser().browse(outputFile);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -57,7 +58,7 @@ public class Plot {
     try {
       Files.createDirectories(path.getParent());
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new UncheckedIOException(e);
     }
     return path.toFile();
   }
@@ -67,7 +68,7 @@ public class Plot {
     try {
       Files.createDirectories(path.getParent());
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new UncheckedIOException(e);
     }
     return path.toFile();
   }

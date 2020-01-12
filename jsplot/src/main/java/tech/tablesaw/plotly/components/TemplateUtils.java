@@ -36,7 +36,6 @@ public class TemplateUtils {
       }
       engine = new PebbleEngine.Builder().loader(loader).strictVariables(false).build();
     } catch (PebbleException e) {
-      e.printStackTrace();
       throw new IllegalStateException(e);
     }
     return engine;
