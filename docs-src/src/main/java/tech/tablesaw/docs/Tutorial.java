@@ -15,7 +15,7 @@ import tech.tablesaw.docs.OutputWriter.System;
 
 public class Tutorial implements DocsSourceFile {
 
-  public static OutputWriter outputWriter = new OutputWriter(Tutorial.class);
+  public static final OutputWriter outputWriter = new OutputWriter(Tutorial.class);
 
   public void run() throws IOException {
     // @@ table_read

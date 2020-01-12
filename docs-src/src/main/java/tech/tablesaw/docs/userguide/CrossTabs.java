@@ -12,7 +12,7 @@ import tech.tablesaw.docs.OutputWriter.System;
 
 public class CrossTabs implements DocsSourceFile {
 
-  public static OutputWriter outputWriter = new OutputWriter(CrossTabs.class);
+  public static final OutputWriter outputWriter = new OutputWriter(CrossTabs.class);
 
   @Override
   public void run() throws IOException {

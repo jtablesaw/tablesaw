@@ -27,7 +27,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 public class GettingStarted implements DocsSourceFile {
 
-  public static OutputWriter outputWriter = new OutputWriter(GettingStarted.class);
+  public static final OutputWriter outputWriter = new OutputWriter(GettingStarted.class);
 
   @Override
   public void run() throws IOException {
