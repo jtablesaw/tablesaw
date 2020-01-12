@@ -99,9 +99,9 @@ public class TableTest {
 
     DoubleColumn n = t.doubleColumn(0).add(t.doubleColumn(1)).add(t.doubleColumn(2));
 
-    assertEquals(n.get(0), 9, 0);
-    assertEquals(n.get(1), 12, 0);
-    assertEquals(n.get(2), 15, 0);
+    assertEquals(9, n.get(0), 0);
+    assertEquals(12, n.get(1), 0);
+    assertEquals(15, n.get(2), 0);
   }
 
   @Test
@@ -118,9 +118,9 @@ public class TableTest {
 
     DoubleColumn n = sum(t.doubleColumn("a"), t.doubleColumn("b"), t.doubleColumn("c"));
 
-    assertEquals(n.get(0), 9, 0);
-    assertEquals(n.get(1), 12, 0);
-    assertEquals(n.get(2), 15, 0);
+    assertEquals(9, n.get(0), 0);
+    assertEquals(12, n.get(1), 0);
+    assertEquals(15, n.get(2), 0);
   }
 
   @Test

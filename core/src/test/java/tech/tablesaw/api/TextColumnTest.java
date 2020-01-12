@@ -178,7 +178,7 @@ public class TextColumnTest {
     TextColumn result = stringColumn.where(selection);
     assertEquals(result.size(), stringColumn.size() - 1);
     assertFalse(result.contains("Alabama"));
-    assertEquals(stringColumn.size(), 51);
+    assertEquals(51, stringColumn.size());
   }
 
   @Test
@@ -220,7 +220,7 @@ public class TextColumnTest {
     stringColumn.addAll(TestDataUtil.usStates());
 
     Selection selection2 = stringColumn.isNotEqualTo("Yugoslavia");
-    assertEquals(selection2.size(), 51);
+    assertEquals(51, selection2.size());
     TextColumn result2 = stringColumn.where(selection2);
     assertEquals(result2.size(), stringColumn.size());
   }
@@ -269,8 +269,8 @@ public class TextColumnTest {
     TextColumn wordColumn = TextColumn.create("words", words);
     TextColumn word2Column = TextColumn.create("words2", words2);
     DoubleColumn distance = wordColumn.distance(word2Column);
-    assertEquals(distance.get(0), 3, 0.0001);
-    assertEquals(distance.get(3), 7, 0.0001);
+    assertEquals(3, distance.get(0), 0.0001);
+    assertEquals(7, distance.get(3), 0.0001);
   }
 
   @Test
@@ -280,9 +280,9 @@ public class TextColumnTest {
     TextColumn wordColumn = TextColumn.create("words", words);
     TextColumn word2Column = TextColumn.create("words2", words2);
     StringColumn suffix = wordColumn.commonSuffix(word2Column);
-    assertEquals(suffix.get(0), "ing");
-    assertEquals(suffix.get(1), "cube");
-    assertEquals(suffix.get(3), "e");
+    assertEquals("ing", suffix.get(0));
+    assertEquals("cube", suffix.get(1));
+    assertEquals("e", suffix.get(3));
   }
 
   @Test
@@ -292,9 +292,9 @@ public class TextColumnTest {
     TextColumn wordColumn = TextColumn.create("words", words);
     TextColumn word2Column = TextColumn.create("words2", words2);
     StringColumn result = wordColumn.commonPrefix(word2Column);
-    assertEquals(result.get(0), "r");
-    assertEquals(result.get(1), "ice");
-    assertEquals(result.get(2), "back");
+    assertEquals("r", result.get(0));
+    assertEquals("ice", result.get(1));
+    assertEquals("back", result.get(2));
   }
 
   @Test
@@ -302,9 +302,9 @@ public class TextColumnTest {
     String[] words = {"running", "icecube", "back"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.padStart(8, ' ');
-    assertEquals(result.get(0), " running");
-    assertEquals(result.get(1), " icecube");
-    assertEquals(result.get(2), "    back");
+    assertEquals(" running", result.get(0));
+    assertEquals(" icecube", result.get(1));
+    assertEquals("    back", result.get(2));
   }
 
   @Test
@@ -312,9 +312,9 @@ public class TextColumnTest {
     String[] words = {"running", "icecube", "back"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.padEnd(8, 'X');
-    assertEquals(result.get(0), "runningX");
-    assertEquals(result.get(1), "icecubeX");
-    assertEquals(result.get(2), "backXXXX");
+    assertEquals("runningX", result.get(0));
+    assertEquals("icecubeX", result.get(1));
+    assertEquals("backXXXX", result.get(2));
   }
 
   @Test
@@ -322,9 +322,9 @@ public class TextColumnTest {
     String[] words = {"running", "icecube", "back"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.substring(3);
-    assertEquals(result.get(0), "ning");
-    assertEquals(result.get(1), "cube");
-    assertEquals(result.get(2), "k");
+    assertEquals("ning", result.get(0));
+    assertEquals("cube", result.get(1));
+    assertEquals("k", result.get(2));
   }
 
   @Test
@@ -332,9 +332,9 @@ public class TextColumnTest {
     String[] words = {"running", "icecube", "back"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.substring(1, 3);
-    assertEquals(result.get(0), "un");
-    assertEquals(result.get(1), "ce");
-    assertEquals(result.get(2), "ac");
+    assertEquals("un", result.get(0));
+    assertEquals("ce", result.get(1));
+    assertEquals("ac", result.get(2));
   }
 
   @Test
@@ -342,8 +342,8 @@ public class TextColumnTest {
     String[] words = {"running", "run run run"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.replaceFirst("run", "walk");
-    assertEquals(result.get(0), "walkning");
-    assertEquals(result.get(1), "walk run run");
+    assertEquals("walkning", result.get(0));
+    assertEquals("walk run run", result.get(1));
   }
 
   @Test
@@ -351,8 +351,8 @@ public class TextColumnTest {
     String[] words = {"running", "run run run"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.replaceAll("run", "walk");
-    assertEquals(result.get(0), "walkning");
-    assertEquals(result.get(1), "walk walk walk");
+    assertEquals("walkning", result.get(0));
+    assertEquals("walk walk walk", result.get(1));
   }
 
   @Test
@@ -361,8 +361,8 @@ public class TextColumnTest {
     String[] regex = {"n", "g"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.replaceAll(regex, "XX");
-    assertEquals(result.get(0), "ruXXXXiXXXX");
-    assertEquals(result.get(1), "ruXX ruXX ruXX");
+    assertEquals("ruXXXXiXXXX", result.get(0));
+    assertEquals("ruXX ruXX ruXX", result.get(1));
   }
 
   @Test
@@ -374,8 +374,8 @@ public class TextColumnTest {
     TextColumn wordColumn2 = TextColumn.create("words2", words2);
     TextColumn wordColumn3 = TextColumn.create("words3", words3);
     StringColumn result = wordColumn.join("--", wordColumn2, wordColumn3);
-    assertEquals(result.get(0), "running--walking--swimming");
-    assertEquals(result.get(1), "run--walk--swim");
+    assertEquals("running--walking--swimming", result.get(0));
+    assertEquals("run--walk--swim", result.get(1));
   }
 
   @Test
@@ -394,8 +394,8 @@ public class TextColumnTest {
     String[] words = {" running ", " run run run "};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.trim();
-    assertEquals(result.get(0), "running");
-    assertEquals(result.get(1), "run run run");
+    assertEquals("running", result.get(0));
+    assertEquals("run run run", result.get(1));
   }
 
   @Test
@@ -403,8 +403,8 @@ public class TextColumnTest {
     String[] words = {"running", "run run run"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.upperCase();
-    assertEquals(result.get(0), "RUNNING");
-    assertEquals(result.get(1), "RUN RUN RUN");
+    assertEquals("RUNNING", result.get(0));
+    assertEquals("RUN RUN RUN", result.get(1));
   }
 
   @Test
@@ -412,8 +412,8 @@ public class TextColumnTest {
     String[] words = {"RUNNING", "RUN RUN RUN"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.lowerCase();
-    assertEquals(result.get(0), "running");
-    assertEquals(result.get(1), "run run run");
+    assertEquals("running", result.get(0));
+    assertEquals("run run run", result.get(1));
   }
 
   @Test
@@ -421,9 +421,9 @@ public class TextColumnTest {
     String[] words = {"running", "Stop Breaking Down", "Backwards Writing"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.abbreviate(10);
-    assertEquals(result.get(0), "running");
-    assertEquals(result.get(1), "Stop Br...");
-    assertEquals(result.get(2), "Backwar...");
+    assertEquals("running", result.get(0));
+    assertEquals("Stop Br...", result.get(1));
+    assertEquals("Backwar...", result.get(2));
   }
 
   @Test
@@ -431,8 +431,8 @@ public class TextColumnTest {
     String[] words = {"Stop Breaking Down", "Backwards Writing"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.tokenizeAndSort();
-    assertEquals(result.get(0), "Breaking Down Stop");
-    assertEquals(result.get(1), "Backwards Writing");
+    assertEquals("Breaking Down Stop", result.get(0));
+    assertEquals("Backwards Writing", result.get(1));
   }
 
   @Test
@@ -454,8 +454,8 @@ public class TextColumnTest {
     String[] words = {"Stop,Breaking,Down", "Writing Backwards"};
     TextColumn wordColumn = TextColumn.create("words", words);
     StringColumn result = wordColumn.tokenizeAndSort(",");
-    assertEquals(result.get(0), "Breaking,Down,Stop");
-    assertEquals(result.get(1), "Writing Backwards");
+    assertEquals("Breaking,Down,Stop", result.get(0));
+    assertEquals("Writing Backwards", result.get(1));
   }
 
   @Test
