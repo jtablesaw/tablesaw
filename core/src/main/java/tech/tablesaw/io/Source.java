@@ -109,9 +109,12 @@ public class Source {
     long bufferSize = file.length() < 9999 ? file.length() : 9999;
     byte[] buffer = new byte[(int) bufferSize];
     try (InputStream initialStream = new FileInputStream(file)) {
-      initialStream.read(buffer);
+      int bytesRead = initialStream.read(buffer);
+      if (bytesRead < bufferSize) {
+        throw new IOException("Was not able to read expected number of bytes");
+      }
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new IllegalStateException(e);
     }
     return getCharSet(buffer);
   }
