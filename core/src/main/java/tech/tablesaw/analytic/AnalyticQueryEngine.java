@@ -1,10 +1,12 @@
 package tech.tablesaw.analytic;
 
 import com.google.common.collect.ImmutableList;
+import java.util.Optional;
 import tech.tablesaw.analytic.ArgumentList.FunctionCall;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.sorting.Sort;
 import tech.tablesaw.sorting.SortUtils;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
 import tech.tablesaw.table.TableSlice;
@@ -23,11 +25,8 @@ final class AnalyticQueryEngine {
   private AnalyticQueryEngine(AnalyticQuery query) {
     this.query = query;
     this.destination = Table.create("Analytic ~ " + query.getTable().name());
-    if (query.getSort().isPresent()) {
-      this.rowComparator = SortUtils.getChain(query.getTable(), query.getSort().get());
-    } else {
-      rowComparator = null;
-    }
+    Optional<Sort> sort = query.getSort();
+    this.rowComparator = sort.isPresent() ? SortUtils.getChain(query.getTable(), sort.get()) : null;
   }
 
   public static AnalyticQueryEngine create(AnalyticQuery query) {
