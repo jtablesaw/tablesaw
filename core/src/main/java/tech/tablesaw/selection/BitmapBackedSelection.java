@@ -22,6 +22,7 @@ import org.roaringbitmap.RoaringBitmap;
 
 public class BitmapBackedSelection implements Selection {
 
+  private static final Random random = new Random();
   private final RoaringBitmap bitmap;
 
   /**
@@ -229,7 +230,6 @@ public class BitmapBackedSelection implements Selection {
 
     BitSet bs = new BitSet(max);
     int cardinality = 0;
-    Random random = new Random();
     while (cardinality < n) {
       int v = random.nextInt(max);
       if (!bs.get(v)) {
