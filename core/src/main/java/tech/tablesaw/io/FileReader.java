@@ -12,12 +12,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 
 public abstract class FileReader {
+
+  private static Logger logger = LoggerFactory.getLogger(FileReader.class);
 
   public FileReader() {}
 
@@ -139,7 +143,7 @@ public abstract class FileReader {
       // validation
       if (nextLine.length < types.length) {
         if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
-          System.err.println("Warning: Invalid file. Row " + rowNumber + " is empty. Continuing.");
+          logger.error("Warning: Invalid file. Row " + rowNumber + " is empty. Continuing.");
           continue;
         } else {
           Exception e =
