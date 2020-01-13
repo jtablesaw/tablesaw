@@ -313,62 +313,61 @@ public class DataFrameJoiner {
   private Selection selectionForColumn(Column<?> valueColumn, int rowIndex, Index rawIndex) {
 
     ColumnType type = valueColumn.type();
-    Selection selection = Selection.with();
     if (type instanceof DateColumnType) {
       IntIndex index = (IntIndex) rawIndex;
       DateColumn typedValueColumn = (DateColumn) valueColumn;
       int value = typedValueColumn.getIntInternal(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof TimeColumnType) {
       IntIndex index = (IntIndex) rawIndex;
       TimeColumn typedValueColumn = (TimeColumn) valueColumn;
       int value = typedValueColumn.getIntInternal(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof DateTimeColumnType) {
       LongIndex index = (LongIndex) rawIndex;
       DateTimeColumn typedValueColumn = (DateTimeColumn) valueColumn;
       long value = typedValueColumn.getLongInternal(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof InstantColumnType) {
       LongIndex index = (LongIndex) rawIndex;
       InstantColumn typedValueColumn = (InstantColumn) valueColumn;
       long value = typedValueColumn.getLongInternal(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
       StringIndex index = (StringIndex) rawIndex;
       StringColumn typedValueColumn = (StringColumn) valueColumn;
       String value = typedValueColumn.get(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof IntColumnType) {
       IntIndex index = (IntIndex) rawIndex;
       IntColumn typedValueColumn = (IntColumn) valueColumn;
       int value = typedValueColumn.getInt(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof LongColumnType) {
       LongIndex index = (LongIndex) rawIndex;
       LongColumn typedValueColumn = (LongColumn) valueColumn;
       long value = typedValueColumn.getLong(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof ShortColumnType) {
       ShortIndex index = (ShortIndex) rawIndex;
       ShortColumn typedValueColumn = (ShortColumn) valueColumn;
       short value = typedValueColumn.getShort(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof BooleanColumnType) {
       ByteIndex index = (ByteIndex) rawIndex;
       BooleanColumn typedValueColumn = (BooleanColumn) valueColumn;
       byte value = typedValueColumn.getByte(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof DoubleColumnType) {
       DoubleIndex index = (DoubleIndex) rawIndex;
       DoubleColumn typedValueColumn = (DoubleColumn) valueColumn;
       double value = typedValueColumn.getDouble(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else if (type instanceof FloatColumnType) {
       FloatIndex index = (FloatIndex) rawIndex;
       FloatColumn typedValueColumn = (FloatColumn) valueColumn;
       float value = typedValueColumn.getFloat(rowIndex);
-      selection = index.get(value);
+      return index.get(value);
     } else {
       throw new IllegalArgumentException(
           "Joining is supported on numeric, string, and date-like columns. Column "
@@ -376,7 +375,6 @@ public class DataFrameJoiner {
               + " is of type "
               + valueColumn.type());
     }
-    return selection;
   }
 
   /** Create a big multicolumn selection for all join columns in the given table. */
