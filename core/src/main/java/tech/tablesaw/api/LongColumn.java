@@ -196,16 +196,6 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   }
 
   @Override
-  public LongColumn emptyCopy() {
-    return (LongColumn) super.emptyCopy();
-  }
-
-  @Override
-  public LongColumn emptyCopy(final int rowSize) {
-    return (LongColumn) super.emptyCopy(rowSize);
-  }
-
-  @Override
   public LongColumn copy() {
     return new LongColumn(name(), data.clone());
   }

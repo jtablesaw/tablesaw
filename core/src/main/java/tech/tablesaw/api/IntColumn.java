@@ -194,16 +194,6 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   }
 
   @Override
-  public IntColumn emptyCopy() {
-    return super.emptyCopy();
-  }
-
-  @Override
-  public IntColumn emptyCopy(final int rowSize) {
-    return super.emptyCopy(rowSize);
-  }
-
-  @Override
   public IntColumn copy() {
     return new IntColumn(name(), data.clone());
   }
