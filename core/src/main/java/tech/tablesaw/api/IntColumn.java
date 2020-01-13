@@ -195,12 +195,12 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
 
   @Override
   public IntColumn emptyCopy() {
-    return (IntColumn) super.emptyCopy();
+    return super.emptyCopy();
   }
 
   @Override
   public IntColumn emptyCopy(final int rowSize) {
-    return (IntColumn) super.emptyCopy(rowSize);
+    return super.emptyCopy(rowSize);
   }
 
   @Override
