@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,9 @@ public class ShortDictionaryMap implements DictionaryMap {
   private static final short DEFAULT_RETURN_VALUE = Short.MIN_VALUE;
 
   private final ShortComparator reverseDictionarySortComparator =
-      (i, i1) -> -getValueForShortKey(i).compareTo(getValueForShortKey(i1));
+      (i, i1) ->
+          Comparator.<String>reverseOrder()
+              .compare(getValueForShortKey(i), getValueForShortKey(i1));
 
   private final ShortComparator dictionarySortComparator =
       (i, i1) -> getValueForShortKey(i).compareTo(getValueForShortKey(i1));

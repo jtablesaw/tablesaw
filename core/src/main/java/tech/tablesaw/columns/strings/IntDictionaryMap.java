@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class IntDictionaryMap implements DictionaryMap {
   private static final int DEFAULT_RETURN_VALUE = Integer.MIN_VALUE;
 
   private final IntComparator reverseDictionarySortComparator =
-      (i, i1) -> -getValueForKey(i).compareTo(getValueForKey(i1));
+      (i, i1) -> Comparator.<String>reverseOrder().compare(getValueForKey(i), getValueForKey(i1));
 
   private final IntComparator dictionarySortComparator =
       (i, i1) -> getValueForKey(i).compareTo(getValueForKey(i1));
