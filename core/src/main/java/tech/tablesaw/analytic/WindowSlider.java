@@ -146,7 +146,7 @@ class WindowSlider {
       case SLIDING:
         return i -> i + 1;
     }
-    throw new RuntimeException("Unexpected growthType: " + this.windowGrowthType);
+    throw new IllegalArgumentException("Unexpected growthType: " + this.windowGrowthType);
   }
 
   private Function<Integer, Integer> slideRightStrategy() {
@@ -157,7 +157,7 @@ class WindowSlider {
       case SLIDING:
         return i -> i + 1;
     }
-    throw new RuntimeException("Unexpected growthType: " + this.windowGrowthType);
+    throw new IllegalArgumentException("Unexpected growthType: " + this.windowGrowthType);
   }
 
   private int getInitialLeftBound() {
@@ -173,6 +173,6 @@ class WindowSlider {
       case SLIDING:
         return this.initialRightBound;
     }
-    throw new RuntimeException("Unexpected growthType: " + this.windowGrowthType);
+    throw new IllegalArgumentException("Unexpected growthType: " + this.windowGrowthType);
   }
 }

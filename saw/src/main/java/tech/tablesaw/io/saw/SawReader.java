@@ -20,6 +20,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -70,7 +71,7 @@ public class SawReader {
    * @param file The location of the table data. If not fully specified, it is interpreted as
    *     relative to the working directory. The path will typically end in ".saw", as in
    *     "mytables/nasdaq-2015.saw"
-   * @throws RuntimeException wrapping an IOException if the file cannot be read
+   * @throws UncheckedIOException wrapping an IOException if the file cannot be read
    */
   public static Table readTable(File file) {
 
@@ -85,7 +86,7 @@ public class SawReader {
     try {
       tableMetadata = readTableMetadata(sawPath.resolve(METADATA_FILE_NAME));
     } catch (IOException e) {
-      throw new RuntimeException("Error attempting to load saw data", e);
+      throw new UncheckedIOException("Error attempting to load saw data", e);
     }
 
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
@@ -117,7 +118,7 @@ public class SawReader {
       }
 
     } catch (InterruptedException | ExecutionException e) {
-      throw new RuntimeException(e);
+      throw new IllegalStateException(e);
     }
     executorService.shutdown();
     return table;
@@ -348,7 +349,8 @@ public class SawReader {
       } else if (columnMetadata.getStringColumnKeySize().equals(Byte.class.getSimpleName())) {
         dictionaryMap = new ByteDictionaryMap();
       } else {
-        throw new RuntimeException("Unable to match the dictionary map type for StringColum");
+        throw new IllegalArgumentException(
+            "Unable to match the dictionary map type for StringColum");
       }
       LookupTableWrapper lookupTable = new LookupTableWrapper(dictionaryMap);
 

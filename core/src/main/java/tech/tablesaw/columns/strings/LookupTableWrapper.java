@@ -70,7 +70,7 @@ public class LookupTableWrapper {
       }
       dos.flush();
     } catch (IOException exception) {
-      throw new RuntimeException(exception);
+      throw new UncheckedIOException(exception);
     }
   }
 

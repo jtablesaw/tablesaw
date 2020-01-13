@@ -84,7 +84,7 @@ public class SawWriter {
    * @param parentFolderName The location of the table (for example: "mytables")
    * @param table The table to be saved
    * @return The path and name of the table
-   * @throws RuntimeException wrapping IOException if the file can not be read
+   * @throws UncheckedIOException wrapping IOException if the file can not be read
    */
   public static String saveTable(String parentFolderName, Relation table) {
 
@@ -151,8 +151,10 @@ public class SawWriter {
         Future<Void> future = writerCompletionService.take();
         future.get();
       }
-    } catch (InterruptedException | ExecutionException | IOException e) {
-      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    } catch (InterruptedException | ExecutionException e) {
+      throw new IllegalStateException(e);
     }
     executorService.shutdown();
     return filePath.toAbsolutePath().toString();
@@ -207,10 +209,10 @@ public class SawWriter {
           writeColumn(fileName, (LongColumn) column);
           break;
         default:
-          throw new RuntimeException("Unhandled column type writing columns");
+          throw new IllegalArgumentException("Unhandled column type writing columns");
       }
-    } catch (IOException ex) {
-      throw new RuntimeException("IOException writing to file");
+    } catch (IOException e) {
+      throw new UncheckedIOException("IOException writing to file", e);
     }
   }
 
