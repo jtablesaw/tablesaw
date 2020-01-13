@@ -1,5 +1,3 @@
-package tech.tablesaw.io.saw;
-
 /*
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +11,8 @@ package tech.tablesaw.io.saw;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package tech.tablesaw.io.saw;
 
 import com.google.common.annotations.Beta;
 
