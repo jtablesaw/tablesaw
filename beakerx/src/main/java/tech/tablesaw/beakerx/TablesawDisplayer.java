@@ -48,12 +48,7 @@ public class TablesawDisplayer {
                     table.rowCount(),
                     table.columnCount(),
                     table.columnNames(),
-                    new TableDisplay.Element() {
-                      @Override
-                      public String get(int columnIndex, int rowIndex) {
-                        return table.getUnformatted(rowIndex, columnIndex);
-                      }
-                    })
+                    (int columnIndex, int rowIndex) -> table.getUnformatted(rowIndex, columnIndex))
                 .display();
             return OutputCell.DISPLAYER_HIDDEN;
           }
@@ -77,12 +72,7 @@ public class TablesawDisplayer {
                     column.size(),
                     1,
                     Lists.newArrayList(column.name()),
-                    new TableDisplay.Element() {
-                      @Override
-                      public String get(int columnIndex, int rowIndex) {
-                        return column.getUnformattedString(rowIndex);
-                      }
-                    })
+                    (int columnIndex, int rowIndex) -> column.getUnformattedString(rowIndex))
                 .display();
             return OutputCell.DISPLAYER_HIDDEN;
           }
