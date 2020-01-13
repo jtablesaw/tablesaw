@@ -56,7 +56,7 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
 
   public static IntColumn create(String name, IntStream stream) {
     IntArrayList list = new IntArrayList();
-    stream.forEach(val -> list.add(val));
+    stream.forEach(list::add);
     return new IntColumn(name, list);
   }
 

@@ -65,7 +65,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
 
   public static FloatColumn create(String name, Stream<Float> stream) {
     FloatColumn column = create(name);
-    stream.forEach(val -> column.append(val));
+    stream.forEach(column::append);
     return column;
   }
 

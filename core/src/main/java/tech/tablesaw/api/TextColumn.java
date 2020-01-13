@@ -108,7 +108,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   public static TextColumn create(String name, Stream<String> stream) {
     TextColumn column = create(name);
-    stream.forEach(val -> column.append(val));
+    stream.forEach(column::append);
     return column;
   }
 

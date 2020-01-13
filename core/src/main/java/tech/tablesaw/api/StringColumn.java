@@ -90,7 +90,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
 
   public static StringColumn create(String name, Stream<String> stream) {
     StringColumn column = create(name);
-    stream.forEach(val -> column.append(val));
+    stream.forEach(column::append);
     return column;
   }
 

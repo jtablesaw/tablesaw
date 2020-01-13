@@ -108,7 +108,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   public static InstantColumn create(String name, Stream<Instant> stream) {
     InstantColumn column = create(name);
-    stream.forEach(val -> column.append(val));
+    stream.forEach(column::append);
     return column;
   }
 

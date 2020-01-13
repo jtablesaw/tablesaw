@@ -133,7 +133,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   public static DoubleColumn create(String name, DoubleStream stream) {
     DoubleArrayList list = new DoubleArrayList();
-    stream.forEach(val -> list.add(val));
+    stream.forEach(list::add);
     return new DoubleColumn(name, list);
   }
 

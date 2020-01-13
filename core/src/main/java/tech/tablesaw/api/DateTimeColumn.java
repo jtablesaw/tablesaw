@@ -98,7 +98,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   public static DateTimeColumn create(String name, Stream<LocalDateTime> stream) {
     DateTimeColumn column = create(name);
-    stream.forEach(val -> column.append(val));
+    stream.forEach(column::append);
     return column;
   }
 

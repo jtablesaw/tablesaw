@@ -49,7 +49,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
 
   public static LongColumn create(String name, LongStream stream) {
     LongArrayList list = new LongArrayList();
-    stream.forEach(val -> list.add(val));
+    stream.forEach(list::add);
     return new LongColumn(name, list);
   }
 

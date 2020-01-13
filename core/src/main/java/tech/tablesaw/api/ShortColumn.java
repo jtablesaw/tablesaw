@@ -54,7 +54,7 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   public static ShortColumn create(String name, Stream<Short> stream) {
     ShortColumn column = create(name);
-    stream.forEach(val -> column.append(val));
+    stream.forEach(column::append);
     return column;
   }
 

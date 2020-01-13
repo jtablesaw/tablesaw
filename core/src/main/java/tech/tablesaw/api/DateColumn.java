@@ -95,7 +95,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   public static DateColumn create(String name, Stream<LocalDate> stream) {
     DateColumn column = create(name);
-    stream.forEach(val -> column.append(val));
+    stream.forEach(column::append);
     return column;
   }
 

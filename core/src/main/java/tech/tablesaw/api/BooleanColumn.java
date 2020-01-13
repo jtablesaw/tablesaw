@@ -146,7 +146,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   public static BooleanColumn create(String name, Stream<Boolean> stream) {
     BooleanColumn column = create(name);
-    stream.forEach(val -> column.append(val));
+    stream.forEach(column::append);
     return column;
   }
 

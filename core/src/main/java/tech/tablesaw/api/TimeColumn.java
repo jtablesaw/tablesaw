@@ -110,7 +110,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
 
   public static TimeColumn create(String name, Stream<LocalTime> stream) {
     TimeColumn column = create(name);
-    stream.forEach(val -> column.append(val));
+    stream.forEach(column::append);
     return column;
   }
 
