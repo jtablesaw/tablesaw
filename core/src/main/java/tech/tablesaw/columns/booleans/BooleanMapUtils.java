@@ -25,29 +25,29 @@ public interface BooleanMapUtils extends Column<Boolean> {
    * Returns a Boolean column made by and-ing this column with the arguments
    */
   default BooleanColumn and(BooleanColumn... columns) {
-    String name = name() + " and: ";
+    StringBuilder name = new StringBuilder(name()).append(" and: ");
     Selection selection = asSelection();
     for (BooleanColumn column : columns) {
       if (!column.name().equals(columns[0].name())) {
-        name += ", ";
+        name.append(", ");
       }
-      name += column.name();
+      name.append(column.name());
       selection.and(column.asSelection());
     }
-    return BooleanColumn.create(name, selection, size());
+    return BooleanColumn.create(name.toString(), selection, size());
   }
 
   default BooleanColumn or(BooleanColumn... columns) {
-    String name = name() + " or: ";
+    StringBuilder name = new StringBuilder(name()).append(" or: ");
     Selection selection = asSelection();
     for (BooleanColumn column : columns) {
       if (!column.name().equals(columns[0].name())) {
-        name += ", ";
+        name.append(", ");
       }
-      name += column.name();
+      name.append(column.name());
       selection.or(column.asSelection());
     }
-    return BooleanColumn.create(name, selection, size());
+    return BooleanColumn.create(name.toString(), selection, size());
   }
 
   /**
@@ -56,16 +56,16 @@ public interface BooleanMapUtils extends Column<Boolean> {
    * corresponding value in A is true and the corresponding value in B is false
    */
   default BooleanColumn andNot(BooleanColumn... columns) {
-    String name = name() + " and not: ";
+    StringBuilder name = new StringBuilder(name()).append(" and not: ");
     Selection selection = asSelection();
     for (BooleanColumn column : columns) {
       if (!column.name().equals(columns[0].name())) {
-        name += ", ";
+        name.append(", ");
       }
-      name += column.name();
+      name.append(column.name());
       selection.andNot(column.asSelection());
     }
-    return BooleanColumn.create(name, selection, size());
+    return BooleanColumn.create(name.toString(), selection, size());
   }
 
   Selection asSelection();
