@@ -24,11 +24,11 @@ public class XlsxReadOptions extends ReadOptions {
     return new Builder(source);
   }
 
-  public static Builder builder(File file) {
+  public static Builder builder(File file) throws IOException {
     return new Builder(file).tableName(file.getName());
   }
 
-  public static Builder builder(String fileName) {
+  public static Builder builder(String fileName) throws IOException {
     return new Builder(new File(fileName));
   }
 
@@ -36,7 +36,7 @@ public class XlsxReadOptions extends ReadOptions {
     return new Builder(url);
   }
 
-  public static Builder builderFromFile(String fileName) {
+  public static Builder builderFromFile(String fileName) throws IOException {
     return new Builder(new File(fileName));
   }
 
@@ -60,15 +60,15 @@ public class XlsxReadOptions extends ReadOptions {
       super(url);
     }
 
-    public Builder(File file) {
+    public Builder(File file) throws IOException {
       super(file);
     }
 
-    public Builder(InputStream stream) {
+    public Builder(InputStream stream) throws IOException {
       super(stream);
     }
 
-    public Builder(Reader reader) {
+    public Builder(Reader reader) throws IOException {
       super(reader);
     }
 

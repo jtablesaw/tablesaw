@@ -116,7 +116,7 @@ public class FixedWidthReaderTest {
             .build();
 
     Reader reader = new FileReader("../data/fixed_width_missing_values.txt");
-    ColumnType[] columnTypes = new FixedWidthReader().detectColumnTypes(reader, options);
+    ColumnType[] columnTypes = new FixedWidthReader().detectColumnTypes(options);
     assertArrayEquals(car_types, columnTypes);
   }
 

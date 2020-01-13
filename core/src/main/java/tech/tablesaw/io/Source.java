@@ -1,121 +1,139 @@
 package tech.tablesaw.io;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.io.ByteStreams;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 import java.io.Reader;
-import java.io.StringReader;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel.MapMode;
 import java.nio.charset.Charset;
-import java.util.Scanner;
 
 public class Source {
 
-  // we always have one of these (file, reader, or inputStream)
-  protected final File file;
-  protected final Reader reader;
-  protected final InputStream inputStream;
-  protected final Charset charset;
+  protected final ByteBuffer byteBuffer;
+  protected Charset charset;
 
-  public Source(File file) {
-    this(file, getCharSet(file));
+  public Source(File file, Charset charset) throws IOException {
+    this(getMappedByteBuffer(file), charset);
   }
 
-  public Source(File file, Charset charset) {
-    this.file = file;
-    this.reader = null;
-    this.inputStream = null;
+  public Source(File file) throws IOException {
+    this(getMappedByteBuffer(file));
+  }
+
+  private static MappedByteBuffer getMappedByteBuffer(File file) throws IOException {
+    try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+      return raf.getChannel().map(MapMode.READ_ONLY, 0, raf.length());
+    }
+  }
+
+  public Source(InputStream inputStream, Charset charset) throws IOException {
+    this(ByteStreams.toByteArray(inputStream), charset);
+  }
+
+  public Source(InputStream inputStream) throws IOException {
+    this(ByteStreams.toByteArray(inputStream));
+  }
+
+  public Source(byte[] bytes, Charset charset) {
+    this(ByteBuffer.wrap(bytes), charset);
+  }
+
+  public Source(byte[] bytes) {
+    this(ByteBuffer.wrap(bytes));
+  }
+
+  public Source(ByteBuffer byteBuffer) {
+    this.byteBuffer = byteBuffer;
+    this.charset = getCharSet(byteBuffer);
+  }
+
+  public Source(ByteBuffer byteBuffer, Charset charset) {
+    this.byteBuffer = byteBuffer;
     this.charset = charset;
   }
 
-  public Source(Reader reader) {
-    this.file = null;
-    this.reader = reader;
-    this.inputStream = null;
-    this.charset = null;
-  }
-
-  public Source(InputStream inputStream) {
-    this(inputStream, Charset.defaultCharset());
-  }
-
-  public Source(InputStream inputStream, Charset charset) {
-    this.file = null;
-    this.reader = null;
-    this.inputStream = inputStream;
-    this.charset = charset;
+  public static Source fromString(String s, Charset charset) {
+    return new Source(s.getBytes(charset), charset);
   }
 
   public static Source fromString(String s) {
-    return new Source(new StringReader(s));
+    return new Source(s.getBytes());
   }
 
   public static Source fromUrl(String url) throws IOException {
-    return new Source(new StringReader(loadUrl(url)));
+    return fromUrl(new URL(url));
   }
 
-  public File file() {
-    return file;
+  public static Source fromUrl(String url, Charset charset) throws IOException {
+    return fromUrl(new URL(url), charset);
   }
 
-  public Reader reader() {
-    return reader;
+  public static Source fromUrl(URL url) throws IOException {
+    return new Source(loadUrl(url));
   }
 
-  public InputStream inputStream() {
-    return inputStream;
+  public static Source fromUrl(URL url, Charset charset) throws IOException {
+    return new Source(loadUrl(url), charset);
   }
 
   /**
-   * If cachedBytes are not null, returns a Reader created from the cachedBytes. Otherwise, returns
-   * a Reader from the underlying source.
+   * Creates a Reader from the underlying byte buffer. The reader is configured with either the
+   * charset provided during initialization or with a charset automatically inferred from the data.
    */
-  public Reader createReader(byte[] cachedBytes) throws IOException {
-    if (cachedBytes != null) {
-      return new InputStreamReader(new ByteArrayInputStream(cachedBytes));
-    }
-    if (inputStream != null) {
-      return new InputStreamReader(inputStream, charset);
-    }
-    if (reader != null) {
-      return reader;
-    }
-    return new InputStreamReader(new FileInputStream(file), charset);
+  public Reader createReader() {
+    return new InputStreamReader(createInputStream(), this.charset());
   }
 
-  private static String loadUrl(String url) throws IOException {
-    try (Scanner scanner = new Scanner(new URL(url).openStream())) {
-      scanner.useDelimiter("\\A"); // start of a string
-      return scanner.hasNext() ? scanner.next() : "";
+  /** Creates a InputStream from the underlying byte buffer. */
+  public InputStream createInputStream() {
+    byteBuffer.rewind();
+    return new ByteBufferInputStream(byteBuffer);
+  }
+
+  /** Downloads the URL to returns the content as a byte array. */
+  private static byte[] loadUrl(URL url) throws IOException {
+    try (InputStream is = url.openStream()) {
+      return ByteStreams.toByteArray(is);
+    } catch (IOException e) {
+      throw new IOException("Failed to load URL: " + url, e);
     }
   }
 
   /**
-   * Returns the likely charset for the given file, if it can be determined. A confidence score is
-   * calculated. If the score is less than 60 (on a 1 to 100 interval) the system default charset is
-   * returned instead.
+   * Returns the charset of the the underlying byte buffer. If the charset was not provided during
+   * source initialization, we try to infer it automatically.
+   */
+  public Charset charset() {
+    if (this.charset == null) {
+      this.charset = getCharSet(byteBuffer);
+    }
+    return this.charset;
+  }
+
+  /**
+   * Returns the likely charset for the given byte buffer, if it can be determined. A confidence
+   * score is calculated. If the score is less than 60 (on a 1 to 100 interval) the system default
+   * charset is returned instead.
    *
-   * @param file The file to be evaluated
+   * @param byteBuffer The byteBuffer to be evaluated
    * @return The likely charset, or the system default charset
    */
   @VisibleForTesting
-  static Charset getCharSet(File file) {
-    long bufferSize = file.length() < 9999 ? file.length() : 9999;
+  static Charset getCharSet(ByteBuffer byteBuffer) {
+    byteBuffer.rewind();
+    long bufferSize = byteBuffer.limit() < 9999 ? byteBuffer.limit() : 9999;
     byte[] buffer = new byte[(int) bufferSize];
-    try (InputStream initialStream = new FileInputStream(file)) {
-      int bytesRead = initialStream.read(buffer);
-      if (bytesRead < bufferSize) {
-        throw new IOException("Was not able to read expected number of bytes");
-      }
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
-    }
+    byteBuffer.get(buffer, 0, buffer.length);
+    byteBuffer.rewind();
     return getCharSet(buffer);
   }
 

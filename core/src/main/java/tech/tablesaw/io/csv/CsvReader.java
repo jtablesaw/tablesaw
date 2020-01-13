@@ -14,7 +14,6 @@
 
 package tech.tablesaw.io.csv;
 
-import com.google.common.io.CharStreams;
 import com.univocity.parsers.common.AbstractParser;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
@@ -54,22 +53,13 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
    * Determines column types if not provided by the user Reads all input into memory unless File was
    * provided
    */
-  private Pair<Reader, ColumnType[]> getReaderAndColumnTypes(Source source, CsvReadOptions options)
-      throws IOException {
+  private Pair<Reader, ColumnType[]> getReaderAndColumnTypes(
+      Source source, CsvReadOptions options) {
     ColumnType[] types = options.columnTypes();
-    byte[] bytesCache = null;
-
     if (types == null) {
-      Reader reader = source.createReader(bytesCache);
-      if (source.file() == null) {
-        bytesCache = CharStreams.toString(reader).getBytes();
-        // create a new reader since we just exhausted the existing one
-        reader = source.createReader(bytesCache);
-      }
-      types = detectColumnTypes(reader, options);
+      types = detectColumnTypes(options);
     }
-
-    return Pair.create(source.createReader(bytesCache), types);
+    return Pair.create(source.createReader(), types);
   }
 
   public Table read(CsvReadOptions options) throws IOException {
@@ -86,13 +76,8 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
     try {
       return parseRows(options, headerOnly, reader, types, parser, options.sampleSize());
     } finally {
-      if (options.source().reader() == null) {
-        // if we get a reader back from options it means the client opened it, so let the client
-        // close it
-        // if it's null, we close it here.
-        parser.stopParsing();
-        reader.close();
-      }
+      parser.stopParsing();
+      reader.close();
     }
   }
 
@@ -130,17 +115,16 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
    * <p>The method {@code printColumnTypes()} can be used to print a list of the detected columns
    * that can be corrected and used to explicitly specify the correct column types.
    */
-  protected ColumnType[] detectColumnTypes(Reader reader, CsvReadOptions options) {
+  protected ColumnType[] detectColumnTypes(CsvReadOptions options) {
     boolean header = options.header();
     int linesToSkip = header ? 1 : 0;
 
     CsvParser parser = csvParser(options);
 
     try {
-      return getColumnTypes(reader, options, linesToSkip, parser);
+      return getColumnTypes(options, linesToSkip, parser);
     } finally {
       parser.stopParsing();
-      // we don't close the reader since we didn't create it
     }
   }
 

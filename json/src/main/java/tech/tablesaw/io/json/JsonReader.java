@@ -33,7 +33,7 @@ public class JsonReader implements DataReader<JsonReadOptions> {
 
   @Override
   public Table read(JsonReadOptions options) throws IOException {
-    JsonNode jsonObj = mapper.readTree(options.source().createReader(null));
+    JsonNode jsonObj = mapper.readTree(options.source().createReader());
     if (options.path() != null) {
       jsonObj = jsonObj.at(options.path());
     }

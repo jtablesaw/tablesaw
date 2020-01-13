@@ -30,9 +30,9 @@ public abstract class FileReader {
    * the ColumnType inference logic. These types may not be correct.
    */
   public ColumnType[] getColumnTypes(
-      Reader reader, ReadOptions options, int linesToSkip, AbstractParser<?> parser) {
+      ReadOptions options, int linesToSkip, AbstractParser<?> parser) {
 
-    parser.beginParsing(reader);
+    parser.beginParsing(options.source().createReader());
 
     for (int i = 0; i < linesToSkip; i++) {
       parser.parseNext();

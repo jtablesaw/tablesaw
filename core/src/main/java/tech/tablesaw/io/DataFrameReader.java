@@ -70,7 +70,7 @@ public class DataFrameReader {
   }
 
   private Table readUrl(URL url, Charset charset, DataReader<?> reader) throws IOException {
-    return reader.read(new Source(url.openConnection().getInputStream(), charset));
+    return reader.read(Source.fromUrl(url, charset));
   }
 
   private String getMimeType(String contentType) {

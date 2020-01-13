@@ -14,9 +14,6 @@
 
 package tech.tablesaw.io.xlsx;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -94,9 +91,8 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
    */
   protected List<Table> readMultiple(XlsxReadOptions options, boolean includeNulls)
       throws IOException {
-    byte[] bytes = null;
-    InputStream input = getInputStream(options, bytes);
-    List<Table> tables = new ArrayList<>();
+    InputStream input = options.source().createInputStream();
+    List<Table> tables = new ArrayList<Table>();
     try (XSSFWorkbook workbook = new XSSFWorkbook(input)) {
       for (Sheet sheet : workbook) {
         TableRange tableArea = findTableArea(sheet);
@@ -109,12 +105,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
       }
       return tables;
     } finally {
-      if (options.source().reader() == null) {
-        // if we get a reader back from options it means the client opened it, so let
-        // the client close it
-        // if it's null, we close it here.
-        input.close();
-      }
+      input.close();
     }
   }
 
@@ -221,17 +212,6 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
       }
     }
     return col1 >= 0 && col2 >= col1 ? new TableRange(0, 0, col1, col2) : null;
-  }
-
-  private InputStream getInputStream(XlsxReadOptions options, byte[] bytes)
-      throws FileNotFoundException {
-    if (bytes != null) {
-      return new ByteArrayInputStream(bytes);
-    }
-    if (options.source().inputStream() != null) {
-      return options.source().inputStream();
-    }
-    return new FileInputStream(options.source().file());
   }
 
   private Table createTable(Sheet sheet, TableRange tableArea, XlsxReadOptions options) {

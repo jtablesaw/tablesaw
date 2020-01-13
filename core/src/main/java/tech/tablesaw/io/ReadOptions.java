@@ -28,11 +28,13 @@ import static tech.tablesaw.api.ColumnType.TEXT;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.io.CharStreams;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -195,22 +197,40 @@ public class ReadOptions {
       this.source = source;
     }
 
-    protected Builder(File file) {
+    protected Builder(File file) throws IOException {
       this.source = new Source(file);
       this.tableName = file.getName();
     }
 
+    protected Builder(File file, Charset charset) throws IOException {
+      this.source = new Source(file, charset);
+      this.tableName = file.getName();
+    }
+
     protected Builder(URL url) throws IOException {
-      this.source = new Source(url.openStream());
+      this.source = Source.fromUrl(url);
       this.tableName = url.toString();
     }
 
-    protected Builder(InputStream stream) {
+    protected Builder(URL url, Charset charset) throws IOException {
+      this.source = Source.fromUrl(url, charset);
+      this.tableName = url.toString();
+    }
+
+    protected Builder(InputStream stream) throws IOException {
       this.source = new Source(stream);
     }
 
-    protected Builder(Reader reader) {
-      this.source = new Source(reader);
+    protected Builder(InputStream stream, Charset charset) throws IOException {
+      this.source = new Source(stream, charset);
+    }
+
+    protected Builder(Reader reader) throws IOException {
+      this.source = new Source(CharStreams.toString(reader).getBytes());
+    }
+
+    protected Builder(Reader reader, Charset charset) throws IOException {
+      this.source = new Source(CharStreams.toString(reader).getBytes(charset), charset);
     }
 
     public Builder tableName(String tableName) {

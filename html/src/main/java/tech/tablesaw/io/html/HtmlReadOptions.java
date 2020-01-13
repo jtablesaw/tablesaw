@@ -24,11 +24,11 @@ public class HtmlReadOptions extends ReadOptions {
     return new Builder(source);
   }
 
-  public static Builder builder(File file) {
+  public static Builder builder(File file) throws IOException {
     return new Builder(file).tableName(file.getName());
   }
 
-  public static Builder builder(String fileName) {
+  public static Builder builder(String fileName) throws IOException {
     return new Builder(new File(fileName));
   }
 
@@ -36,11 +36,11 @@ public class HtmlReadOptions extends ReadOptions {
     return new Builder(url);
   }
 
-  public static Builder builderFromFile(String fileName) {
+  public static Builder builderFromFile(String fileName) throws IOException {
     return new Builder(new File(fileName));
   }
 
-  public static Builder builderFromString(String contents) {
+  public static Builder builderFromString(String contents) throws IOException {
     return new Builder(new StringReader(contents));
   }
 
@@ -55,7 +55,7 @@ public class HtmlReadOptions extends ReadOptions {
    * taking a File instead of a stream, or 2. Provide the array of column types as an option. If you
    * provide the columnType array, we skip type detection and can avoid reading the entire file
    */
-  public static Builder builder(InputStream stream) {
+  public static Builder builder(InputStream stream) throws IOException {
     return new Builder(stream);
   }
 
@@ -66,7 +66,7 @@ public class HtmlReadOptions extends ReadOptions {
    * taking a File instead of a reader, or 2. Provide the array of column types as an option. If you
    * provide the columnType array, we skip type detection and can avoid reading the entire file
    */
-  public static Builder builder(Reader reader, String tableName) {
+  public static Builder builder(Reader reader, String tableName) throws IOException {
     Builder builder = new Builder(reader);
     return builder.tableName(tableName);
   }
@@ -87,15 +87,15 @@ public class HtmlReadOptions extends ReadOptions {
       super(url);
     }
 
-    public Builder(File file) {
+    public Builder(File file) throws IOException {
       super(file);
     }
 
-    protected Builder(Reader reader) {
+    protected Builder(Reader reader) throws IOException {
       super(reader);
     }
 
-    protected Builder(InputStream stream) {
+    protected Builder(InputStream stream) throws IOException {
       super(stream);
     }
 

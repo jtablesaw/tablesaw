@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import tech.tablesaw.api.ColumnType;
@@ -53,24 +54,44 @@ public class CsvReadOptions extends ReadOptions {
     return new Builder(source);
   }
 
-  public static Builder builder(File file) {
+  public static Builder builder(File file) throws IOException {
     return new Builder(file).tableName(file.getName());
   }
 
-  public static Builder builder(String fileName) {
-    return new Builder(new File(fileName));
+  public static Builder builder(File file, Charset charset) throws IOException {
+    return new Builder(file, charset).tableName(file.getName());
+  }
+
+  public static Builder builder(String fileName) throws IOException {
+    return builderFromFile(fileName);
+  }
+
+  public static Builder builder(String fileName, Charset charset) throws IOException {
+    return builderFromFile(fileName, charset);
   }
 
   public static Builder builder(URL url) throws IOException {
     return new Builder(url);
   }
 
-  public static Builder builderFromFile(String fileName) {
+  public static Builder builder(URL url, Charset charset) throws IOException {
+    return new Builder(url, charset);
+  }
+
+  public static Builder builderFromFile(String fileName) throws IOException {
     return new Builder(new File(fileName));
   }
 
+  public static Builder builderFromFile(String fileName, Charset charset) throws IOException {
+    return new Builder(new File(fileName), charset);
+  }
+
   public static Builder builderFromString(String contents) {
-    return new Builder(new StringReader(contents));
+    try {
+      return new Builder(new StringReader(contents));
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   public static Builder builderFromUrl(String url) throws IOException {
@@ -84,8 +105,12 @@ public class CsvReadOptions extends ReadOptions {
    * taking a File instead of a stream, or 2. Provide the array of column types as an option. If you
    * provide the columnType array, we skip type detection and can avoid reading the entire file
    */
-  public static Builder builder(InputStream stream) {
+  public static Builder builder(InputStream stream) throws IOException {
     return new Builder(stream);
+  }
+
+  public static Builder builder(InputStream stream, Charset charset) throws IOException {
+    return new Builder(stream, charset);
   }
 
   /**
@@ -95,8 +120,12 @@ public class CsvReadOptions extends ReadOptions {
    * taking a File instead of a reader, or 2. Provide the array of column types as an option. If you
    * provide the columnType array, we skip type detection and can avoid reading the entire file
    */
-  public static Builder builder(Reader reader) {
+  public static Builder builder(Reader reader) throws IOException {
     return new Builder(reader);
+  }
+
+  public static Builder builder(Reader reader, Charset charset) throws IOException {
+    return new Builder(reader, charset);
   }
 
   public ColumnType[] columnTypes() {
@@ -154,16 +183,32 @@ public class CsvReadOptions extends ReadOptions {
       super(url);
     }
 
-    protected Builder(File file) {
+    protected Builder(URL url, Charset charset) throws IOException {
+      super(url, charset);
+    }
+
+    protected Builder(File file) throws IOException {
       super(file);
     }
 
-    protected Builder(Reader reader) {
+    protected Builder(File file, Charset charset) throws IOException {
+      super(file, charset);
+    }
+
+    protected Builder(Reader reader) throws IOException {
       super(reader);
     }
 
-    protected Builder(InputStream stream) {
+    protected Builder(Reader reader, Charset charset) throws IOException {
+      super(reader, charset);
+    }
+
+    protected Builder(InputStream stream) throws IOException {
       super(stream);
+    }
+
+    protected Builder(InputStream stream, Charset charset) throws IOException {
+      super(stream, charset);
     }
 
     public Builder columnTypes(ColumnType[] columnTypes) {

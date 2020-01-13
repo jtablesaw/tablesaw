@@ -33,13 +33,13 @@ public class HtmlReader implements DataReader<HtmlReadOptions> {
   @Override
   public Table read(HtmlReadOptions options) throws IOException {
     Document doc;
-    InputStream inputStream = options.source().inputStream();
+    InputStream inputStream = options.source().createInputStream();
     if (inputStream != null) {
       // Reader must support mark, so can't use InputStreamReader
       // Parse the InputStream directly
-      doc = Jsoup.parse(inputStream, null, "");
+      doc = Jsoup.parse(inputStream, options.source().charset().toString(), "");
     } else {
-      doc = Parser.htmlParser().parseInput(options.source().createReader(null), "");
+      doc = Parser.htmlParser().parseInput(options.source().createReader(), "");
     }
     Elements tables = doc.select("table");
     int tableIndex = 0;
