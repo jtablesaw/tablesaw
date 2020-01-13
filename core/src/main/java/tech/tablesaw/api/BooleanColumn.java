@@ -370,9 +370,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   /** Returns the proportion of non-missing row elements that contain true */
   public double proportionTrue() {
-    double n = size() - countMissing();
-    double trueCount = countTrue();
-    return trueCount / n;
+    return (double) countTrue() / (size() - countMissing());
   }
 
   /** Returns the proportion of non-missing row elements that contain true */

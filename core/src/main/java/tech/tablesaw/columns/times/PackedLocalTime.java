@@ -168,7 +168,7 @@ public class PackedLocalTime {
     if (msToAdd == 0) {
       return packedTime;
     }
-    long nanosToAdd = (msToAdd % MILLIS_PER_DAY) * 1000_000;
+    long nanosToAdd = ((long) msToAdd % MILLIS_PER_DAY) * 1000_000;
     long nofd = toNanoOfDay(packedTime);
     long newNofd = ((nanosToAdd % NANOS_PER_DAY) + nofd + NANOS_PER_DAY) % NANOS_PER_DAY;
     if (nofd == newNofd) {

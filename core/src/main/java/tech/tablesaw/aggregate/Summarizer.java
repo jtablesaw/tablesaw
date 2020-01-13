@@ -366,19 +366,14 @@ public class Summarizer {
   }
 
   private Table combineTables(List<Table> tables) {
-    if (tables.size() == 1) {
-      return tables.get(0);
-    }
+    Preconditions.checkArgument(!tables.isEmpty());
 
-    Table result = null;
-    for (Table table : tables) {
-      if (result == null) {
-        result = table;
-      } else {
-        for (Column<?> column : table.columns()) {
-          if (tableDoesNotContain(column.name(), result)) {
-            result.addColumns(column);
-          }
+    Table result = tables.get(0);
+    for (int i = 1; i < tables.size(); i++) {
+      Table table = tables.get(i);
+      for (Column<?> column : table.columns()) {
+        if (tableDoesNotContain(column.name(), result)) {
+          result.addColumns(column);
         }
       }
     }

@@ -362,7 +362,7 @@ public class PackedLocalDate {
     byte m = getMonthValue(packedDate);
     short y = getYear(packedDate);
 
-    int newYear = YEAR.checkValidIntValue(y + yearsToAdd);
+    int newYear = YEAR.checkValidIntValue(yearsToAdd + y);
     return resolvePreviousValid(newYear, m, d);
   }
 
@@ -407,7 +407,7 @@ public class PackedLocalDate {
     byte m = getMonthValue(packedDate);
     short y = getYear(packedDate);
 
-    long dom = d + days;
+    int dom = days + d;
     if (dom > 0) {
       if (dom <= 28) {
         return pack(y, m, (byte) dom);
@@ -418,7 +418,7 @@ public class PackedLocalDate {
         } else if (m < 12) {
           return pack(y, (byte) (m + 1), (byte) (dom - monthLen));
         } else {
-          YEAR.checkValidValue(y + 1);
+          YEAR.checkValidValue((long) y + 1);
           return pack((short) (y + 1), (byte) 1, (byte) (dom - monthLen));
         }
       }
@@ -458,6 +458,9 @@ public class PackedLocalDate {
 
   public static int getWeekOfYear(int packedDateTime) {
     LocalDate date = asLocalDate(packedDateTime);
+    if (date == null) {
+      throw new IllegalArgumentException("Cannot get week of year for missing value");
+    }
     TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
     return date.get(woy);
   }

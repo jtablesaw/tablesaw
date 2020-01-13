@@ -148,6 +148,9 @@ public class PackedLocalDateTime extends PackedInstant {
 
   public static int getWeekOfYear(long packedDateTime) {
     LocalDateTime date = asLocalDateTime(packedDateTime);
+    if (date == null) {
+      throw new IllegalArgumentException("Cannot get week of year for missing value");
+    }
     TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
     return date.get(woy);
   }
@@ -386,6 +389,9 @@ public class PackedLocalDateTime extends PackedInstant {
 
   public static long getMillisecondOfDay(long packedLocalDateTime) {
     LocalDateTime localDateTime = PackedLocalDateTime.asLocalDateTime(packedLocalDateTime);
+    if (localDateTime == null) {
+      throw new IllegalArgumentException("Cannot get millisecond of day for missing value");
+    }
     long total = (long) localDateTime.get(ChronoField.MILLI_OF_SECOND);
     total += localDateTime.getSecond() * 1000;
     total += localDateTime.getMinute() * 60 * 1000;

@@ -153,7 +153,10 @@ public class SawWriter {
       }
     } catch (IOException e) {
       throw new UncheckedIOException(e);
-    } catch (InterruptedException | ExecutionException e) {
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new IllegalStateException(e);
+    } catch (ExecutionException e) {
       throw new IllegalStateException(e);
     }
     executorService.shutdown();

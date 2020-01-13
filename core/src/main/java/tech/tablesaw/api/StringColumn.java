@@ -411,7 +411,8 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   }
 
   public double getDouble(int i) {
-    return lookupTable.uniqueValuesAt(lookupTable.firstIndexOf(lookupTable.getValueForIndex(i)))
+    return (double)
+            lookupTable.uniqueValuesAt(lookupTable.firstIndexOf(lookupTable.getValueForIndex(i)))
         - 1;
   }
 

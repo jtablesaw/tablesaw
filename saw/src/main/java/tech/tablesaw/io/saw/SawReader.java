@@ -117,7 +117,10 @@ public class SawReader {
         table.addColumns(columns.get(metadata.getName()));
       }
 
-    } catch (InterruptedException | ExecutionException e) {
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new IllegalStateException(e);
+    } catch (ExecutionException e) {
       throw new IllegalStateException(e);
     }
     executorService.shutdown();

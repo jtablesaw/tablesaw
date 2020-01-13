@@ -72,7 +72,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   public static LongColumn indexColumn(
       final String columnName, final int size, final int startsWith) {
     final LongColumn indexColumn = LongColumn.create(columnName, size);
-    for (int i = 0; i < size; i++) {
+    for (long i = 0; i < size; i++) {
       indexColumn.append(i + startsWith);
     }
     return indexColumn;

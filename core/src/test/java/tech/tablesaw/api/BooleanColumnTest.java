@@ -81,6 +81,11 @@ public class BooleanColumnTest {
   }
 
   @Test
+  public void testProportionTrue() {
+    assertEquals(.285714, column.proportionTrue(), 0.00001);
+  }
+
+  @Test
   public void testAppendColumn() {
     BooleanColumn column1 = column.copy();
     column1.append(column);

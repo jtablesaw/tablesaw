@@ -125,6 +125,9 @@ public class PackedInstant {
    */
   public static long plus(long packedDateTime, long amountToAdd, TemporalUnit unit) {
     Instant dateTime = asInstant(packedDateTime);
+    if (dateTime == null) {
+      throw new IllegalArgumentException("Cannot do addition on missing value");
+    }
     return pack(dateTime.plus(amountToAdd, unit));
   }
 
