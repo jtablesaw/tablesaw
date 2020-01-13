@@ -86,14 +86,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>-Duser.language=en-US -Duser.region=US</argLine>
-                    <printSummary>false</printSummary>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
