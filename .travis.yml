@@ -21,4 +21,4 @@ install:
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   - mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=jtablesaw_tablesaw
-after_success: java -jar codacy-coverage-reporter-assembly.jar report --language Java --coverage-report aggregate/target/site/jacoco-aggregate/jacoco.xml
+after_success: java -jar codacy-coverage-reporter-assembly.jar report --language Java --coverage-reports aggregate/target/site/jacoco-aggregate/jacoco.xml
