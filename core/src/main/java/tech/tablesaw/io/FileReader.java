@@ -19,7 +19,6 @@ import tech.tablesaw.columns.Column;
 
 public abstract class FileReader {
 
-  /** Constructs a CsvReader */
   public FileReader() {}
 
   /**
