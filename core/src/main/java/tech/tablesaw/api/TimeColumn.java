@@ -388,12 +388,6 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return comparator;
   }
 
-  /** @deprecated Use intIterator(), or getIntInternal() instead) */
-  @Deprecated
-  public IntArrayList data() {
-    return data;
-  }
-
   public double getDouble(int i) {
     return getIntInternal(i);
   }

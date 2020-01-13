@@ -239,12 +239,6 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return data.size();
   }
 
-  /** @deprecated Please use the longIterator() or getLongInternal() methods */
-  @Deprecated
-  public LongArrayList data() {
-    return data;
-  }
-
   public InstantColumn appendInternal(long dateTime) {
     data.add(dateTime);
     return this;

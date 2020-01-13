@@ -23,12 +23,6 @@ public class TextColumnType extends AbstractColumnType {
     return INSTANCE;
   }
 
-  /** @deprecated Please use valueIsMissing(String) instead */
-  @Deprecated
-  public static boolean isMissingValue(String string) {
-    return missingValueIndicator().equals(string);
-  }
-
   public static boolean valueIsMissing(String string) {
     return missingValueIndicator().equals(string);
   }

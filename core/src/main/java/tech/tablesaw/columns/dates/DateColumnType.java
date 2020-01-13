@@ -39,12 +39,6 @@ public class DateColumnType extends AbstractColumnType {
     return Integer.MIN_VALUE;
   }
 
-  /** @deprecated Please use valueIsMissing(int) instead */
-  @Deprecated
-  public static boolean isMissingValue(int i) {
-    return i == missingValueIndicator();
-  }
-
   public static boolean valueIsMissing(int i) {
     return i == missingValueIndicator();
   }

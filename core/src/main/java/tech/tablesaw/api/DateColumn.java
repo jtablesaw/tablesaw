@@ -123,12 +123,6 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return this;
   }
 
-  /** @deprecated Use intIterator(), or getIntInternal() instead */
-  @Deprecated
-  public IntArrayList data() {
-    return data;
-  }
-
   public DateColumn set(int index, int value) {
     data.set(index, value);
     return this;

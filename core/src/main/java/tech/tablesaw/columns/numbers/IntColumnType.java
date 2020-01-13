@@ -38,12 +38,6 @@ public class IntColumnType extends AbstractColumnType {
     return value == missingValueIndicator();
   }
 
-  /** @deprecated Please use valueIsMissing(int) instead */
-  @Deprecated
-  public static boolean isMissingValue(int value) {
-    return value == missingValueIndicator();
-  }
-
   public static int missingValueIndicator() {
     return Integer.MIN_VALUE;
   }

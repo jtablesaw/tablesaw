@@ -42,12 +42,6 @@ public class LongColumnType extends AbstractColumnType {
     return value == missingValueIndicator();
   }
 
-  /** @deprecated Please use valueIsMissing(long) instead */
-  @Deprecated
-  public static boolean isMissingValue(long value) {
-    return value == missingValueIndicator();
-  }
-
   public static long missingValueIndicator() {
     return Long.MIN_VALUE;
   }

@@ -249,12 +249,6 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return data.size();
   }
 
-  /** @deprecated Please use the longIterator() or getLongInternal() methods */
-  @Deprecated
-  public LongArrayList data() {
-    return data;
-  }
-
   public DateTimeColumn appendInternal(long dateTime) {
     data.add(dateTime);
     return this;

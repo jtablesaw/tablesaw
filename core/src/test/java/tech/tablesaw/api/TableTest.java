@@ -308,38 +308,6 @@ public class TableTest {
   }
 
   @Test
-  void testPairs() throws Exception {
-    Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
-    PairChild pairs = new PairChild();
-    t.doWithRows(pairs);
-  }
-
-  @Test
-  void testPairs2() throws Exception {
-    Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
-
-    Table.Pairs runningAvg =
-        new Table.Pairs() {
-
-          private List<Double> values = new ArrayList<>();
-
-          @Override
-          public void doWithPair(Row row1, Row row2) {
-            short r1 = row1.getShort("approval");
-            short r2 = row2.getShort("approval");
-            values.add((r1 + r2) / 2.0);
-          }
-
-          @Override
-          public List<Double> getResult() {
-            return values;
-          }
-        };
-
-    t.doWithRows(runningAvg);
-  }
-
-  @Test
   void stepWithRows() throws Exception {
     Table t =
         Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes()).first(6);
@@ -347,7 +315,7 @@ public class TableTest {
     final int sum1 = (int) t.shortColumn("approval").sum();
 
     RowConsumer rowConsumer = new RowConsumer();
-    t.stepWithRows(rowConsumer, 3);
+    t.steppingStream(3).forEach(rowConsumer);
     assertEquals(sum1, rowConsumer.getSum());
   }
 
@@ -382,22 +350,10 @@ public class TableTest {
           }
           sums.add(sum);
         };
-    t.rollWithRows(rowConsumer, 2);
+    t.rollingStream(2).forEach(rowConsumer);
     assertTrue(sums.contains((int) approval.getDouble(0) + (int) approval.getDouble(1)));
     assertTrue(sums.contains((int) approval.getDouble(1) + (int) approval.getDouble(2)));
     assertTrue(sums.contains((int) approval.getDouble(2) + (int) approval.getDouble(3)));
-  }
-
-  private class PairChild implements Table.Pairs {
-
-    private List<Double> runningAverage = new ArrayList<>();
-
-    @Override
-    public void doWithPair(Row row1, Row row2) {
-      double r1 = row1.getShort("approval");
-      double r2 = row2.getShort("approval");
-      runningAverage.add((r1 + r2) / 2.0);
-    }
   }
 
   @Test

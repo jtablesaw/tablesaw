@@ -40,12 +40,6 @@ public class DateTimeColumnType extends AbstractColumnType {
     return Long.MIN_VALUE;
   }
 
-  /** @deprecated Please use valueIsMissing(long) instead */
-  @Deprecated
-  public static boolean isMissingValue(long value) {
-    return value == missingValueIndicator();
-  }
-
   public static boolean valueIsMissing(long value) {
     return value == missingValueIndicator();
   }

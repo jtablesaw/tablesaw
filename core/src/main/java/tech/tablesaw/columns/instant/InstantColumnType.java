@@ -29,12 +29,6 @@ public class InstantColumnType extends AbstractColumnType {
     return value == missingValueIndicator();
   }
 
-  /** @deprecated Please use valueIsMissing(int) instead */
-  @Deprecated
-  public static boolean isMissingValue(long value) {
-    return value == missingValueIndicator();
-  }
-
   @Override
   public InstantColumn create(String name) {
     return InstantColumn.create(name);
