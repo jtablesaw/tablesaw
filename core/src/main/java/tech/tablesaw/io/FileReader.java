@@ -25,8 +25,6 @@ public abstract class FileReader {
   private static Logger logger = LoggerFactory.getLogger(FileReader.class);
   public static final int UNLIMITED_SAMPLE_SIZE = -1;
 
-  public FileReader() {}
-
   /**
    * Returns an array containing the inferred columnTypes for the file being read, as calculated by
    * the ColumnType inference logic. These types may not be correct.
