@@ -322,21 +322,6 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
   }
 
   @Override
-  public Column<LocalDate> setObj(int row, Object obj) {
-    if (obj == null) {
-      return setMissing(row);
-    }
-    if (obj instanceof java.sql.Date) {
-      return set(row, ((java.sql.Date) obj).toLocalDate());
-    }
-    if (obj instanceof LocalDate) {
-      return set(row, (LocalDate) obj);
-    }
-    throw new IllegalArgumentException(
-        "Cannot append " + obj.getClass().getName() + " to DateColumn");
-  }
-
-  @Override
   public DateColumn appendMissing() {
     appendInternal(DateColumnType.missingValueIndicator());
     return this;

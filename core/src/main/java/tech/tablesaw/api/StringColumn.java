@@ -247,18 +247,6 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   }
 
   @Override
-  public Column<String> setObj(int row, Object obj) {
-    if (obj == null) {
-      return setMissing(row);
-    }
-    if (!(obj instanceof String)) {
-      throw new IllegalArgumentException(
-          "Cannot append " + obj.getClass().getName() + " to StringColumn");
-    }
-    return set(row, (String) obj);
-  }
-
-  @Override
   public StringColumn set(int rowIndex, String stringValue) {
     try {
       lookupTable.set(rowIndex, stringValue);

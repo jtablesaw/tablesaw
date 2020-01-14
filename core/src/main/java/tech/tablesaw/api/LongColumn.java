@@ -284,17 +284,6 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   }
 
   @Override
-  public Column<Long> setObj(int row, Object obj) {
-    if (obj == null) {
-      return setMissing(row);
-    }
-    if (obj instanceof Long) {
-      return set(row, (long) obj);
-    }
-    throw new IllegalArgumentException("Could not append " + obj.getClass());
-  }
-
-  @Override
   public LongColumn appendMissing() {
     return append(LongColumnType.missingValueIndicator());
   }

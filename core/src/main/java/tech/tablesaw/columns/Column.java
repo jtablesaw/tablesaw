@@ -565,11 +565,13 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   Column<T> set(int row, T value);
 
   default Column<T> set(int row, String newValue, AbstractColumnParser<?> parser) {
-    setObj(row, parser.parse(newValue));
-    return this;
+    AbstractColumnParser<T> typedParser = (AbstractColumnParser<T>) parser;
+    if (parser.isMissing(newValue)) {
+      return setMissing(row);
+    } else {
+      return set(row, typedParser.parse(newValue));
+    }
   }
-
-  Column<T> setObj(int row, Object value);
 
   Column<T> set(int row, Column<T> sourceColumn, int sourceRow);
 

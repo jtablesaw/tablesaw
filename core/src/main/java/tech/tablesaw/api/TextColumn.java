@@ -253,18 +253,6 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   @Override
-  public Column<String> setObj(int row, Object obj) {
-    if (obj == null) {
-      return setMissing(row);
-    }
-    if (!(obj instanceof String)) {
-      throw new IllegalArgumentException(
-          "Cannot append " + obj.getClass().getName() + " to TextColumn");
-    }
-    return set(row, (String) obj);
-  }
-
-  @Override
   public int countUnique() {
     return asSet().size();
   }

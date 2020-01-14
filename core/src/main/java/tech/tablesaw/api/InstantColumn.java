@@ -370,22 +370,6 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return this;
   }
 
-  @Override
-  public Column<Instant> setObj(int row, Object obj) {
-    if (obj == null) {
-      return setMissing(row);
-    }
-    if (obj instanceof Instant) {
-      return set(row, (Instant) obj);
-    }
-    if (obj instanceof Timestamp) {
-      Timestamp timestamp = (Timestamp) obj;
-      return set(row, timestamp.toInstant());
-    }
-    throw new IllegalArgumentException(
-        "Cannot append " + obj.getClass().getName() + " to DateTimeColumn");
-  }
-
   /** Returns the count of missing values in this column */
   @Override
   public int countMissing() {
