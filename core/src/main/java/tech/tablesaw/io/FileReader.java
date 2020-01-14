@@ -23,7 +23,7 @@ import tech.tablesaw.columns.Column;
 public abstract class FileReader {
 
   private static Logger logger = LoggerFactory.getLogger(FileReader.class);
-  public static final int UNLIMITED_SAMPLE_SIZE = -1;
+  private static final int UNLIMITED_SAMPLE_SIZE = -1;
 
   /**
    * Returns an array containing the inferred columnTypes for the file being read, as calculated by
@@ -181,7 +181,7 @@ public abstract class FileReader {
       }
 
       int samplesCount = table.rowCount();
-      if (sampleSize == -1 || samplesCount < sampleSize) {
+      if (sampleSize < 0 || samplesCount < sampleSize) {
         addValuesToColumns(table, columnIndexes, nextLine, parserMap, rowNumber, -1);
       } else {
         // find a row index to replace
