@@ -28,6 +28,8 @@
             deploying this module's artifacts to Maven Central's staging repo
          -->
         <skipStaging>true</skipStaging>
+        <!-- the documentation code raises numerous non-issues. we're doing things just for demonstration purposes, so ignore -->
+        <sonar.skip>true</sonar.skip>
     </properties>
 
     <build>
