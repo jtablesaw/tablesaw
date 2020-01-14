@@ -35,7 +35,7 @@ public class CsvReadOptions extends ReadOptions {
   private final Integer maxNumberOfColumns;
   private final Character commentPrefix;
   private final boolean lineSeparatorDetectionEnabled;
-  protected final int sampleSize;
+  private final int sampleSize;
 
   private CsvReadOptions(CsvReadOptions.Builder builder) {
     super(builder);
@@ -144,7 +144,7 @@ public class CsvReadOptions extends ReadOptions {
     private Integer maxNumberOfColumns = 10_000;
     private Character commentPrefix;
     private boolean lineSeparatorDetectionEnabled = true;
-    protected int sampleSize = -1;
+    private int sampleSize = -1;
 
     protected Builder(Source source) {
       super(source);
