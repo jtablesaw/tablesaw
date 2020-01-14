@@ -173,33 +173,6 @@ public class DataFrameJoiner {
   }
 
   /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param outer True if this join is actually an outer join, left or right or full, otherwise
-   *     false.
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  @Deprecated
-  public Table inner(
-      Table table2, boolean outer, boolean allowDuplicateColumnNames, String... col2Names) {
-    JoinType joinType = JoinType.INNER;
-    if (outer) {
-      joinType = JoinType.LEFT_OUTER;
-    }
-
-    Table joinedTable;
-    joinedTable = joinInternal(table, table2, joinType, allowDuplicateColumnNames, col2Names);
-    return joinedTable;
-  }
-
-  /**
    * Joins two tables.
    *
    * @param table1 the table on the left side of the join.
