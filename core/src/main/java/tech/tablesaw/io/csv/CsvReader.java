@@ -84,7 +84,7 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
     AbstractParser<?> parser = csvParser(options);
 
     try {
-      return parseRows(options, headerOnly, reader, types, parser);
+      return parseRows(options, headerOnly, reader, types, parser, options.sampleSize());
     } finally {
       if (options.source().reader() == null) {
         // if we get a reader back from options it means the client opened it, so let the client

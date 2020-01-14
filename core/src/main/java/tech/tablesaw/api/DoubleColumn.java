@@ -299,6 +299,20 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return set(i, (double) val);
   }
 
+  @Override
+  public Column<Double> setObj(int row, Object obj) {
+    if (obj == null) {
+      return setMissing(row);
+    }
+    if (obj instanceof Double) {
+      return set(row, (double) obj);
+    }
+    if (obj instanceof BigDecimal) {
+      return set(row, ((BigDecimal) obj).doubleValue());
+    }
+    throw new IllegalArgumentException("Could not append " + obj.getClass());
+  }
+
   public DoubleColumn set(int i, double val) {
     data.set(i, val);
     return this;

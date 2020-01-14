@@ -230,6 +230,17 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
   }
 
   @Override
+  public Column<Short> setObj(int row, Object obj) {
+    if (obj == null) {
+      return setMissing(row);
+    }
+    if (obj instanceof Short) {
+      return set(row, (short) obj);
+    }
+    throw new IllegalArgumentException("Could not append " + obj.getClass());
+  }
+
+  @Override
   public ShortColumn append(final Column<Short> column) {
     Preconditions.checkArgument(column.type() == this.type());
     final ShortColumn numberColumn = (ShortColumn) column;

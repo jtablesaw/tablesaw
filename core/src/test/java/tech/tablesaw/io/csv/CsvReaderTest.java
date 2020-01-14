@@ -702,4 +702,14 @@ public class CsvReaderTest {
         Table.read().csv(CsvReadOptions.builder("../data/sacramento_real_estate_transactions.csv"));
     assertEquals(985, table.rowCount());
   }
+
+  @Test
+  public void testReadCsvWithRowSampling() throws IOException {
+    int expectedSampleSize = 10;
+    Table table =
+        Table.read().csv(CsvReadOptions.builder("../data/cake.csv").sampleSize(expectedSampleSize));
+
+    assertEquals(expectedSampleSize, table.rowCount());
+    assertEquals("[recipe, mix, temp, y]", table.columnNames().toString());
+  }
 }

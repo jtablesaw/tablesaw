@@ -493,6 +493,18 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return this;
   }
 
+  @Override
+  public Column<Boolean> setObj(int row, Object obj) {
+    if (obj == null) {
+      return setMissing(row);
+    }
+    if (!(obj instanceof Boolean)) {
+      throw new IllegalArgumentException(
+          "Cannot append " + obj.getClass().getName() + " to BooleanColumn");
+    }
+    return set(row, (Boolean) obj);
+  }
+
   public double getDouble(int row) {
     return getByte(row);
   }

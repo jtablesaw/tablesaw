@@ -232,6 +232,17 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   }
 
   @Override
+  public IntColumn setObj(int row, Object obj) {
+    if (obj == null) {
+      return setMissing(row);
+    }
+    if (obj instanceof Integer) {
+      return set(row, (int) obj);
+    }
+    throw new IllegalArgumentException("Could not append " + obj.getClass());
+  }
+
+  @Override
   public IntColumn append(final Column<Integer> column) {
     Preconditions.checkArgument(column.type() == this.type());
     final IntColumn numberColumn = (IntColumn) column;

@@ -226,6 +226,17 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   }
 
   @Override
+  public Column<Float> setObj(int row, Object obj) {
+    if (obj == null) {
+      return setMissing(row);
+    }
+    if (obj instanceof Float) {
+      return set(row, (float) obj);
+    }
+    throw new IllegalArgumentException("Could not append " + obj.getClass());
+  }
+
+  @Override
   public FloatColumn append(final Column<Float> column) {
     Preconditions.checkArgument(column.type() == this.type());
     final FloatColumn numberColumn = (FloatColumn) column;

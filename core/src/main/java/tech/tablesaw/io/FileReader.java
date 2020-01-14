@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.tablesaw.api.ColumnType;
@@ -22,6 +23,7 @@ import tech.tablesaw.columns.Column;
 public abstract class FileReader {
 
   private static Logger logger = LoggerFactory.getLogger(FileReader.class);
+  public static final int UNLIMITED_SAMPLE_SIZE = -1;
 
   public FileReader() {}
 
@@ -97,6 +99,16 @@ public abstract class FileReader {
       Reader reader,
       ColumnType[] types,
       AbstractParser<?> parser) {
+    return parseRows(options, headerOnly, reader, types, parser, UNLIMITED_SAMPLE_SIZE);
+  }
+
+  protected Table parseRows(
+      ReadOptions options,
+      boolean headerOnly,
+      Reader reader,
+      ColumnType[] types,
+      AbstractParser<?> parser,
+      int sampleSize) {
     parser.beginParsing(reader);
     Table table = Table.create(options.tableName());
 
@@ -120,7 +132,7 @@ public abstract class FileReader {
         // get the index in the original table, which includes skipped fields
         columnIndexes[i] = headerRow.indexOf(columnNames[i]);
       }
-      addRows(options, types, parser, table, columnIndexes);
+      addRows(options, types, parser, table, columnIndexes, sampleSize);
     }
 
     return table;
@@ -131,13 +143,15 @@ public abstract class FileReader {
       ColumnType[] types,
       AbstractParser<?> reader,
       Table table,
-      int[] columnIndexes) {
-    String[] nextLine;
+      int[] columnIndexes,
+      int sampleSize) {
 
+    String[] nextLine;
     Map<String, AbstractColumnParser<?>> parserMap = getParserMap(options, table);
 
+    Random random = new Random(0);
     // Add the rows
-    for (long rowNumber = options.header() ? 1L : 0L;
+    for (int rowNumber = options.header() ? 1 : 0;
         (nextLine = reader.parseNext()) != null;
         rowNumber++) {
       // validation
@@ -168,20 +182,44 @@ public abstract class FileReader {
                 + " expected.");
       }
 
-      // append each column that we're including (not skipping)
-      int cellIndex = 0;
-      for (int columnIndex : columnIndexes) {
-        Column<?> column = table.column(cellIndex);
-        AbstractColumnParser<?> parser = parserMap.get(column.name());
-        try {
-          String value = nextLine[columnIndex];
-          column.appendCell(value, parser);
-        } catch (Exception e) {
-          throw new AddCellToColumnException(
-              e, columnIndex, rowNumber, table.columnNames(), nextLine);
+      int samplesCount = table.rowCount();
+      if (sampleSize == -1 || samplesCount < sampleSize) {
+        addValuesToColumns(table, columnIndexes, nextLine, parserMap, rowNumber, -1);
+      } else {
+        // find a row index to replace
+        int randomIndex = random.nextInt(samplesCount + 1);
+        // replace index if it is smaller than numSamples, otherwise ignore it.
+        if (randomIndex < sampleSize) {
+          addValuesToColumns(table, columnIndexes, nextLine, parserMap, rowNumber, randomIndex);
         }
-        cellIndex++;
       }
+    }
+  }
+
+  private void addValuesToColumns(
+      Table table,
+      int[] columnIndexes,
+      String[] nextLine,
+      Map<String, AbstractColumnParser<?>> parserMap,
+      int rowNumber,
+      int rowIndex) {
+    // append each column that we're including (not skipping)
+    int cellIndex = 0;
+    for (int columnIndex : columnIndexes) {
+      Column<?> column = table.column(cellIndex);
+      AbstractColumnParser<?> parser = parserMap.get(column.name());
+      try {
+        String value = nextLine[columnIndex];
+        if (rowIndex >= 0) {
+          column.set(rowIndex, value, parser);
+        } else {
+          column.appendCell(value, parser);
+        }
+      } catch (Exception e) {
+        throw new AddCellToColumnException(
+            e, columnIndex, rowNumber, table.columnNames(), nextLine);
+      }
+      cellIndex++;
     }
   }
 

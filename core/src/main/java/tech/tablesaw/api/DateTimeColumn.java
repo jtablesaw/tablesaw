@@ -381,6 +381,22 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return this;
   }
 
+  @Override
+  public Column<LocalDateTime> setObj(int row, Object obj) {
+    if (obj == null) {
+      return setMissing(row);
+    }
+    if (obj instanceof LocalDateTime) {
+      return set(row, (LocalDateTime) obj);
+    }
+    if (obj instanceof Timestamp) {
+      Timestamp timestamp = (Timestamp) obj;
+      return set(row, timestamp.toLocalDateTime());
+    }
+    throw new IllegalArgumentException(
+        "Cannot append " + obj.getClass().getName() + " to DateTimeColumn");
+  }
+
   /** Returns the count of missing values in this column */
   @Override
   public int countMissing() {

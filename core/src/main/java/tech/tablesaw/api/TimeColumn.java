@@ -498,6 +498,18 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return this;
   }
 
+  @Override
+  public TimeColumn setObj(int row, Object obj) {
+    if (obj == null) {
+      return setMissing(row);
+    }
+    if (!(obj instanceof LocalTime)) {
+      throw new IllegalArgumentException(
+          "Cannot append " + obj.getClass().getName() + " to TimeColumn");
+    }
+    return set(row, (LocalTime) obj);
+  }
+
   public IntIterator intIterator() {
     return data.iterator();
   }
