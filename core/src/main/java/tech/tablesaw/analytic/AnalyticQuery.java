@@ -3,8 +3,8 @@ package tech.tablesaw.analytic;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddAggregateFunctions;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddAggregateFunctionsWithExecute;
 import tech.tablesaw.analytic.AnalyticQuerySteps.AddNumberingFunction;
@@ -117,7 +117,7 @@ public final class AnalyticQuery {
     return argumentList;
   }
 
-  LinkedHashSet<String> getPartitionColumns() {
+  Set<String> getPartitionColumns() {
     return windowSpecification.getPartitionColumns();
   }
 

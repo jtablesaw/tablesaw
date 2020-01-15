@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import tech.tablesaw.sorting.Sort;
 
@@ -14,11 +15,10 @@ import tech.tablesaw.sorting.Sort;
 final class WindowSpecification {
 
   private final String windowName;
-  private final LinkedHashSet<String> partitionColumns;
+  private final Set<String> partitionColumns;
   private final Sort sort;
 
-  private WindowSpecification(
-      String windowName, LinkedHashSet<String> partitionColumns, Sort sort) {
+  private WindowSpecification(String windowName, Set<String> partitionColumns, Sort sort) {
     this.windowName = windowName;
     this.partitionColumns = partitionColumns;
     this.sort = sort;
@@ -58,7 +58,7 @@ final class WindowSpecification {
     return windowName;
   }
 
-  public LinkedHashSet<String> getPartitionColumns() {
+  public Set<String> getPartitionColumns() {
     return partitionColumns;
   }
 

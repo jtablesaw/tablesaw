@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.Column;
@@ -20,12 +21,12 @@ final class ArgumentList {
   private final Map<String, FunctionCall<NumberingFunctions>> numberingFunctions;
 
   // Used to determine the order in which to add new columns.
-  private final LinkedHashSet<String> newColumnNames;
+  private final Set<String> newColumnNames;
 
-  public ArgumentList(
+  private ArgumentList(
       Map<String, FunctionCall<AggregateFunctions>> aggregateFunctions,
       Map<String, FunctionCall<NumberingFunctions>> numberingFunctions,
-      LinkedHashSet<String> newColumnNames) {
+      Set<String> newColumnNames) {
     this.aggregateFunctions = aggregateFunctions;
     this.numberingFunctions = numberingFunctions;
     this.newColumnNames = newColumnNames;
@@ -163,7 +164,7 @@ final class ArgumentList {
         new HashMap<>();
 
     // Throws if a column with the same name is registered twice.
-    private final LinkedHashSet<String> newColumnNames = new LinkedHashSet<>();
+    private final Set<String> newColumnNames = new LinkedHashSet<>();
 
     // Temporarily store analytic function data until the user calls 'as' to give the new column a
     // name
