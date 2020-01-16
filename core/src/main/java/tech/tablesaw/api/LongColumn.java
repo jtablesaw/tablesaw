@@ -262,7 +262,6 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
 
   @Override
   public Column<Long> set(int row, String stringValue, AbstractColumnParser<?> parser) {
-    Preconditions.checkArgument(!parser.isMissing(stringValue));
     return set(row, parser.parseLong(stringValue));
   }
 

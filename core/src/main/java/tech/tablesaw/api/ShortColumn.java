@@ -231,7 +231,6 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   @Override
   public Column<Short> set(int row, String stringValue, AbstractColumnParser<?> parser) {
-    Preconditions.checkArgument(!parser.isMissing(stringValue));
     return set(row, parser.parseShort(stringValue));
   }
 
