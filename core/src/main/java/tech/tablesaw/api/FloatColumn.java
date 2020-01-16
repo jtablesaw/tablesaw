@@ -226,6 +226,12 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   }
 
   @Override
+  public Column<Float> setValue(int row, String newValue, AbstractColumnParser<?> parser) {
+    Preconditions.checkArgument(!parser.isMissing(newValue));
+    return set(row, parser.parseFloat(newValue));
+  }
+
+  @Override
   public FloatColumn append(final Column<Float> column) {
     Preconditions.checkArgument(column.type() == this.type());
     final FloatColumn numberColumn = (FloatColumn) column;

@@ -16,6 +16,7 @@ package tech.tablesaw.api;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.booleans.BooleanIterable;
 import it.unimi.dsi.fastutil.booleans.BooleanIterator;
 import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
@@ -447,13 +448,20 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return this;
   }
 
-  private void set(int i, byte b) {
+  private BooleanColumn set(int i, byte b) {
     data.set(i, b);
+    return this;
   }
 
   @Override
   public BooleanColumn set(int i, Boolean val) {
     return set(i, val.booleanValue());
+  }
+
+  @Override
+  public Column<Boolean> setValue(int row, String newValue, AbstractColumnParser<?> parser) {
+    Preconditions.checkArgument(!parser.isMissing(newValue));
+    return set(row, parser.parseByte(newValue));
   }
 
   @Override

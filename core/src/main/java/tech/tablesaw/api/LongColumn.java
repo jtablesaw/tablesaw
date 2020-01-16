@@ -261,6 +261,12 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   }
 
   @Override
+  public Column<Long> set(int row, String newValue, AbstractColumnParser<?> parser) {
+    Preconditions.checkArgument(!parser.isMissing(newValue));
+    return set(row, parser.parseLong(newValue));
+  }
+
+  @Override
   public LongColumn append(final Column<Long> column) {
     Preconditions.checkArgument(column.type() == this.type());
     final LongColumn numberColumn = (LongColumn) column;

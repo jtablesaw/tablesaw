@@ -255,6 +255,12 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   }
 
   @Override
+  public Column<Integer> setValue(int row, String newValue, AbstractColumnParser<?> parser) {
+    Preconditions.checkArgument(!parser.isMissing(newValue));
+    return set(row, parser.parseInt(newValue));
+  }
+
+  @Override
   public IntColumn appendMissing() {
     return append(IntColumnType.missingValueIndicator());
   }
