@@ -35,10 +35,10 @@ public class CsvReadOptions extends ReadOptions {
   private final Integer maxNumberOfColumns;
   private final Character commentPrefix;
   private final boolean lineSeparatorDetectionEnabled;
+  private final int sampleSize;
 
   private CsvReadOptions(CsvReadOptions.Builder builder) {
     super(builder);
-
     columnTypes = builder.columnTypes;
     separator = builder.separator;
     quoteChar = builder.quoteChar;
@@ -46,6 +46,7 @@ public class CsvReadOptions extends ReadOptions {
     maxNumberOfColumns = builder.maxNumberOfColumns;
     commentPrefix = builder.commentPrefix;
     lineSeparatorDetectionEnabled = builder.lineSeparatorDetectionEnabled;
+    sampleSize = builder.sampleSize;
   }
 
   public static Builder builder(Source source) {
@@ -130,6 +131,10 @@ public class CsvReadOptions extends ReadOptions {
     return maxCharsPerColumn;
   }
 
+  public int sampleSize() {
+    return sampleSize;
+  }
+
   public static class Builder extends ReadOptions.Builder {
 
     private Character separator = ',';
@@ -139,6 +144,7 @@ public class CsvReadOptions extends ReadOptions {
     private Integer maxNumberOfColumns = 10_000;
     private Character commentPrefix;
     private boolean lineSeparatorDetectionEnabled = true;
+    private int sampleSize = -1;
 
     protected Builder(Source source) {
       super(source);
@@ -193,6 +199,19 @@ public class CsvReadOptions extends ReadOptions {
 
     public Builder commentPrefix(Character commentPrefix) {
       this.commentPrefix = commentPrefix;
+      return this;
+    }
+
+    /**
+     * Defines the maximum number of rows to be read from the file. Sampling is performed in a
+     * single pass using the reservoir sampling algorithm
+     * (https://en.wikipedia.org/wiki/Reservoir_sampling). Given a file with 'n' rows, if
+     * 'numSamples is smaller than 'n', than exactly 'numSamples' random samples are returned; if
+     * 'numSamples' is greater than 'n', then only 'n' samples are returned (no oversampling is
+     * performed to increase the data to match 'numSamples').
+     */
+    public Builder sampleSize(int numSamples) {
+      this.sampleSize = numSamples;
       return this;
     }
 

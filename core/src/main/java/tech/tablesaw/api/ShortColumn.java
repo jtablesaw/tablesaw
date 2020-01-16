@@ -230,6 +230,11 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
   }
 
   @Override
+  public Column<Short> set(int row, String stringValue, AbstractColumnParser<?> parser) {
+    return set(row, parser.parseShort(stringValue));
+  }
+
+  @Override
   public ShortColumn append(final Column<Short> column) {
     Preconditions.checkArgument(column.type() == this.type());
     final ShortColumn numberColumn = (ShortColumn) column;

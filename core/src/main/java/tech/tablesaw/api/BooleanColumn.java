@@ -447,13 +447,19 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return this;
   }
 
-  private void set(int i, byte b) {
+  private BooleanColumn set(int i, byte b) {
     data.set(i, b);
+    return this;
   }
 
   @Override
   public BooleanColumn set(int i, Boolean val) {
     return set(i, val.booleanValue());
+  }
+
+  @Override
+  public Column<Boolean> set(int row, String stringValue, AbstractColumnParser<?> parser) {
+    return set(row, parser.parseByte(stringValue));
   }
 
   @Override

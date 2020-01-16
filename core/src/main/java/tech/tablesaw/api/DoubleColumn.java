@@ -318,6 +318,11 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
   }
 
   @Override
+  public Column<Double> set(int row, String stringValue, AbstractColumnParser<?> parser) {
+    return set(row, parser.parseDouble(stringValue));
+  }
+
+  @Override
   public DoubleColumn append(final Column<Double> column) {
     Preconditions.checkArgument(column.type() == this.type());
     final DoubleColumn numberColumn = (DoubleColumn) column;

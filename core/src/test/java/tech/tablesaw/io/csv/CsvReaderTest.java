@@ -45,6 +45,8 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
@@ -701,5 +703,39 @@ public class CsvReaderTest {
     Table table =
         Table.read().csv(CsvReadOptions.builder("../data/sacramento_real_estate_transactions.csv"));
     assertEquals(985, table.rowCount());
+  }
+
+  @Test
+  public void testReadCsvWithRowSampling() throws IOException {
+    int expectedSampleSize = 10;
+    Table table =
+        Table.read().csv(CsvReadOptions.builder("../data/cake.csv").sampleSize(expectedSampleSize));
+
+    assertEquals(expectedSampleSize, table.rowCount());
+    assertEquals("[recipe, mix, temp, y]", table.columnNames().toString());
+  }
+
+  @Test
+  public void testReadCsvWithRowSamplingParsingNumbers() throws IOException {
+
+    StringBuilder csv = new StringBuilder();
+    csv.append("RandomNumbers\n");
+    Set<Integer> values =
+        new TreeSet<>(
+            asList(
+                24323, 542345, 64323, 73640, 38453, 12735, 93456, 23457, 483075, 469364, 473936));
+    values.forEach(v -> csv.append(v + "\n"));
+
+    Reader reader = new StringReader(csv.toString());
+
+    int expectedSampleSize = 5;
+    Table t = Table.read().csv(CsvReadOptions.builder(reader).sampleSize(expectedSampleSize));
+
+    assertEquals(1, t.columnCount());
+    assertEquals(expectedSampleSize, t.rowCount());
+    assertEquals(INTEGER, t.column(0).type());
+
+    List<Integer> intValues = (List<Integer>) t.column(0).asList();
+    assertEquals(true, values.containsAll(intValues));
   }
 }
