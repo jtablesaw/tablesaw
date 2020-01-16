@@ -255,8 +255,8 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   }
 
   @Override
-  public Column<Integer> set(int row, String newValue, AbstractColumnParser<?> parser) {
-    return parser.isMissing(newValue) ? setMissing(row) : set(row, parser.parseInt(newValue));
+  public Column<Integer> set(int row, String stringValue, AbstractColumnParser<?> parser) {
+    return set(row, parser.parseInt(stringValue));
   }
 
   @Override

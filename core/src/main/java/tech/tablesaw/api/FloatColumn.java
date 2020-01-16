@@ -226,8 +226,8 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   }
 
   @Override
-  public Column<Float> set(int row, String newValue, AbstractColumnParser<?> parser) {
-    return parser.isMissing(newValue) ? setMissing(row) : set(row, parser.parseFloat(newValue));
+  public Column<Float> set(int row, String stringValue, AbstractColumnParser<?> parser) {
+    return set(row, parser.parseFloat(stringValue));
   }
 
   @Override

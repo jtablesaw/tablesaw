@@ -458,8 +458,8 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   }
 
   @Override
-  public Column<Boolean> set(int row, String newValue, AbstractColumnParser<?> parser) {
-    return parser.isMissing(newValue) ? setMissing(row) : set(row, parser.parseByte(newValue));
+  public Column<Boolean> set(int row, String stringValue, AbstractColumnParser<?> parser) {
+    return set(row, parser.parseByte(stringValue));
   }
 
   @Override
