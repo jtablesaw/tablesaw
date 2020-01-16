@@ -728,7 +728,7 @@ public class CsvReaderTest {
 
     Reader reader = new StringReader(csv.toString());
 
-    int expectedSampleSize = 3;
+    int expectedSampleSize = 5;
     Table t = Table.read().csv(CsvReadOptions.builder(reader).sampleSize(expectedSampleSize));
 
     assertEquals(1, t.columnCount());

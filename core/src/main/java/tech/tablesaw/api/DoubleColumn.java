@@ -318,9 +318,8 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
   }
 
   @Override
-  public Column<Double> setValue(int row, String newValue, AbstractColumnParser<?> parser) {
-    Preconditions.checkArgument(!parser.isMissing(newValue));
-    return set(row, parser.parseDouble(newValue));
+  public Column<Double> set(int row, String newValue, AbstractColumnParser<?> parser) {
+    return parser.isMissing(newValue) ? setMissing(row) : set(row, parser.parseDouble(newValue));
   }
 
   @Override
