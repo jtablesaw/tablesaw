@@ -1157,7 +1157,6 @@ public class Table extends Relation implements Iterable<Row> {
     {
       return this;
     }
-    Column firstColumn = this.column(0);
 
     ColumnType[] types = this.columnTypes();
     // If all columns are of the same type
@@ -1170,17 +1169,17 @@ public class Table extends Relation implements Iterable<Row> {
     ColumnType resultType = types[1];
     StringColumn labelColumn = StringColumn.create(this.column(0).name());
     transposed.addColumns(labelColumn);
-    for (String label : firstColumn.asStringColumn()) {
+    for (String label : this.column(0).asStringColumn()) {
       transposed.addColumns(resultType.create(label));
     }
 
     for (int i = 1; i < this.columnCount(); i++) {
-      Column columnToTranspose = this.column(i);
+      Column<?> columnToTranspose = this.column(i);
       labelColumn.append(columnToTranspose.name());
     }
 
     for (int i = 1; i < transposed.columnCount(); i++) {
-      Column column = transposed.column(i);
+      Column<?> column = transposed.column(i);
       int row = i - 1;
       for (int col = 1; col < this.columnCount(); col++) {
         // Avoid boxing for primitives
