@@ -182,7 +182,25 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
 
   @Override
   public Table summary() {
-    return countByCategory();
+    Table summary = Table.create(this.name());
+    StringColumn measure = StringColumn.create("Measure");
+    StringColumn value = StringColumn.create("Value");
+    summary.addColumns(measure);
+    summary.addColumns(value);
+
+    measure.append("Count");
+    value.append(String.valueOf(size()));
+
+    measure.append("Unique");
+    value.append(String.valueOf(countUnique()));
+
+    Table countByCategory = countByCategory().sortDescendingOn("Count");
+    measure.append("Top");
+    value.append(countByCategory.stringColumn("Category").getString(0));
+
+    measure.append("Top Freq.");
+    value.appendObj(countByCategory.intColumn("Count").getString(0));
+    return summary;
   }
 
   /** */

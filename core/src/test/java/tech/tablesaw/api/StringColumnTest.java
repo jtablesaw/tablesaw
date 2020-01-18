@@ -716,4 +716,19 @@ class StringColumnTest {
     assertEquals(3, col1.countUnique());
     assertEquals(3, col1.unique().size());
   }
+
+  @Test
+  public void testSummary() {
+    Table summary = column.summary();
+    assertEquals(2, summary.columnCount());
+    assertEquals(4, summary.rowCount());
+    assertEquals("Count", summary.getUnformatted(0, 0));
+    assertEquals("4", summary.getUnformatted(0, 1));
+    assertEquals("Unique", summary.getUnformatted(1, 0));
+    assertEquals("4", summary.getUnformatted(1, 1));
+    assertEquals("Top", summary.getUnformatted(2, 0));
+    assertEquals("Value 4", summary.getUnformatted(2, 1));
+    assertEquals("Top Freq.", summary.getUnformatted(3, 0));
+    assertEquals("1", summary.getUnformatted(3, 1));
+  }
 }
