@@ -17,6 +17,14 @@ import tech.tablesaw.columns.numbers.DoubleColumnType;
 public class TableTransposeTest {
 
   @Test
+  void transposeEmptyTable() {
+    Table empty = Table.create("Data");
+    Table result = empty.transpose();
+    assertEquals(empty.print(), result.transpose().print());
+    assertTableContents( new Object[][]{}, result);
+  }
+
+  @Test
   void transposeDoubles() {
     StringColumn label = StringColumn.create("label", new String[]{ "row1", "row2", "row3"});
     DoubleColumn value = DoubleColumn.create("value1", new double[]{ 1.0, 1.1, 1.2 });

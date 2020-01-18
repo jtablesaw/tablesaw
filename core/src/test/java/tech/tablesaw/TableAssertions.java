@@ -32,31 +32,38 @@ public class TableAssertions {
   }
 
   public static void assertTableContents(Object[][] expected, Table actual) {
-    assertEquals(
-        expected.length - 1, actual.rowCount(), "Table does not have the same number of rows");
 
-    assertArrayEquals(
-        expected[0],
-        actual.columnNames().toArray(),
-        String.format(
-            "Column names are not equal.\nexpected: %s\nactual:   %s",
-            Arrays.toString(expected[0]), Arrays.toString(actual.columnNames().toArray())));
-
-    int expectedRowIndex = 1;
-    for (Row actualRow : actual) {
-      Object[] expectedRowData = expected[expectedRowIndex];
+    if (expected.length == 0) {
+      //empty table
+      assertEquals(0, actual.rowCount(), "Expected an empty table");
+      assertEquals(0, actual.columnCount(), "Expected a table with no columns");
+    } else {
       assertEquals(
-          expectedRowData.length,
-          actualRow.columnCount(),
-          "Row has the expected number of columns");
+          expected.length - 1, actual.rowCount(), "Table does not have the same number of rows");
 
-      for (int colIndex = 0; colIndex < expectedRowData.length; colIndex++) {
+      assertArrayEquals(
+          expected[0],
+          actual.columnNames().toArray(),
+          String.format(
+              "Column names are not equal.\nexpected: %s\nactual:   %s",
+              Arrays.toString(expected[0]), Arrays.toString(actual.columnNames().toArray())));
+
+      int expectedRowIndex = 1;
+      for (Row actualRow : actual) {
+        Object[] expectedRowData = expected[expectedRowIndex];
         assertEquals(
-            expectedRowData[colIndex],
-            actualRow.getObject(colIndex),
-            String.format("Value at row %d column %d not equal", expectedRowIndex - 1, colIndex));
+            expectedRowData.length,
+            actualRow.columnCount(),
+            "Row has the expected number of columns");
+
+        for (int colIndex = 0; colIndex < expectedRowData.length; colIndex++) {
+          assertEquals(
+              expectedRowData[colIndex],
+              actualRow.getObject(colIndex),
+              String.format("Value at row %d column %d not equal", expectedRowIndex - 1, colIndex));
+        }
+        expectedRowIndex++;
       }
-      expectedRowIndex++;
     }
   }
 }

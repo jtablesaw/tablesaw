@@ -1153,6 +1153,10 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public Table transpose() {
     Table transposed = Table.create(this.name);
+    if(this.columnCount() == 0)
+    {
+      return this;
+    }
     Column firstColumn = this.column(0);
 
     ColumnType[] types = this.columnTypes();
