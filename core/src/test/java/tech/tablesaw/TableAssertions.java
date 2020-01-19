@@ -31,7 +31,22 @@ public class TableAssertions {
     }
   }
 
-  public static void assertTableContents(Object[][] expected, Table actual) {
+  public static void assertTableEquals(String[] expectedHeaders,
+      Object[][] expectedRowValues, Table actual) {
+    assertColumnNamesEquals(expectedHeaders, actual);
+    assertRowValuesEquals(expectedRowValues, actual);
+  }
+
+  public static void assertColumnNamesEquals(String[] expectedColumnNames, Table actual) {
+    assertArrayEquals(
+        expectedColumnNames,
+        actual.columnNames().toArray(),
+        String.format(
+            "Column names are not equal.\nexpected: %s\nactual:   %s",
+            Arrays.toString(expectedColumnNames), Arrays.toString(actual.columnNames().toArray())));
+  }
+
+  public static void assertRowValuesEquals(Object[][] expected, Table actual) {
 
     if (expected.length == 0) {
       //empty table
@@ -39,16 +54,9 @@ public class TableAssertions {
       assertEquals(0, actual.columnCount(), "Expected a table with no columns");
     } else {
       assertEquals(
-          expected.length - 1, actual.rowCount(), "Table does not have the same number of rows");
+          expected.length, actual.rowCount(), "Table does not have the same number of rows");
 
-      assertArrayEquals(
-          expected[0],
-          actual.columnNames().toArray(),
-          String.format(
-              "Column names are not equal.\nexpected: %s\nactual:   %s",
-              Arrays.toString(expected[0]), Arrays.toString(actual.columnNames().toArray())));
-
-      int expectedRowIndex = 1;
+      int expectedRowIndex = 0;
       for (Row actualRow : actual) {
         Object[] expectedRowData = expected[expectedRowIndex];
         assertEquals(
