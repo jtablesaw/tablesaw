@@ -13,10 +13,11 @@ import tech.tablesaw.api.Table;
 public class TableSummaryTest {
   @Test
   public void summaryTestTwoDoubleColumnsStatistics() {
-    DoubleColumn value = DoubleColumn.create("value1", new double[]{1.0, 1.1, 1.2});
-    DoubleColumn value2 = DoubleColumn.create("value2", new double[]{2.0, 2.1, 2.2});
-
-    Table testTable = Table.create("Data", value, value2);
+    Table testTable =
+        Table.create(
+            "Data",
+            DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
+            DoubleColumn.create("value2", new double[] {2.0, 2.1, 2.2}));
     Table result = testTable.summary();
     assertEquals(
         "                            Data                             \n"
@@ -35,16 +36,17 @@ public class TableSummaryTest {
 
   @Test
   public void summaryMixedTypes() {
-    StringColumn label =
-        StringColumn.create("label", new String[]{"yellow", "yellow", "green"});
-    DoubleColumn value = DoubleColumn.create("value1", new double[]{ 1.0, 1.1, 1.2});
-    BooleanColumn booleanValue = BooleanColumn.create("truthy", new boolean[]{ true, false, true});
-    DateColumn dateColumn = DateColumn.create("dates", new LocalDate[]{
-        LocalDate.of(2001, 1, 1),
-        LocalDate.of(2002, 1, 1),
-        LocalDate.of(2001, 1, 1) });
-
-    Table testTable = Table.create("Data", label, value, booleanValue, dateColumn);
+    Table testTable =
+        Table.create(
+            "Data",
+            StringColumn.create("label", new String[] {"yellow", "yellow", "green"}),
+            DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
+            BooleanColumn.create("truthy", new boolean[] {true, false, true}),
+            DateColumn.create(
+                "dates",
+                new LocalDate[] {
+                  LocalDate.of(2001, 1, 1), LocalDate.of(2002, 1, 1), LocalDate.of(2001, 1, 1)
+                }));
     Table result = testTable.summary();
     assertEquals(
         "                                   Data                                    \n"
