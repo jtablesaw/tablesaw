@@ -13,7 +13,7 @@ public class TableAssertions {
    *     good data
    * @param sortedTable the table that was sorted with Tablesaw
    */
-  public static void assertTablesEquals(Table compareWith, Table sortedTable) {
+  public static void assertTableEquals(Table compareWith, Table sortedTable) {
     assertEquals(
         sortedTable.rowCount(), compareWith.rowCount(), "both tables have the same number of rows");
     int maxRows = sortedTable.rowCount();

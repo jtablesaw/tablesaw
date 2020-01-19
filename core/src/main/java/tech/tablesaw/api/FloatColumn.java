@@ -55,7 +55,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
     return column;
   }
 
-  public static FloatColumn create(String name, Float... arr) {
+  public static FloatColumn create(String name, Float[] arr) {
     FloatColumn column = create(name);
     for (Float val : arr) {
       column.append(val);

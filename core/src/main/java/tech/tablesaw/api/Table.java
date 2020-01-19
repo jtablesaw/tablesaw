@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1178,6 +1179,109 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public Stream<Row[]> rollingStream(int n) {
     return Streams.stream(rollingIterator(n));
+  }
+
+  /**
+   * Transposes data in the table, switching rows for columns. For example, a table like this.<br>
+   * value1 | value2 |<br>
+   * -------------------------------<br>
+   * 1 | 2 |<br>
+   * 1.1 | 2.1 |<br>
+   * 1.2 | 2.2 |<br>
+   *
+   * <p>Is transposed into the following<br>
+   * 0 | 1 | 2 |<br>
+   * -------------------------------------<br>
+   * 1 | 1.1 | 1.2 |<br>
+   * 2 | 2.1 | 2.2 |<br>
+   *
+   * @see Table#transpose(boolean,boolean)
+   * @return transposed table
+   */
+  public Table transpose() {
+    return transpose(false, false);
+  }
+
+  /**
+   * Transposes data in the table, switching rows for columns. For example, a table like this.<br>
+   * label | value1 | value2 |<br>
+   * -------------------------------<br>
+   * row1 | 1 | 2 |<br>
+   * row2 | 1.1 | 2.1 |<br>
+   * row3 | 1.2 | 2.2 |<br>
+   *
+   * <p>Is transposed into the following<br>
+   * label | row1 | row2 | row3 |<br>
+   * -------------------------------------<br>
+   * value1 | 1 | 1.1 | 1.2 |<br>
+   * value2 | 2 | 2.1 | 2.2 |<br>
+   *
+   * @param includeColumnHeadingsAsFirstColumn Toggle whether to include the column headings as
+   *     first column in result
+   * @param useFirstColumnForHeadings Use the first column as the column headings in the result.
+   *     Useful if the data set already has a first column which contains a set of labels
+   * @return The transposed table
+   */
+  public Table transpose(
+      boolean includeColumnHeadingsAsFirstColumn, boolean useFirstColumnForHeadings) {
+    if (this.columnCount() == 0) {
+      return this;
+    }
+
+    // Validate first
+    int columnOffset = useFirstColumnForHeadings ? 1 : 0;
+    ColumnType resultColumnType = validateTableHasSingleColumnType(columnOffset);
+
+    Table transposed = Table.create(this.name);
+    if (includeColumnHeadingsAsFirstColumn) {
+      String columnName = useFirstColumnForHeadings ? this.column(0).name() : "0";
+      StringColumn labelColumn = StringColumn.create(columnName);
+      for (int i = columnOffset; i < this.columnCount(); i++) {
+        Column<?> columnToTranspose = this.column(i);
+        labelColumn.append(columnToTranspose.name());
+      }
+      transposed.addColumns(labelColumn);
+    }
+
+    if (useFirstColumnForHeadings) {
+      transpose(transposed, resultColumnType, row -> String.valueOf(this.get(row, 0)), 1);
+    } else {
+      // default column labelling
+      return transpose(
+          transposed, resultColumnType, row -> String.valueOf(transposed.columnCount()), 0);
+    }
+    return transposed;
+  }
+
+  private ColumnType validateTableHasSingleColumnType(int startingColumn) {
+    // If all columns are of the same type
+    ColumnType[] columnTypes = this.columnTypes();
+    long distinctColumnTypesCount =
+        Arrays.stream(columnTypes).skip(startingColumn).distinct().count();
+    if (distinctColumnTypesCount > 1) {
+      throw new IllegalArgumentException(
+          "This operation currently only supports tables where value columns are of the same type");
+    }
+    return columnTypes[startingColumn];
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private Table transpose(
+      Table transposed,
+      ColumnType resultColumnType,
+      IntFunction<String> columnNameExtractor,
+      int startingColumn) {
+
+    for (int row = 0; row < this.rowCount(); row++) {
+      String columnName = columnNameExtractor.apply(row);
+      Column column = resultColumnType.create(columnName);
+
+      for (int col = startingColumn; col < this.columnCount(); col++) {
+        column.append(this.column(col), row);
+      }
+      transposed.addColumns(column);
+    }
+    return transposed;
   }
 
   /**

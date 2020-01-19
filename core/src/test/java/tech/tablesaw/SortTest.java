@@ -16,7 +16,7 @@ package tech.tablesaw;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static tech.tablesaw.TableAssertions.assertTablesEquals;
+import static tech.tablesaw.TableAssertions.assertTableEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -44,7 +44,7 @@ public class SortTest {
     // sort ascending by date and then an integer
     Table sortedTable = unsortedTable.sortAscendingOn("IQ", "DOB");
     Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   /** Same as sortAscending but descending */
@@ -53,7 +53,7 @@ public class SortTest {
     unsortedTable = TestData.SIMPLE_UNSORTED_DATA.getTable();
     Table sortedTable = unsortedTable.sortDescendingOn("IQ", "DOB");
     Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_DESCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   /**
@@ -64,7 +64,7 @@ public class SortTest {
   public void sortDescendingNegative() {
     Table sortedTable = unsortedTable.sortDescendingOn("IQ", "DOB");
     Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   @Test
@@ -72,7 +72,7 @@ public class SortTest {
     Table sortedTable =
         unsortedTable.sortOn("-" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
     Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_DESCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   @Test
@@ -81,7 +81,7 @@ public class SortTest {
         unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
     Table expectedResults =
         TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_ASCENDING_AND_THEN_DATE_DESCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   @Test
@@ -89,25 +89,25 @@ public class SortTest {
     Table sortedTable =
         unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "+" + columnNames[DOB_INDEX]);
     Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
 
     sortedTable = unsortedTable.sortOn(columnNames[IQ_INDEX], columnNames[DOB_INDEX]);
     expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   @Test
   public void testAscendingWithPlusSign() {
     Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX]);
     Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   @Test
   public void testSortOnIndices() {
     Table sortedTable = unsortedTable.sortOn(IQ_INDEX, DOB_INDEX);
     Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   @Test
@@ -115,7 +115,7 @@ public class SortTest {
     Table sortedTable = unsortedTable.sortOn(IQ_INDEX, -DOB_INDEX);
     Table expectedResults =
         TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_ASCENDING_AND_THEN_DATE_DESCENDING.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   @Disabled
@@ -123,7 +123,7 @@ public class SortTest {
     Table sortedTable =
         unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
     Table expectedResults = TestData.SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT.getTable();
-    assertTablesEquals(expectedResults, sortedTable);
+    assertTableEquals(expectedResults, sortedTable);
   }
 
   @Test

@@ -115,7 +115,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return newColumn;
   }
 
-  public static DoubleColumn create(String name, Number... numbers) {
+  public static DoubleColumn create(String name, Number[] numbers) {
     DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
     for (Number number : numbers) {
       newColumn.append(number);
