@@ -125,11 +125,12 @@ public class TableTransposeTest {
 
   @Test
   void transposeBooleans() {
-    StringColumn label = StringColumn.create("label", new String[] {"row1", "row2", "row3"});
-    BooleanColumn value = BooleanColumn.create("value1", new boolean[] {true, true, true});
-    BooleanColumn value2 = BooleanColumn.create("value2", new boolean[] {false, false, false});
-
-    Table testTable = Table.create("Data", label, value, value2);
+    Table testTable =
+        Table.create(
+            "Data",
+            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
+            BooleanColumn.create("value1", new boolean[] {true, true, true}),
+            BooleanColumn.create("value2", new boolean[] {false, false, false}));
     Table result = testTable.transpose();
 
     assertTableEquals(
