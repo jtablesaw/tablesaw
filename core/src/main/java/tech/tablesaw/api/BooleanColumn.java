@@ -175,13 +175,13 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
     Table table = Table.create(name());
 
-    BooleanColumn booleanColumn = create("Value");
+    StringColumn label = StringColumn.create("Value");
     DoubleColumn countColumn = DoubleColumn.create("Count");
-    table.addColumns(booleanColumn);
+    table.addColumns(label);
     table.addColumns(countColumn);
 
     for (Map.Entry<Byte, Integer> entry : counts.byte2IntEntrySet()) {
-      booleanColumn.append(entry.getKey());
+      label.append(entry.getKey() == 1 ? "true" : "false");
       countColumn.append(entry.getValue());
     }
     return table;
