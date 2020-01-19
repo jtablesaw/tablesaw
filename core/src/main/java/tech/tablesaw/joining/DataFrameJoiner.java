@@ -288,58 +288,47 @@ public class DataFrameJoiner {
     ColumnType type = valueColumn.type();
     if (type instanceof DateColumnType) {
       IntIndex index = (IntIndex) rawIndex;
-      DateColumn typedValueColumn = (DateColumn) valueColumn;
-      int value = typedValueColumn.getIntInternal(rowIndex);
+      int value = ((DateColumn) valueColumn).getIntInternal(rowIndex);
       return index.get(value);
     } else if (type instanceof TimeColumnType) {
       IntIndex index = (IntIndex) rawIndex;
-      TimeColumn typedValueColumn = (TimeColumn) valueColumn;
-      int value = typedValueColumn.getIntInternal(rowIndex);
+      int value = ((TimeColumn) valueColumn).getIntInternal(rowIndex);
       return index.get(value);
     } else if (type instanceof DateTimeColumnType) {
       LongIndex index = (LongIndex) rawIndex;
-      DateTimeColumn typedValueColumn = (DateTimeColumn) valueColumn;
-      long value = typedValueColumn.getLongInternal(rowIndex);
+      long value = ((DateTimeColumn) valueColumn).getLongInternal(rowIndex);
       return index.get(value);
     } else if (type instanceof InstantColumnType) {
       LongIndex index = (LongIndex) rawIndex;
-      InstantColumn typedValueColumn = (InstantColumn) valueColumn;
-      long value = typedValueColumn.getLongInternal(rowIndex);
+      long value = ((InstantColumn) valueColumn).getLongInternal(rowIndex);
       return index.get(value);
     } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
       StringIndex index = (StringIndex) rawIndex;
-      StringColumn typedValueColumn = (StringColumn) valueColumn;
-      String value = typedValueColumn.get(rowIndex);
+      String value = ((StringColumn) valueColumn).get(rowIndex);
       return index.get(value);
     } else if (type instanceof IntColumnType) {
       IntIndex index = (IntIndex) rawIndex;
-      IntColumn typedValueColumn = (IntColumn) valueColumn;
-      int value = typedValueColumn.getInt(rowIndex);
+      int value = ((IntColumn) valueColumn).getInt(rowIndex);
       return index.get(value);
     } else if (type instanceof LongColumnType) {
       LongIndex index = (LongIndex) rawIndex;
-      LongColumn typedValueColumn = (LongColumn) valueColumn;
-      long value = typedValueColumn.getLong(rowIndex);
+      long value = ((LongColumn) valueColumn).getLong(rowIndex);
       return index.get(value);
     } else if (type instanceof ShortColumnType) {
       ShortIndex index = (ShortIndex) rawIndex;
-      ShortColumn typedValueColumn = (ShortColumn) valueColumn;
-      short value = typedValueColumn.getShort(rowIndex);
+      short value = ((ShortColumn) valueColumn).getShort(rowIndex);
       return index.get(value);
     } else if (type instanceof BooleanColumnType) {
       ByteIndex index = (ByteIndex) rawIndex;
-      BooleanColumn typedValueColumn = (BooleanColumn) valueColumn;
-      byte value = typedValueColumn.getByte(rowIndex);
+      byte value = ((BooleanColumn) valueColumn).getByte(rowIndex);
       return index.get(value);
     } else if (type instanceof DoubleColumnType) {
       DoubleIndex index = (DoubleIndex) rawIndex;
-      DoubleColumn typedValueColumn = (DoubleColumn) valueColumn;
-      double value = typedValueColumn.getDouble(rowIndex);
+      double value = ((DoubleColumn) valueColumn).getDouble(rowIndex);
       return index.get(value);
     } else if (type instanceof FloatColumnType) {
       FloatIndex index = (FloatIndex) rawIndex;
-      FloatColumn typedValueColumn = (FloatColumn) valueColumn;
-      float value = typedValueColumn.getFloat(rowIndex);
+      float value = ((FloatColumn) valueColumn).getFloat(rowIndex);
       return index.get(value);
     } else {
       throw new IllegalArgumentException(
