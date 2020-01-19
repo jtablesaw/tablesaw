@@ -31,8 +31,8 @@ public class TableAssertions {
     }
   }
 
-  public static void assertTableEquals(String[] expectedHeaders,
-      Object[][] expectedRowValues, Table actual) {
+  public static void assertTableEquals(
+      String[] expectedHeaders, Object[][] expectedRowValues, Table actual) {
     assertColumnNamesEquals(expectedHeaders, actual);
     assertRowValuesEquals(expectedRowValues, actual);
   }
@@ -49,7 +49,7 @@ public class TableAssertions {
   public static void assertRowValuesEquals(Object[][] expected, Table actual) {
 
     if (expected.length == 0) {
-      //empty table
+      // empty table
       assertEquals(0, actual.rowCount(), "Expected an empty table");
       assertEquals(0, actual.columnCount(), "Expected a table with no columns");
     } else {
