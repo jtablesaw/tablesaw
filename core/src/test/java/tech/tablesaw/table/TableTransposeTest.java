@@ -2,7 +2,6 @@ package tech.tablesaw.table;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static tech.tablesaw.TableAssertions.assertTableEquals;
 
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
@@ -12,6 +11,7 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 
 public class TableTransposeTest {
@@ -72,7 +72,10 @@ public class TableTransposeTest {
             StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
             FloatColumn.create("value1", new float[] {1.0f, 1.1f, 1.2f}),
             FloatColumn.create("value2", new float[] {2.0f, 2.1f, 2.2f}));
-    assertTransposeIsReversible(testTable);
+    assertEquals(
+        testTable.print(),
+        testTable.transpose(true, true).transpose(true, true).print(),
+        "Transpose is reversible");
   }
 
   @Test
@@ -250,10 +253,36 @@ public class TableTransposeTest {
         testTable.print(), result.transpose(true, true).print(), "Transpose is reversible");
   }
 
-  private void assertTransposeIsReversible(Table testTable) {
-    assertEquals(
-        testTable.print(),
-        testTable.transpose(true, true).transpose(true, true).print(),
-        "Transpose is reversible");
+  /**
+   * Compares a table with expected column data. Avoids the requirement to construct the table of
+   * expected results
+   *
+   * @param expectedName Expected table name
+   * @param expectedColumns Expected columns including their label and values
+   * @param actual Actual table
+   */
+  private static void assertTableEquals(
+      String expectedName, Object[][] expectedColumns, Table actual) {
+    assertEquals(expectedName, actual.name(), "Names should match");
+
+    if (expectedColumns.length == 0) {
+      // empty table
+      assertEquals(0, actual.rowCount(), "Expected an empty table");
+      assertEquals(0, actual.columnCount(), "Expected a table with no columns");
+    } else {
+      assertEquals(expectedColumns.length, actual.columnCount(), "Has same number of columns");
+
+      for (int i = 0; i < expectedColumns.length; i++) {
+        Column<?> actualColumn = actual.column(i);
+        Object[] expectedColumn = expectedColumns[i];
+        assertEquals(expectedColumn[0], actualColumn.name(), "Column names match");
+        for (int j = 0; j < expectedColumn.length - 1; j++) {
+          assertEquals(
+              expectedColumn[j + 1],
+              actualColumn.get(j),
+              "cells[" + j + ", " + i + "] do not match");
+        }
+      }
+    }
   }
 }
