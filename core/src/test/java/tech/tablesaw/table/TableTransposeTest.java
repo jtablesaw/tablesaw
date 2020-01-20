@@ -30,7 +30,6 @@ public class TableTransposeTest {
     Table testTable =
         Table.create(
             TABLE_NAME,
-            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
             DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
             DoubleColumn.create("value2", new double[] {2.0, 2.1, 2.2}));
     Table result = testTable.transpose();
@@ -38,12 +37,11 @@ public class TableTransposeTest {
     assertTableEquals(
         TABLE_NAME,
         new Object[][] {
-          {"row1", 1.0, 2.0},
-          {"row2", 1.1, 2.1},
-          {"row3", 1.2, 2.2},
+          {"0", 1.0, 2.0},
+          {"1", 1.1, 2.1},
+          {"2", 1.2, 2.2},
         },
         result);
-    assertTransposeIsReversible(testTable);
   }
 
   @Test
@@ -51,7 +49,6 @@ public class TableTransposeTest {
     Table testTable =
         Table.create(
             TABLE_NAME,
-            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
             DoubleColumn.create(
                 "value1", new double[] {1.0, DoubleColumnType.missingValueIndicator(), 1.2}),
             DoubleColumn.create("value2", new double[] {2.0, 2.1, 2.2}));
@@ -60,13 +57,11 @@ public class TableTransposeTest {
     assertTableEquals(
         TABLE_NAME,
         new Object[][] {
-          {"row1", 1.0, 2.0},
-          {"row2", DoubleColumnType.missingValueIndicator(), 2.1},
-          {"row3", 1.2, 2.2},
+          {"0", 1.0, 2.0},
+          {"1", DoubleColumnType.missingValueIndicator(), 2.1},
+          {"2", 1.2, 2.2},
         },
         result);
-
-    assertTransposeIsReversible(testTable);
   }
 
   @Test
@@ -85,7 +80,6 @@ public class TableTransposeTest {
     Table testTable =
         Table.create(
             TABLE_NAME,
-            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
             IntColumn.create("value1", new int[] {1, 2, 3}),
             IntColumn.create("value2", new int[] {4, 5, 6}));
     Table result = testTable.transpose();
@@ -93,13 +87,11 @@ public class TableTransposeTest {
     assertTableEquals(
         TABLE_NAME,
         new Object[][] {
-          {"row1", 1, 4},
-          {"row2", 2, 5},
-          {"row3", 3, 6}
+          {"0", 1, 4},
+          {"1", 2, 5},
+          {"2", 3, 6}
         },
         result);
-
-    assertTransposeIsReversible(testTable);
   }
 
   @Test
@@ -107,7 +99,6 @@ public class TableTransposeTest {
     Table testTable =
         Table.create(
             TABLE_NAME,
-            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
             LongColumn.create("value1", new long[] {1, 2, 3}),
             LongColumn.create("value2", new long[] {4, 5, 6}));
     Table result = testTable.transpose();
@@ -115,13 +106,11 @@ public class TableTransposeTest {
     assertTableEquals(
         TABLE_NAME,
         new Object[][] {
-          {"row1", 1L, 4L},
-          {"row2", 2L, 5L},
-          {"row3", 3L, 6L},
+          {"0", 1L, 4L},
+          {"1", 2L, 5L},
+          {"2", 3L, 6L},
         },
         result);
-
-    assertTransposeIsReversible(testTable);
   }
 
   @Test
@@ -129,7 +118,6 @@ public class TableTransposeTest {
     Table testTable =
         Table.create(
             TABLE_NAME,
-            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
             BooleanColumn.create("value1", new boolean[] {true, true, true}),
             BooleanColumn.create("value2", new boolean[] {false, false, false}));
     Table result = testTable.transpose();
@@ -137,11 +125,9 @@ public class TableTransposeTest {
     assertTableEquals(
         TABLE_NAME,
         new Object[][] {
-          {"row1", true, false}, {"row2", true, false}, {"row3", true, false},
+          {"0", true, false}, {"1", true, false}, {"2", true, false},
         },
         result);
-
-    assertTransposeIsReversible(testTable);
   }
 
   @Test
@@ -149,7 +135,6 @@ public class TableTransposeTest {
     Table testTable =
         Table.create(
             TABLE_NAME,
-            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
             StringColumn.create("fruit", new String[] {"apple", "banana", "pear"}),
             StringColumn.create("colour", new String[] {"red", "yellow", "green"}));
     Table result = testTable.transpose();
@@ -157,13 +142,11 @@ public class TableTransposeTest {
     assertTableEquals(
         TABLE_NAME,
         new Object[][] {
-          {"row1", "apple", "red"},
-          {"row2", "banana", "yellow"},
-          {"row3", "pear", "green"},
+          {"0", "apple", "red"},
+          {"1", "banana", "yellow"},
+          {"2", "pear", "green"},
         },
         result);
-
-    assertTransposeIsReversible(testTable);
   }
 
   @Test
@@ -171,9 +154,8 @@ public class TableTransposeTest {
     Table testTable =
         Table.create(
             TABLE_NAME,
-            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
-            DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
-            StringColumn.create("colour", new String[] {"red", "yellow", "green"}));
+            StringColumn.create("colour", new String[] {"red", "yellow", "green"}),
+            DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}));
 
     try {
       testTable.transpose();
@@ -186,14 +168,73 @@ public class TableTransposeTest {
   }
 
   @Test
-  void transposeDoublesIncludeColumnHeadings() {
+  void transposeMixedTypesThrowsExceptionFirstColumnAsHeadings() {
+    Table testTable =
+        Table.create(
+            TABLE_NAME,
+            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
+            DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
+            StringColumn.create("colour", new String[] {"red", "yellow", "green"}));
+
+    try {
+      testTable.transpose(false, true);
+      fail("Should throw an exception");
+    } catch (IllegalArgumentException ex) {
+      assertEquals(
+          "Transpose currently only supports tables where value columns are of the same type",
+          ex.getMessage());
+    }
+  }
+
+  @Test
+  void transposeIncludeColumnHeadingsAsFirstColumn() {
+    Table testTable =
+        Table.create(
+            TABLE_NAME,
+            DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
+            DoubleColumn.create("value2", new double[] {2.0, 2.1, 2.2}));
+    Table result = testTable.transpose(true, false);
+
+    assertTableEquals(
+        TABLE_NAME,
+        new Object[][] {
+          {"0", "value1", "value2"},
+          {"1", 1.0, 2.0},
+          {"2", 1.1, 2.1},
+          {"3", 1.2, 2.2}
+        },
+        result);
+  }
+
+  @Test
+  void transposeUseFirstColumnForHeadings() {
     Table testTable =
         Table.create(
             TABLE_NAME,
             StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
             DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
             DoubleColumn.create("value2", new double[] {2.0, 2.1, 2.2}));
-    Table result = testTable.transpose(true);
+    Table result = testTable.transpose(false, true);
+
+    assertTableEquals(
+        TABLE_NAME,
+        new Object[][] {
+          {"row1", 1.0, 2.0},
+          {"row2", 1.1, 2.1},
+          {"row3", 1.2, 2.2}
+        },
+        result);
+  }
+
+  @Test
+  void transposeCanBeFullyReversible() {
+    Table testTable =
+        Table.create(
+            TABLE_NAME,
+            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
+            DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
+            DoubleColumn.create("value2", new double[] {2.0, 2.1, 2.2}));
+    Table result = testTable.transpose(true, true);
 
     assertTableEquals(
         TABLE_NAME,
@@ -205,13 +246,14 @@ public class TableTransposeTest {
         },
         result);
 
-    assertEquals(testTable.print(), result.transpose(true).print(), "Transpose is reversible");
+    assertEquals(
+        testTable.print(), result.transpose(true, true).print(), "Transpose is reversible");
   }
 
   private void assertTransposeIsReversible(Table testTable) {
     assertEquals(
         testTable.print(),
-        testTable.transpose(true).transpose(true).print(),
+        testTable.transpose(true, true).transpose(true, true).print(),
         "Transpose is reversible");
   }
 }

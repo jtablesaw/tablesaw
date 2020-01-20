@@ -1136,11 +1136,24 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * @see Table#transpose(boolean)
+   * Transposes data in the table, switching rows for columns. For example, a table like this.<br>
+   * value1 | value2 |<br>
+   * -------------------------------<br>
+   * 1 | 2 |<br>
+   * 1.1 | 2.1 |<br>
+   * 1.2 | 2.2 |<br>
+   *
+   * <p>Is transposed into the following<br>
+   * 0 | 1 | 2 |<br>
+   * -------------------------------------<br>
+   * 1 | 1.1 | 1.2 |<br>
+   * 2 | 2.1 | 2.2 |<br>
+   *
+   * @see Table#transpose(boolean,boolean)
    * @return transposed table
    */
   public Table transpose() {
-    return transpose(false);
+    return transpose(false, false);
   }
 
   /**
@@ -1157,39 +1170,46 @@ public class Table extends Relation implements Iterable<Row> {
    * value1 | 1 | 1.1 | 1.2 |<br>
    * value2 | 2 | 2.1 | 2.2 |<br>
    *
-   * @param includeColumnHeadings Toggle whether to include the column headings as first column
+   * @param includeColumnHeadingsAsFirstColumn Toggle whether to include the column headings as
+   *     first column in result
+   * @param useFirstColumnForHeadings Use the first column as the column headings in the result.
+   *     Useful if the data set already has a first column which contains a set of labels
    * @return The transposed table
    */
-  public Table transpose(boolean includeColumnHeadings) {
+  public Table transpose(
+      boolean includeColumnHeadingsAsFirstColumn, boolean useFirstColumnForHeadings) {
     if (this.columnCount() == 0) {
       return this;
     }
 
+    int columnOffset = useFirstColumnForHeadings ? 1 : 0;
     ColumnType[] types = this.columnTypes();
     // If all columns are of the same type
-    long distinctColumnTypesCount = Arrays.stream(types).skip(1).distinct().count();
+    long distinctColumnTypesCount = Arrays.stream(types).skip(columnOffset).distinct().count();
     if (distinctColumnTypesCount > 1) {
       throw new IllegalArgumentException(
           "Transpose currently only supports tables where value columns are of the same type");
     }
 
     Table transposed = Table.create(this.name);
-    if (includeColumnHeadings) {
-      StringColumn labelColumn = StringColumn.create(this.column(0).name());
+    if (includeColumnHeadingsAsFirstColumn) {
+      String columnName = useFirstColumnForHeadings ? this.column(0).name() : "0";
+      StringColumn labelColumn = StringColumn.create(columnName);
       transposed.addColumns(labelColumn);
-      for (int i = 1; i < this.columnCount(); i++) {
+      for (int i = columnOffset; i < this.columnCount(); i++) {
         Column<?> columnToTranspose = this.column(i);
         labelColumn.append(columnToTranspose.name());
       }
     }
 
     ColumnType resultType = types[1];
-    int offset = includeColumnHeadings ? 1 : 0;
-    int i = offset;
+    int rowOffset = includeColumnHeadingsAsFirstColumn ? 1 : 0;
+    int i = rowOffset;
     for (String label : this.column(0).asStringColumn()) {
-      Column<?> column = resultType.create(label);
-      int row = i - offset;
-      for (int col = 1; col < this.columnCount(); col++) {
+      String columnName = useFirstColumnForHeadings ? label : String.valueOf(i);
+      Column<?> column = resultType.create(columnName);
+      int row = i - rowOffset;
+      for (int col = columnOffset; col < this.columnCount(); col++) {
         // Avoid boxing for primitives
         if (ColumnType.DOUBLE == column.type()) {
           ((DoubleColumn) column).append(this.doubleColumn(col).getDouble(row));
