@@ -1,76 +1,63 @@
 package tech.tablesaw;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 
 public class TableAssertions {
   private TableAssertions() {}
   /**
    * Make sure each row in each table match
    *
-   * @param compareWith the table that was sorted using some external means e.g. excel. i.e known
-   *     good data
-   * @param sortedTable the table that was sorted with Tablesaw
+   * @param expected the table that was sorted using some external means e.g. excel. i.e known good
+   *     data
+   * @param actual the table that was sorted with Tablesaw
    */
-  public static void assertTablesEquals(Table compareWith, Table sortedTable) {
+  public static void assertTablesEquals(Table expected, Table actual) {
     assertEquals(
-        sortedTable.rowCount(), compareWith.rowCount(), "both tables have the same number of rows");
-    int maxRows = sortedTable.rowCount();
-    int numberOfColumns = sortedTable.columnCount();
+        expected.rowCount(), actual.rowCount(), "both tables have the same number of rows");
+    int maxRows = actual.rowCount();
+    int numberOfColumns = actual.columnCount();
     for (int rowIndex = 0; rowIndex < maxRows; rowIndex++) {
       for (int columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
         assertEquals(
-            sortedTable.get(rowIndex, columnIndex),
-            compareWith.get(rowIndex, columnIndex),
+            expected.get(rowIndex, columnIndex),
+            actual.get(rowIndex, columnIndex),
             "cells[" + rowIndex + ", " + columnIndex + "] do not match");
       }
     }
   }
 
+  /**
+   * Compares a table with expected column data. Avoids the requirement to construct the table of
+   * expected results
+   *
+   * @param expectedName Expected table name
+   * @param expectedColumns Expected columns including their label and values
+   * @param actual Actual table
+   */
   public static void assertTableEquals(
-      String[] expectedHeaders, Object[][] expectedRowValues, Table actual) {
-    assertColumnNamesEquals(expectedHeaders, actual);
-    assertRowValuesEquals(expectedRowValues, actual);
-  }
+      String expectedName, Object[][] expectedColumns, Table actual) {
+    assertEquals(expectedName, actual.name(), "Names should match");
 
-  public static void assertColumnNamesEquals(String[] expectedColumnNames, Table actual) {
-    assertArrayEquals(
-        expectedColumnNames,
-        actual.columnNames().toArray(),
-        String.format(
-            "Column names are not equal.\nexpected: %s\nactual:   %s",
-            Arrays.toString(expectedColumnNames), Arrays.toString(actual.columnNames().toArray())));
-  }
-
-  public static void assertRowValuesEquals(Object[][] expected, Table actual) {
-
-    if (expected.length == 0) {
+    if (expectedColumns.length == 0) {
       // empty table
       assertEquals(0, actual.rowCount(), "Expected an empty table");
       assertEquals(0, actual.columnCount(), "Expected a table with no columns");
     } else {
-      assertEquals(
-          expected.length, actual.rowCount(), "Table does not have the same number of rows");
+      assertEquals(expectedColumns.length, actual.columnCount(), "Has same number of columns");
 
-      int expectedRowIndex = 0;
-      for (Row actualRow : actual) {
-        Object[] expectedRowData = expected[expectedRowIndex];
-        assertEquals(
-            expectedRowData.length,
-            actualRow.columnCount(),
-            "Row has the expected number of columns");
-
-        for (int colIndex = 0; colIndex < expectedRowData.length; colIndex++) {
+      for (int i = 0; i < expectedColumns.length; i++) {
+        Column<?> actualColumn = actual.column(i);
+        Object[] expectedColumn = expectedColumns[i];
+        assertEquals(expectedColumn[0], actualColumn.name(), "Column names match");
+        for (int j = 0; j < expectedColumn.length - 1; j++) {
           assertEquals(
-              expectedRowData[colIndex],
-              actualRow.getObject(colIndex),
-              String.format("Value at row %d column %d not equal", expectedRowIndex - 1, colIndex));
+              expectedColumn[j + 1],
+              actualColumn.get(j),
+              "cells[" + j + ", " + i + "] do not match");
         }
-        expectedRowIndex++;
       }
     }
   }
