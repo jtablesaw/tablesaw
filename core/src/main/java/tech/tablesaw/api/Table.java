@@ -1204,31 +1204,15 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     ColumnType resultType = types[1];
-    Function<Integer, String> columnNameExtractor =
-        useFirstColumnForHeadings
-            ? (row) -> String.valueOf(this.get(row, 0))
-            : (row) -> String.valueOf(transposed.columnCount());
-
     for (int row = 0; row < this.rowCount(); row++) {
-      String columnName = columnNameExtractor.apply(row);
-      Column<?> column = resultType.create(columnName);
+      String columnName =
+          useFirstColumnForHeadings
+              ? String.valueOf(this.get(row, 0))
+              : String.valueOf(transposed.columnCount());
+      Column column = resultType.create(columnName);
 
       for (int col = columnOffset; col < this.columnCount(); col++) {
-        // Avoid boxing for primitives
-        if (ColumnType.DOUBLE == column.type()) {
-          ((DoubleColumn) column).append(this.doubleColumn(col).getDouble(row));
-        } else if (ColumnType.FLOAT == column.type()) {
-          ((FloatColumn) column).append(this.floatColumn(col).getFloat(row));
-        } else if (ColumnType.INTEGER == column.type()) {
-          ((IntColumn) column).append(this.intColumn(col).getInt(row));
-        } else if (ColumnType.LONG == column.type()) {
-          ((LongColumn) column).append(this.longColumn(col).getLong(row));
-        } else if (ColumnType.BOOLEAN == column.type()) {
-          ((BooleanColumn) column).append(this.booleanColumn(col).getByte(row));
-        } else {
-          // default
-          column.appendObj(this.get(row, col));
-        }
+        column.append(this.column(col), row);
       }
       transposed.addColumns(column);
     }
