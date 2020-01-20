@@ -1203,12 +1203,13 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     ColumnType resultType = types[1];
-    int rowOffset = includeColumnHeadingsAsFirstColumn ? 1 : 0;
-    int i = rowOffset;
-    for (String label : this.column(0).asStringColumn()) {
-      String columnName = useFirstColumnForHeadings ? label : String.valueOf(i);
+    for (int row = 0; row < this.rowCount(); row++) {
+      String columnName =
+          useFirstColumnForHeadings
+              ? String.valueOf(this.get(row, 0))
+              : String.valueOf(transposed.columnCount());
       Column<?> column = resultType.create(columnName);
-      int row = i - rowOffset;
+
       for (int col = columnOffset; col < this.columnCount(); col++) {
         // Avoid boxing for primitives
         if (ColumnType.DOUBLE == column.type()) {
@@ -1227,7 +1228,6 @@ public class Table extends Relation implements Iterable<Row> {
         }
       }
       transposed.addColumns(column);
-      i++;
     }
 
     return transposed;
