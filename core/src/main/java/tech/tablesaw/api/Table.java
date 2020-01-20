@@ -1136,6 +1136,14 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
+   * @see Table#transpose(boolean)
+   * @return transposed table
+   */
+  public Table transpose() {
+    return transpose(false);
+  }
+
+  /**
    * Transposes data in the table, switching rows for columns. For example, a table like this.<br>
    * label | value1 | value2 |<br>
    * -------------------------------<br>
@@ -1149,10 +1157,10 @@ public class Table extends Relation implements Iterable<Row> {
    * value1 | 1 | 1.1 | 1.2 |<br>
    * value2 | 2 | 2.1 | 2.2 |<br>
    *
+   * @param includeColumnHeadings Toggle whether to include the column headings as first column
    * @return The transposed table
    */
-  public Table transpose() {
-    Table transposed = Table.create(this.name);
+  public Table transpose(boolean includeColumnHeadings) {
     if (this.columnCount() == 0) {
       return this;
     }
@@ -1165,21 +1173,22 @@ public class Table extends Relation implements Iterable<Row> {
           "Transpose currently only supports tables where value columns are of the same type");
     }
 
+    Table transposed = Table.create(this.name);
+    if (includeColumnHeadings) {
+      StringColumn labelColumn = StringColumn.create(this.column(0).name());
+      transposed.addColumns(labelColumn);
+      for (int i = 1; i < this.columnCount(); i++) {
+        Column<?> columnToTranspose = this.column(i);
+        labelColumn.append(columnToTranspose.name());
+      }
+    }
+
     ColumnType resultType = types[1];
-    StringColumn labelColumn = StringColumn.create(this.column(0).name());
-    transposed.addColumns(labelColumn);
+    int offset = includeColumnHeadings ? 1 : 0;
+    int i = offset;
     for (String label : this.column(0).asStringColumn()) {
-      transposed.addColumns(resultType.create(label));
-    }
-
-    for (int i = 1; i < this.columnCount(); i++) {
-      Column<?> columnToTranspose = this.column(i);
-      labelColumn.append(columnToTranspose.name());
-    }
-
-    for (int i = 1; i < transposed.columnCount(); i++) {
-      Column<?> column = transposed.column(i);
-      int row = i - 1;
+      Column<?> column = resultType.create(label);
+      int row = i - offset;
       for (int col = 1; col < this.columnCount(); col++) {
         // Avoid boxing for primitives
         if (ColumnType.DOUBLE == column.type()) {
@@ -1197,7 +1206,10 @@ public class Table extends Relation implements Iterable<Row> {
           column.appendObj(this.get(row, col));
         }
       }
+      transposed.addColumns(column);
+      i++;
     }
+
     return transposed;
   }
 
