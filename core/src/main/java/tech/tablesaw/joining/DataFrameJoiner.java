@@ -200,6 +200,7 @@ public class DataFrameJoiner {
 
     List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
     List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
+    validateIndexes(table1Indexes, table2Indexes);
 
     Selection table1DoneRows = Selection.with();
     Selection table2DoneRows = Selection.with();
@@ -243,6 +244,22 @@ public class DataFrameJoiner {
         resultIgnoreColIndexes);
     result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
     return result;
+  }
+
+  private void validateIndexes(List<Index> table1Indexes, List<Index> table2Indexes) {
+    if (table1Indexes.size() != table2Indexes.size()) {
+      throw new IllegalArgumentException(
+          "Cannot join using a different number of indices on each table: "
+              + table1Indexes
+              + " and "
+              + table2Indexes);
+    }
+    for (int i = 0; i < table1Indexes.size(); i++) {
+      if (!table1Indexes.get(i).getClass().equals(table2Indexes.get(i).getClass())) {
+        throw new IllegalArgumentException(
+            "Cannot join using different index types: " + table1Indexes + " and " + table2Indexes);
+      }
+    }
   }
 
   /** Build a reverse index for every join column in the table. */

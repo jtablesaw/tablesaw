@@ -6,6 +6,7 @@ import com.google.common.base.Joiner;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
@@ -68,6 +69,13 @@ public class DataFrameJoinerTest {
                       "Guanaco,Grass",
                       "Monkey,Banana"),
               "Animal Feed");
+
+  private static final Table STRING_INDEXED_PEOPLE =
+      Table.read()
+          .csv(
+              Joiner.on(System.lineSeparator())
+                  .join("ID,First Name", "aa,Bob", "ab,James", "ac,David", "ad,Samantha"),
+              "People");
 
   private static final Table DOUBLE_INDEXED_PEOPLE =
       Table.read()
@@ -1268,5 +1276,16 @@ public class DataFrameJoinerTest {
     Table joined = table1.joinOn("HomeGame").fullOuter(true, table2);
     assertEquals(10, joined.columnCount());
     assertEquals(8, joined.rowCount());
+  }
+
+  @Test
+  public void differentColumnTypes() {
+    Table table1 = STRING_INDEXED_PEOPLE;
+    Table table2 = DOUBLE_INDEXED_PEOPLE;
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          table1.joinOn("ID").inner(table2);
+        });
   }
 }
