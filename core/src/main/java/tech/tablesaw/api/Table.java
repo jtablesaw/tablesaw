@@ -1192,6 +1192,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     Table transposed = Table.create(this.name);
+
     if (includeColumnHeadingsAsFirstColumn) {
       String columnName = useFirstColumnForHeadings ? this.column(0).name() : "0";
       StringColumn labelColumn = StringColumn.create(columnName);
@@ -1203,11 +1204,13 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     ColumnType resultType = types[1];
+    Function<Integer, String> columnNameExtractor =
+        useFirstColumnForHeadings
+            ? (row) -> String.valueOf(this.get(row, 0))
+            : (row) -> String.valueOf(transposed.columnCount());
+
     for (int row = 0; row < this.rowCount(); row++) {
-      String columnName =
-          useFirstColumnForHeadings
-              ? String.valueOf(this.get(row, 0))
-              : String.valueOf(transposed.columnCount());
+      String columnName = columnNameExtractor.apply(row);
       Column<?> column = resultType.create(columnName);
 
       for (int col = columnOffset; col < this.columnCount(); col++) {
