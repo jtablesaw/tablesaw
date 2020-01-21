@@ -210,7 +210,8 @@ public class Table extends Relation implements Iterable<Row> {
     }
     if (stringList.contains(newColumn.name().toLowerCase())) {
       String message =
-          String.format("Cannot add column with duplicate name %s to table %s", newColumn, name);
+          String.format(
+              "Cannot add column with duplicate name %s to table %s", newColumn.name(), name);
       throw new IllegalArgumentException(message);
     }
 
