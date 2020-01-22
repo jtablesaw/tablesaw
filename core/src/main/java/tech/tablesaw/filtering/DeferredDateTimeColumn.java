@@ -229,16 +229,6 @@ public class DeferredDateTimeColumn extends DeferredColumn
   }
 
   @Override
-  public Function<Table, Selection> isMissing() {
-    return table -> table.dateTimeColumn(name()).isMissing();
-  }
-
-  @Override
-  public Function<Table, Selection> isNotMissing() {
-    return table -> table.dateTimeColumn(name()).isNotMissing();
-  }
-
-  @Override
   public Function<Table, Selection> isMidnight() {
     return table -> table.dateTimeColumn(name()).isMidnight();
   }

@@ -85,14 +85,4 @@ public class DeferredTimeColumn extends DeferredColumn
   public Function<Table, Selection> isNotEqualTo(TimeColumn column) {
     return table -> table.timeColumn(name()).isNotEqualTo(column);
   }
-
-  @Override
-  public Function<Table, Selection> isMissing() {
-    return table -> table.timeColumn(name()).isMissing();
-  }
-
-  @Override
-  public Function<Table, Selection> isNotMissing() {
-    return table -> table.timeColumn(name()).isNotMissing();
-  }
 }

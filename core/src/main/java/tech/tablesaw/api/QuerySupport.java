@@ -3,6 +3,7 @@ package tech.tablesaw.api;
 import java.util.function.Function;
 import tech.tablesaw.filtering.And;
 import tech.tablesaw.filtering.DeferredBooleanColumn;
+import tech.tablesaw.filtering.DeferredColumn;
 import tech.tablesaw.filtering.DeferredDateColumn;
 import tech.tablesaw.filtering.DeferredDateTimeColumn;
 import tech.tablesaw.filtering.DeferredInstantColumn;
@@ -93,6 +94,14 @@ public class QuerySupport {
   public static Function<Table, Selection> either(
       Function<Table, Selection> sel1, Function<Table, Selection> sel2) {
     return new Or(sel1, sel2);
+  }
+
+  public static DeferredColumn column(String columnName) {
+    return new DeferredColumn(columnName);
+  }
+
+  public static DeferredColumn col(String columnName) {
+    return new DeferredColumn(columnName);
   }
 
   public static DeferredBooleanColumn booleanColumn(String columnName) {

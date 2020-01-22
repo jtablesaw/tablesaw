@@ -121,16 +121,6 @@ public class DeferredStringColumn extends DeferredColumn
   }
 
   @Override
-  public Function<Table, Selection> isMissing() {
-    return table -> table.stringColumn(name()).isMissing();
-  }
-
-  @Override
-  public Function<Table, Selection> isNotMissing() {
-    return table -> table.stringColumn(name()).isNotMissing();
-  }
-
-  @Override
   public Function<Table, Selection> isEqualTo(String string) {
     return table -> table.stringColumn(name()).isEqualTo(string);
   }
