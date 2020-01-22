@@ -95,16 +95,6 @@ public class DeferredNumberColumn extends DeferredColumn
   }
 
   @Override
-  public Function<Table, Selection> isMissing() {
-    return table -> table.numberColumn(name()).isMissing();
-  }
-
-  @Override
-  public Function<Table, Selection> isNotMissing() {
-    return table -> table.numberColumn(name()).isNotMissing();
-  }
-
-  @Override
   public Function<Table, Selection> isGreaterThan(NumericColumn<?> d) {
     return table -> table.numberColumn(name()).isGreaterThan(d);
   }

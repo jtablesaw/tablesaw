@@ -20,16 +20,6 @@ public class DeferredInstantColumn extends DeferredColumn
   }
 
   @Override
-  public Function<Table, Selection> isMissing() {
-    return table -> table.instantColumn(name()).isMissing();
-  }
-
-  @Override
-  public Function<Table, Selection> isNotMissing() {
-    return table -> table.instantColumn(name()).isNotMissing();
-  }
-
-  @Override
   public Function<Table, Selection> isAfter(Instant value) {
     return table -> table.instantColumn(name()).isAfter(value);
   }

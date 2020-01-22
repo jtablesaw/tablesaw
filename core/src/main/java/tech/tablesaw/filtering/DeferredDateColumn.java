@@ -215,14 +215,4 @@ public class DeferredDateColumn extends DeferredColumn
   public Function<Table, Selection> isBefore(DateColumn column) {
     return table -> table.dateColumn(name()).isBefore(column);
   }
-
-  @Override
-  public Function<Table, Selection> isMissing() {
-    return table -> table.dateColumn(name()).isMissing();
-  }
-
-  @Override
-  public Function<Table, Selection> isNotMissing() {
-    return table -> table.dateColumn(name()).isNotMissing();
-  }
 }

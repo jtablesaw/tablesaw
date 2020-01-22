@@ -28,14 +28,4 @@ public class DeferredBooleanColumn extends DeferredColumn
   public Function<Table, Selection> isEqualTo(BooleanColumn other) {
     return table -> table.booleanColumn(name()).isEqualTo(other);
   }
-
-  @Override
-  public Function<Table, Selection> isMissing() {
-    return table -> table.booleanColumn(name()).isMissing();
-  }
-
-  @Override
-  public Function<Table, Selection> isNotMissing() {
-    return table -> table.booleanColumn(name()).isNotMissing();
-  }
 }
