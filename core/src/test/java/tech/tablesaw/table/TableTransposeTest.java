@@ -170,7 +170,7 @@ public class TableTransposeTest {
       fail("Should throw an exception");
     } catch (IllegalArgumentException ex) {
       assertEquals(
-          "Transpose currently only supports tables where value columns are of the same type",
+          "This operation currently only supports tables where value columns are of the same type",
           ex.getMessage());
     }
   }
@@ -189,7 +189,7 @@ public class TableTransposeTest {
       fail("Should throw an exception");
     } catch (IllegalArgumentException ex) {
       assertEquals(
-          "Transpose currently only supports tables where value columns are of the same type",
+          "This operation currently only supports tables where value columns are of the same type",
           ex.getMessage());
     }
   }

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import tech.tablesaw.aggregate.AggregateFunction;
@@ -1153,7 +1154,12 @@ public class Table extends Relation implements Iterable<Row> {
    * @return transposed table
    */
   public Table transpose() {
-    return transpose(false, false);
+    if (this.columnCount() == 0) {
+      return this;
+    }
+    // Validate
+    ColumnType resultColumnType = validateTableHasSingleColumnType(0);
+    return transpose(Table.create(this.name), resultColumnType);
   }
 
   /**
@@ -1182,41 +1188,63 @@ public class Table extends Relation implements Iterable<Row> {
       return this;
     }
 
+    // Validate first
     int columnOffset = useFirstColumnForHeadings ? 1 : 0;
-    ColumnType[] types = this.columnTypes();
-    // If all columns are of the same type
-    long distinctColumnTypesCount = Arrays.stream(types).skip(columnOffset).distinct().count();
-    if (distinctColumnTypesCount > 1) {
-      throw new IllegalArgumentException(
-          "Transpose currently only supports tables where value columns are of the same type");
-    }
+    ColumnType resultColumnType = validateTableHasSingleColumnType(columnOffset);
 
     Table transposed = Table.create(this.name);
-
     if (includeColumnHeadingsAsFirstColumn) {
       String columnName = useFirstColumnForHeadings ? this.column(0).name() : "0";
       StringColumn labelColumn = StringColumn.create(columnName);
-      transposed.addColumns(labelColumn);
       for (int i = columnOffset; i < this.columnCount(); i++) {
         Column<?> columnToTranspose = this.column(i);
         labelColumn.append(columnToTranspose.name());
       }
+      transposed.addColumns(labelColumn);
     }
 
-    ColumnType resultType = types[1];
-    for (int row = 0; row < this.rowCount(); row++) {
-      String columnName =
-          useFirstColumnForHeadings
-              ? String.valueOf(this.get(row, 0))
-              : String.valueOf(transposed.columnCount());
-      Column column = resultType.create(columnName);
+    if (useFirstColumnForHeadings) {
+      transpose(transposed, resultColumnType, row -> String.valueOf(this.get(row, 0)), 1);
+    } else {
+      // Use defaults
+      transpose(transposed, resultColumnType);
+    }
+    return transposed;
+  }
 
-      for (int col = columnOffset; col < this.columnCount(); col++) {
+  private ColumnType validateTableHasSingleColumnType(int startingColumn) {
+    // If all columns are of the same type
+    ColumnType[] columnTypes = this.columnTypes();
+    long distinctColumnTypesCount =
+        Arrays.stream(columnTypes).skip(startingColumn).distinct().count();
+    if (distinctColumnTypesCount > 1) {
+      throw new IllegalArgumentException(
+          "This operation currently only supports tables where value columns are of the same type");
+    }
+    return columnTypes[startingColumn];
+  }
+
+  private Table transpose(Table transposed, ColumnType resultColumnType) {
+    // default column labelling
+    return transpose(
+        transposed, resultColumnType, row -> String.valueOf(transposed.columnCount()), 0);
+  }
+
+  private Table transpose(
+      Table transposed,
+      ColumnType resultColumnType,
+      IntFunction<String> columnNameExtractor,
+      int startingColumn) {
+
+    for (int row = 0; row < this.rowCount(); row++) {
+      String columnName = columnNameExtractor.apply(row);
+      Column column = resultColumnType.create(columnName);
+
+      for (int col = startingColumn; col < this.columnCount(); col++) {
         column.append(this.column(col), row);
       }
       transposed.addColumns(column);
     }
-
     return transposed;
   }
 
