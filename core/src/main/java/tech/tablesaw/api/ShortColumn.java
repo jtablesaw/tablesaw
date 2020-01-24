@@ -36,7 +36,7 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
     return new ShortColumn(name, new ShortArrayList());
   }
 
-  public static ShortColumn create(final String name, final short[] arr) {
+  public static ShortColumn create(final String name, final short... arr) {
     return new ShortColumn(name, new ShortArrayList(arr));
   }
 
@@ -48,7 +48,7 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
     return column;
   }
 
-  public static ShortColumn create(final String name, final Short[] arr) {
+  public static ShortColumn create(final String name, final Short... arr) {
     return new ShortColumn(name, new ShortArrayList(Shorts.toArray(Arrays.asList(arr))));
   }
 

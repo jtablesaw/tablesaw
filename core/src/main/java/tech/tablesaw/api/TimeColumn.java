@@ -29,6 +29,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -84,7 +85,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return new TimeColumn(name);
   }
 
-  public static TimeColumn create(String name, List<LocalTime> data) {
+  public static TimeColumn create(String name, Collection<LocalTime> data) {
     TimeColumn column = new TimeColumn(name, new IntArrayList(data.size()));
     for (LocalTime time : data) {
       column.append(time);
@@ -92,7 +93,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return column;
   }
 
-  public static TimeColumn create(String name, LocalTime[] data) {
+  public static TimeColumn create(String name, LocalTime... data) {
     TimeColumn column = new TimeColumn(name, new IntArrayList(data.length));
     for (LocalTime time : data) {
       column.append(time);

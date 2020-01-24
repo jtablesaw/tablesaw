@@ -32,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -88,7 +89,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return column;
   }
 
-  public static DateTimeColumn create(String name, List<LocalDateTime> data) {
+  public static DateTimeColumn create(String name, Collection<LocalDateTime> data) {
     DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.size()));
     for (LocalDateTime date : data) {
       column.append(date);
@@ -119,7 +120,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return newColumn;
   }
 
-  public static DateTimeColumn create(String name, LocalDateTime[] data) {
+  public static DateTimeColumn create(String name, LocalDateTime... data) {
     DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.length));
     for (LocalDateTime date : data) {
       column.append(date);

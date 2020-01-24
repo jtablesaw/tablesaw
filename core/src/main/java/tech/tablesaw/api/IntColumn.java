@@ -34,11 +34,11 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
     return new IntColumn(name, new IntArrayList());
   }
 
-  public static IntColumn create(final String name, final int[] arr) {
+  public static IntColumn create(final String name, final int... arr) {
     return new IntColumn(name, new IntArrayList(arr));
   }
 
-  public static IntColumn create(final String name, final Integer[] arr) {
+  public static IntColumn create(final String name, final Integer... arr) {
     IntColumn newColumn = IntColumn.create(name, 0);
     for (Integer integer : arr) {
       newColumn.append(integer);

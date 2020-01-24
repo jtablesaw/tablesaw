@@ -10,8 +10,8 @@ import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
@@ -75,7 +75,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     this.data = new DoubleArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  public static DoubleColumn create(String name, double[] arr) {
+  public static DoubleColumn create(String name, double... arr) {
     return new DoubleColumn(name, new DoubleArrayList(arr));
   }
 
@@ -83,7 +83,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return new DoubleColumn(name);
   }
 
-  public static DoubleColumn create(String name, float[] arr) {
+  public static DoubleColumn create(String name, float... arr) {
     final double[] doubles = new double[arr.length];
     for (int i = 0; i < arr.length; i++) {
       doubles[i] = arr[i];
@@ -91,7 +91,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return new DoubleColumn(name, new DoubleArrayList(doubles));
   }
 
-  public static DoubleColumn create(String name, int[] arr) {
+  public static DoubleColumn create(String name, int... arr) {
     final double[] doubles = new double[arr.length];
     for (int i = 0; i < arr.length; i++) {
       doubles[i] = arr[i];
@@ -99,7 +99,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return new DoubleColumn(name, new DoubleArrayList(doubles));
   }
 
-  public static DoubleColumn create(String name, long[] arr) {
+  public static DoubleColumn create(String name, long... arr) {
     final double[] doubles = new double[arr.length];
     for (int i = 0; i < arr.length; i++) {
       doubles[i] = arr[i];
@@ -107,7 +107,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return new DoubleColumn(name, new DoubleArrayList(doubles));
   }
 
-  public static DoubleColumn create(String name, List<Number> numberList) {
+  public static DoubleColumn create(String name, Collection<Number> numberList) {
     DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
     for (Number number : numberList) {
       newColumn.append(number);
@@ -115,7 +115,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return newColumn;
   }
 
-  public static DoubleColumn create(String name, Number[] numbers) {
+  public static DoubleColumn create(String name, Number... numbers) {
     DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
     for (Number number : numbers) {
       newColumn.append(number);

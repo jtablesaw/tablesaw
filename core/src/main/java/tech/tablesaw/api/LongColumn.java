@@ -35,7 +35,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
     return new LongColumn(name, new LongArrayList());
   }
 
-  public static LongColumn create(String name, long[] arr) {
+  public static LongColumn create(String name, long... arr) {
     return new LongColumn(name, new LongArrayList(arr));
   }
 

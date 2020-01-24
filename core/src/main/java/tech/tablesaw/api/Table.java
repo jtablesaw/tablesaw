@@ -28,6 +28,7 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +36,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.CrossTab;
@@ -88,12 +90,16 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns a new Table initialized with the given columns
+   * Returns a new Table initialized with the given names and columns
    *
+   * @param name The name of the table
    * @param columns One or more columns, all of which must have either the same length or size 0
    */
-  protected Table(Column<?>... columns) {
-    this(null, columns);
+  protected Table(String name, Column<?>... columns) {
+    this(name);
+    for (final Column<?> column : columns) {
+      this.addColumns(column);
+    }
   }
 
   /**
@@ -102,7 +108,7 @@ public class Table extends Relation implements Iterable<Row> {
    * @param name The name of the table
    * @param columns One or more columns, all of which must have either the same length or size 0
    */
-  protected Table(String name, Column<?>... columns) {
+  protected Table(String name, Collection<Column<?>> columns) {
     this(name);
     for (final Column<?> column : columns) {
       this.addColumns(column);
@@ -141,7 +147,25 @@ public class Table extends Relation implements Iterable<Row> {
    * @param columns one or more columns, all of the same @code{column.size()}
    */
   public static Table create(Column<?>... columns) {
-    return new Table(columns);
+    return new Table(null, columns);
+  }
+
+  /**
+   * Returns a new table with the given columns
+   *
+   * @param columns one or more columns, all of the same @code{column.size()}
+   */
+  public static Table create(Collection<Column<?>> columns) {
+    return new Table(null, columns);
+  }
+
+  /**
+   * Returns a new table with the given columns
+   *
+   * @param columns one or more columns, all of the same @code{column.size()}
+   */
+  public static Table create(Stream<Column<?>> columns) {
+    return new Table(null, columns.collect(Collectors.toList()));
   }
 
   /**
@@ -152,6 +176,26 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public static Table create(String name, Column<?>... columns) {
     return new Table(name, columns);
+  }
+
+  /**
+   * Returns a new table with the given columns and given name
+   *
+   * @param name the name for this table
+   * @param columns one or more columns, all of the same @code{column.size()}
+   */
+  public static Table create(String name, Collection<Column<?>> columns) {
+    return new Table(name, columns);
+  }
+
+  /**
+   * Returns a new table with the given columns and given name
+   *
+   * @param name the name for this table
+   * @param columns one or more columns, all of the same @code{column.size()}
+   */
+  public static Table create(String name, Stream<Column<?>> columns) {
+    return new Table(name, columns.collect(Collectors.toList()));
   }
 
   /**

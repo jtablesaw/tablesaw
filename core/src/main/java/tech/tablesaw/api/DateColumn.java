@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -77,7 +78,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return column;
   }
 
-  public static DateColumn create(String name, List<LocalDate> data) {
+  public static DateColumn create(String name, Collection<LocalDate> data) {
     DateColumn column = new DateColumn(name, new IntArrayList(data.size()));
     for (LocalDate date : data) {
       column.append(date);
@@ -85,7 +86,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return column;
   }
 
-  public static DateColumn create(String name, LocalDate[] data) {
+  public static DateColumn create(String name, LocalDate... data) {
     DateColumn column = new DateColumn(name, new IntArrayList(data.length));
     for (LocalDate date : data) {
       column.append(date);

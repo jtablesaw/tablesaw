@@ -55,7 +55,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
 
-  private TextColumn(String name, List<String> strings) {
+  private TextColumn(String name, Collection<String> strings) {
     super(TextColumnType.instance(), name);
     values = new ArrayList<>(strings.size());
     for (String string : strings) {
@@ -90,11 +90,11 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
     return new TextColumn(name);
   }
 
-  public static TextColumn create(String name, String[] strings) {
+  public static TextColumn create(String name, String... strings) {
     return new TextColumn(name, strings);
   }
 
-  public static TextColumn create(String name, List<String> strings) {
+  public static TextColumn create(String name, Collection<String> strings) {
     return new TextColumn(name, strings);
   }
 

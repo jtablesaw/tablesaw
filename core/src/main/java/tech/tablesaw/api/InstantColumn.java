@@ -34,6 +34,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -90,7 +91,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return column;
   }
 
-  public static InstantColumn create(String name, List<Instant> data) {
+  public static InstantColumn create(String name, Collection<Instant> data) {
     InstantColumn column = new InstantColumn(name, new LongArrayList(data.size()));
     for (Instant date : data) {
       column.append(date);
@@ -98,7 +99,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return column;
   }
 
-  public static InstantColumn create(String name, Instant[] data) {
+  public static InstantColumn create(String name, Instant... data) {
     InstantColumn column = new InstantColumn(name, new LongArrayList(data.length));
     for (Instant date : data) {
       column.append(date);

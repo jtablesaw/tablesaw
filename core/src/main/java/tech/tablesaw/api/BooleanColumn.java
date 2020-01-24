@@ -30,8 +30,8 @@ import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
 import it.unimi.dsi.fastutil.bytes.ByteSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -118,7 +118,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return column;
   }
 
-  public static BooleanColumn create(String name, boolean[] values) {
+  public static BooleanColumn create(String name, boolean... values) {
     BooleanColumn column = create(name, values.length);
     int r = 0;
     for (boolean b : values) {
@@ -128,7 +128,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return column;
   }
 
-  public static BooleanColumn create(String name, List<Boolean> values) {
+  public static BooleanColumn create(String name, Collection<Boolean> values) {
     BooleanColumn column = create(name);
     for (Boolean b : values) {
       column.append(b);

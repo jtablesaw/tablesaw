@@ -68,11 +68,11 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
     return new StringColumn(name);
   }
 
-  public static StringColumn create(String name, String[] strings) {
+  public static StringColumn create(String name, String... strings) {
     return new StringColumn(name, strings);
   }
 
-  public static StringColumn create(String name, List<String> strings) {
+  public static StringColumn create(String name, Collection<String> strings) {
     return new StringColumn(name, strings);
   }
 
@@ -94,7 +94,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
     return column;
   }
 
-  private StringColumn(String name, List<String> strings) {
+  private StringColumn(String name, Collection<String> strings) {
     super(StringColumnType.instance(), name);
     for (String string : strings) {
       append(string);
