@@ -1,5 +1,8 @@
 package tech.tablesaw.api;
 
+import com.google.common.base.Preconditions;
+import java.util.HashMap;
+import java.util.Map;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.SkipColumnType;
@@ -19,6 +22,8 @@ import tech.tablesaw.io.ReadOptions;
 
 public interface ColumnType {
 
+  final Map<String, ColumnType> values = new HashMap<>();
+
   // standard column types
   ShortColumnType SHORT = ShortColumnType.instance();
   IntColumnType INTEGER = IntColumnType.instance();
@@ -33,6 +38,24 @@ public interface ColumnType {
   InstantColumnType INSTANT = InstantColumnType.instance();
   TextColumnType TEXT = TextColumnType.instance();
   SkipColumnType SKIP = SkipColumnType.instance();
+
+  static void register(ColumnType type) {
+    values.put(type.name(), type);
+  }
+
+  static ColumnType[] values() {
+    return values.values().toArray(new ColumnType[0]);
+  }
+
+  static ColumnType valueOf(String name) {
+    Preconditions.checkNotNull(name);
+
+    ColumnType result = values.get(name);
+    if (result == null) {
+      throw new IllegalArgumentException(name + " is not a registered column type.");
+    }
+    return result;
+  }
 
   Column<?> create(String name);
 

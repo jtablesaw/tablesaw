@@ -30,6 +30,7 @@ public abstract class AbstractColumnType implements ColumnType {
     this.byteSize = byteSize;
     this.name = name;
     this.printerFriendlyName = printerFriendlyName;
+    ColumnType.register(this);
   }
 
   @Override
