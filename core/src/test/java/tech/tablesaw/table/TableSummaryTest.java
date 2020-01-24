@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.TableAssertions;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
@@ -11,13 +12,21 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
 public class TableSummaryTest {
+
+  @Test
+  public void emptyTable() {
+    Table testTable = Table.create("Data");
+    Table summary = testTable.summary();
+    TableAssertions.assertTableEquals(testTable, summary);
+  }
+
   @Test
   public void summaryTestTwoDoubleColumnsStatistics() {
     Table testTable =
         Table.create(
             "Data",
-            DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
-            DoubleColumn.create("value2", new double[] {2.0, 2.1, 2.2}));
+            DoubleColumn.create("value1", 1.0, 1.1, 1.2),
+            DoubleColumn.create("value2", 2.0, 2.1, 2.2));
     Table result = testTable.summary();
     assertEquals(
         "                            Data                             \n"
@@ -39,9 +48,9 @@ public class TableSummaryTest {
     Table testTable =
         Table.create(
             "Data",
-            StringColumn.create("label", new String[] {"yellow", "yellow", "green"}),
-            DoubleColumn.create("value1", new double[] {1.0, 1.1, 1.2}),
-            BooleanColumn.create("truthy", new boolean[] {true, false, true}),
+            StringColumn.create("label", "yellow", "yellow", "green"),
+            DoubleColumn.create("value1", 1.0, 1.1, 1.2),
+            BooleanColumn.create("truthy", true, false, true),
             DateColumn.create(
                 "dates",
                 new LocalDate[] {

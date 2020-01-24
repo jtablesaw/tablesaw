@@ -241,9 +241,12 @@ public abstract class Relation implements Iterable<Row> {
   }
 
   public Table summary() {
+    int numCols = this.columnCount();
+    if (numCols == 0) {
+      return Table.create();
+    }
     Table summaryTable = null;
-
-    for (int i = 0; i < this.columnCount(); i++) {
+    for (int i = 0; i < numCols; i++) {
       Table columnSummary = this.column(i).summary();
       columnSummary.column(1).setName(this.column(i).name());
 
