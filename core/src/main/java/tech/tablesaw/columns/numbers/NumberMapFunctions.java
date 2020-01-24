@@ -385,6 +385,34 @@ public interface NumberMapFunctions {
     return newColumn;
   }
 
+  /** Returns a new column with a cumulative maximum calculated */
+  default DoubleColumn cumMax() {
+    double max = DoubleColumnType.missingValueIndicator();
+    DoubleColumn newColumn = DoubleColumn.create(name() + "[cumMax]", size());
+    for (int i = 0; i < size(); i++) {
+      double value = getDouble(i);
+      if (!DoubleColumnType.valueIsMissing(value)) {
+        max = DoubleColumnType.valueIsMissing(max) ? value : Math.max(max, value);
+      }
+      newColumn.set(i, max);
+    }
+    return newColumn;
+  }
+
+  /** Returns a new column with a cumulative maximum calculated */
+  default DoubleColumn cumMin() {
+    double min = DoubleColumnType.missingValueIndicator();
+    DoubleColumn newColumn = DoubleColumn.create(name() + "[cumMin]", size());
+    for (int i = 0; i < size(); i++) {
+      double value = getDouble(i);
+      if (!DoubleColumnType.valueIsMissing(value)) {
+        min = DoubleColumnType.valueIsMissing(min) ? value : Math.min(min, value);
+      }
+      newColumn.set(i, min);
+    }
+    return newColumn;
+  }
+
   /** Returns a new column with a percent change calculated */
   default DoubleColumn pctChange() {
     DoubleColumn newColumn = DoubleColumn.create(name() + "[pctChange]", size());
