@@ -40,7 +40,7 @@ This method supplies defaults for everything but the filename. We assume that co
 You can create an options object with a builder:
 
 ```Java
-CsvReadOptionsBuilder builder = 
+CsvReadOptions.Builder builder = 
 	CsvReadOptions.builder("myFile.csv")
 		.separator('\t')										// table is tab-delimited
 		.header(false)											// no header
