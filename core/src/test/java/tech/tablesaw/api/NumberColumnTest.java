@@ -683,6 +683,40 @@ public class NumberColumnTest {
   }
 
   @Test
+  public void testCumMax() {
+    double[] originalValues = new double[] {MISSING, 32, 42, MISSING, 57, 52, -10, 0};
+    double[] expectedValues = new double[] {MISSING, 32, 42, 42, 57, 57, 57, 57};
+    DoubleColumn initial = DoubleColumn.create("Test", originalValues);
+    DoubleColumn cumMax = initial.cumMax();
+
+    assertEquals(
+        expectedValues.length, cumMax.size(), "Both sets of data should be the same size.");
+
+    for (int index = 0; index < cumMax.size(); index++) {
+      double actual = cumMax.get(index);
+      assertEquals(
+          expectedValues[index], actual, 0, "cumMax() operation at index:" + index + " failed");
+    }
+  }
+
+  @Test
+  public void testCumMin() {
+    double[] originalValues = new double[] {MISSING, 32, 42, MISSING, 57, 52, -10, 0};
+    double[] expectedValues = new double[] {MISSING, 32, 32, 32, 32, 32, -10, -10};
+    DoubleColumn initial = DoubleColumn.create("Test", originalValues);
+    DoubleColumn cumMin = initial.cumMin();
+
+    assertEquals(
+        expectedValues.length, cumMin.size(), "Both sets of data should be the same size.");
+
+    for (int index = 0; index < cumMin.size(); index++) {
+      double actual = cumMin.get(index);
+      assertEquals(
+          expectedValues[index], actual, 0, "cumMin() operation at index:" + index + " failed");
+    }
+  }
+
+  @Test
   public void testSubtract2Columns() {
     double[] col1Values = new double[] {32.5, MISSING, 42, 57, 52};
     double[] col2Values = new double[] {32, 42, 38.67, MISSING, 52.01};
