@@ -6,23 +6,18 @@ import tech.tablesaw.api.Table;
 
 public class TableAssertions {
   private TableAssertions() {}
-  /**
-   * Make sure each row in each table match
-   *
-   * @param compareWith the table that was sorted using some external means e.g. excel. i.e known
-   *     good data
-   * @param sortedTable the table that was sorted with Tablesaw
-   */
-  public static void assertTableEquals(Table compareWith, Table sortedTable) {
+  /** Make sure each row in each table match */
+  public static void assertTableEquals(Table expected, Table actual) {
+    assertEquals(actual.rowCount(), expected.rowCount(), "tables should have same number of rows");
     assertEquals(
-        sortedTable.rowCount(), compareWith.rowCount(), "both tables have the same number of rows");
-    int maxRows = sortedTable.rowCount();
-    int numberOfColumns = sortedTable.columnCount();
+        actual.columnCount(), expected.columnCount(), "tables should have same number of columns");
+    int maxRows = actual.rowCount();
+    int numberOfColumns = actual.columnCount();
     for (int rowIndex = 0; rowIndex < maxRows; rowIndex++) {
       for (int columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
         assertEquals(
-            sortedTable.get(rowIndex, columnIndex),
-            compareWith.get(rowIndex, columnIndex),
+            actual.get(rowIndex, columnIndex),
+            expected.get(rowIndex, columnIndex),
             "cells[" + rowIndex + ", " + columnIndex + "] do not match");
       }
     }
