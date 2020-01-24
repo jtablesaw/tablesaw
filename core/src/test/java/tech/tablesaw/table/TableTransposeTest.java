@@ -66,16 +66,21 @@ public class TableTransposeTest {
 
   @Test
   void transposeFloats() {
+    float float_1 = 1.0f;
+    float float_2 = 2.0f;
     Table testTable =
         Table.create(
             TABLE_NAME,
-            StringColumn.create("label", new String[] {"row1", "row2", "row3"}),
-            FloatColumn.create("value1", new float[] {1.0f, 1.1f, 1.2f}),
-            FloatColumn.create("value2", new float[] {2.0f, 2.1f, 2.2f}));
-    assertEquals(
-        testTable.print(),
-        testTable.transpose(true, true).transpose(true, true).print(),
-        "Transpose is reversible");
+            FloatColumn.create("value1", new float[] {float_1}),
+            FloatColumn.create("value2", new float[] {float_2}));
+    Table result = testTable.transpose();
+
+    assertTableEquals(
+        TABLE_NAME,
+        new Object[][] {
+          {"0", float_1, float_2},
+        },
+        result);
   }
 
   @Test
