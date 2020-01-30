@@ -7,7 +7,7 @@ import tech.tablesaw.io.ReadOptions;
 
 public class LongParser extends AbstractColumnParser<Long> {
 
-  private boolean trimZeroDecimals;
+  private boolean ignoreZeroDecimals;
 
   public LongParser(ColumnType columnType) {
     super(columnType);
@@ -18,7 +18,7 @@ public class LongParser extends AbstractColumnParser<Long> {
     if (readOptions.missingValueIndicator() != null) {
       missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
     }
-    trimZeroDecimals = readOptions.trimZeroDecimals();
+    ignoreZeroDecimals = readOptions.ignoreZeroDecimals();
   }
 
   @Override
@@ -28,7 +28,7 @@ public class LongParser extends AbstractColumnParser<Long> {
     }
     String s = str;
     try {
-      if (trimZeroDecimals && s.endsWith(".0")) {
+      if (ignoreZeroDecimals && s.endsWith(".0")) {
         s = s.substring(0, s.length() - 2);
       }
       Long.parseLong(AbstractColumnParser.remove(s, ','));
@@ -55,7 +55,7 @@ public class LongParser extends AbstractColumnParser<Long> {
       return LongColumnType.missingValueIndicator();
     }
     String s = str;
-    if (trimZeroDecimals && s.endsWith(".0")) {
+    if (ignoreZeroDecimals && s.endsWith(".0")) {
       s = s.substring(0, s.length() - 2);
     }
     return Long.parseLong(AbstractColumnParser.remove(s, ','));
