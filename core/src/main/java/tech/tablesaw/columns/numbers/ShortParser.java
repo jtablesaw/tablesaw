@@ -6,6 +6,8 @@ import tech.tablesaw.io.ReadOptions;
 
 public class ShortParser extends AbstractColumnParser<Short> {
 
+  private boolean trimZeroDecimals;
+
   public ShortParser(ShortColumnType columnType) {
     super(columnType);
   }
@@ -15,6 +17,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
     if (readOptions.missingValueIndicator() != null) {
       missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
     }
+    trimZeroDecimals = readOptions.trimZeroDecimals();
   }
 
   @Override
@@ -24,7 +27,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
     }
     String s = str;
     try {
-      if (s.endsWith(".0")) {
+      if (trimZeroDecimals && s.endsWith(".0")) {
         s = s.substring(0, s.length() - 2);
       }
       Short.parseShort(AbstractColumnParser.remove(s, ','));
@@ -51,7 +54,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
       return ShortColumnType.missingValueIndicator();
     }
     String s = str;
-    if (s.endsWith(".0")) {
+    if (trimZeroDecimals && s.endsWith(".0")) {
       s = s.substring(0, s.length() - 2);
     }
     return Short.parseShort(AbstractColumnParser.remove(s, ','));

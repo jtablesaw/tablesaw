@@ -75,6 +75,7 @@ public class ReadOptions {
   protected final String missingValueIndicator;
   protected final boolean minimizeColumnSizes;
   protected final int maxCharsPerColumn;
+  protected final boolean trimZeroDecimals;
 
   protected final DateTimeFormatter dateFormatter;
   protected final DateTimeFormatter dateTimeFormatter;
@@ -94,6 +95,7 @@ public class ReadOptions {
     minimizeColumnSizes = builder.minimizeColumnSizes;
     header = builder.header;
     maxCharsPerColumn = builder.maxCharsPerColumn;
+    trimZeroDecimals = builder.trimZeroDecimals;
 
     dateFormatter = builder.dateFormatter;
     timeFormatter = builder.timeFormatter;
@@ -136,6 +138,10 @@ public class ReadOptions {
 
   public boolean header() {
     return header;
+  }
+
+  public boolean trimZeroDecimals() {
+    return trimZeroDecimals;
   }
 
   public DateTimeFormatter dateTimeFormatter() {
@@ -186,6 +192,7 @@ public class ReadOptions {
     protected boolean minimizeColumnSizes = false;
     protected boolean header = true;
     protected int maxCharsPerColumn = 4096;
+    protected boolean trimZeroDecimals = true;
 
     protected Builder() {
       source = null;
@@ -266,6 +273,11 @@ public class ReadOptions {
 
     public Builder maxCharsPerColumn(int maxCharsPerColumn) {
       this.maxCharsPerColumn = maxCharsPerColumn;
+      return this;
+    }
+
+    public Builder trimZeroDecimals(boolean trimZeroDecimals) {
+      this.trimZeroDecimals = trimZeroDecimals;
       return this;
     }
 
