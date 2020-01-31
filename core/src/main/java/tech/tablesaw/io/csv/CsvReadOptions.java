@@ -302,5 +302,11 @@ public class CsvReadOptions extends ReadOptions {
       super.minimizeColumnSizes();
       return this;
     }
+
+    @Override
+    public Builder ignoreZeroDecimals(boolean ignoreZeroDecimals) {
+      super.ignoreZeroDecimals(ignoreZeroDecimals);
+      return this;
+    }
   }
 }
