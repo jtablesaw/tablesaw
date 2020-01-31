@@ -276,6 +276,10 @@ public class ReadOptions {
       return this;
     }
 
+    /**
+     * Ignore ".0" data value suffixes and allow parsing such values to integer types instead of
+     * floating points. Defaults to {@code true}.
+     */
     public Builder ignoreZeroDecimals(boolean ignoreZeroDecimals) {
       this.ignoreZeroDecimals = ignoreZeroDecimals;
       return this;
