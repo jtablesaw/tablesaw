@@ -75,7 +75,7 @@ public class ReadOptions {
   protected final String missingValueIndicator;
   protected final boolean minimizeColumnSizes;
   protected final int maxCharsPerColumn;
-  protected final boolean ignoreZeroDecimals;
+  protected final boolean zeroDecimalAsFloat;
 
   protected final DateTimeFormatter dateFormatter;
   protected final DateTimeFormatter dateTimeFormatter;
@@ -95,7 +95,7 @@ public class ReadOptions {
     minimizeColumnSizes = builder.minimizeColumnSizes;
     header = builder.header;
     maxCharsPerColumn = builder.maxCharsPerColumn;
-    ignoreZeroDecimals = builder.ignoreZeroDecimals;
+    zeroDecimalAsFloat = builder.zeroDecimalAsFloat;
 
     dateFormatter = builder.dateFormatter;
     timeFormatter = builder.timeFormatter;
@@ -140,8 +140,8 @@ public class ReadOptions {
     return header;
   }
 
-  public boolean ignoreZeroDecimals() {
-    return ignoreZeroDecimals;
+  public boolean zeroDecimalAsFloat() {
+    return zeroDecimalAsFloat;
   }
 
   public DateTimeFormatter dateTimeFormatter() {
@@ -192,7 +192,7 @@ public class ReadOptions {
     protected boolean minimizeColumnSizes = false;
     protected boolean header = true;
     protected int maxCharsPerColumn = 4096;
-    protected boolean ignoreZeroDecimals = true;
+    protected boolean zeroDecimalAsFloat = false;
 
     protected Builder() {
       source = null;
@@ -277,11 +277,11 @@ public class ReadOptions {
     }
 
     /**
-     * Ignore ".0" data value suffixes and allow parsing such values to integer types instead of
-     * floating points. Defaults to {@code true}.
+     * Treat data values with ".0" suffixes as floating points instead of integers. Defaults to
+     * {@code false}.
      */
-    public Builder ignoreZeroDecimals(boolean ignoreZeroDecimals) {
-      this.ignoreZeroDecimals = ignoreZeroDecimals;
+    public Builder zeroDecimalAsFloat(boolean zeroDecimalAsFloat) {
+      this.zeroDecimalAsFloat = zeroDecimalAsFloat;
       return this;
     }
 

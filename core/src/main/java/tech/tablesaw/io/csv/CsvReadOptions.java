@@ -304,8 +304,8 @@ public class CsvReadOptions extends ReadOptions {
     }
 
     @Override
-    public Builder ignoreZeroDecimals(boolean ignoreZeroDecimals) {
-      super.ignoreZeroDecimals(ignoreZeroDecimals);
+    public Builder zeroDecimalAsFloat(boolean zeroDecimalAsFloat) {
+      super.zeroDecimalAsFloat(zeroDecimalAsFloat);
       return this;
     }
   }

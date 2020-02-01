@@ -6,7 +6,7 @@ import tech.tablesaw.io.ReadOptions;
 
 public class ShortParser extends AbstractColumnParser<Short> {
 
-  private boolean ignoreZeroDecimals;
+  private boolean zeroDecimalAsFloat;
 
   public ShortParser(ShortColumnType columnType) {
     super(columnType);
@@ -17,7 +17,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
     if (readOptions.missingValueIndicator() != null) {
       missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
     }
-    ignoreZeroDecimals = readOptions.ignoreZeroDecimals();
+    zeroDecimalAsFloat = readOptions.zeroDecimalAsFloat();
   }
 
   @Override
@@ -27,7 +27,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
     }
     String s = str;
     try {
-      if (ignoreZeroDecimals && s.endsWith(".0")) {
+      if (!zeroDecimalAsFloat && s.endsWith(".0")) {
         s = s.substring(0, s.length() - 2);
       }
       Short.parseShort(AbstractColumnParser.remove(s, ','));
@@ -54,7 +54,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
       return ShortColumnType.missingValueIndicator();
     }
     String s = str;
-    if (ignoreZeroDecimals && s.endsWith(".0")) {
+    if (!zeroDecimalAsFloat && s.endsWith(".0")) {
       s = s.substring(0, s.length() - 2);
     }
     return Short.parseShort(AbstractColumnParser.remove(s, ','));
