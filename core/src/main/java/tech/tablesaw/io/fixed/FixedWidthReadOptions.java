@@ -25,6 +25,7 @@ import java.util.Locale;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.Source;
+import tech.tablesaw.io.csv.CsvReadOptions.Builder;
 
 public class FixedWidthReadOptions extends ReadOptions {
 
@@ -292,6 +293,12 @@ public class FixedWidthReadOptions extends ReadOptions {
     @Override
     public Builder minimizeColumnSizes() {
       super.minimizeColumnSizes();
+      return this;
+    }
+
+    @Override
+    public Builder zeroDecimalAsFloat(boolean zeroDecimalAsFloat) {
+      super.zeroDecimalAsFloat(zeroDecimalAsFloat);
       return this;
     }
   }
