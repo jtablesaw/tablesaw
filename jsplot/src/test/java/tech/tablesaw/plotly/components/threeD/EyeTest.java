@@ -9,11 +9,11 @@ public class EyeTest {
   private static final String javaScript =
       "{"
           + System.lineSeparator()
-          + "    x: 1.0,"
+          + "  \"x\" : 1.0,"
           + System.lineSeparator()
-          + "    y: 2.0,"
+          + "  \"y\" : 2.0,"
           + System.lineSeparator()
-          + "    z: 3.0,"
+          + "  \"z\" : 3.0"
           + System.lineSeparator()
           + "}";
 
