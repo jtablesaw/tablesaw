@@ -13,7 +13,7 @@ public abstract class Change extends Component {
 
   @Override
   public String asJavascript() {
-    return asJavascript("change_template.html");
+    return asJSON();
   }
 
   Change(ChangeBuilder builder) {
@@ -22,11 +22,16 @@ public abstract class Change extends Component {
   }
 
   @Override
-  protected Map<String, Object> getContext() {
+  protected Map<String, Object> getJSONContext() {
     Map<String, Object> context = new HashMap<>();
-    if (changeLine != null) context.put("changeLine", changeLine);
-    if (fillColor != null) context.put("fillColor", fillColor);
+    if (changeLine != null) context.put("line", changeLine.getJSONContext());
+    if (fillColor != null) context.put("fillcolor", fillColor);
     return context;
+  }
+
+  @Override
+  protected Map<String, Object> getContext() {
+    return getJSONContext();
   }
 
   public static class ChangeBuilder {
