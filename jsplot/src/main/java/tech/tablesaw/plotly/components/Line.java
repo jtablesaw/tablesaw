@@ -1,5 +1,6 @@
 package tech.tablesaw.plotly.components;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class Line extends Component {
       this.value = value;
     }
 
+    @JsonValue
     @Override
     public String toString() {
       return value;
@@ -55,8 +57,13 @@ public class Line extends Component {
   }
 
   @Override
+  protected Map<String, Object> getJSONContext() {
+    return getContext();
+  }
+
+  @Override
   public String asJavascript() {
-    return asJavascript("line_template.html");
+    return asJSON();
   }
 
   /**
@@ -78,6 +85,7 @@ public class Line extends Component {
       this.value = value;
     }
 
+    @JsonValue
     @Override
     public String toString() {
       return value;
