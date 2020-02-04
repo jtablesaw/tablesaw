@@ -38,19 +38,24 @@ public class Margin extends Component {
 
   @Override
   public String asJavascript() {
-    return asJavascript("margin_template.html");
+    return asJSON();
   }
 
   @Override
   protected Map<String, Object> getContext() {
     Map<String, Object> context = new HashMap<>();
-    context.put("top", top);
-    context.put("bottom", bottom);
-    context.put("right", right);
-    context.put("left", left);
+    context.put("t", top);
+    context.put("b", bottom);
+    context.put("r", right);
+    context.put("l", left);
     context.put("pad", pad);
-    context.put("autoExpand", autoExpand);
+    context.put("autoexpand", autoExpand);
     return context;
+  }
+
+  @Override
+  protected Map<String, Object> getJSONContext() {
+    return getContext();
   }
 
   public static class MarginBuilder {
