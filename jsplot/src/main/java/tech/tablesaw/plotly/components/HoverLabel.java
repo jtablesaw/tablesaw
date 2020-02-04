@@ -35,17 +35,22 @@ public class HoverLabel extends Component {
 
   @Override
   public String asJavascript() {
-    return asJavascript("hoverLabel_template.html");
+    return asJSON();
   }
 
   @Override
-  protected Map<String, Object> getContext() {
+  protected Map<String, Object> getJSONContext() {
     Map<String, Object> context = new HashMap<>();
     context.put("bgColor", bgColor);
     context.put("borderColor", borderColor);
     context.put("nameLength", nameLength);
-    context.put("font", font);
+    context.put("font", font.getJSONContext());
     return context;
+  }
+
+  @Override
+  protected Map<String, Object> getContext() {
+    return getJSONContext();
   }
 
   public static class HoverLabelBuilder {
