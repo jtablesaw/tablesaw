@@ -1,5 +1,6 @@
 package tech.tablesaw.plotly.components;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class Font extends Component {
       this.value = value;
     }
 
+    @JsonValue
     @Override
     public String toString() {
       return value;
@@ -53,7 +55,7 @@ public class Font extends Component {
 
   @Override
   public String asJavascript() {
-    return asJavascript("font_template.html");
+    return asJSON();
   }
 
   @Override
@@ -63,6 +65,11 @@ public class Font extends Component {
     context.put("family", fontFamily);
     context.put("color", color);
     return context;
+  }
+
+  @Override
+  protected Map<String, Object> getJSONContext() {
+    return getContext();
   }
 
   public static class FontBuilder {
