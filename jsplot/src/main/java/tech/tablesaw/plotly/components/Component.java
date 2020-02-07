@@ -14,8 +14,8 @@ import java.util.Map;
 
 public abstract class Component {
 
-  protected final PebbleEngine engine = TemplateUtils.getNewEngine();
-  protected final ObjectMapper mapper = new ObjectMapper();
+  protected static final PebbleEngine engine = TemplateUtils.getNewEngine();
+  protected static final ObjectMapper mapper = new ObjectMapper();
 
   {
     mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -38,6 +38,7 @@ public abstract class Component {
     try {
       mapper.writeValue(w, getJSONContext());
     } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
     }
     return w.toString();
   }
