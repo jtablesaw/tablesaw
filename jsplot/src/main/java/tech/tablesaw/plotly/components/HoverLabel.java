@@ -41,9 +41,9 @@ public class HoverLabel extends Component {
   @Override
   protected Map<String, Object> getJSONContext() {
     Map<String, Object> context = new HashMap<>();
-    context.put("bgColor", bgColor);
-    context.put("borderColor", borderColor);
-    context.put("nameLength", nameLength);
+    context.put("bgcolor", bgColor);
+    context.put("bordercolor", borderColor);
+    context.put("namelength", nameLength);
     context.put("font", font.getJSONContext());
     return context;
   }
