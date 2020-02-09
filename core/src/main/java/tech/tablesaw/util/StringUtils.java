@@ -19,6 +19,7 @@ package tech.tablesaw.util;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Operations on {@link java.lang.String} that are {@code null} safe.
@@ -65,6 +66,8 @@ public class StringUtils {
 
   /** The maximum size to which the padding constant(s) can expand. */
   private static final int PAD_LIMIT = 8192;
+
+  private static final Pattern ZERO_DECIMAL_PATTERN = Pattern.compile("\\.0+$");
 
   private StringUtils() {}
 
@@ -518,6 +521,22 @@ public class StringUtils {
       }
     }
     return true;
+  }
+
+  /**
+   * Removes all trailing zero decimals from the given string, assuming that all decimals are zero
+   * and any zero decimals actually exists.
+   *
+   * <p>A {@code null} input String returns {@code null}.
+   *
+   * @param str the String to handle, may be null
+   * @return string without trailing zero decimals.
+   */
+  public static String removeZeroDecimal(final String str) {
+    if (Strings.isNullOrEmpty(str)) {
+      return str;
+    }
+    return ZERO_DECIMAL_PATTERN.matcher(str).replaceFirst(EMPTY);
   }
 
   // Abbreviating

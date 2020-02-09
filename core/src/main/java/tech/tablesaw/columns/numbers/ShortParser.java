@@ -3,6 +3,7 @@ package tech.tablesaw.columns.numbers;
 import com.google.common.collect.Lists;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.util.StringUtils;
 
 public class ShortParser extends AbstractColumnParser<Short> {
 
@@ -28,8 +29,8 @@ public class ShortParser extends AbstractColumnParser<Short> {
     }
     String s = str;
     try {
-      if (ignoreZeroDecimal && s.endsWith(".0")) {
-        s = s.substring(0, s.length() - 2);
+      if (ignoreZeroDecimal) {
+        s = StringUtils.removeZeroDecimal(s);
       }
       Short.parseShort(AbstractColumnParser.remove(s, ','));
       return true;
@@ -55,8 +56,8 @@ public class ShortParser extends AbstractColumnParser<Short> {
       return ShortColumnType.missingValueIndicator();
     }
     String s = str;
-    if (ignoreZeroDecimal && s.endsWith(".0")) {
-      s = s.substring(0, s.length() - 2);
+    if (ignoreZeroDecimal) {
+      s = StringUtils.removeZeroDecimal(s);
     }
     return Short.parseShort(AbstractColumnParser.remove(s, ','));
   }

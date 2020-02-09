@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.util.StringUtils;
 
 public class IntParser extends AbstractColumnParser<Integer> {
 
@@ -29,8 +30,8 @@ public class IntParser extends AbstractColumnParser<Integer> {
     }
     String s = str;
     try {
-      if (ignoreZeroDecimal && s.endsWith(".0")) {
-        s = s.substring(0, s.length() - 2);
+      if (ignoreZeroDecimal) {
+        s = StringUtils.removeZeroDecimal(s);
       }
       Integer.parseInt(AbstractColumnParser.remove(s, ','));
       return true;
@@ -56,8 +57,8 @@ public class IntParser extends AbstractColumnParser<Integer> {
       return IntColumnType.missingValueIndicator();
     }
     String s = str;
-    if (ignoreZeroDecimal && s.endsWith(".0")) {
-      s = s.substring(0, s.length() - 2);
+    if (ignoreZeroDecimal) {
+      s = StringUtils.removeZeroDecimal(s);
     }
     return Integer.parseInt(AbstractColumnParser.remove(s, ','));
   }
