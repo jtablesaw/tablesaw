@@ -23,7 +23,7 @@ public class StringUtilsTest {
 
   @Test
   public void testRemoveZeroDecimal() {
-    // Assert decimals being removed
+    // Assert zero decimals being removed
     assertEquals("246", StringUtils.removeZeroDecimal("246.0"));
     assertEquals("146", StringUtils.removeZeroDecimal("146.00"));
     assertEquals("357", StringUtils.removeZeroDecimal("357.000"));

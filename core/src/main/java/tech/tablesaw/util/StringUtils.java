@@ -524,8 +524,8 @@ public class StringUtils {
   }
 
   /**
-   * Removes all trailing zero decimals from the given string, assuming that all decimals are zero
-   * and any zero decimals actually exists.
+   * Removes all trailing zero decimals from the given string, assuming all decimals are zero and
+   * any zero decimals actually exist.
    *
    * <p>A {@code null} input String returns {@code null}.
    *
