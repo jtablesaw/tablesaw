@@ -7,10 +7,11 @@ import tech.tablesaw.io.ReadOptions;
 
 public class IntParser extends AbstractColumnParser<Integer> {
 
-  private boolean zeroDecimalAsFloat;
+  private final boolean ignoreZeroDecimal;
 
   public IntParser(ColumnType columnType) {
     super(columnType);
+    ignoreZeroDecimal = ReadOptions.DEFAULT_IGNORE_ZERO_DECIMAL;
   }
 
   public IntParser(IntColumnType columnType, ReadOptions readOptions) {
@@ -18,7 +19,7 @@ public class IntParser extends AbstractColumnParser<Integer> {
     if (readOptions.missingValueIndicator() != null) {
       missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
     }
-    zeroDecimalAsFloat = readOptions.zeroDecimalAsFloat();
+    ignoreZeroDecimal = readOptions.ignoreZeroDecimal();
   }
 
   @Override
@@ -28,7 +29,7 @@ public class IntParser extends AbstractColumnParser<Integer> {
     }
     String s = str;
     try {
-      if (!zeroDecimalAsFloat && s.endsWith(".0")) {
+      if (ignoreZeroDecimal && s.endsWith(".0")) {
         s = s.substring(0, s.length() - 2);
       }
       Integer.parseInt(AbstractColumnParser.remove(s, ','));
@@ -55,7 +56,7 @@ public class IntParser extends AbstractColumnParser<Integer> {
       return IntColumnType.missingValueIndicator();
     }
     String s = str;
-    if (!zeroDecimalAsFloat && s.endsWith(".0")) {
+    if (ignoreZeroDecimal && s.endsWith(".0")) {
       s = s.substring(0, s.length() - 2);
     }
     return Integer.parseInt(AbstractColumnParser.remove(s, ','));

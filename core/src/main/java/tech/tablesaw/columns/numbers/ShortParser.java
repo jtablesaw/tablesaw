@@ -6,10 +6,11 @@ import tech.tablesaw.io.ReadOptions;
 
 public class ShortParser extends AbstractColumnParser<Short> {
 
-  private boolean zeroDecimalAsFloat;
+  private final boolean ignoreZeroDecimal;
 
   public ShortParser(ShortColumnType columnType) {
     super(columnType);
+    ignoreZeroDecimal = ReadOptions.DEFAULT_IGNORE_ZERO_DECIMAL;
   }
 
   public ShortParser(ShortColumnType columnType, ReadOptions readOptions) {
@@ -17,7 +18,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
     if (readOptions.missingValueIndicator() != null) {
       missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
     }
-    zeroDecimalAsFloat = readOptions.zeroDecimalAsFloat();
+    ignoreZeroDecimal = readOptions.ignoreZeroDecimal();
   }
 
   @Override
@@ -27,7 +28,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
     }
     String s = str;
     try {
-      if (!zeroDecimalAsFloat && s.endsWith(".0")) {
+      if (ignoreZeroDecimal && s.endsWith(".0")) {
         s = s.substring(0, s.length() - 2);
       }
       Short.parseShort(AbstractColumnParser.remove(s, ','));
@@ -54,7 +55,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
       return ShortColumnType.missingValueIndicator();
     }
     String s = str;
-    if (!zeroDecimalAsFloat && s.endsWith(".0")) {
+    if (ignoreZeroDecimal && s.endsWith(".0")) {
       s = s.substring(0, s.length() - 2);
     }
     return Short.parseShort(AbstractColumnParser.remove(s, ','));
