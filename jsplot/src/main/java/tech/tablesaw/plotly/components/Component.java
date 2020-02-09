@@ -1,5 +1,8 @@
 package tech.tablesaw.plotly.components;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
@@ -11,11 +14,34 @@ import java.util.Map;
 
 public abstract class Component {
 
-  protected final PebbleEngine engine = TemplateUtils.getNewEngine();
+  protected static final PebbleEngine engine = TemplateUtils.getNewEngine();
+  protected static final ObjectMapper mapper = new ObjectMapper();
 
+  {
+    mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    mapper.setSerializationInclusion(Include.NON_NULL);
+    mapper.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
+  }
+
+  @Deprecated
   public abstract String asJavascript();
 
+  @Deprecated
   protected abstract Map<String, Object> getContext();
+
+  protected Map<String, Object> getJSONContext() {
+    return null;
+  }
+
+  public String asJSON() {
+    StringWriter w = new StringWriter();
+    try {
+      mapper.writeValue(w, getJSONContext());
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+    return w.toString();
+  }
 
   protected String asJavascript(String filename) {
     Writer writer = new StringWriter();
