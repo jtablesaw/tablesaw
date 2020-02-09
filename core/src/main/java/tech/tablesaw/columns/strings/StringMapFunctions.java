@@ -312,7 +312,7 @@ public interface StringMapFunctions extends Column<String> {
    * @param columns the column to append
    * @return the new column
    */
-  default StringColumn join(String separator, Column... columns) {
+  default StringColumn join(String separator, Column<?>... columns) {
     StringColumn newColumn = StringColumn.create(name() + "[column appended]", this.size());
     for (int r = 0; r < size(); r++) {
       StringBuilder result = new StringBuilder(getString(r));
@@ -347,11 +347,11 @@ public interface StringMapFunctions extends Column<String> {
    * @param stringColumns the string columns to append
    * @return the new column
    */
-  default StringColumn concatenate(Column... stringColumns) {
+  default StringColumn concatenate(Column<?>... stringColumns) {
     StringColumn newColumn = StringColumn.create(name() + "[append]", this.size());
     for (int r = 0; r < size(); r++) {
       StringBuilder s = new StringBuilder(getString(r));
-      for (Column stringColumn : stringColumns) s.append(stringColumn.getString(r));
+      for (Column<?> stringColumn : stringColumns) s.append(stringColumn.getString(r));
       newColumn.set(r, s.toString());
     }
     return newColumn;
