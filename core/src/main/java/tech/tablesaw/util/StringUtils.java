@@ -524,13 +524,13 @@ public class StringUtils {
   }
 
   /**
-   * Removes all trailing zero decimals from the given string, assuming all decimals are zero and
+   * Removes all trailing zero decimals from the given String, assuming all decimals are zero and
    * any zero decimals actually exist.
    *
    * <p>A {@code null} input String returns {@code null}.
    *
    * @param str the String to handle, may be null
-   * @return string without trailing zero decimals.
+   * @return string without trailing zero decimals
    */
   public static String removeZeroDecimal(final String str) {
     if (Strings.isNullOrEmpty(str)) {
