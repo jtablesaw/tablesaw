@@ -101,7 +101,8 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
 
   @Override
   public Integer get(int index) {
-    return getInt(index);
+    int result = getInt(index);
+    return isMissingValue(result) ? null : result;
   }
 
   @Override

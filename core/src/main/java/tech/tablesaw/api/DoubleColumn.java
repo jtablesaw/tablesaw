@@ -149,7 +149,8 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   @Override
   public Double get(int index) {
-    return getDouble(index);
+    double result = getDouble(index);
+    return isMissingValue(result) ? null : result;
   }
 
   @Override

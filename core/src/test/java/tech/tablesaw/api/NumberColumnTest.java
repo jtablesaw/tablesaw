@@ -693,7 +693,7 @@ public class NumberColumnTest {
         expectedValues.length, cumMax.size(), "Both sets of data should be the same size.");
 
     for (int index = 0; index < cumMax.size(); index++) {
-      double actual = cumMax.get(index);
+      double actual = cumMax.getDouble(index);
       assertEquals(
           expectedValues[index], actual, 0, "cumMax() operation at index:" + index + " failed");
     }
@@ -710,7 +710,7 @@ public class NumberColumnTest {
         expectedValues.length, cumMin.size(), "Both sets of data should be the same size.");
 
     for (int index = 0; index < cumMin.size(); index++) {
-      double actual = cumMin.get(index);
+      double actual = cumMin.getDouble(index);
       assertEquals(
           expectedValues[index], actual, 0, "cumMin() operation at index:" + index + " failed");
     }
@@ -745,7 +745,7 @@ public class NumberColumnTest {
         expectedValues.length, pctChange.size(), "Both sets of data should be the same size.");
 
     for (int index = 0; index < pctChange.size(); index++) {
-      double actual = pctChange.get(index);
+      double actual = pctChange.getDouble(index);
       assertEquals(
           expectedValues[index],
           actual,
@@ -757,7 +757,7 @@ public class NumberColumnTest {
   private boolean validateEquality(double[] expectedValues, DoubleColumn col) {
     assertEquals(expectedValues.length, col.size(), "Both sets of data should be the same size.");
     for (int index = 0; index < col.size(); index++) {
-      double actual = col.get(index);
+      double actual = col.getDouble(index);
       assertEquals(expectedValues[index], actual, 0.01, "value mismatch at index:" + index);
     }
     return true;

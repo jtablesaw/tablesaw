@@ -74,7 +74,8 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   @Override
   public Short get(int index) {
-    return getShort(index);
+    short result = getShort(index);
+    return isMissingValue(result) ? null : result;
   }
 
   public short getShort(int index) {

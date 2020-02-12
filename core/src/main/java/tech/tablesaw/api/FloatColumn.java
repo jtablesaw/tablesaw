@@ -81,7 +81,8 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
 
   @Override
   public Float get(int index) {
-    return data.getFloat(index);
+    float result = getFloat(index);
+    return isMissingValue(result) ? null : result;
   }
 
   public static boolean valueIsMissing(float value) {

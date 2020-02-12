@@ -103,7 +103,8 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
 
   @Override
   public Long get(int index) {
-    return getLong(index);
+    long result = getLong(index);
+    return isMissingValue(result) ? null : result;
   }
 
   @Override
