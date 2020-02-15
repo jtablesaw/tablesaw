@@ -52,6 +52,7 @@
         <module>jsplot</module>
         <module>saw</module>
         <module>docs-src</module>
+        <module>testExcel</module>
     </modules>
 
     <profiles>
