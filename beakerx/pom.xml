@@ -5,12 +5,15 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.33.3-SNAPSHOT</version>
+    <version>0.37.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>tablesaw-beakerx</artifactId>
 
   <packaging>jar</packaging>
+  <properties>
+    <doclint>none</doclint>
+  </properties>
 
   <profiles>
     <profile>
@@ -25,6 +28,11 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <quiet>true</quiet>
+              <additionalOptions>-Xdoclint:none</additionalOptions>
+              <additionalJOption>-Xdoclint:none</additionalJOption>
+            </configuration>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -63,12 +71,18 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.33.3-SNAPSHOT</version>
+      <version>0.37.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>tech.tablesaw</groupId>
+      <artifactId>tablesaw-docs</artifactId> <!-- An ugly workaround to make sure the docs project isn't built last so that skipNexusStagingDeployMojo works -->
+      <version>0.37.4-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.github.twosigma</groupId>
       <artifactId>beakerx</artifactId>
-      <version>0.9.0</version>
+      <version>1.3.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

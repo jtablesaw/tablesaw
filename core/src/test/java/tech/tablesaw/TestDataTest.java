@@ -19,27 +19,26 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * Make sure our test data is available
- */
+/** Make sure our test data is available */
 public class TestDataTest {
 
-    @Test
-    public void verifyAllTestData() {
-        for (TestData testData : TestData.values()) {
-            verify(testData);
-        }
+  @Test
+  public void verifyAllTestData() {
+    for (TestData testData : TestData.values()) {
+      verify(testData);
     }
+  }
 
-    private void verify(TestData testData) {
+  private void verify(TestData testData) {
 
-        assertNotNull(testData.getTable(), "Table available");
+    assertNotNull(testData.getTable(), "Table available");
 
-        // cheap attempt at testing data integrity
-        assertEquals(testData.getColumnNames().length, testData.getColumnTypes().length,
-                "Column name count matches column type count");
+    // cheap attempt at testing data integrity
+    assertEquals(
+        testData.getColumnNames().length,
+        testData.getColumnTypes().length,
+        "Column name count matches column type count");
 
-        assertNotNull(testData.getSource(), "Data path available");
-    }
-
+    assertNotNull(testData.getSource(), "Data path available");
+  }
 }

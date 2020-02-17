@@ -1,10 +1,24 @@
 dist: xenial
 language: java
 
-before_install:
+# for sonarcloud issue tagging
+git:
+  depth: false
+
+addons:
+  sonarcloud:
+    organization: "jtablesaw"
+    token:
+      secure: "PR4ruuSYEYqmUCcTb5d/VNBJ2OcntoRreMpED6sAroMfB72csAVq7JEudQGTecnV8aEVrZOZQLCY5q1QSeQ/MpZ8bcNOohMh6EVLeriI1umE34eQSlipquWti/F5yhF7uSw7+SSNMp8bq8FOfUyoxxiWL/GaeS/hxFg0OJldphIzSePyQxXK04g8Nt8ZrsbkDiNOuAMxyhKB+fA+sHcwr17u2kdv8qiQr3534u59dcQE4b8Wod0anSP2HHjxnCyQuRJbu604XfC23mT/SKgsHGbPtwtT2OXfm7CGrC1c26n7LUsXhWJNn+9tojxlJ8f0dV46rwiQQqcjgKPSfnpyYu6DEu6nDXI8H2EJ95yb/8PKeJzMeAmn4/0lNNFs45x3uyGz8kf7H2pxHDN9TrQ0eXvsTPVG9T7YaQfTPWhOHdqnfXKLK559Uvc8YhvSIZ5S133K1q1Ls8qG2MiNjHC7p0lIEaSX6zlhnKZ+TpSDaBwCCvZsdhkR5V2q81DWz9Ocnp/lb7cHZBGszlB+HGipHLKms9j+xwmwqXA76+queGfxlk0+o5Yyo+IP3AM+5+mrOiJPEa8I3nY2E0aOlkFbFOoEgWYtlWw3WJzYY5itHTrVt8FAha/vIGBJIWm4aQqD8yN0R0EjVtCSSlrFkEJ6kX+TSO8YhnAQr5GUrXQgIVg="
+
+install:
   - sudo apt-get install jq
   - LATEST_VERSION="$(curl -Ls https://api.bintray.com/packages/codacy/Binaries/codacy-coverage-reporter/versions/_latest | jq -r .name)"
   - curl -Ls -o codacy-coverage-reporter-assembly.jar "https://dl.bintray.com/codacy/Binaries/${LATEST_VERSION}/codacy-coverage-reporter-assembly.jar"
-install: mvn install -DskipTests -Dgpg.skip
-script: mvn -B verify
-after_success: java -jar codacy-coverage-reporter-assembly.jar report --language Java --coverage-report aggregate/target/site/jacoco-aggregate/jacoco.xml
+  - export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=jtablesaw_tablesaw
+after_success: 
+  - find . -name jacoco.xml | xargs java -jar codacy-coverage-reporter-assembly.jar report --language Java --partial --coverage-reports
+  - java -jar codacy-coverage-reporter-assembly.jar final

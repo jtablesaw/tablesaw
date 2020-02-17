@@ -14,179 +14,161 @@
 
 package tech.tablesaw.columns.numbers;
 
-import static tech.tablesaw.columns.numbers.NumberPredicates.isBetweenExclusive;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isBetweenInclusive;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isEqualTo;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isGreaterThan;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isGreaterThanOrEqualTo;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isLessThan;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isLessThanOrEqualTo;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isNegative;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isNonNegative;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isNotEqualTo;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isPositive;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isZero;
 
 import java.util.function.BiPredicate;
 import java.util.function.DoublePredicate;
-
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
-import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
+import tech.tablesaw.filtering.NumberFilterSpec;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-public interface NumberFilters {
+public interface NumberFilters extends NumberFilterSpec<Selection> {
 
-    Selection eval(DoublePredicate predicate);
+  Selection eval(DoublePredicate predicate);
 
-    Selection eval(DoubleRangePredicate predicate, Number rangeStart, Number rangeEnd);
+  Selection eval(BiPredicate<Number, Number> predicate, Number value);
 
-    Selection eval(DoubleBiPredicate predicate, DoubleColumn otherColumn);
+  default Selection isEqualTo(double d) {
+    return eval(NumberPredicates.isEqualTo(d));
+  }
 
-    Selection eval(DoubleBiPredicate predicate, Number value);
+  default Selection isNotEqualTo(double d) {
+    return eval(NumberPredicates.isNotEqualTo(d));
+  }
 
-    Selection eval(BiPredicate<Number, Number> predicate, Number value);
+  default Selection isBetweenExclusive(double start, double end) {
+    return eval(NumberPredicates.isBetweenExclusive(start, end));
+  }
 
+  default Selection isBetweenInclusive(double start, double end) {
+    return eval(NumberPredicates.isBetweenInclusive(start, end));
+  }
 
-    default Selection isEqualTo(double d) {
-        return eval(isEqualTo, d);
+  default Selection isGreaterThan(double f) {
+    return eval(NumberPredicates.isGreaterThan(f));
+  }
+
+  default Selection isGreaterThanOrEqualTo(double f) {
+    return eval(NumberPredicates.isGreaterThanOrEqualTo(f));
+  }
+
+  default Selection isLessThan(double f) {
+    return eval(NumberPredicates.isLessThan(f));
+  }
+
+  default Selection isLessThanOrEqualTo(double f) {
+    return eval(NumberPredicates.isLessThanOrEqualTo(f));
+  }
+
+  Selection isIn(Number... numbers);
+
+  Selection isIn(double... doubles);
+
+  Selection isNotIn(Number... doubles);
+
+  Selection isNotIn(double... doubles);
+
+  default Selection isZero() {
+    return eval(isZero);
+  }
+
+  default Selection isPositive() {
+    return eval(isPositive);
+  }
+
+  default Selection isNegative() {
+    return eval(isNegative);
+  }
+
+  default Selection isNonNegative() {
+    return eval(isNonNegative);
+  }
+
+  // TODO(lwhite): see section in Effective Java on double point comparisons.
+  default Selection isCloseTo(Number target, Number margin) {
+    Selection results = new BitmapBackedSelection();
+    for (int i = 0; i < size(); i++) {
+      double targetValue = target.doubleValue();
+      double marginValue = margin.doubleValue();
+      double val = getDouble(i);
+      if (val > targetValue - marginValue && val < targetValue + marginValue) {
+        results.add(i);
+      }
     }
+    return results;
+  }
 
-    default Selection isNotEqualTo(double d) {
-        return eval(isNotEqualTo, d);
+  Selection isMissing();
+
+  Selection isNotMissing();
+
+  // Column filters
+
+  default Selection isGreaterThan(NumericColumn<?> d) {
+    Selection results = new BitmapBackedSelection();
+    for (int i = 0; i < size(); i++) {
+      if (this.getDouble(i) > d.getDouble(i)) {
+        results.add(i);
+      }
     }
+    return results;
+  }
 
-    default Selection isBetweenExclusive(double start, Number end) {
-        return eval(isBetweenExclusive, start, end);
+  default Selection isGreaterThanOrEqualTo(NumericColumn<?> d) {
+    Selection results = new BitmapBackedSelection();
+    for (int i = 0; i < size(); i++) {
+      if (this.getDouble(i) >= d.getDouble(i)) {
+        results.add(i);
+      }
     }
+    return results;
+  }
 
-    default Selection isBetweenInclusive(double start, Number end) {
-        return eval(isBetweenInclusive, start, end);
+  default Selection isEqualTo(NumericColumn<?> d) {
+    Selection results = new BitmapBackedSelection();
+    for (int i = 0; i < size(); i++) {
+      if (this.getDouble(i) == d.getDouble(i)) {
+        results.add(i);
+      }
     }
+    return results;
+  }
 
-    default Selection isGreaterThan(double f) {
-        return eval(isGreaterThan, f);
+  int size();
+
+  double getDouble(int i);
+
+  default Selection isNotEqualTo(NumericColumn<?> d) {
+    Selection results = new BitmapBackedSelection();
+    for (int i = 0; i < size(); i++) {
+      if (this.getDouble(i) != d.getDouble(i)) {
+        results.add(i);
+      }
     }
+    return results;
+  }
 
-    default Selection isGreaterThanOrEqualTo(double f) {
-        return eval(isGreaterThanOrEqualTo, f);
+  default Selection isLessThan(NumericColumn<?> d) {
+    Selection results = new BitmapBackedSelection();
+    for (int i = 0; i < size(); i++) {
+      if (this.getDouble(i) < d.getDouble(i)) {
+        results.add(i);
+      }
     }
+    return results;
+  }
 
-    default Selection isLessThan(double f) {
-        return eval(isLessThan, f);
+  default Selection isLessThanOrEqualTo(NumericColumn<?> d) {
+    Selection results = new BitmapBackedSelection();
+    for (int i = 0; i < size(); i++) {
+      if (this.getDouble(i) <= d.getDouble(i)) {
+        results.add(i);
+      }
     }
-
-    default Selection isLessThanOrEqualTo(double f) {
-        return eval(isLessThanOrEqualTo, f);
-    }
-
-    Selection isIn(Number... numbers);
-
-    Selection isIn(double... doubles);
-
-    Selection isNotIn(Number... doubles);
-
-    Selection isNotIn(double... doubles);
-
-    default Selection isZero() {
-        return eval(isZero);
-    }
-
-    default Selection isPositive() {
-        return eval(isPositive);
-    }
-
-    default Selection isNegative() {
-        return eval(isNegative);
-    }
-
-    default Selection isNonNegative() {
-        return eval(isNonNegative);
-    }
-
-    // TODO(lwhite): see section in Effective Java on double point comparisons.
-    default Selection isCloseTo(Number target, Number margin) {
-        Selection results = new BitmapBackedSelection();
-        for (int i = 0; i < size(); i++) {
-            double targetValue = target.doubleValue();
-            double marginValue = margin.doubleValue();
-            double val = getDouble(i);
-            if (val > targetValue - marginValue && val < targetValue + marginValue) {
-                results.add(i);
-            }
-        }
-        return results;
-    }
-
-    Selection isMissing();
-
-    Selection isNotMissing();
-
-    // Column filters
-
-    default Selection isGreaterThan(NumericColumn<?> d) {
-        Selection results = new BitmapBackedSelection();
-        for (int i = 0; i < size(); i++) {
-            if (this.getDouble(i) > d.getDouble(i)) {
-                results.add(i);
-            }
-        }
-        return results;
-    }
-
-    default Selection isGreaterThanOrEqualTo(NumericColumn<?> d) {
-        Selection results = new BitmapBackedSelection();
-        for (int i = 0; i < size(); i++) {
-            if (this.getDouble(i) >= d.getDouble(i)) {
-                results.add(i);
-            }
-        }
-        return results;
-    }
-
-    default Selection isEqualTo(NumericColumn<?> d) {
-        Selection results = new BitmapBackedSelection();
-        for (int i = 0; i < size(); i++) {
-            if (this.getDouble(i) == d.getDouble(i)) {
-                results.add(i);
-            }
-        }
-        return results;
-    }
-
-    int size();
-
-    double getDouble(int i);
-
-    default Selection isNotEqualTo(NumericColumn<?> d) {
-        Selection results = new BitmapBackedSelection();
-        for (int i = 0; i < size(); i++) {
-            if (this.getDouble(i) != d.getDouble(i)) {
-                results.add(i);
-            }
-        }
-        return results;
-    }
-
-    default Selection isLessThan(NumericColumn<?> d) {
-        Selection results = new BitmapBackedSelection();
-        for (int i = 0; i < size(); i++) {
-            if (this.getDouble(i) < d.getDouble(i)) {
-                results.add(i);
-            }
-        }
-        return results;
-    }
-
-    default Selection isLessThanOrEqualTo(NumericColumn<?> d) {
-        Selection results = new BitmapBackedSelection();
-        for (int i = 0; i < size(); i++) {
-            if (this.getDouble(i) <= d.getDouble(i)) {
-                results.add(i);
-            }
-        }
-        return results;
-    }
+    return results;
+  }
 }

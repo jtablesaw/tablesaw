@@ -22,9 +22,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Types;
-
 import org.junit.jupiter.api.Test;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -35,84 +33,98 @@ import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.util.TestDb;
 
-/**
- * Tests for creating Tables from JDBC result sets using SqlResutSetReader
- */
+/** Tests for creating Tables from JDBC result sets using SqlResutSetReader */
 public class SqlResultSetReaderTest {
 
-    @Test
-    public void testSqlResultSetReader() throws Exception {
+  @Test
+  public void testSqlResultSetReader() throws Exception {
 
-        // Create a named constant for the URL.
-        // NOTE: This value is specific for H2 in-memory DB.
-        final String DB_URL = "jdbc:h2:mem:CoffeeDB";
+    // Create a named constant for the URL.
+    // NOTE: This value is specific for H2 in-memory DB.
+    final String DB_URL = "jdbc:h2:mem:CoffeeDB";
 
-        // Create a connection to the database.
-        Connection conn = DriverManager.getConnection(DB_URL);
+    // Create a connection to the database.
+    Connection conn = DriverManager.getConnection(DB_URL);
 
-        // If the DB already exists, drop the tables.
-        TestDb.dropTables(conn);
+    // If the DB already exists, drop the tables.
+    TestDb.dropTables(conn);
 
-        // Build the Coffee table.
-        TestDb.buildCoffeeTable(conn);
+    // Build the Coffee table.
+    TestDb.buildCoffeeTable(conn);
 
-        // Build the Customer table.
-        TestDb.buildCustomerTable(conn);
+    // Build the Customer table.
+    TestDb.buildCustomerTable(conn);
 
-        // Build the UnpaidInvoice table.
-        TestDb.buildUnpaidOrderTable(conn);
+    // Build the UnpaidInvoice table.
+    TestDb.buildUnpaidOrderTable(conn);
 
-        // Build the OracleNumbers table.
-        TestDb.buildNumbersTable(conn);
-        
-        try (Statement stmt = conn.createStatement()) {
-            String sql;
+    // Build the OracleNumbers table.
+    TestDb.buildNumbersTable(conn);
 
-            sql = "SELECT * FROM coffee";
-            try (ResultSet rs = stmt.executeQuery(sql)) {
-                Table coffee = SqlResultSetReader.read(rs);
-                assertEquals(4, coffee.columnCount());
-                assertEquals(18, coffee.rowCount());
-            }
+    // Build the NullValues table.
+    TestDb.buildNullValuesTable(conn);
 
-            sql = "SELECT * FROM Customer";
-            try (ResultSet rs = stmt.executeQuery(sql)) {
-                Table customer = SqlResultSetReader.read(rs);
-                assertEquals(7, customer.columnCount());
-                assertEquals(3, customer.rowCount());
-            }
+    try (Statement stmt = conn.createStatement()) {
+      String sql;
 
-            sql = "SELECT * FROM UnpaidOrder";
-            try (ResultSet rs = stmt.executeQuery(sql)) {
-                Table unpaidInvoice = SqlResultSetReader.read(rs);
-                assertEquals(5, unpaidInvoice.columnCount());
-                assertEquals(0, unpaidInvoice.rowCount());
-            }
+      sql = "SELECT * FROM coffee";
+      try (ResultSet rs = stmt.executeQuery(sql)) {
+        Table coffee = SqlResultSetReader.read(rs);
+        assertEquals(4, coffee.columnCount());
+        assertEquals(18, coffee.rowCount());
+      }
 
-            sql = "SELECT * FROM Numbers";
-            try (ResultSet rs = stmt.executeQuery(sql)) {
-                Table numbers = SqlResultSetReader.read(rs);
-                assertEquals(13, numbers.columnCount());
-                assertEquals(3, numbers.rowCount());
-                assertTrue(numbers.column("Description").type() instanceof StringColumnType);
-                assertTrue(numbers.column("NumInt").type() instanceof IntColumnType);
-                assertTrue(numbers.column("NumInt6_0").type() instanceof IntColumnType);
-                assertTrue(numbers.column("NumLong").type() instanceof LongColumnType);
-                assertTrue(numbers.column("NumShort").type() instanceof ShortColumnType);
-                assertTrue(numbers.column("NumNumber").type() instanceof DoubleColumnType);
-                assertTrue(numbers.column("NumBigInt").type() instanceof DoubleColumnType);
-                assertTrue(numbers.column("NumBigDec").type() instanceof DoubleColumnType);
-                assertTrue(numbers.column("NumFloat7_1").type() instanceof FloatColumnType);
-                assertTrue(numbers.column("NumFloat7_7").type() instanceof FloatColumnType);
-                assertTrue(numbers.column("NumDouble7_8").type() instanceof DoubleColumnType);
-                assertTrue(numbers.column("NumDouble7_16").type() instanceof DoubleColumnType);
-            }
+      sql = "SELECT * FROM Customer";
+      try (ResultSet rs = stmt.executeQuery(sql)) {
+        Table customer = SqlResultSetReader.read(rs);
+        assertEquals(7, customer.columnCount());
+        assertEquals(3, customer.rowCount());
+      }
 
-        }
+      sql = "SELECT * FROM UnpaidOrder";
+      try (ResultSet rs = stmt.executeQuery(sql)) {
+        Table unpaidInvoice = SqlResultSetReader.read(rs);
+        assertEquals(5, unpaidInvoice.columnCount());
+        assertEquals(0, unpaidInvoice.rowCount());
+      }
+
+      sql = "SELECT * FROM Numbers";
+      try (ResultSet rs = stmt.executeQuery(sql)) {
+        Table numbers = SqlResultSetReader.read(rs);
+        assertEquals(13, numbers.columnCount());
+        assertEquals(3, numbers.rowCount());
+        assertTrue(numbers.column("Description").type() instanceof StringColumnType);
+        assertTrue(numbers.column("NumInt").type() instanceof IntColumnType);
+        assertTrue(numbers.column("NumInt6_0").type() instanceof IntColumnType);
+        assertTrue(numbers.column("NumLong").type() instanceof LongColumnType);
+        assertTrue(numbers.column("NumShort").type() instanceof ShortColumnType);
+        assertTrue(numbers.column("NumNumber").type() instanceof DoubleColumnType);
+        assertTrue(numbers.column("NumBigInt").type() instanceof DoubleColumnType);
+        assertTrue(numbers.column("NumBigDec").type() instanceof DoubleColumnType);
+        assertTrue(numbers.column("NumFloat7_1").type() instanceof FloatColumnType);
+        assertTrue(numbers.column("NumFloat7_7").type() instanceof FloatColumnType);
+        assertTrue(numbers.column("NumDouble7_8").type() instanceof DoubleColumnType);
+        assertTrue(numbers.column("NumDouble7_16").type() instanceof DoubleColumnType);
+      }
+
+      sql = "SELECT * FROM NullValues";
+      try (ResultSet rs = stmt.executeQuery(sql)) {
+        Table nullValues = SqlResultSetReader.read(rs);
+        assertEquals(8, nullValues.columnCount());
+        assertEquals(3, nullValues.rowCount());
+        assertEquals(2, nullValues.column("StringValue").removeMissing().size());
+        assertEquals(1, nullValues.column("DoubleValue").removeMissing().size());
+        assertEquals(2, nullValues.column("IntegerValue").removeMissing().size());
+        assertEquals(1, nullValues.column("ShortValue").removeMissing().size());
+        assertEquals(1, nullValues.column("LongValue").removeMissing().size());
+        assertEquals(1, nullValues.column("FloatValue").removeMissing().size());
+        assertEquals(1, nullValues.column("BooleanValue").removeMissing().size());
+      }
     }
+  }
 
-    @Test
-    public void invalidPrecision() {
-        assertEquals(ColumnType.DOUBLE, SqlResultSetReader.getColumnType(Types.NUMERIC, 0, 0));
-    }
+  @Test
+  public void invalidPrecision() {
+    assertEquals(ColumnType.DOUBLE, SqlResultSetReader.getColumnType(Types.NUMERIC, 0, 0));
+  }
 }

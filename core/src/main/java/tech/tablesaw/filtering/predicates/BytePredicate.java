@@ -14,10 +14,8 @@
 
 package tech.tablesaw.filtering.predicates;
 
-/**
- * Used in BooleanColumn to evaluate elements without casting or autoboxing
- */
+/** Used in BooleanColumn to evaluate elements without casting or autoboxing */
 public interface BytePredicate {
 
-    boolean test(byte i);
+  boolean test(byte i);
 }

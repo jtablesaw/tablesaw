@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>tech.tablesaw</groupId>
+        <artifactId>tablesaw-parent</artifactId>
+        <version>0.37.4-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>tablesaw-docs</artifactId>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <properties>
+        <!-- 
+            this property prevents the Nexus Staging Maven Plugin from
+            deploying this module's artifacts to Maven Central's staging repo
+         -->
+        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+        <!-- 
+            this property prevents the Nexus Staging Maven Plugin from
+            deploying this module's artifacts to Maven Central's staging repo
+         -->
+        <skipStaging>true</skipStaging>
+        <!-- the documentation code raises numerous non-issues. we're doing things just for demonstration purposes, so ignore -->
+        <sonar.skip>true</sonar.skip>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>shaded</shadedClassifierName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.ryancerf</groupId>
+                <artifactId>choss-maven-plugin</artifactId>
+                <version>v0.02</version>
+                <configuration>
+                    <docsSourceDirectory>./main/</docsSourceDirectory>
+                    <docsTargetDirectory>./dist/</docsTargetDirectory>
+                </configuration>
+                <!--Add configuraton to set docsSourceDirectory-->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-docs</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>tech.tablesaw.docs.Main</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>tech.tablesaw</groupId>
+            <artifactId>tablesaw-core</artifactId>
+            <version>0.37.4-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>
+

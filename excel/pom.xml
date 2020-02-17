@@ -5,14 +5,18 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.33.3-SNAPSHOT</version>
+    <version>0.37.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>tablesaw-excel</artifactId>
 
   <packaging>jar</packaging>
+    <properties>
+        <doclint>none</doclint>
+    </properties>
 
-  <profiles>
+
+    <profiles>
     <profile>
       <id>release</id>
       <activation>
@@ -25,6 +29,11 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
+              <configuration>
+                  <quiet>true</quiet>
+                  <additionalOptions>-Xdoclint:none</additionalOptions>
+                  <additionalJOption>-Xdoclint:none</additionalJOption>
+              </configuration>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -49,8 +58,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
-      
-       <plugin>
+      <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-shade-plugin</artifactId>
            <version>3.1.0</version>
@@ -66,8 +74,7 @@
                    </goals>
                </execution>
            </executions>
-       </plugin>
-      
+       </plugin>      
     </plugins>
   </build>
 
@@ -75,13 +82,13 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.33.3-SNAPSHOT</version>
+      <version>0.37.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
-      <version>4.0.1</version>
+      <version>4.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

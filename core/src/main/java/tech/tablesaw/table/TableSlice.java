@@ -14,183 +14,285 @@
 
 package tech.tablesaw.table;
 
-import it.unimi.dsi.fastutil.ints.IntIterable;
-import it.unimi.dsi.fastutil.ints.IntIterator;
+import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.PrimitiveIterator;
+import java.util.stream.IntStream;
+import javax.annotation.Nullable;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.util.ArrayList;
-import java.util.List;
+import tech.tablesaw.sorting.Sort;
+import tech.tablesaw.sorting.SortUtils;
+import tech.tablesaw.sorting.comparators.IntComparatorChain;
 
 /**
- * A TableSlice is a facade around a Relation that acts as a filter.
- * Requests for data are forwarded to the underlying table.
- * <p>
- * A TableSlice is only good until the structure of the underlying table changes.
+ * A TableSlice is a facade around a Relation that acts as a filter. Requests for data are forwarded
+ * to the underlying table. A TableSlice can be sorted independently of the underlying table.
+ *
+ * <p>A TableSlice is only good until the structure of the underlying table changes.
  */
-public class TableSlice extends Relation implements IntIterable {
+public class TableSlice extends Relation {
 
-    private final Selection selection;
-    private String name;
-    private final Table table;
+  private final Table table;
+  private String name;
+  @Nullable private Selection selection;
+  @Nullable private int[] sortOrder = null;
 
-    /**
-     * Returns a new View constructed from the given table, containing only the rows represented by the bitmap
-     */
-    public TableSlice(Table table, Selection rowSelection) {
-        this.name = table.name();
-        this.selection = rowSelection;
-        this.table = table;
+  /**
+   * Returns a new View constructed from the given table, containing only the rows represented by
+   * the bitmap
+   */
+  public TableSlice(Table table, Selection rowSelection) {
+    this.name = table.name();
+    this.selection = rowSelection;
+    this.table = table;
+  }
+
+  /**
+   * Returns a new view constructed from the given table. The view can be sorted independently of
+   * the table.
+   */
+  public TableSlice(Table table) {
+    this.name = table.name();
+    this.selection = null;
+    this.table = table;
+  }
+
+  @Override
+  public Column<?> column(int columnIndex) {
+    Column<?> col = table.column(columnIndex);
+    if (isSorted()) {
+      return col.subset(sortOrder);
+    } else if (hasSelection()) {
+      return col.where(selection);
     }
+    return col;
+  }
 
-    @Override
-    public Column<?> column(int columnIndex) {
-        return table.column(columnIndex).where(selection);
+  @Override
+  public Column<?> column(String columnName) {
+    return column(table.columnIndex(columnName));
+  }
+
+  @Override
+  public int columnCount() {
+    return table.columnCount();
+  }
+
+  @Override
+  public int rowCount() {
+    if (hasSelection()) {
+      return selection.size();
     }
+    return table.rowCount();
+  }
 
-    @Override
-    public Column<?> column(String columnName) {
-        return table.column(columnName).where(selection);
+  @Override
+  public List<Column<?>> columns() {
+    List<Column<?>> columns = new ArrayList<>();
+    for (int i = 0; i < columnCount(); i++) {
+      columns.add(column(i));
     }
+    return columns;
+  }
 
-    /**
-     * Returns the entire column of the source table, unfiltered
-     */
-    private Column<?> entireColumn(int columnIndex) {
-        return table.column(columnIndex);
+  @Override
+  public int columnIndex(Column<?> column) {
+    return table.columnIndex(column);
+  }
+
+  @Override
+  public Object get(int r, int c) {
+    return table.get(mappedRowNumber(r), c);
+  }
+
+  @Override
+  public String name() {
+    return name;
+  }
+
+  public Table getTable() {
+    return table;
+  }
+
+  /** Clears all rows from this View, leaving the structure in place */
+  @Override
+  public void clear() {
+    sortOrder = null;
+    selection = Selection.with();
+  }
+
+  /** Removes the sort from this View. */
+  public void removeSort() {
+    this.sortOrder = null;
+  }
+
+  /**
+   * Removes the selection from this view, leaving it with the same number of rows as the underlying
+   * source table.
+   */
+  public void removeSelection() {
+    this.selection = null;
+  }
+
+  @Override
+  public List<String> columnNames() {
+    return table.columnNames();
+  }
+
+  @Override
+  public TableSlice addColumns(Column<?>... column) {
+    throw new UnsupportedOperationException(
+        "Class TableSlice does not support the addColumns operation");
+  }
+
+  @Override
+  public TableSlice removeColumns(Column<?>... columns) {
+    throw new UnsupportedOperationException(
+        "Class TableSlice does not support the removeColumns operation");
+  }
+
+  @Override
+  public Table first(int nRows) {
+    int count = 0;
+    PrimitiveIterator.OfInt it = sourceRowNumberIterator();
+    Table copy = table.emptyCopy();
+    while (it.hasNext() && count < nRows) {
+      int row = it.nextInt();
+      copy.addRow(table.row(row));
+      count++;
     }
+    return copy;
+  }
 
-    @Override
-    public int columnCount() {
-        return table.columnCount();
+  @Override
+  public TableSlice setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public Table asTable() {
+    Table table = Table.create(this.name());
+    for (Column<?> column : this.columns()) {
+      table.addColumns(column);
     }
+    return table;
+  }
 
-    @Override
-    public int rowCount() {
-        return selection.size();
+  /**
+   * IntIterator of source table row numbers that are present in this view. This can be used to in
+   * combination with the source table to iterate over the cells of a column in a sorted order
+   * without copying the column.
+   *
+   * @return an int iterator of row numbers in the source table that are present in this view.
+   */
+  protected PrimitiveIterator.OfInt sourceRowNumberIterator() {
+    if (this.isSorted()) {
+      return Arrays.stream(sortOrder).iterator();
+    } else if (this.hasSelection()) {
+      return selection.iterator();
     }
+    return Selection.withRange(0, table.rowCount()).iterator();
+  }
 
-    @Override
-    public List<Column<?>> columns() {
-        List<Column<?>> columns = new ArrayList<>();
-        for (int i = 0; i < columnCount(); i++) {
-            columns.add(entireColumn(i));
-        }
-        return columns;
+  /**
+   * Returns the result of applying the given function to the specified column
+   *
+   * @param numberColumnName The name of a numeric column in this table
+   * @param function A numeric reduce function
+   * @return the function result
+   * @throws IllegalArgumentException if numberColumnName doesn't name a numeric column in this
+   *     table
+   */
+  public double reduce(String numberColumnName, NumericAggregateFunction function) {
+    NumericColumn<?> column = table.numberColumn(numberColumnName);
+    if (hasSelection()) {
+      return function.summarize(column.where(selection));
     }
+    return function.summarize(column);
+  }
 
-    @Override
-    public int columnIndex(Column<?> column) {
-        return table.columnIndex(column);
+  /**
+   * Iterate over the underlying rows in the source table. If you set one of the rows while
+   * iterating it will change the row in the source table.
+   */
+  @Override
+  public Iterator<Row> iterator() {
+
+    return new Iterator<Row>() {
+
+      private final Row row = new Row(TableSlice.this);
+
+      @Override
+      public Row next() {
+        return row.next();
+      }
+
+      @Override
+      public boolean hasNext() {
+        return row.hasNext();
+      }
+    };
+  }
+
+  private boolean hasSelection() {
+    return selection != null;
+  }
+
+  private boolean isSorted() {
+    return sortOrder != null;
+  }
+
+  /**
+   * Maps the view row number to the row number on the underlying source table.
+   *
+   * @param rowNumber the row number in the view.
+   * @return the matching row number in the underlying table.
+   */
+  public int mappedRowNumber(int rowNumber) {
+    if (isSorted()) {
+      return sortOrder[rowNumber];
+    } else if (hasSelection()) {
+      return selection.get(rowNumber);
     }
+    return rowNumber;
+  }
 
-    @Override
-    public Object get(int r, int c) {
-        return table.get(selection.get(r), c);
+  /**
+   * Sort this view in place without modifying or copying the underlying source table. Unlike {@link
+   * Table#sortOn(Sort)} which returns a copy of the table, this method sorts the view in place.
+   *
+   * @param key to sort on.
+   */
+  public void sortOn(Sort key) {
+    Preconditions.checkArgument(!key.isEmpty());
+    if (key.size() == 1) {
+      IntComparator comparator = SortUtils.getComparator(table, key);
+      this.sortOrder = sortOn(comparator);
+    } else {
+      IntComparatorChain chain = SortUtils.getChain(table, key);
+      this.sortOrder = sortOn(chain);
     }
+  }
 
-    @Override
-    public String name() {
-        return name;
+  /** Returns an array of integers representing the source table indexes in sorted order. */
+  private int[] sortOn(IntComparator rowComparator) {
+    int[] newRows;
+    if (hasSelection()) {
+      newRows = this.selection.toArray();
+    } else {
+      newRows = IntStream.range(0, table.rowCount()).toArray();
     }
-
-    /**
-     * Clears all rows from this View, leaving the structure in place
-     */
-    @Override
-    public void clear() {
-        selection.clear();
-    }
-
-    @Override
-    public List<String> columnNames() {
-        return table.columnNames();
-    }
-
-    @Override
-    public TableSlice addColumns(Column<?>... column) {
-        throw new UnsupportedOperationException("Class TableSlice does not support the addColumns operation");
-    }
-
-    @Override
-    public TableSlice removeColumns(Column<?>... columns) {
-        throw new UnsupportedOperationException("Class TableSlice does not support the removeColumns operation");
-    }
-
-    @Override
-    public Table first(int nRows) {
-        Selection newMap = new BitmapBackedSelection();
-        int count = 0;
-        IntIterator it = intIterator();
-        while (it.hasNext() && count < nRows) {
-            int row = it.nextInt();
-            newMap.add(row);
-            count++;
-        }
-        return table.where(newMap);
-    }
-
-    @Override
-    public TableSlice setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Table asTable() {
-        Table table = Table.create(this.name());
-        for (Column<?> column : columns()) {
-            table.addColumns(column.where(selection));
-        }
-        return table;
-    }
-
-    private IntIterator intIterator() {
-        return selection.iterator();
-    }
-
-    /**
-     * Returns the result of applying the given function to the specified column
-     *
-     * @param numberColumnName The name of a numeric column in this table
-     * @param function         A numeric reduce function
-     * @return the function result
-     * @throws IllegalArgumentException if numberColumnName doesn't name a numeric column in this table
-     */
-    public double reduce(String numberColumnName, NumericAggregateFunction function) {
-        NumberColumn<?> column = table.numberColumn(numberColumnName);
-        return function.summarize(column.where(selection));
-    }
-
-    /**
-     * Returns a 0 based int iterator for use with, for example, get(). When it returns 0 for the first row,
-     * get will transform that to the 0th row in the selection, which may not be the 0th row in the underlying
-     * table.
-     */
-    @Override
-    public IntIterator iterator() {
-
-        return new IntIterator() {
-
-            private int i = 0;
-
-            @Override
-            public int nextInt() {
-                return i++;
-            }
-
-            @Override
-            public int skip(int k) {
-                return i + k;
-            }
-
-            @Override
-            public boolean hasNext() {
-                return i < rowCount();
-            }
-        };
-    }
+    IntArrays.parallelQuickSort(newRows, rowComparator);
+    return newRows;
+  }
 }

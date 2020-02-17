@@ -8,19 +8,16 @@ import tech.tablesaw.plotly.components.HoverLabel;
 @Disabled
 public class HoverLabelTest {
 
-    @Test
-    public void asJavascript() {
-        HoverLabel x = HoverLabel.builder()
-                .nameLength(10)
-                .bgColor("blue")
-                .borderColor("green")
-                .font(Font.builder()
-                        .family(Font.Family.ARIAL)
-                        .size(8)
-                        .color("red")
-                        .build())
-                .build();
+  @Test
+  public void asJavascript() {
+    HoverLabel x =
+        HoverLabel.builder()
+            .nameLength(10)
+            .bgColor("blue")
+            .borderColor("green")
+            .font(Font.builder().family(Font.Family.ARIAL).size(8).color("red").build())
+            .build();
 
-        System.out.println(x);
-    }
+    System.out.println(x);
+  }
 }

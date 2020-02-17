@@ -20,131 +20,115 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
-
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
-import tech.tablesaw.columns.instant.InstantColumnType;
-import tech.tablesaw.columns.instant.PackedInstant;
 
 public interface TemporalMapFunctions<T extends Temporal> extends TemporalColumn<T> {
 
-    T min();
+  T min();
 
-    TemporalColumn<T> emptyCopy();
+  TemporalColumn<T> emptyCopy();
 
-    default LongColumn differenceInMilliseconds(TemporalColumn<T> column2) {
-        return difference(column2, ChronoUnit.MILLIS);
-    }
+  default LongColumn differenceInMilliseconds(TemporalColumn<T> column2) {
+    return difference(column2, ChronoUnit.MILLIS);
+  }
 
-    default LongColumn differenceInSeconds(TemporalColumn<T> column2) {
-        return difference(column2, ChronoUnit.SECONDS);
-    }
+  default LongColumn differenceInSeconds(TemporalColumn<T> column2) {
+    return difference(column2, ChronoUnit.SECONDS);
+  }
 
-    default LongColumn differenceInMinutes(TemporalColumn<T> column2) {
-        return difference(column2, ChronoUnit.MINUTES);
-    }
+  default LongColumn differenceInMinutes(TemporalColumn<T> column2) {
+    return difference(column2, ChronoUnit.MINUTES);
+  }
 
-    default LongColumn differenceInHours(TemporalColumn<T> column2) {
-        return difference(column2, ChronoUnit.HOURS);
-    }
+  default LongColumn differenceInHours(TemporalColumn<T> column2) {
+    return difference(column2, ChronoUnit.HOURS);
+  }
 
-    default LongColumn differenceInDays(TemporalColumn<T> column2) {
-        return difference(column2, ChronoUnit.DAYS);
-    }
+  default LongColumn differenceInDays(TemporalColumn<T> column2) {
+    return difference(column2, ChronoUnit.DAYS);
+  }
 
-    default LongColumn differenceInYears(TemporalColumn<T> column2) {
-        return difference(column2, ChronoUnit.YEARS);
-    }
+  default LongColumn differenceInYears(TemporalColumn<T> column2) {
+    return difference(column2, ChronoUnit.YEARS);
+  }
 
-    default LongColumn difference(TemporalColumn<T> column2, ChronoUnit unit) {
+  default LongColumn difference(TemporalColumn<T> column2, ChronoUnit unit) {
 
-        LongColumn newColumn = LongColumn.create(name() + " - " + column2.name() + "[" + unit.name() + "]");
+    LongColumn newColumn =
+        LongColumn.create(name() + " - " + column2.name() + "[" + unit.name() + "]");
 
-        for (int r = 0; r < size(); r++) {
-            if (this.isMissing(r) || column2.isMissing(r)) {
-                newColumn.appendMissing();
-            } else {
-                long c1 = this.getLongInternal(r);
-                long c2 = column2.getLongInternal(r);
-                LocalDateTime value1 = asLocalDateTime(c1);
-                LocalDateTime value2 = asLocalDateTime(c2);
-                if (value1 != null && value2 != null) {
-                    newColumn.append(unit.between(value1, value2));
-                } else {
-                    newColumn.appendMissing();
-                }
-            }
+    for (int r = 0; r < size(); r++) {
+      if (this.isMissing(r) || column2.isMissing(r)) {
+        newColumn.appendMissing();
+      } else {
+        long c1 = this.getLongInternal(r);
+        long c2 = column2.getLongInternal(r);
+        LocalDateTime value1 = asLocalDateTime(c1);
+        LocalDateTime value2 = asLocalDateTime(c2);
+        if (value1 != null && value2 != null) {
+          newColumn.append(unit.between(value1, value2));
+        } else {
+          newColumn.appendMissing();
         }
-        return newColumn;
+      }
     }
-    
-    default Column<T> plus(long amountToAdd, ChronoUnit unit) {
-        TemporalColumn<T> newColumn = emptyCopy();
-        newColumn.setName(temporalColumnName(this, amountToAdd, unit));
-        TemporalColumn<T> column1 = this;
+    return newColumn;
+  }
 
-        for (int r = 0; r < column1.size(); r++) {
-            long packedDateTime = column1.getLongInternal(r);
-            if (packedDateTime == InstantColumnType.missingValueIndicator()) {
-                newColumn.appendMissing();
-            } else {
-                newColumn.appendInternal(PackedInstant.plus(packedDateTime, amountToAdd, unit));
-            }
-        }
-        return newColumn;
-    }
+  Column<T> plus(long amountToAdd, ChronoUnit unit);
 
-    default Column<T> plusYears(long amountToAdd) {
-        return plus(amountToAdd, ChronoUnit.YEARS);
-    }
+  default Column<T> plusYears(long amountToAdd) {
+    return plus(amountToAdd, ChronoUnit.YEARS);
+  }
 
-    default Column<T> plusMonths(long amountToAdd) {
-        return plus(amountToAdd, ChronoUnit.MONTHS);
-    }
+  default Column<T> plusMonths(long amountToAdd) {
+    return plus(amountToAdd, ChronoUnit.MONTHS);
+  }
 
-    default Column<T> plusWeeks(long amountToAdd) {
-        return plus(amountToAdd, ChronoUnit.WEEKS);
-    }
+  default Column<T> plusWeeks(long amountToAdd) {
+    return plus(amountToAdd, ChronoUnit.WEEKS);
+  }
 
-    default Column<T> plusDays(long amountToAdd) {
-        return plus(amountToAdd, ChronoUnit.DAYS);
-    }
+  default Column<T> plusDays(long amountToAdd) {
+    return plus(amountToAdd, ChronoUnit.DAYS);
+  }
 
-    default Column<T> plusHours(long amountToAdd) {
-        return plus(amountToAdd, ChronoUnit.HOURS);
-    }
+  default Column<T> plusHours(long amountToAdd) {
+    return plus(amountToAdd, ChronoUnit.HOURS);
+  }
 
-    default Column<T> plusMinutes(long amountToAdd) {
-        return plus(amountToAdd, ChronoUnit.MINUTES);
-    }
+  default Column<T> plusMinutes(long amountToAdd) {
+    return plus(amountToAdd, ChronoUnit.MINUTES);
+  }
 
-    default Column<T> plusSeconds(long amountToAdd) {
-        return plus(amountToAdd, ChronoUnit.SECONDS);
-    }
+  default Column<T> plusSeconds(long amountToAdd) {
+    return plus(amountToAdd, ChronoUnit.SECONDS);
+  }
 
-    default Column<T> plusMillis(long amountToAdd) {
-        return plus(amountToAdd, ChronoUnit.MILLIS);
-    }
+  default Column<T> plusMillis(long amountToAdd) {
+    return plus(amountToAdd, ChronoUnit.MILLIS);
+  }
 
-    default Column<T> plusMicros(long amountToAdd) {
-        return plus(amountToAdd, ChronoUnit.MICROS);
-    }
+  default Column<T> plusMicros(long amountToAdd) {
+    return plus(amountToAdd, ChronoUnit.MICROS);
+  }
 
-    default BooleanColumn missingValues() {
-        BooleanColumn newColumn = BooleanColumn.create(this.name() + " missing?");
-        for (int r = 0; r < this.size(); r++) {
-            if (isMissing(r)) {
-                newColumn.append(BooleanColumnType.BYTE_TRUE);
-            } else {
-                newColumn.append(BooleanColumnType.BYTE_FALSE);
-            }
-        }
-        return newColumn;
+  default BooleanColumn missingValues() {
+    BooleanColumn newColumn = BooleanColumn.create(this.name() + " missing?");
+    for (int r = 0; r < this.size(); r++) {
+      if (isMissing(r)) {
+        newColumn.append(BooleanColumnType.BYTE_TRUE);
+      } else {
+        newColumn.append(BooleanColumnType.BYTE_FALSE);
+      }
     }
+    return newColumn;
+  }
 
-    default String temporalColumnName(Column<T> column1, long value, TemporalUnit unit) {
-        return column1.name() + ": " + value + " " + unit.toString() + "(s)";
-    }
+  default String temporalColumnName(Column<T> column1, long value, TemporalUnit unit) {
+    return column1.name() + ": " + value + " " + unit.toString() + "(s)";
+  }
 }

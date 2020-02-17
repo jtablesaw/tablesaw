@@ -4,7 +4,7 @@
 
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.33.3-SNAPSHOT</version>
+    <version>0.37.4-SNAPSHOT</version>
     <name>Tablesaw</name>
     <description>High-performance Java Dataframe</description>
     <url>https://github.com/jtablesaw/tablesaw</url>
@@ -50,6 +50,8 @@
         <module>html</module>
         <module>json</module>
         <module>jsplot</module>
+        <module>saw</module>
+        <module>docs-src</module>
     </modules>
 
     <profiles>
@@ -81,10 +83,14 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.1.1</version>
                     <configuration>
+                        <source>1.8</source>
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <failOnError>false</failOnError>
+                        <quiet>true</quiet>
+                        <additionalOptions>-Xdoclint:none</additionalOptions>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
                     </configuration>
                     <executions>
                         <execution>
@@ -185,7 +191,6 @@
                         <target>1.8</target>
                         <compilerArgument>-Xlint:all</compilerArgument>
                     </configuration>
-
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -220,6 +225,41 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Duser.language=en-US -Duser.region=US</argLine>
+                    <printSummary>false</printSummary>
+                    <!-- Jacoco prepare-agent builds some command-line params without -->
+                    <!-- which jacoco will not instrument. Hence it is important to add -->
+                    <!-- those command-line params here (${argLine} holds those params) -->
+                    <argLine>${argLine} -Xms256m -Xmx2048m</argLine>
+                    <forkCount>1</forkCount>
+                    <runOrder>random</runOrder>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.cosium.code</groupId>
+                <artifactId>maven-git-code-format</artifactId>
+                <version>1.38</version>
+                <executions>
+                    <!-- On commit, format the modified java files -->
+                    <execution>
+                        <id>install-formatter-hook</id>
+                            <goals>
+                                <goal>install-hooks</goal>
+                            </goals>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -228,14 +268,29 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.10.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.10.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.30</version>
+            </dependency>
+            <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.4.0</version>
+                <version>5.5.2</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
-                <version>5.4.0</version>
+                <version>5.5.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

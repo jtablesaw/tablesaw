@@ -14,81 +14,78 @@
 
 package tech.tablesaw.io.csv;
 
-import javax.annotation.concurrent.Immutable;
-
 import com.univocity.parsers.csv.CsvWriterSettings;
-
+import javax.annotation.concurrent.Immutable;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.DataWriter;
 import tech.tablesaw.io.Destination;
 import tech.tablesaw.io.WriterRegistry;
 
-/**
- * Class that writes tables and individual columns to CSV files
- */
+/** Class that writes tables and individual columns to CSV files */
 @Immutable
-final public class CsvWriter implements DataWriter<CsvWriteOptions> {
+public final class CsvWriter implements DataWriter<CsvWriteOptions> {
 
-    private static final CsvWriter INSTANCE = new CsvWriter();
-    private static final String nullValue = "";
+  private static final CsvWriter INSTANCE = new CsvWriter();
+  private static final String nullValue = "";
 
-    static {
-        register(Table.defaultWriterRegistry);
-    }
+  static {
+    register(Table.defaultWriterRegistry);
+  }
 
-    public static void register(WriterRegistry registry) {
-        registry.registerExtension("csv", INSTANCE);
-        registry.registerOptions(CsvWriteOptions.class, INSTANCE);
-    }
+  public static void register(WriterRegistry registry) {
+    registry.registerExtension("csv", INSTANCE);
+    registry.registerOptions(CsvWriteOptions.class, INSTANCE);
+  }
 
-    public void write(Table table, CsvWriteOptions options) {
-        CsvWriterSettings settings = createSettings(options);
-        
-        com.univocity.parsers.csv.CsvWriter csvWriter = null;
-        // Creates a writer with the above settings;
-        try {
-            csvWriter = new com.univocity.parsers.csv.CsvWriter(options.destination().createWriter(), settings);
+  public void write(Table table, CsvWriteOptions options) {
+    CsvWriterSettings settings = createSettings(options);
 
-            if (options.header()) {
-                String[] header = new String[table.columnCount()];
-                for (int c = 0; c < table.columnCount(); c++) {
-                    header[c] = table.column(c).name();
-                }
-                csvWriter.writeHeaders(header);
-            }
-            for (int r = 0; r < table.rowCount(); r++) {
-                String[] entries = new String[table.columnCount()];
-                for (int c = 0; c < table.columnCount(); c++) {
-                    table.get(r, c);
-                    entries[c] = table.getUnformatted(r, c);
-                }
-                csvWriter.writeRow(entries);
-            }
-        } finally {
-            if (csvWriter != null) {
-                csvWriter.flush();
-                csvWriter.close();
-            }
+    com.univocity.parsers.csv.CsvWriter csvWriter = null;
+    // Creates a writer with the above settings;
+    try {
+      csvWriter =
+          new com.univocity.parsers.csv.CsvWriter(options.destination().createWriter(), settings);
+
+      if (options.header()) {
+        String[] header = new String[table.columnCount()];
+        for (int c = 0; c < table.columnCount(); c++) {
+          header[c] = table.column(c).name();
         }
+        csvWriter.writeHeaders(header);
+      }
+      for (int r = 0; r < table.rowCount(); r++) {
+        String[] entries = new String[table.columnCount()];
+        for (int c = 0; c < table.columnCount(); c++) {
+          table.get(r, c);
+          entries[c] = table.getUnformatted(r, c);
+        }
+        csvWriter.writeRow(entries);
+      }
+    } finally {
+      if (csvWriter != null) {
+        csvWriter.flush();
+        csvWriter.close();
+      }
     }
+  }
 
-    protected static CsvWriterSettings createSettings(CsvWriteOptions options) {
-        CsvWriterSettings settings = new CsvWriterSettings();
-        // Sets the character sequence to write for the values that are null.
-        settings.setNullValue(nullValue);
-        settings.getFormat().setDelimiter(options.separator());
-        settings.getFormat().setQuote(options.quoteChar());
-        settings.getFormat().setQuoteEscape(options.escapeChar());
-        settings.getFormat().setLineSeparator(options.lineEnd());
-        // writes empty lines as well.
-        settings.setSkipEmptyLines(false);
-        return settings;
-    }
+  protected static CsvWriterSettings createSettings(CsvWriteOptions options) {
+    CsvWriterSettings settings = new CsvWriterSettings();
+    // Sets the character sequence to write for the values that are null.
+    settings.setNullValue(nullValue);
+    settings.getFormat().setDelimiter(options.separator());
+    settings.getFormat().setQuote(options.quoteChar());
+    settings.getFormat().setQuoteEscape(options.escapeChar());
+    settings.getFormat().setLineSeparator(options.lineEnd());
+    settings.setIgnoreLeadingWhitespaces(options.ignoreLeadingWhitespaces());
+    settings.setIgnoreTrailingWhitespaces(options.ignoreTrailingWhitespaces());
+    // writes empty lines as well.
+    settings.setSkipEmptyLines(false);
+    return settings;
+  }
 
-    @Override
-    public void write(Table table, Destination dest) {
-        write(table, CsvWriteOptions.builder(dest).build());
-    }
-    
+  @Override
+  public void write(Table table, Destination dest) {
+    write(table, CsvWriteOptions.builder(dest).build());
+  }
 }
-

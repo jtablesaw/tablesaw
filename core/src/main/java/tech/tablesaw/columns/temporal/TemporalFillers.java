@@ -17,16 +17,15 @@ package tech.tablesaw.columns.temporal;
 import java.time.temporal.Temporal;
 import java.util.Iterator;
 import java.util.function.Supplier;
-
 import tech.tablesaw.columns.Column;
 
 public interface TemporalFillers<T extends Temporal, C extends Column<T>> {
 
-    C fillWith(Iterator<T> iterator);
+  C fillWith(Iterator<T> iterator);
 
-    default C fillWith(final Iterable<T> iterable) {
-        return fillWith(iterable.iterator());
-    }
+  default C fillWith(final Iterable<T> iterable) {
+    return fillWith(iterable.iterator());
+  }
 
-    C fillWith(Supplier<T> supplier);
+  C fillWith(Supplier<T> supplier);
 }

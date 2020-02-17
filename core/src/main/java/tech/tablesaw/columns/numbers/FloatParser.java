@@ -7,41 +7,41 @@ import tech.tablesaw.io.ReadOptions;
 
 public class FloatParser extends AbstractColumnParser<Float> {
 
-    public FloatParser(ColumnType columnType) {
-        super(columnType);
-    }
+  public FloatParser(ColumnType columnType) {
+    super(columnType);
+  }
 
-    public FloatParser(FloatColumnType columnType, ReadOptions readOptions) {
-        super(columnType);
-        if (readOptions.missingValueIndicator() != null) {
-            missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
-        }
+  public FloatParser(FloatColumnType columnType, ReadOptions readOptions) {
+    super(columnType);
+    if (readOptions.missingValueIndicator() != null) {
+      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
     }
+  }
 
-    @Override
-    public boolean canParse(String s) {
-        if (isMissing(s)) {
-            return true;
-        }
-        try {
-            Float.parseFloat(AbstractColumnParser.remove(s, ','));
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
+  @Override
+  public boolean canParse(String s) {
+    if (isMissing(s)) {
+      return true;
     }
+    try {
+      Float.parseFloat(AbstractColumnParser.remove(s, ','));
+      return true;
+    } catch (NumberFormatException e) {
+      // it's all part of the plan
+      return false;
+    }
+  }
 
-    @Override
-    public Float parse(String s) {
-        return parseFloat(s);
-    }
+  @Override
+  public Float parse(String s) {
+    return parseFloat(s);
+  }
 
-    @Override
-    public float parseFloat(String s) {
-        if (isMissing(s)) {
-            return FloatColumnType.missingValueIndicator();
-        }
-        return Float.parseFloat(AbstractColumnParser.remove(s, ','));
+  @Override
+  public float parseFloat(String s) {
+    if (isMissing(s)) {
+      return FloatColumnType.missingValueIndicator();
     }
+    return Float.parseFloat(AbstractColumnParser.remove(s, ','));
+  }
 }

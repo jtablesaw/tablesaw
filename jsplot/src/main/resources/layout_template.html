@@ -5,8 +5,12 @@ var layout = {
 {% if titlefont is not null %}
     titlefont: {{titlefont | raw}},
 {% endif %}
+{% if height is not null %}
     height: {{height}},
+{% endif %}
+{% if width is not null %}
     width: {{width}},
+{% endif %}
 {% if showlegend is not null %}
     showlegend: {{showlegend}},
 {% endif %}
@@ -64,7 +68,9 @@ var layout = {
     thousandsseparator: '{{thousandsSeparator}}',
 {% endif %}
 {% if barMode is not null %}
-    barmode: '{{barMode}}'
+    barmode: '{{barMode}}',
 {% endif %}
-
+{% if grid is not null %}
+    grid:  {{grid | raw}}
+{% endif %}
 };

@@ -84,6 +84,9 @@
 {% if type is not null %}
     type: '{{type}}',
 {% endif %}
+{% if range is not null %}
+    range: {{range | raw}}
+{% endif %}
 {% if visible is not null %}
     visible: {{visible}},
 {% endif %}
@@ -95,5 +98,8 @@
 {% endif %}
 {% if categoryOrder is not null %}
     categoryorder: '{{categoryOrder}}'
+{% endif %}
+{% if domain is not null %}
+    domain: {{domain}},
 {% endif %}
     }

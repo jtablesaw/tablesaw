@@ -14,39 +14,37 @@
 
 package tech.tablesaw.table;
 
+import java.util.ArrayList;
+import java.util.List;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * A group of tables formed by performing splitting operations on an original table
- */
+/** A group of tables formed by performing splitting operations on an original table */
 public class SelectionTableSliceGroup extends TableSliceGroup {
 
-    public static SelectionTableSliceGroup create(Table original, String subTableNameTemplate, int step) {
-        return new SelectionTableSliceGroup(original, subTableNameTemplate, step);
-    }
+  public static SelectionTableSliceGroup create(
+      Table original, String subTableNameTemplate, int step) {
+    return new SelectionTableSliceGroup(original, subTableNameTemplate, step);
+  }
 
-    private SelectionTableSliceGroup(Table original, String subTableNameTemplate, int step) {
-        super(original);
-        List<Selection> selections = new ArrayList<>();
-        for (int i = 0; i < original.rowCount() - step; i += step) {
-            Selection selection = new BitmapBackedSelection();
-            selection.addRange(i, i + step);
-            selections.add(selection);
-        }
-        splitOnSelection(subTableNameTemplate, selections);
+  private SelectionTableSliceGroup(Table original, String subTableNameTemplate, int step) {
+    super(original);
+    List<Selection> selections = new ArrayList<>();
+    for (int i = 0; i < original.rowCount() - step; i += step) {
+      Selection selection = new BitmapBackedSelection();
+      selection.addRange(i, i + step);
+      selections.add(selection);
     }
+    splitOnSelection(subTableNameTemplate, selections);
+  }
 
-    private void splitOnSelection(String nameTemplate, List<Selection> selections) {
-        for (int i = 0; i < selections.size(); i++) {
-            TableSlice view = new TableSlice(getSourceTable(), selections.get(i));
-            String name = nameTemplate + ": " + i + 1;
-            view.setName(name);
-            getSlices().add(view);
-        }
+  private void splitOnSelection(String nameTemplate, List<Selection> selections) {
+    for (int i = 0; i < selections.size(); i++) {
+      TableSlice view = new TableSlice(getSourceTable(), selections.get(i));
+      String name = nameTemplate + ": " + i + 1;
+      view.setName(name);
+      getSlices().add(view);
     }
+  }
 }

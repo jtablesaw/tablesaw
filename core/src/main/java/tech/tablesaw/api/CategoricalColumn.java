@@ -14,57 +14,54 @@
 
 package tech.tablesaw.api;
 
-import java.util.Map;
-
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import java.util.Map;
 import tech.tablesaw.columns.Column;
 
 /**
- * A column type that can be summarized, or serve as a grouping variable in cross tabs or other aggregation operations.
- * <p>
- * The column data is generally discrete, however NumberColumn implements CategoricalColumn so that it can be used to
- * summarize when it contains ints. If you use it to summarize over a large range of floating point numbers, you
- * will likely run out of memory.
- * <p>
- * Supporting subtypes include:
- * - StringColumn
- * - BooleanColumn
- * - DateColumn,
- * - etc
- * <p>
- * DateTimeColumn is not included. TimeColumn can be converted to ints without loss of data, so it does implement this
- * interface
+ * A column type that can be summarized, or serve as a grouping variable in cross tabs or other
+ * aggregation operations.
+ *
+ * <p>The column data is generally discrete, however NumberColumn implements CategoricalColumn so
+ * that it can be used to summarize when it contains ints. If you use it to summarize over a large
+ * range of floating point numbers, you will likely run out of memory.
+ *
+ * <p>Supporting subtypes include: - StringColumn - BooleanColumn - DateColumn, - etc
+ *
+ * <p>DateTimeColumn is not included. TimeColumn can be converted to ints without loss of data, so
+ * it does implement this interface
  */
 public interface CategoricalColumn<T> extends Column<T> {
 
-    default Table countByCategory() {
+  default Table countByCategory() {
 
-        final Table t = new Table("Column: " + name());
-        final CategoricalColumn<?> categories = (CategoricalColumn<?>) type().create("Category");
-        final IntColumn counts = IntColumn.create("Count");
+    final Table t = new Table("Column: " + name());
+    final CategoricalColumn<?> categories = (CategoricalColumn<?>) type().create("Category");
+    final IntColumn counts = IntColumn.create("Count");
 
-        final Object2IntMap<String> valueToCount = new Object2IntOpenHashMap<>();
+    final Object2IntMap<String> valueToCount = new Object2IntOpenHashMap<>();
 
-        for (int i = 0; i < size(); i++) {
-            final String next = getString(i);
-            if (valueToCount.containsKey(next)) {
-                valueToCount.put(next, valueToCount.getInt(next) + 1);
-            } else {
-                valueToCount.put(next, 1);
-            }
+    for (int i = 0; i < size(); i++) {
+      if (!isMissing(i)) {
+        final String next = getString(i);
+        if (valueToCount.containsKey(next)) {
+          valueToCount.put(next, valueToCount.getInt(next) + 1);
+        } else {
+          valueToCount.put(next, 1);
         }
-        for (Map.Entry<String, Integer> entry : valueToCount.object2IntEntrySet()) {
-            categories.appendCell(entry.getKey());
-            counts.append(entry.getValue());
-        }
-        if (countMissing() > 0) {
-            categories.appendMissing();
-            counts.append(countMissing());
-        }
-        t.addColumns(categories);
-        t.addColumns(counts);
-        return t;
+      }
     }
-
+    for (Map.Entry<String, Integer> entry : valueToCount.object2IntEntrySet()) {
+      categories.appendCell(entry.getKey());
+      counts.append(entry.getValue());
+    }
+    if (countMissing() > 0) {
+      categories.appendMissing();
+      counts.append(countMissing());
+    }
+    t.addColumns(categories);
+    t.addColumns(counts);
+    return t;
+  }
 }

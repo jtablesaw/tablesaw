@@ -14,32 +14,39 @@
 
 package tech.tablesaw.columns;
 
+import java.util.function.IntPredicate;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
-
-import java.util.function.IntPredicate;
 
 /**
  * Predicates for test DateColumn values and/or TimeColumn values
  *
- * NOTE: These are not for testing DateTimeColumnValues, which are in the class DateTimePredicates
+ * <p>NOTE: These are not for testing DateTimeColumnValues, which are in the class
+ * DateTimePredicates
  */
 public class DateAndTimePredicates {
 
-    public final static IntPredicate isMissing = i -> i == TimeColumnType.missingValueIndicator();
+  private DateAndTimePredicates() {}
 
-    public final static IntPredicate isNotMissing = i -> i != TimeColumnType.missingValueIndicator();
+  public static final IntPredicate isMissing = i -> i == TimeColumnType.missingValueIndicator();
 
-    public final static IntBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
+  public static final IntPredicate isNotMissing = i -> i != TimeColumnType.missingValueIndicator();
 
-    public final static IntBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest >=
-            valueToCompareAgainst;
+  public static final IntBiPredicate isGreaterThan =
+      (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
 
-    public final static IntBiPredicate isLessThan = (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
+  public static final IntBiPredicate isGreaterThanOrEqualTo =
+      (valueToTest, valueToCompareAgainst) -> valueToTest >= valueToCompareAgainst;
 
-    public final static IntBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
+  public static final IntBiPredicate isLessThan =
+      (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
 
-    public final static IntBiPredicate isEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
+  public static final IntBiPredicate isLessThanOrEqualTo =
+      (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
 
-    public final static IntBiPredicate isNotEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest != valueToCompareAgainst;
+  public static final IntBiPredicate isEqualTo =
+      (valueToTest, valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
+
+  public static final IntBiPredicate isNotEqualTo =
+      (valueToTest, valueToCompareAgainst) -> valueToTest != valueToCompareAgainst;
 }

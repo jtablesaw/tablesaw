@@ -1,122 +1,84 @@
 package tech.tablesaw.conversion.smile;
 
-import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import smile.data.Attribute;
-import smile.data.AttributeDataset;
-import smile.data.NominalAttribute;
-import smile.data.NumericAttribute;
+import smile.data.DataFrame;
+import smile.data.Tuple;
+import smile.data.type.DataType;
+import smile.data.type.DataTypes;
+import smile.data.type.StructField;
+import smile.data.type.StructType;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
 
 public class SmileConverter {
 
-    private final Relation table;
+  private final Relation table;
 
-    public SmileConverter(Relation table) {
-        this.table = table;
-    }
+  public SmileConverter(Relation table) {
+    this.table = table;
+  }
 
-    /**
-     * Returns a dataset where the response column is numeric. E.g. to be used for a regression
-     */
-    public AttributeDataset numericDataset(String responseColName) {
-        return dataset(
-            table.numberColumn(responseColName),
-            AttributeType.NUMERIC,
-            table.numericColumns().stream().filter(c -> !c.name().equals(responseColName)).collect(Collectors.toList()));
-    }  
+  public DataFrame toDataFrame() {
+    StructType schema =
+        DataTypes.struct(
+            table.columns().stream()
+                .map(col -> new StructField(col.name(), toSmileType(col.type())))
+                .collect(Collectors.toList()));
+    return toDataFrame(schema);
+  }
 
-    /**
-     * Returns a dataset where the response column is numeric. E.g. to be used for a regression
-     */
-    public AttributeDataset numericDataset(int responseColIndex, int... variablesColIndices) {
-        return dataset(table.numberColumn(responseColIndex), AttributeType.NUMERIC, table.columns(variablesColIndices));
-    }  
-
-    /**
-     * Returns a dataset where the response column is numeric. E.g. to be used for a regression
-     */
-    public AttributeDataset numericDataset(String responseColName, String... variablesColNames) {
-        return dataset(table.numberColumn(responseColName), AttributeType.NUMERIC, table.columns(variablesColNames));
-    }
-
-    /**
-     * Returns a dataset where the response column is nominal. E.g. to be used for a classification
-     */
-    public AttributeDataset nominalDataset(String responseColName) {
-        return dataset(
-            table.numberColumn(responseColName),
-            AttributeType.NOMINAL,
-            table.numericColumns().stream().filter(c -> !c.name().equals(responseColName)).collect(Collectors.toList()));
-    }  
-
-    /**
-     * Returns a dataset where the response column is nominal. E.g. to be used for a classification
-     */
-    public AttributeDataset nominalDataset(int responseColIndex, int... variablesColIndices) {
-        return dataset(table.numberColumn(responseColIndex), AttributeType.NOMINAL, table.columns(variablesColIndices));
-    }  
-
-    /**
-     * Returns a dataset where the response column is nominal. E.g. to be used for a classification
-     */
-    public AttributeDataset nominalDataset(String responseColName, String... variablesColNames) {
-        return dataset(table.numberColumn(responseColName), AttributeType.NOMINAL, table.columns(variablesColNames));
-    }
-
-    private AttributeDataset dataset(NumericColumn<?> responseCol, AttributeType type, List<Column<?>> variableCols) {
-        List<Column<?>> convertedVariableCols = variableCols.stream()
-            .map(col -> col.type() == ColumnType.STRING ? col : table.nCol(col.name()))
-            .collect(Collectors.toList());
-        Attribute responseAttribute = type == AttributeType.NOMINAL
-            ? colAsNominalAttribute(responseCol) : new NumericAttribute(responseCol.name());
-        AttributeDataset dataset = new AttributeDataset(table.name(),
-            convertedVariableCols.stream().map(col -> colAsAttribute(col)).toArray(Attribute[]::new),
-            responseAttribute);
-        for (int i = 0; i < responseCol.size(); i++) {
-            final int r = i;
-            double[] x = IntStream.range(0, convertedVariableCols.size())
-                .mapToDouble(c -> getDouble(convertedVariableCols.get(c), dataset.attributes()[c], r))
-                .toArray();
-            dataset.add(x, responseCol.getDouble(r));
+  public DataFrame toDataFrame(StructType schema) {
+    List<Tuple> rows = new ArrayList<>();
+    int colCount = table.columnCount();
+    for (int rowIndex = 0; rowIndex < table.rowCount(); rowIndex++) {
+      Object[] row = new Object[colCount];
+      for (int colIndex = 0; colIndex < colCount; colIndex++) {
+        Column<?> col = table.column(colIndex);
+        if (!col.isMissing(rowIndex)) {
+          row[colIndex] =
+              col.type().equals(ColumnType.INSTANT)
+                  ? LocalDateTime.ofInstant(((InstantColumn) col).get(rowIndex), ZoneOffset.UTC)
+                  : col.get(rowIndex);
         }
-        return dataset;
-    }
-    
-    private double getDouble(Column<?> col, Attribute attr, int r) {
-        if (col.type() == ColumnType.STRING) {
-            String value = ((StringColumn) col).get(r);
-            try {
-                return attr.valueOf(value);
-            } catch (ParseException e) {
-                throw new IllegalArgumentException("Error converting " + value + " to nominal", e);
-            }
-        }
-        if (col instanceof NumericColumn) {
-            return ((NumericColumn<?>) col).getDouble(r);
-        }
-        throw new IllegalStateException("Error converting " + col.type() + " column " + col.name() + " to Smile");
+      }
+      rows.add(Tuple.of(row, schema));
     }
 
-    private Attribute colAsAttribute(Column<?> col) {
-        return col.type() == ColumnType.STRING ? colAsNominalAttribute(col) : new NumericAttribute(col.name());
-    }
+    return DataFrame.of(rows, schema.boxed(rows));
+  }
 
-    private NominalAttribute colAsNominalAttribute(Column<?> col) {
-        return new NominalAttribute(col.name(),
-            col.unique().mapInto(o -> o.toString(), StringColumn.create(col.name(), col.size())).asObjectArray());
+  private DataType toSmileType(ColumnType type) {
+    if (type.equals(ColumnType.BOOLEAN)) {
+      return DataTypes.BooleanType;
+    } else if (type.equals(ColumnType.DOUBLE)) {
+      return DataTypes.DoubleType;
+    } else if (type.equals(ColumnType.FLOAT)) {
+      return DataTypes.FloatType;
+    } else if (type.equals(ColumnType.INSTANT)) {
+      return DataTypes.DateTimeType;
+    } else if (type.equals(ColumnType.INTEGER)) {
+      return DataTypes.IntegerType;
+    } else if (type.equals(ColumnType.LOCAL_DATE)) {
+      return DataTypes.DateType;
+    } else if (type.equals(ColumnType.LOCAL_DATE_TIME)) {
+      return DataTypes.DateTimeType;
+    } else if (type.equals(ColumnType.LOCAL_TIME)) {
+      return DataTypes.TimeType;
+    } else if (type.equals(ColumnType.LONG)) {
+      return DataTypes.LongType;
+    } else if (type.equals(ColumnType.SHORT)) {
+      return DataTypes.ShortType;
+    } else if (type.equals(ColumnType.STRING)) {
+      return DataTypes.StringType;
+    } else if (type.equals(ColumnType.TEXT)) {
+      return DataTypes.StringType;
     }
-
-    private static enum AttributeType {
-        NUMERIC,
-        NOMINAL
-    }
-
+    throw new IllegalStateException("Unsupported column type " + type);
+  }
 }

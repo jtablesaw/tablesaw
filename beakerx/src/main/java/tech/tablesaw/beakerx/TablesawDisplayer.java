@@ -14,34 +14,68 @@
 
 package tech.tablesaw.beakerx;
 
-import tech.tablesaw.api.Table;
+import com.google.common.collect.Lists;
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.table.TableDisplay;
+import java.util.Map;
 import jupyter.Displayer;
 import jupyter.Displayers;
-
-import java.util.Map;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 
 public class TablesawDisplayer {
 
-  public static void register() {
-    Displayers.register(Table.class, new Displayer<Table>() {
-      @Override
-      public Map<String, String> display(Table table) {
-        new TableDisplay(
-                table.rowCount(),
-                table.columnCount(),
-                table.columnNames(),
-                new TableDisplay.Element() {
-                  @Override
-                  public String get(int columnIndex, int rowIndex) {
-                    return table.getUnformatted(rowIndex,columnIndex);
-                  }
-                }
-        ).display();
-        return OutputCell.DISPLAYER_HIDDEN;
-      }
-    });
+  private TablesawDisplayer() {}
 
+  /**
+   * Registers {@link Table} and {@link Column} for display in Jupyter. Call {@link
+   * #registerTable()} or {@link #registerColumns()} instead if you'd like to only display one or
+   * the other.
+   */
+  public static void register() {
+    registerTable();
+    registerColumns();
+  }
+
+  /** Registers {@link Table} for display in Jupyter. */
+  public static void registerTable() {
+    Displayers.register(
+        Table.class,
+        new Displayer<Table>() {
+          @Override
+          public Map<String, String> display(Table table) {
+            new TableDisplay(
+                    table.rowCount(),
+                    table.columnCount(),
+                    table.columnNames(),
+                    (int columnIndex, int rowIndex) -> table.getUnformatted(rowIndex, columnIndex))
+                .display();
+            return OutputCell.DISPLAYER_HIDDEN;
+          }
+        });
+  }
+
+  /**
+   * Registers and {@link Column} for display in Jupyter. Call {@link #registerTable()} or {@link
+   * #registerColumns()} instead if you'd like to only display one or the other.
+   */
+  // TODO: remove rawtypes warnings suppression after PR below is merged
+  // https://github.com/jupyter/jvm-repr/pull/22
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public static void registerColumns() {
+    Displayers.register(
+        Column.class,
+        new Displayer<Column>() {
+          @Override
+          public Map<String, String> display(Column column) {
+            new TableDisplay(
+                    column.size(),
+                    1,
+                    Lists.newArrayList(column.name()),
+                    (int columnIndex, int rowIndex) -> column.getUnformattedString(rowIndex))
+                .display();
+            return OutputCell.DISPLAYER_HIDDEN;
+          }
+        });
   }
 }

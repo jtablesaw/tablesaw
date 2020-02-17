@@ -4,6 +4,7 @@ Tablesaw
 [![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/nebula-project-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Build Status](https://travis-ci.org/jtablesaw/tablesaw.svg?branch=master)](https://travis-ci.org/jtablesaw/tablesaw)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5029f48d00c24f1ea378b090210cf7da)](https://www.codacy.com/app/jtablesaw/tablesaw?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jtablesaw/tablesaw&amp;utm_campaign=Badge_Grade)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=jtablesaw_tablesaw&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=jtablesaw_tablesaw)
 
 ### Overview
 
@@ -37,20 +38,22 @@ Tablesaw supports data visualization by providing a wrapper for the Plot.ly Java
 
 ### Getting started
 
-Add tablesaw-core and tablesaw-jsplot to your project: 
+Add tablesaw-core to your project. You can find the version number for the latest release in the [release notes](https://github.com/jtablesaw/tablesaw/releases): 
 
 ```xml
 <dependency>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-core</artifactId>
-    <version>0.32.6</version>
-</dependency>
-<dependency>
-    <groupId>tech.tablesaw</groupId>
-    <artifactId>tablesaw-jsplot</artifactId>
-    <version>0.32.6</version>
+    <version>VERSION_NUMBER_GOES_HERE</version>
 </dependency>
 ```
+
+You may also add supporting projects:
+- `tablesaw-beakerx` - for using Tablesaw inside [BeakerX](http://beakerx.com/)
+- `tablesaw-excel` - for using Excel workbooks
+- `tablesaw-html` - for using HTML
+- `tablesaw-json` - for using JSON
+- `tablesaw-jsplot` - for creating charts
 
 ### Documentation and support
 

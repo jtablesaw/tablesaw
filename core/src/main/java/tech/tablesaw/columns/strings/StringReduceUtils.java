@@ -18,28 +18,30 @@ import tech.tablesaw.columns.Column;
 
 public interface StringReduceUtils extends Column<String>, Iterable<String> {
 
-    /**
-     * Returns a single string made by appending all the strings in this column, separated by the given delimiter
-     */
-    default String appendAll(String delimiter) {
-        StringBuilder builder = new StringBuilder();
-        int count = 0;
-        for (String next : this) {
-            builder.append(next);
-            if (count < size() - 1) {
-                builder.append(delimiter);
-                count++;
-            } else {
-                break;
-            }
-        }
-        return builder.toString();
+  /**
+   * Returns a single string made by appending all the strings in this column, separated by the
+   * given delimiter
+   */
+  default String appendAll(String delimiter) {
+    StringBuilder builder = new StringBuilder();
+    int count = 0;
+    for (String next : this) {
+      builder.append(next);
+      if (count < size() - 1) {
+        builder.append(delimiter);
+        count++;
+      } else {
+        break;
+      }
     }
+    return builder.toString();
+  }
 
-    /**
-     * Returns a single string made by appending all the strings in this column, separated by a single space character
-     */
-    default String appendAll() {
-        return appendAll(" ");
-    }
+  /**
+   * Returns a single string made by appending all the strings in this column, separated by a single
+   * space character
+   */
+  default String appendAll() {
+    return appendAll(" ");
+  }
 }

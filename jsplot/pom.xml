@@ -5,12 +5,16 @@
     <parent>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-parent</artifactId>
-        <version>0.33.3-SNAPSHOT</version>
+        <version>0.37.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>tablesaw-jsplot</artifactId>
 
     <packaging>jar</packaging>
+
+    <properties>
+        <doclint>none</doclint>
+    </properties>
 
     <profiles>
         <profile>
@@ -25,6 +29,11 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <quiet>true</quiet>
+                            <additionalOptions>-Xdoclint:none</additionalOptions>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -42,13 +51,13 @@
             </build>
         </profile>
     </profiles>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            
+            </plugin>       
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -73,19 +82,23 @@
                     </execution>
                 </executions>
             </plugin>
-            
         </plugins>
     </build>
+
     <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.pebbletemplates</groupId>
             <artifactId>pebble</artifactId>
-            <version>3.0.8</version>
+            <version>3.1.2</version>
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-core</artifactId>
-            <version>0.33.3-SNAPSHOT</version>
+            <version>0.37.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

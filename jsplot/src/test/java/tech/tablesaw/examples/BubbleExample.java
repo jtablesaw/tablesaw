@@ -13,7 +13,8 @@
  */
 package tech.tablesaw.examples;
 
-import tech.tablesaw.api.NumberColumn;
+import java.io.IOException;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
@@ -22,30 +23,20 @@ import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.selection.Selection;
 
-import java.io.IOException;
-
-/**
- *
- */
+/** */
 public class BubbleExample {
 
-    public static void main(String[] args) throws IOException {
-        Table marketShare = Table.read().csv("../data/market_share.csv");
-        Table sub = marketShare.where(Selection.withRange(0, 4));
-        NumberColumn<?> x = sub.nCol("Products");
-        NumberColumn<?> y = sub.nCol("Sales");
-        NumberColumn<?> data = sub.nCol("Market_Share");
+  public static void main(String[] args) throws IOException {
+    Table marketShare = Table.read().csv("../data/market_share.csv");
+    Table sub = marketShare.where(Selection.withRange(0, 4));
+    NumericColumn<?> x = sub.nCol("Products");
+    NumericColumn<?> y = sub.nCol("Sales");
+    NumericColumn<?> data = sub.nCol("Market_Share");
 
-        Layout layout = Layout.builder().title("Market Share").build();
-        Marker marker = Marker.builder()
-                .size(data)
-                .sizeMode(Marker.SizeMode.AREA)
-                .build();
-        ScatterTrace trace = ScatterTrace
-                .builder(x, y)
-                .marker(marker)
-                .build();
+    Layout layout = Layout.builder().title("Market Share").build();
+    Marker marker = Marker.builder().size(data).sizeMode(Marker.SizeMode.AREA).build();
+    ScatterTrace trace = ScatterTrace.builder(x, y).marker(marker).build();
 
-        Plot.show(new Figure(layout, trace));
-    }
+    Plot.show(new Figure(layout, trace));
+  }
 }

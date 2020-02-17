@@ -15,27 +15,24 @@
 package tech.tablesaw.sorting.comparators;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
-
 import javax.annotation.concurrent.Immutable;
 
-/**
- * A Comparator for int primitives that takes an input comparator and creates its opposite
- */
+/** A Comparator for int primitives that takes an input comparator and creates its opposite */
 @Immutable
 public final class ReversingIntComparator implements IntComparator {
 
-    private final IntComparator intComparator;
+  private final IntComparator intComparator;
 
-    private ReversingIntComparator(IntComparator intComparator) {
-        this.intComparator = intComparator;
-    }
+  private ReversingIntComparator(IntComparator intComparator) {
+    this.intComparator = intComparator;
+  }
 
-    public static IntComparator reverse(IntComparator intComparator) {
-        return new ReversingIntComparator(intComparator);
-    }
+  public static IntComparator reverse(IntComparator intComparator) {
+    return new ReversingIntComparator(intComparator);
+  }
 
-    @Override
-    public int compare(int i, int i1) {
-        return -intComparator.compare(i, i1);
-    }
+  @Override
+  public int compare(int i, int i1) {
+    return -intComparator.compare(i, i1);
+  }
 }

@@ -14,29 +14,27 @@ import tech.tablesaw.plotly.traces.HistogramTrace;
 
 public class DistributionVisualizations extends AbstractExample {
 
-    public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
 
-        Table property = Table.read().csv("../data/sacramento_real_estate_transactions.csv");
+    Table property = Table.read().csv("../data/sacramento_real_estate_transactions.csv");
 
-        IntColumn sqft = property.intColumn("sq__ft");
-        IntColumn price = property.intColumn("price");
+    IntColumn sqft = property.intColumn("sq__ft");
+    IntColumn price = property.intColumn("price");
 
-        sqft.set(sqft.isEqualTo(0), IntColumnType.missingValueIndicator());
-        price.set(price.isEqualTo(0), IntColumnType.missingValueIndicator());
+    sqft.set(sqft.isEqualTo(0), IntColumnType.missingValueIndicator());
+    price.set(price.isEqualTo(0), IntColumnType.missingValueIndicator());
 
-        Plot.show(Histogram.create("Distribution of prices", property.numberColumn("price")));
+    Plot.show(Histogram.create("Distribution of prices", property.numberColumn("price")));
 
-        Layout layout = Layout.builder().title("Distribution of property sizes").build();
-        HistogramTrace trace = HistogramTrace.builder(property.numberColumn("sq__ft"))
-                .marker(Marker.builder().color("#B10DC9").opacity(.70).build())
-                .build();
-        Plot.show(new Figure(layout, trace));
+    Layout layout = Layout.builder().title("Distribution of property sizes").build();
+    HistogramTrace trace =
+        HistogramTrace.builder(property.numberColumn("sq__ft"))
+            .marker(Marker.builder().color("#B10DC9").opacity(.70).build())
+            .build();
+    Plot.show(new Figure(layout, trace));
 
+    Plot.show(Histogram2D.create("Distribution of price and size", property, "price", "sq__ft"));
 
-       // Plot.show(Histogram.create("Distribution of property sizes", property.numberColumn("sq__ft")));
-
-        Plot.show(Histogram2D.create("Distribution of price and size", property,"price", "sq__ft"));
-
-        Plot.show(BoxPlot.create("Prices by property type", property, "type", "price"));
-    }
+    Plot.show(BoxPlot.create("Prices by property type", property, "type", "price"));
+  }
 }
