@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.net.URL;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Page;
@@ -29,7 +28,6 @@ public class TemplateUtilsTest {
   }
 
   @Test
-  @Disabled
   public void testCustomTemplateLocation() {
     URL url = this.getClass().getResource(this.getClass().getSimpleName() + ".class");
     assertNotNull(url, "Couldn't locate class (as resource), where template is also found");

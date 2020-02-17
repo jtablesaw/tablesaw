@@ -14,13 +14,18 @@ import java.util.Map;
 
 public abstract class Component {
 
-  protected static final PebbleEngine engine = TemplateUtils.getNewEngine();
   protected static final ObjectMapper mapper = new ObjectMapper();
 
   {
     mapper.enable(SerializationFeature.INDENT_OUTPUT);
     mapper.setSerializationInclusion(Include.NON_NULL);
     mapper.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
+  }
+
+  private final PebbleEngine engine = TemplateUtils.getNewEngine();
+
+  protected PebbleEngine getEngine() {
+    return engine;
   }
 
   @Deprecated
@@ -48,7 +53,7 @@ public abstract class Component {
     PebbleTemplate compiledTemplate;
 
     try {
-      compiledTemplate = engine.getTemplate(filename);
+      compiledTemplate = getEngine().getTemplate(filename);
       compiledTemplate.evaluate(writer, getContext());
     } catch (PebbleException e) {
       throw new IllegalStateException(e);
