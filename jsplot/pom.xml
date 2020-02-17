@@ -68,6 +68,7 @@
                     <artifactSet>
                         <includes>
                             <include>io.pebbletemplates:pebble</include>
+                            <include>org.unbescape:unbescape</include>
                             <include>com.coverity.security:coverity-escapers</include>
                             <include>org.slf4j:slf4j-api</include>
                         </includes>
