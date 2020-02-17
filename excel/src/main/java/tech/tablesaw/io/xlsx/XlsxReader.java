@@ -58,7 +58,6 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     registry.registerOptions(XlsxReadOptions.class, INSTANCE);
   }
 
-  // TODO Read by sheet name
   @Override
   public Table read(XlsxReadOptions options) throws IOException {
     List<Table> tables = readMultiple(options, true);
