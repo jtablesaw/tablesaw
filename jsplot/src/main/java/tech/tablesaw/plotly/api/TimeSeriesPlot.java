@@ -3,6 +3,7 @@ package tech.tablesaw.plotly.api;
 import java.util.List;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
@@ -51,6 +52,13 @@ public class TimeSeriesPlot {
 
   public static Figure create(
       String title, String xTitle, DateTimeColumn xCol, String yTitle, NumericColumn<?> yCol) {
+    Layout layout = Layout.builder(title, xTitle, yTitle).build();
+    ScatterTrace trace = ScatterTrace.builder(xCol, yCol).mode(ScatterTrace.Mode.LINE).build();
+    return new Figure(layout, trace);
+  }
+
+  public static Figure create(
+      String title, String xTitle, InstantColumn xCol, String yTitle, NumericColumn<?> yCol) {
     Layout layout = Layout.builder(title, xTitle, yTitle).build();
     ScatterTrace trace = ScatterTrace.builder(xCol, yCol).mode(ScatterTrace.Mode.LINE).build();
     return new Figure(layout, trace);
