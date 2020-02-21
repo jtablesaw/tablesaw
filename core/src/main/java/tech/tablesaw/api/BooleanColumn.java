@@ -33,7 +33,6 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -667,19 +666,6 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   @Override
   public int compare(Boolean o1, Boolean o2) {
     return Boolean.compare(o1, o2);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    BooleanColumn that = (BooleanColumn) o;
-    return Objects.equals(data, that.data);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(data);
   }
 
   private static class BooleanColumnIterator implements Iterator<Boolean> {
