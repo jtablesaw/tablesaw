@@ -75,6 +75,12 @@ public class BoxTrace extends AbstractTrace {
       this.y = y;
     }
 
+    @Override
+    public BoxBuilder name(String name) {
+      super.name(name);
+      return this;
+    }
+
     BoxBuilder(CategoricalColumn<?> x, NumericColumn<? extends Number> y) {
       this.x = columnToStringArray(x);
       this.y = y.asDoubleArray();
