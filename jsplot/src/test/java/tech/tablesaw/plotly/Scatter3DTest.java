@@ -2,6 +2,9 @@ package tech.tablesaw.plotly;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.api.Scatter3DPlot;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -51,5 +54,16 @@ public class Scatter3DTest {
         Scatter3DTrace.builder(x, y, z).mode(Scatter3DTrace.Mode.TEXT).text(labels).build();
 
     Plot.show(new Figure(trace));
+  }
+
+  @Test
+  void createScatter3D() {
+    DoubleColumn xData = DoubleColumn.create("x", new double[] {2, 2, 1});
+    DoubleColumn yData = DoubleColumn.create("y", new double[] {1, 2, 3});
+    DoubleColumn zData = DoubleColumn.create("z", new double[] {1, 4, 1});
+
+    Table data = Table.create().addColumns(xData, yData, zData);
+
+    Plot.show(Scatter3DPlot.create("3D plot", data, "x", "y", "z"));
   }
 }

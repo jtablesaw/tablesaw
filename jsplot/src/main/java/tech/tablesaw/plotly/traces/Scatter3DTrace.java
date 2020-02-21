@@ -22,7 +22,6 @@ public class Scatter3DTrace extends AbstractTrace {
   private final String[] text;
   private final Mode mode;
   private final HoverLabel hoverLabel;
-  private final boolean showLegend;
   private final Marker marker;
 
   public static Scatter3DBuilder builder(double[] x, double[] y, double[] z) {
@@ -44,7 +43,6 @@ public class Scatter3DTrace extends AbstractTrace {
     this.z = builder.z;
     this.text = builder.text;
     this.hoverLabel = builder.hoverLabel;
-    this.showLegend = builder.showLegend;
     this.marker = builder.marker;
   }
 
@@ -56,7 +54,6 @@ public class Scatter3DTrace extends AbstractTrace {
     context.put("y", dataAsString(y));
     context.put("x", dataAsString(x));
     context.put("z", dataAsString(z));
-    context.put("showlegend", showLegend);
     if (marker != null) {
       context.put("marker", marker);
     }
