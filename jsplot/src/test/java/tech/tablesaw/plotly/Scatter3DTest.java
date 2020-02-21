@@ -1,5 +1,8 @@
 package tech.tablesaw.plotly;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
@@ -22,8 +25,7 @@ public class Scatter3DTest {
   @Test
   public void testAsJavascript() {
     Scatter3DTrace trace = Scatter3DTrace.builder(x, y, z).text(labels).build();
-
-    System.out.println(trace.asJavascript(1));
+    assertNotNull(trace.asJavascript(1));
   }
 
   @Test
@@ -33,7 +35,7 @@ public class Scatter3DTest {
         Scatter3DTrace.builder(x, y, z).mode(Scatter3DTrace.Mode.MARKERS).text(labels).build();
 
     Layout layout = Layout.builder().xAxis(Axis.builder().title("x title").build()).build();
-
+    assertEquals("x title", layout.getTitle());
     Plot.show(new Figure(layout, trace));
   }
 
@@ -63,7 +65,6 @@ public class Scatter3DTest {
     DoubleColumn zData = DoubleColumn.create("z", new double[] {1, 4, 1});
 
     Table data = Table.create().addColumns(xData, yData, zData);
-
-    Plot.show(Scatter3DPlot.create("3D plot", data, "x", "y", "z"));
+    assertNotNull(Scatter3DPlot.create("3D plot", data, "x", "y", "z"));
   }
 }
