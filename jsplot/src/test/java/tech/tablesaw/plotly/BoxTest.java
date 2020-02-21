@@ -29,16 +29,14 @@ class BoxTest {
   @Test
   void testAsJavascript() {
     BoxTrace trace = BoxTrace.builder(x, y).build();
-
-    System.out.println(trace.asJavascript(1));
+    assertNotNull(trace.asJavascript(1));
   }
 
   @Test
   void show() {
-
     BoxTrace trace = BoxTrace.builder(x, y).build();
-
     Figure figure = new Figure(trace);
+    assertNotNull(figure);
     Plot.show(figure, "target");
   }
 
