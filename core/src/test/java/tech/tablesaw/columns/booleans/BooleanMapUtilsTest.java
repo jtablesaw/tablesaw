@@ -5,31 +5,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 
-public class BooleanMapUtilsTest {
-  private BooleanColumn singleFalse = BooleanColumn.create("", new boolean[] {false});
-  private BooleanColumn singleTrue = BooleanColumn.create("", new boolean[] {true});
+class BooleanMapUtilsTest {
+  private BooleanColumn singleFalse = BooleanColumn.create("", false);
+  private BooleanColumn singleTrue = BooleanColumn.create("", true);
 
   @Test
-  public void testAnd() {
+  void testAnd() {
     BooleanColumn actual = singleTrue.and(singleFalse);
-    assertEquals(singleFalse, actual);
+    assertEquals(singleFalse.get(0), actual.get(0));
   }
 
   @Test
-  public void testOr() {
+  void testOr() {
     BooleanColumn actual = singleFalse.or(singleTrue);
-    assertEquals(singleTrue, actual);
+    assertEquals(singleTrue.get(0), actual.get(0));
   }
 
   @Test
-  public void testAndNot() {
+  void testAndNot() {
     BooleanColumn actual = singleTrue.andNot(singleFalse);
-    assertEquals(singleTrue, actual);
+    assertEquals(singleTrue.get(0), actual.get(0));
   }
 
   @Test
-  public void testAndNot2() {
+  void testAndNot2() {
     BooleanColumn actual = singleFalse.andNot(singleTrue);
-    assertEquals(singleFalse, actual);
+    assertEquals(singleFalse.get(0), actual.get(0));
   }
 }

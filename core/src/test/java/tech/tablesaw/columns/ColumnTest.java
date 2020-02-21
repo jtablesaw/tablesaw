@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
@@ -118,6 +119,16 @@ public class ColumnTest {
     Column<String> c = table.stringColumn("who");
     assertTrue(c.contains("fox"));
     assertFalse(c.contains("foxes"));
+  }
+
+  @Test
+  void testColumnDelete() {
+    final Table table =
+        Table.create(
+            BooleanColumn.create("a"), BooleanColumn.create("b"), BooleanColumn.create("c"));
+    assertEquals(3, table.columnCount());
+    table.removeColumns(table.columnNames().indexOf("b"));
+    assertEquals(2, table.columnCount());
   }
 
   @Test
