@@ -81,6 +81,7 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
     settings.setIgnoreTrailingWhitespaces(options.ignoreTrailingWhitespaces());
     // writes empty lines as well.
     settings.setSkipEmptyLines(false);
+    settings.setQuoteAllFields(options.quoteAllFields());
     return settings;
   }
 
