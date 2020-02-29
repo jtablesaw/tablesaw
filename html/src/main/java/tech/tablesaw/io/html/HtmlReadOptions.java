@@ -184,5 +184,12 @@ public class HtmlReadOptions extends ReadOptions {
       this.tableIndex = tableIndex;
       return this;
     }
+
+    /** @param b if true, reads strings that appear as percentages (eg. 10%) as numbers (0.1) */
+    @Override
+    public Builder percentage(boolean b) {
+      super.percentage(b);
+      return this;
+    }
   }
 }

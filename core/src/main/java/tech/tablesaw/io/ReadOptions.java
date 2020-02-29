@@ -301,10 +301,7 @@ public class ReadOptions {
       return this;
     }
 
-    /**
-     * @param b if true, reads strings that appear as percentages (eg. 10%) as numbers (0.1)
-     * @return
-     */
+    /** @param b if true, reads strings that appear as percentages (eg. 10%) as numbers (0.1) */
     public Builder percentage(boolean b) {
       this.percentage = b;
       return this;
