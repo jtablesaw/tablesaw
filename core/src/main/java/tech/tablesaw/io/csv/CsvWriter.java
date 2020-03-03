@@ -73,10 +73,18 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
     CsvWriterSettings settings = new CsvWriterSettings();
     // Sets the character sequence to write for the values that are null.
     settings.setNullValue(nullValue);
-    settings.getFormat().setDelimiter(options.separator());
-    settings.getFormat().setQuote(options.quoteChar());
-    settings.getFormat().setQuoteEscape(options.escapeChar());
-    settings.getFormat().setLineSeparator(options.lineEnd());
+    if (options.separator() != null) {
+      settings.getFormat().setDelimiter(options.separator());
+    }
+    if (options.quoteChar() != null) {
+      settings.getFormat().setQuote(options.quoteChar());
+    }
+    if (options.escapeChar() != null) {
+      settings.getFormat().setQuoteEscape(options.escapeChar());
+    }
+    if (options.lineEnd() != null) {
+      settings.getFormat().setLineSeparator(options.lineEnd());
+    }
     settings.setIgnoreLeadingWhitespaces(options.ignoreLeadingWhitespaces());
     settings.setIgnoreTrailingWhitespaces(options.ignoreTrailingWhitespaces());
     // writes empty lines as well.
