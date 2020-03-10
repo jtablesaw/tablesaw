@@ -21,7 +21,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparator;
+import it.unimi.dsi.fastutil.longs.LongComparators;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -51,7 +51,6 @@ import tech.tablesaw.columns.instant.PackedInstant;
 import tech.tablesaw.columns.temporal.TemporalFillers;
 import tech.tablesaw.columns.temporal.TemporalFilters;
 import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 /** A column in a table that contains long-integer encoded (packed) local date-time values */
 public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
@@ -59,8 +58,6 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
         TemporalFillers<Instant, InstantColumn>,
         TemporalFilters<Instant>,
         CategoricalColumn<Instant> {
-
-  private final LongComparator reverseLongComparator = DescendingLongComparator.instance();
 
   private LongArrayList data;
 
@@ -282,12 +279,12 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   @Override
   public void sortAscending() {
-    data.sort(reverseLongComparator.reversed());
+    data.sort(LongComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    data.sort(reverseLongComparator);
+    data.sort(LongComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override
@@ -545,7 +542,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   public List<Instant> top(int n) {
     List<Instant> top = new ArrayList<>();
     long[] values = data.toLongArray();
-    LongArrays.parallelQuickSort(values, DescendingLongComparator.instance());
+    LongArrays.parallelQuickSort(values, LongComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(PackedInstant.asInstant(values[i]));
     }

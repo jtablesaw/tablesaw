@@ -23,7 +23,7 @@ import it.unimi.dsi.fastutil.booleans.BooleanSet;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
-import it.unimi.dsi.fastutil.bytes.ByteComparator;
+import it.unimi.dsi.fastutil.bytes.ByteComparators;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
@@ -57,8 +57,6 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
         CategoricalColumn<Boolean>,
         BooleanFillers<BooleanColumn>,
         BooleanFilters {
-
-  private final ByteComparator descendingByteComparator = (o1, o2) -> Byte.compare(o2, o1);
 
   private ByteArrayList data;
 
@@ -296,12 +294,12 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   @Override
   public void sortAscending() {
-    data.sort(descendingByteComparator.reversed() /* or ByteComparators.NATURAL_COMPARATOR */);
+    data.sort(ByteComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    data.sort(descendingByteComparator);
+    data.sort(ByteComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override

@@ -3,7 +3,7 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
-import it.unimi.dsi.fastutil.floats.FloatComparator;
+import it.unimi.dsi.fastutil.floats.FloatComparators;
 import it.unimi.dsi.fastutil.floats.FloatListIterator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
@@ -16,11 +16,6 @@ import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 public class FloatColumn extends NumberColumn<FloatColumn, Float> {
-
-  /**
-   * Compares two doubles, such that a sort based on this comparator would sort in descending order
-   */
-  private final FloatComparator descendingComparator = (o2, o1) -> (Float.compare(o1, o2));
 
   private final FloatArrayList data;
 
@@ -125,7 +120,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   public FloatColumn top(int n) {
     FloatArrayList top = new FloatArrayList();
     float[] values = data.toFloatArray();
-    FloatArrays.parallelQuickSort(values, descendingComparator);
+    FloatArrays.parallelQuickSort(values, FloatComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(values[i]);
     }
@@ -305,12 +300,12 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
 
   @Override
   public void sortAscending() {
-    data.sort(descendingComparator.reversed());
+    data.sort(FloatComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    data.sort(descendingComparator);
+    data.sort(FloatComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override
