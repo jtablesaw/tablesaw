@@ -10,16 +10,19 @@ import java.util.Map;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.Utils;
+import tech.tablesaw.plotly.components.Domain;
 
 public class PieTrace extends AbstractTrace {
 
   private final double[] values;
   private final Object[] labels;
+  private final Domain domain;
 
   private PieTrace(PieBuilder builder) {
     super(builder);
     this.values = builder.values;
     this.labels = builder.labels;
+    this.domain = builder.domain;
   }
 
   @Override
@@ -46,6 +49,9 @@ public class PieTrace extends AbstractTrace {
     if (labels != null) {
       context.put("labels", Utils.dataAsString(labels));
     }
+    if (domain != null) {
+      context.put("domain", domain.asJavascript());
+    }
     return context;
   }
 
@@ -62,10 +68,16 @@ public class PieTrace extends AbstractTrace {
     private final String type = "pie";
     private final double[] values;
     private final Object[] labels;
+    private Domain domain;
 
     private PieBuilder(Object[] labels, double[] values) {
       this.labels = labels;
       this.values = values;
+    }
+
+    public PieBuilder domain(Domain domain) {
+      this.domain = domain;
+      return this;
     }
 
     public PieTrace build() {
