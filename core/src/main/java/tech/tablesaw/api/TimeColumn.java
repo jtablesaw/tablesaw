@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -28,7 +29,6 @@ import java.nio.ByteBuffer;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +45,6 @@ import tech.tablesaw.columns.times.TimeFillers;
 import tech.tablesaw.columns.times.TimeFilters;
 import tech.tablesaw.columns.times.TimeMapFunctions;
 import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
 /** A column in a base table that contains float values */
 public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
@@ -53,8 +52,6 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
         TimeFilters,
         TimeFillers<TimeColumn>,
         TimeMapFunctions {
-
-  private final IntComparator descendingIntComparator = DescendingIntComparator.instance();
 
   private TimeColumnFormatter printFormatter = new TimeColumnFormatter();
 
@@ -258,14 +255,12 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
 
   @Override
   public void sortAscending() {
-    int[] sorted = data.toIntArray();
-    Arrays.parallelSort(sorted);
-    this.data = new IntArrayList(sorted);
+    data.sort(IntComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    IntArrays.parallelQuickSort(data.elements(), descendingIntComparator);
+    data.sort(IntComparators.OPPOSITE_COMPARATOR);
   }
 
   public LocalTime max() {
@@ -443,7 +438,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
   public List<LocalTime> top(int n) {
     List<LocalTime> top = new ArrayList<>();
     int[] values = data.toIntArray();
-    IntArrays.parallelQuickSort(values, descendingIntComparator);
+    IntArrays.parallelQuickSort(values, IntComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(PackedLocalTime.asLocalTime(values[i]));
     }

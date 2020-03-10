@@ -18,7 +18,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparator;
+import it.unimi.dsi.fastutil.longs.LongComparators;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -31,7 +31,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,7 +49,6 @@ import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.columns.temporal.TemporalFillers;
 import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 /** A column in a table that contains long-integer encoded (packed) local date-time values */
 public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime>
@@ -58,8 +56,6 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
         DateTimeFilters,
         TemporalFillers<LocalDateTime, DateTimeColumn>,
         CategoricalColumn<LocalDateTime> {
-
-  private final LongComparator reverseLongComparator = DescendingLongComparator.instance();
 
   private LongArrayList data;
 
@@ -293,12 +289,12 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public void sortAscending() {
-    Arrays.parallelSort(data.elements());
+    data.sort(LongComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    LongArrays.parallelQuickSort(data.elements(), reverseLongComparator);
+    data.sort(LongComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override
@@ -559,7 +555,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   public List<LocalDateTime> top(int n) {
     List<LocalDateTime> top = new ArrayList<>();
     long[] values = data.toLongArray();
-    LongArrays.parallelQuickSort(values, DescendingLongComparator.instance());
+    LongArrays.parallelQuickSort(values, LongComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(PackedLocalDateTime.asLocalDateTime(values[i]));
     }

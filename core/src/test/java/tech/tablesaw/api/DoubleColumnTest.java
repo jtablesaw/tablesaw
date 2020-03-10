@@ -17,7 +17,6 @@ package tech.tablesaw.api;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.Arrays;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class DoubleColumnTest {
@@ -31,6 +30,14 @@ public class DoubleColumnTest {
   }
 
   @Test
+  public void createThenSortAscending() {
+    DoubleColumn col = DoubleColumn.create("test");
+    col.append(3.0).append(1.0).append(2.0).append(4.0);
+    col.sortAscending();
+    assertArrayEquals(new double[] {1.0, 2.0, 3.0, 4.0}, col.asDoubleArray());
+  }
+
+  @Test
   public void sortAscending() {
     DoubleColumn col = DoubleColumn.create("test", 3.0, 1.0, 2.0, 4.0);
     col.sortAscending();
@@ -38,7 +45,6 @@ public class DoubleColumnTest {
   }
 
   @Test
-  @Disabled
   public void uniqueThenSort() {
     DoubleColumn uniq = DoubleColumn.create("test", 5, 4, 3, 2, 1, 5, 4, 3, 2, 1).unique();
     uniq.sortAscending();

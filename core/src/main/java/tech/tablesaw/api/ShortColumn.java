@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.primitives.Shorts;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
-import it.unimi.dsi.fastutil.shorts.ShortComparator;
+import it.unimi.dsi.fastutil.shorts.ShortComparators;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
@@ -20,9 +20,6 @@ import tech.tablesaw.columns.numbers.ShortColumnType;
 
 public class ShortColumn extends NumberColumn<ShortColumn, Short>
     implements CategoricalColumn<Short> {
-
-  /** Compares two ints, such that a sort based on this comparator would sort in descending order */
-  private final ShortComparator descendingComparator = (o2, o1) -> (Short.compare(o1, o2));
 
   private final ShortArrayList data;
 
@@ -119,7 +116,7 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
   public ShortColumn top(int n) {
     final ShortArrayList top = new ShortArrayList();
     final short[] values = data.toShortArray();
-    ShortArrays.parallelQuickSort(values, descendingComparator);
+    ShortArrays.parallelQuickSort(values, ShortComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(values[i]);
     }
@@ -337,12 +334,12 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   @Override
   public void sortAscending() {
-    ShortArrays.parallelQuickSort(data.elements());
+    data.sort(ShortComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    ShortArrays.parallelQuickSort(data.elements(), descendingComparator);
+    data.sort(ShortComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override

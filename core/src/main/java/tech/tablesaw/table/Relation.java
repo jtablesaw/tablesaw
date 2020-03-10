@@ -15,6 +15,7 @@
 package tech.tablesaw.table;
 
 import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntComparators;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +42,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.conversion.TableConverter;
 import tech.tablesaw.conversion.smile.SmileConverter;
 import tech.tablesaw.io.string.DataFramePrinter;
-import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
 /**
  * A tabular data structure like a table in a relational database, but not formally implementing the
@@ -62,7 +62,7 @@ public abstract class Relation implements Iterable<Row> {
   }
 
   public Relation removeColumns(int... columnIndexes) {
-    IntArrays.quickSort(columnIndexes, DescendingIntComparator.instance());
+    IntArrays.quickSort(columnIndexes, IntComparators.OPPOSITE_COMPARATOR);
     for (int i : columnIndexes) {
       removeColumns(column(i));
     }

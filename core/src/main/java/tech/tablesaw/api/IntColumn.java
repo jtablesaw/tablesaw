@@ -3,7 +3,7 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -18,9 +18,6 @@ import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 public class IntColumn extends NumberColumn<IntColumn, Integer>
     implements CategoricalColumn<Integer> {
-
-  /** Compares two ints, such that a sort based on this comparator would sort in descending order */
-  private final IntComparator descendingComparator = (o2, o1) -> (Integer.compare(o1, o2));
 
   private final IntArrayList data;
 
@@ -131,7 +128,7 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   public IntColumn top(int n) {
     final IntArrayList top = new IntArrayList();
     final int[] values = data.toIntArray();
-    IntArrays.parallelQuickSort(values, descendingComparator);
+    IntArrays.parallelQuickSort(values, IntComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(values[i]);
     }
@@ -333,12 +330,12 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
 
   @Override
   public void sortAscending() {
-    IntArrays.parallelQuickSort(data.elements());
+    data.sort(IntComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    IntArrays.parallelQuickSort(data.elements(), descendingComparator);
+    data.sort(IntComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override
