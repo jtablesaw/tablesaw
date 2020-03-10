@@ -333,12 +333,12 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
 
   @Override
   public void sortAscending() {
-    IntArrays.parallelQuickSort(data.elements());
+    data.sort(descendingComparator.reversed());
   }
 
   @Override
   public void sortDescending() {
-    IntArrays.parallelQuickSort(data.elements(), descendingComparator);
+    data.sort(descendingComparator);
   }
 
   @Override

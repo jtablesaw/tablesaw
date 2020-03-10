@@ -31,7 +31,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -293,12 +292,12 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public void sortAscending() {
-    Arrays.parallelSort(data.elements());
+    data.sort(reverseLongComparator.reversed());
   }
 
   @Override
   public void sortDescending() {
-    LongArrays.parallelQuickSort(data.elements(), reverseLongComparator);
+    data.sort(reverseLongComparator);
   }
 
   @Override

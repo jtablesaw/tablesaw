@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -210,12 +209,12 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   @Override
   public void sortAscending() {
-    Arrays.parallelSort(data.elements());
+    data.sort(reverseIntComparator.reversed());
   }
 
   @Override
   public void sortDescending() {
-    IntArrays.parallelQuickSort(data.elements(), reverseIntComparator);
+    data.sort(reverseIntComparator);
   }
 
   @Override

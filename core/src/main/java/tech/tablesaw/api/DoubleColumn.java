@@ -397,12 +397,12 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   @Override
   public void sortAscending() {
-    DoubleArrays.parallelQuickSort(data.elements());
+    data.sort(descendingComparator.reversed() /* or DoubleComparators.NATURAL_COMPARATOR */);
   }
 
   @Override
   public void sortDescending() {
-    DoubleArrays.parallelQuickSort(data.elements(), descendingComparator);
+    data.sort(descendingComparator /* or DoubleComparators.OPPOSITE_COMPARATOR */);
   }
 
   @Override

@@ -360,12 +360,12 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
 
   @Override
   public void sortAscending() {
-    LongArrays.parallelQuickSort(data.elements());
+    data.sort(descendingComparator.reversed() /* or LongComparators.NATURAL_COMPARATOR */);
   }
 
   @Override
   public void sortDescending() {
-    LongArrays.parallelQuickSort(data.elements(), descendingComparator);
+    data.sort(descendingComparator);
   }
 
   @Override

@@ -28,7 +28,6 @@ import java.nio.ByteBuffer;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -258,14 +257,12 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
 
   @Override
   public void sortAscending() {
-    int[] sorted = data.toIntArray();
-    Arrays.parallelSort(sorted);
-    this.data = new IntArrayList(sorted);
+    data.sort(descendingIntComparator.reversed());
   }
 
   @Override
   public void sortDescending() {
-    IntArrays.parallelQuickSort(data.elements(), descendingIntComparator);
+    data.sort(descendingIntComparator);
   }
 
   public LocalTime max() {

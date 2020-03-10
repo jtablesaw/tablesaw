@@ -337,12 +337,12 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   @Override
   public void sortAscending() {
-    ShortArrays.parallelQuickSort(data.elements());
+    data.sort(descendingComparator.reversed());
   }
 
   @Override
   public void sortDescending() {
-    ShortArrays.parallelQuickSort(data.elements(), descendingComparator);
+    data.sort(descendingComparator);
   }
 
   @Override

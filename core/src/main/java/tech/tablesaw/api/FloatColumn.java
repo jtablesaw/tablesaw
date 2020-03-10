@@ -305,12 +305,12 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
 
   @Override
   public void sortAscending() {
-    FloatArrays.parallelQuickSort(data.elements());
+    data.sort(descendingComparator.reversed());
   }
 
   @Override
   public void sortDescending() {
-    FloatArrays.parallelQuickSort(data.elements(), descendingComparator);
+    data.sort(descendingComparator);
   }
 
   @Override
