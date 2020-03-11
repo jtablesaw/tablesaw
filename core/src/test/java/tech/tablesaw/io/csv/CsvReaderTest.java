@@ -179,11 +179,27 @@ public class CsvReaderTest {
     CsvReadOptions options =
         CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(true).build();
 
-    // Column index 3 and 7 contain values with 0 to 3 zero values as suffix
-    // Should map to INTEGER type when ignoreZeroDecimal = true
+    // Column index 3 and 7 contain values with none to 3 zero values as suffix
+    // Should map to type INTEGER when ignoreZeroDecimal = true
     ColumnType[] columnTypes = new CsvReader().detectColumnTypes(reader, options);
     assertEquals(INTEGER, columnTypes[3]);
     assertEquals(INTEGER, columnTypes[7]);
+  }
+
+  @Test
+  public void testNumberColumnTypeRetainZeroDecimals() throws IOException {
+    CsvReadOptions options =
+        CsvReadOptions.builder("../data/immunization.csv")
+            .header(true)
+            .sample(false)
+            .ignoreZeroDecimal(true)
+            .build();
+
+    // Column index 3 and 7 contain values with none to 3 zero values as suffix
+    // Should map to type INTEGER when ignoreZeroDecimal = true
+    Table table = Table.read().csv(options);
+    assertEquals(INTEGER, table.column(3).type());
+    assertEquals(INTEGER, table.column(7).type());
   }
 
   @Test
@@ -192,11 +208,24 @@ public class CsvReaderTest {
     CsvReadOptions options =
         CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(false).build();
 
-    // Column index 3 and 7 contain values with 0 to 3 zero values as suffix
-    // Should map to DOUBLE type when ignoreZeroDecimal = false
+    // Column index 3 and 7 contain values with none to 3 zero values as suffix
+    // Should map to type DOUBLE when ignoreZeroDecimal = false
     ColumnType[] columnTypes = new CsvReader().detectColumnTypes(reader, options);
     assertEquals(DOUBLE, columnTypes[3]);
     assertEquals(DOUBLE, columnTypes[7]);
+  }
+
+  @Test
+  public void testNumberColumnTypeIgnoreZeroDecimals() throws IOException {
+    Reader reader = new FileReader("../data/immunization.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(false).build();
+
+    // Column index 3 and 7 contain values with none to 3 zero values as suffix
+    // Should map to type DOUBLE when ignoreZeroDecimal = false
+    Table table = Table.read().csv(options);
+    assertEquals(DOUBLE, table.column(3).type());
+    assertEquals(DOUBLE, table.column(7).type());
   }
 
   @Test
