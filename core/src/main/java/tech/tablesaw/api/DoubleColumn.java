@@ -102,7 +102,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return new DoubleColumn(name, new DoubleArrayList(doubles));
   }
 
-  public static DoubleColumn create(String name, Collection<Number> numberList) {
+  public static DoubleColumn create(String name, Collection<? extends Number> numberList) {
     DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
     for (Number number : numberList) {
       newColumn.append(number);

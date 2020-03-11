@@ -16,17 +16,34 @@ package tech.tablesaw.api;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class DoubleColumnTest {
+
+  @Test
+  public void createFromList() {
+    List<Double> list = new ArrayList<>();
+    list.add(2.0);
+    DoubleColumn col = DoubleColumn.create("test", list);
+    assertArrayEquals(new double[] {2.0}, col.asDoubleArray());
+  }
+
+  @Test
+  public void createFromObjectArray() {
+    Double[] input = new Double[] {2.0, 6.0};
+    DoubleColumn col = DoubleColumn.create("test", input);
+    assertArrayEquals(new double[] {2.0, 6.0}, col.asDoubleArray());
+  }
 
   @Test
   public void unique() {
     DoubleColumn uniq = DoubleColumn.create("test", 5, 4, 3, 2, 1, 5, 4, 3, 2, 1).unique();
     double[] arr = uniq.asDoubleArray();
     Arrays.sort(arr);
-    assertArrayEquals(arr, new double[] {1.0, 2.0, 3.0, 4.0, 5.0});
+    assertArrayEquals(new double[] {1.0, 2.0, 3.0, 4.0, 5.0}, arr);
   }
 
   @Test
