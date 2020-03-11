@@ -174,7 +174,7 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void testNumberDetectionRetainZeroDecimals() throws IOException {
+  public void testNumberTypeDetectionRetainZeroDecimals() throws IOException {
     Reader reader = new FileReader("../data/immunization.csv");
     CsvReadOptions options =
         CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(true).build();
@@ -203,7 +203,7 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void testNumberDetectionIgnoreZeroDecimals() throws IOException {
+  public void testNumberTypeDetectionIgnoreZeroDecimals() throws IOException {
     Reader reader = new FileReader("../data/immunization.csv");
     CsvReadOptions options =
         CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(false).build();
