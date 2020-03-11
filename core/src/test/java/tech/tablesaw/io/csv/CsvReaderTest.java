@@ -217,9 +217,12 @@ public class CsvReaderTest {
 
   @Test
   public void testNumberColumnTypeIgnoreZeroDecimals() throws IOException {
-    Reader reader = new FileReader("../data/immunization.csv");
     CsvReadOptions options =
-        CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(false).build();
+        CsvReadOptions.builder("../data/immunization.csv")
+            .header(true)
+            .sample(false)
+            .ignoreZeroDecimal(false)
+            .build();
 
     // Column index 3 and 7 contain values with none to 3 zero values as suffix
     // Should map to type DOUBLE when ignoreZeroDecimal = false
