@@ -174,6 +174,32 @@ public class CsvReaderTest {
   }
 
   @Test
+  public void testNumberDetectionRetainZeroDecimals() throws IOException {
+    Reader reader = new FileReader("../data/immunization.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(true).build();
+
+    // Column index 3 and 7 contain values with 0 to 3 zero values as suffix
+    // Should map to INTEGER type when ignoreZeroDecimal = true
+    ColumnType[] columnTypes = new CsvReader().detectColumnTypes(reader, options);
+    assertEquals(INTEGER, columnTypes[3]);
+    assertEquals(INTEGER, columnTypes[7]);
+  }
+
+  @Test
+  public void testNumberDetectionIgnoreZeroDecimals() throws IOException {
+    Reader reader = new FileReader("../data/immunization.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(false).build();
+
+    // Column index 3 and 7 contain values with 0 to 3 zero values as suffix
+    // Should map to DOUBLE type when ignoreZeroDecimal = false
+    ColumnType[] columnTypes = new CsvReader().detectColumnTypes(reader, options);
+    assertEquals(DOUBLE, columnTypes[3]);
+    assertEquals(DOUBLE, columnTypes[7]);
+  }
+
+  @Test
   public void testMillis() {
     long[] times = {1530486314124L, 1530488214124L};
     LongColumn d = LongColumn.create("times", times);
