@@ -3,7 +3,7 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparator;
+import it.unimi.dsi.fastutil.longs.LongComparators;
 import it.unimi.dsi.fastutil.longs.LongListIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -19,9 +19,6 @@ import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 public class LongColumn extends NumberColumn<LongColumn, Long> implements CategoricalColumn<Long> {
-
-  /** Compares two ints, such that a sort based on this comparator would sort in descending order */
-  private final LongComparator descendingComparator = (o2, o1) -> (Long.compare(o1, o2));
 
   private final LongArrayList data;
 
@@ -103,7 +100,8 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
 
   @Override
   public Long get(int index) {
-    return getLong(index);
+    long result = getLong(index);
+    return isMissingValue(result) ? null : result;
   }
 
   @Override
@@ -132,7 +130,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   public LongColumn top(int n) {
     final LongArrayList top = new LongArrayList();
     final long[] values = data.toLongArray();
-    LongArrays.parallelQuickSort(values, descendingComparator);
+    LongArrays.parallelQuickSort(values, LongComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(values[i]);
     }
@@ -359,12 +357,12 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
 
   @Override
   public void sortAscending() {
-    LongArrays.parallelQuickSort(data.elements());
+    data.sort(LongComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    LongArrays.parallelQuickSort(data.elements(), descendingComparator);
+    data.sort(LongComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override

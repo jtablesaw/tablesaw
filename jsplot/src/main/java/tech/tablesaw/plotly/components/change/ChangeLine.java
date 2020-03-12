@@ -20,15 +20,20 @@ public class ChangeLine extends Component {
 
   @Override
   public String asJavascript() {
-    return asJavascript("changeLine_template.html");
+    return asJSON();
   }
 
   @Override
-  protected Map<String, Object> getContext() {
+  protected Map<String, Object> getJSONContext() {
     Map<String, Object> context = new HashMap<>();
     if (!color.equals(DEFAULT_COLOR)) context.put("color", color);
     if (width != DEFAULT_WIDTH) context.put("width", width);
     return context;
+  }
+
+  @Override
+  protected Map<String, Object> getContext() {
+    return getJSONContext();
   }
 
   public static LineBuilder builder() {

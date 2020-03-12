@@ -6,6 +6,9 @@ var {{variableName}} =
 {% if values is not null %}
         values: {{values | raw}},
 {% endif %}
+{% if domain is not null %}
+        domain: {{domain | raw}},
+{% endif %}
         type: '{{type}}',
         name: '{{name}}',
  }

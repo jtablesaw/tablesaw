@@ -1,8 +1,8 @@
 package tech.tablesaw.plotly.components;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 import java.util.Map;
-import tech.tablesaw.plotly.Utils;
 
 public class Gradient extends Component {
 
@@ -19,6 +19,7 @@ public class Gradient extends Component {
       this.value = value;
     }
 
+    @JsonValue
     @Override
     public String toString() {
       return value;
@@ -35,7 +36,12 @@ public class Gradient extends Component {
 
   @Override
   public String asJavascript() {
-    return asJavascript("gradient_template.html");
+    return asJSON();
+  }
+
+  @Override
+  protected Map<String, Object> getJSONContext() {
+    return getContext();
   }
 
   @Override
@@ -44,9 +50,9 @@ public class Gradient extends Component {
     context.put("type", type);
     if (color != null && color.length > 0) {
       if (color.length > 1) {
-        context.put("color", Utils.dataAsString(color));
+        context.put("color", color);
       } else {
-        context.put("color", Utils.quote(color[0]));
+        context.put("color", color[0]);
       }
     }
 

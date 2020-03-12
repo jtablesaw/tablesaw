@@ -39,7 +39,7 @@ public class JsonReader implements DataReader<JsonReadOptions> {
     }
     if (!jsonObj.isArray()) {
       throw new IllegalStateException(
-          "Only reading a json array or arrays or objects is currently supported");
+          "Only reading a JSON array is currently supported. The array must hold an array or object for each row.");
     }
     if (jsonObj.size() == 0) {
       return Table.create(options.tableName());

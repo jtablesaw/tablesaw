@@ -363,15 +363,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    */
   default <R, C extends Column<R>> C map(
       Function<? super T, ? extends R> fun, Function<String, C> creator) {
-    C into = creator.apply(name());
-    for (int i = 0; i < size(); i++) {
-      if (isMissing(i)) {
-        into.appendMissing();
-      } else {
-        into.append(fun.apply(get(i)));
-      }
-    }
-    return into;
+    return mapInto(fun, creator.apply(name()));
   }
 
   Column<T> setMissing(int i);

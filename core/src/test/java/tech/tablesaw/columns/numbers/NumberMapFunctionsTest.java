@@ -182,7 +182,7 @@ public class NumberMapFunctionsTest {
     }
     DoubleColumn newDoubles = doubles.neg();
     assertFalse(newDoubles.isEmpty());
-    assertEquals(0 - doubles.get(0), newDoubles.get(0), 0.0001);
+    assertEquals(0 - doubles.getDouble(0), newDoubles.getDouble(0), 0.0001);
   }
 
   @Test
@@ -218,7 +218,7 @@ public class NumberMapFunctionsTest {
     DoubleColumn newDoubles = doubles.square();
     DoubleColumn revert = newDoubles.sqrt();
     for (int i = 0; i < doubles.size(); i++) {
-      assertEquals(doubles.get(i), revert.get(i), 0.01);
+      assertEquals(doubles.getDouble(i), revert.getDouble(i), 0.01);
     }
   }
 
@@ -231,7 +231,7 @@ public class NumberMapFunctionsTest {
     DoubleColumn newDoubles = doubles.cube();
     DoubleColumn revert = newDoubles.cubeRoot();
     for (int i = 0; i < doubles.size(); i++) {
-      assertEquals(doubles.get(i), revert.get(i), 0.01);
+      assertEquals(doubles.getDouble(i), revert.getDouble(i), 0.01);
     }
   }
 

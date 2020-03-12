@@ -17,6 +17,7 @@ public class CsvWriteOptions extends WriteOptions {
   private final char quoteChar;
   private final char escapeChar;
   private final String lineEnd;
+  private final boolean quoteAllFields;
 
   private CsvWriteOptions(Builder builder) {
     super(builder);
@@ -27,6 +28,7 @@ public class CsvWriteOptions extends WriteOptions {
     this.lineEnd = builder.lineEnd;
     this.ignoreLeadingWhitespaces = builder.ignoreLeadingWhitespaces;
     this.ignoreTrailingWhitespaces = builder.ignoreTrailingWhitespaces;
+    this.quoteAllFields = builder.quoteAllFields;
   }
 
   public boolean header() {
@@ -47,6 +49,10 @@ public class CsvWriteOptions extends WriteOptions {
 
   public char escapeChar() {
     return escapeChar;
+  }
+
+  public boolean quoteAllFields() {
+    return quoteAllFields;
   }
 
   public char quoteChar() {
@@ -82,6 +88,7 @@ public class CsvWriteOptions extends WriteOptions {
     private boolean header = true;
     private boolean ignoreLeadingWhitespaces = true;
     private boolean ignoreTrailingWhitespaces = true;
+    private boolean quoteAllFields = false;
     private char separator = ',';
     private String lineEnd = System.lineSeparator();
     private char escapeChar = '\\';
@@ -114,6 +121,18 @@ public class CsvWriteOptions extends WriteOptions {
 
     public CsvWriteOptions.Builder quoteChar(char quoteChar) {
       this.quoteChar = quoteChar;
+      return this;
+    }
+
+    /**
+     * Causes all data exported as a CSV file to be enclosed in quotes. Note that this includes the
+     * headers, and all columns regardless of type
+     *
+     * @param quoteAll {@code} true, to cause all data and column headers to be quoted.
+     * @return this CsvWriteOptionsBuilder
+     */
+    public CsvWriteOptions.Builder quoteAllFields(boolean quoteAll) {
+      this.quoteAllFields = quoteAll;
       return this;
     }
 

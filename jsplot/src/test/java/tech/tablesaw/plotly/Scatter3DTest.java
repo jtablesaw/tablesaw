@@ -1,7 +1,13 @@
 package tech.tablesaw.plotly;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.api.Scatter3DPlot;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -19,8 +25,7 @@ public class Scatter3DTest {
   @Test
   public void testAsJavascript() {
     Scatter3DTrace trace = Scatter3DTrace.builder(x, y, z).text(labels).build();
-
-    System.out.println(trace.asJavascript(1));
+    assertNotNull(trace.asJavascript(1));
   }
 
   @Test
@@ -30,7 +35,7 @@ public class Scatter3DTest {
         Scatter3DTrace.builder(x, y, z).mode(Scatter3DTrace.Mode.MARKERS).text(labels).build();
 
     Layout layout = Layout.builder().xAxis(Axis.builder().title("x title").build()).build();
-
+    assertEquals("x title", layout.getTitle());
     Plot.show(new Figure(layout, trace));
   }
 
@@ -51,5 +56,15 @@ public class Scatter3DTest {
         Scatter3DTrace.builder(x, y, z).mode(Scatter3DTrace.Mode.TEXT).text(labels).build();
 
     Plot.show(new Figure(trace));
+  }
+
+  @Test
+  void createScatter3D() {
+    DoubleColumn xData = DoubleColumn.create("x", new double[] {2, 2, 1});
+    DoubleColumn yData = DoubleColumn.create("y", new double[] {1, 2, 3});
+    DoubleColumn zData = DoubleColumn.create("z", new double[] {1, 4, 1});
+
+    Table data = Table.create().addColumns(xData, yData, zData);
+    assertNotNull(Scatter3DPlot.create("3D plot", data, "x", "y", "z"));
   }
 }

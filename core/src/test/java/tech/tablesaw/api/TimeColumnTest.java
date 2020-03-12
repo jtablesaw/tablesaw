@@ -30,7 +30,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.selection.Selection;
 
@@ -253,7 +252,7 @@ public class TimeColumnTest {
     fillLargerColumn();
     IntColumn column2 = column1.minuteOfDay();
     for (int i = 0; i < column1.size() - 2; i++) {
-      assertEquals(column2.get(i), getMinuteOfDay(column1.getPackedTime(i)), 0.0001);
+      assertEquals(column2.getInt(i), getMinuteOfDay(column1.getPackedTime(i)), 0.0001);
     }
   }
 
@@ -262,7 +261,7 @@ public class TimeColumnTest {
     fillLargerColumn();
     IntColumn column2 = column1.secondOfDay();
     for (int i = 0; i < column1.size() - 2; i++) {
-      assertEquals(column2.get(i), getSecondOfDay(column1.getPackedTime(i)), 0.0001);
+      assertEquals(column2.getInt(i), getSecondOfDay(column1.getPackedTime(i)), 0.0001);
     }
   }
 
@@ -318,7 +317,7 @@ public class TimeColumnTest {
     IntColumn second = column1.second();
     assertEquals(2, second.get(0), 0.001);
     assertEquals(30, second.get(1), 0.001);
-    assertEquals(IntColumnType.missingValueIndicator(), second.get(2), 0.001);
+    assertNull(second.get(2));
   }
 
   @Test
@@ -327,7 +326,7 @@ public class TimeColumnTest {
     IntColumn minute = column1.minute();
     assertEquals(4, minute.get(0), 0.001);
     assertEquals(15, minute.get(1), 0.001);
-    assertEquals(IntColumnType.missingValueIndicator(), minute.get(2), 0.001);
+    assertNull(minute.get(2));
   }
 
   @Test

@@ -54,7 +54,7 @@ public class Scene extends Component {
     Writer writer = new StringWriter();
     PebbleTemplate compiledTemplate;
     try {
-      compiledTemplate = engine.getTemplate("scene_template.html");
+      compiledTemplate = getEngine().getTemplate("scene_template.html");
       compiledTemplate.evaluate(writer, getContext());
     } catch (PebbleException e) {
       throw new IllegalStateException(e);

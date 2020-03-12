@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -25,7 +26,6 @@ import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -44,7 +44,6 @@ import tech.tablesaw.columns.dates.DateFilters;
 import tech.tablesaw.columns.dates.DateMapFunctions;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
 /** A column in a base table that contains float values */
 public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
@@ -52,8 +51,6 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
         DateFillers<DateColumn>,
         DateMapFunctions,
         CategoricalColumn<LocalDate> {
-
-  private final IntComparator reverseIntComparator = DescendingIntComparator.instance();
 
   private IntArrayList data;
 
@@ -210,12 +207,12 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   @Override
   public void sortAscending() {
-    Arrays.parallelSort(data.elements());
+    data.sort(IntComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    IntArrays.parallelQuickSort(data.elements(), reverseIntComparator);
+    data.sort(IntComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override
@@ -437,7 +434,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
   public List<LocalDate> top(int n) {
     List<LocalDate> top = new ArrayList<>();
     int[] values = data.toIntArray();
-    IntArrays.parallelQuickSort(values, DescendingIntComparator.instance());
+    IntArrays.parallelQuickSort(values, IntComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(PackedLocalDate.asLocalDate(values[i]));
     }

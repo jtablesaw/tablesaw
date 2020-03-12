@@ -7,7 +7,7 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
-import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Figure.FigureBuilder;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.event.HoverBroadcastBody;
 import tech.tablesaw.plotly.event.HoverEventHandler;
@@ -60,6 +60,7 @@ public class HoverBroadcastExample {
             .yAxis2(Axis.builder().title("price").domain(0.35f, 1.0f).build())
             .build();
 
-    Plot.show(new Figure(layout, heh, trace0, trace1));
+    Plot.show(
+        new FigureBuilder().layout(layout).addEventHandlers(heh).addTraces(trace0, trace1).build());
   }
 }

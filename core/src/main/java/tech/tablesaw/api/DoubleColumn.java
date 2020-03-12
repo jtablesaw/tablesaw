@@ -3,7 +3,7 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrays;
-import it.unimi.dsi.fastutil.doubles.DoubleComparator;
+import it.unimi.dsi.fastutil.doubles.DoubleComparators;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleListIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
@@ -27,11 +27,6 @@ import tech.tablesaw.selection.Selection;
 
 public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     implements NumberFillers<DoubleColumn> {
-
-  /**
-   * Compares two doubles, such that a sort based on this comparator would sort in descending order
-   */
-  private final DoubleComparator descendingComparator = (o2, o1) -> (Double.compare(o1, o2));
 
   private final DoubleArrayList data;
 
@@ -107,7 +102,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return new DoubleColumn(name, new DoubleArrayList(doubles));
   }
 
-  public static DoubleColumn create(String name, Collection<Number> numberList) {
+  public static DoubleColumn create(String name, Collection<? extends Number> numberList) {
     DoubleColumn newColumn = new DoubleColumn(name, new DoubleArrayList(0));
     for (Number number : numberList) {
       newColumn.append(number);
@@ -149,7 +144,8 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   @Override
   public Double get(int index) {
-    return getDouble(index);
+    double result = getDouble(index);
+    return isMissingValue(result) ? null : result;
   }
 
   @Override
@@ -181,7 +177,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
   public DoubleColumn top(int n) {
     DoubleArrayList top = new DoubleArrayList();
     double[] values = data.toDoubleArray();
-    DoubleArrays.parallelQuickSort(values, descendingComparator);
+    DoubleArrays.parallelQuickSort(values, DoubleComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(values[i]);
     }
@@ -396,12 +392,12 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   @Override
   public void sortAscending() {
-    DoubleArrays.parallelQuickSort(data.elements());
+    data.sort(DoubleComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    DoubleArrays.parallelQuickSort(data.elements(), descendingComparator);
+    data.sort(DoubleComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override

@@ -23,8 +23,7 @@ import it.unimi.dsi.fastutil.booleans.BooleanSet;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
-import it.unimi.dsi.fastutil.bytes.ByteArrays;
-import it.unimi.dsi.fastutil.bytes.ByteComparator;
+import it.unimi.dsi.fastutil.bytes.ByteComparators;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
@@ -33,7 +32,6 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -59,8 +57,6 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
         CategoricalColumn<Boolean>,
         BooleanFillers<BooleanColumn>,
         BooleanFilters {
-
-  private final ByteComparator descendingByteComparator = (o1, o2) -> Byte.compare(o2, o1);
 
   private ByteArrayList data;
 
@@ -298,12 +294,12 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   @Override
   public void sortAscending() {
-    ByteArrays.mergeSort(data.elements());
+    data.sort(ByteComparators.NATURAL_COMPARATOR);
   }
 
   @Override
   public void sortDescending() {
-    ByteArrays.mergeSort(data.elements(), descendingByteComparator);
+    data.sort(ByteComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override
@@ -667,19 +663,6 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   @Override
   public int compare(Boolean o1, Boolean o2) {
     return Boolean.compare(o1, o2);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    BooleanColumn that = (BooleanColumn) o;
-    return Objects.equals(data, that.data);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(data);
   }
 
   private static class BooleanColumnIterator implements Iterator<Boolean> {

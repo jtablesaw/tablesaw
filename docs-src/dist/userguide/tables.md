@@ -36,7 +36,7 @@ You can load a table from a CSV file by providing the file name.
 
     Table t = Table.read().csv("myFile.csv");
 
-This simple method supplies default values for a number of parameters like the type of the separator character (a comma). It also attempts to infer the types for each column. If the inferred types are incorrect, you can specify the types at import time. See [Importing data](https://jTablesaw.github.io/Tablesaw/userguide/importing_data) for other options and more detail.    
+This simple method supplies default values for a number of parameters like the type of the separator character (a comma). It also attempts to infer the types for each column. If the inferred types are incorrect, you can specify the types at import time. See [Importing data](https://jtablesaw.github.io/tablesaw/userguide/importing_data) for other options and more detail.    
 
 ## Displaying data
 

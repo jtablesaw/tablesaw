@@ -135,6 +135,7 @@ public class XlsxReaderTest {
             .read(XlsxReadOptions.builder("../data/multiplesheets.xlsx").sheetIndex(1).build());
     assertNotNull(table, "No table read from multiplesheets.xlsx");
     assertColumnValues(table.stringColumn("stringcol"), "John", "Doe");
+    assertEquals("multiplesheets.xlsx#Sheet2", table.name(), "table name is different");
 
     Table tableImplicit =
         new XlsxReader().read(XlsxReadOptions.builder("../data/multiplesheets.xlsx").build());
