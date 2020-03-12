@@ -174,7 +174,7 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void testNumberTypeDetectionRetainZeroDecimals() throws IOException {
+  public void testNumberTypeDetectionIgnoreZeroDecimals() throws IOException {
     Reader reader = new FileReader("../data/immunization.csv");
     CsvReadOptions options =
         CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(true).build();
@@ -187,7 +187,7 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void testNumberColumnTypeRetainZeroDecimals() throws IOException {
+  public void testNumberColumnTypeIgnoreZeroDecimals() throws IOException {
     CsvReadOptions options =
         CsvReadOptions.builder("../data/immunization.csv")
             .header(true)
@@ -203,7 +203,7 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void testNumberTypeDetectionIgnoreZeroDecimals() throws IOException {
+  public void testNumberTypeDetectionRetainZeroDecimals() throws IOException {
     Reader reader = new FileReader("../data/immunization.csv");
     CsvReadOptions options =
         CsvReadOptions.builder(reader).header(true).sample(false).ignoreZeroDecimal(false).build();
@@ -216,7 +216,7 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void testNumberColumnTypeIgnoreZeroDecimals() throws IOException {
+  public void testNumberColumnTypeRetainZeroDecimals() throws IOException {
     CsvReadOptions options =
         CsvReadOptions.builder("../data/immunization.csv")
             .header(true)
@@ -774,6 +774,7 @@ public class CsvReaderTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testReadCsvWithRowSamplingParsingNumbers() throws IOException {
 
     StringBuilder csv = new StringBuilder();
