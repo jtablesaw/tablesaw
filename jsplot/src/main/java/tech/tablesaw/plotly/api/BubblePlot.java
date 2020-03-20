@@ -40,12 +40,8 @@ public class BubblePlot {
     return new Figure(layout, traces);
   }
   
-  public static Figure create(
-	      String title, Table table, 
-	      String xCol, Column xColumn,
-	      String yCol, Column yColumn,
-	      String sizeColumn, 
-	      double[] color, SizeMode sizeMode, Double opacity) {
+	public static Figure create(String title, Table table, String xCol, Column xColumn, String yCol, Column yColumn,
+			String sizeColumn, double[] color, SizeMode sizeMode, Double opacity) {
 		Layout layout = Layout.builder(title, xCol, yCol).build();
 
 		Marker marker = null;
@@ -69,11 +65,11 @@ public class BubblePlot {
 
 		ScatterTrace trace = ScatterTrace.builder(xColumn, yColumn).marker(marker).build();
 		return new Figure(layout, trace);
-  }
+	}
 
   public static Figure create(
       String title, Table table, String xCol, String yCol, String sizeColumn) {
-        return create(title, table, xCol, null, yCol, null, sizeColumn, null, null, null);
+		return create(title, table, xCol, null, yCol, null, sizeColumn, null, null, null);
   }
 
   public static Figure create(
