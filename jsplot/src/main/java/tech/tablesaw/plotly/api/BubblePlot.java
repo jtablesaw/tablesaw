@@ -54,7 +54,6 @@ public class BubblePlot {
 			builder.size(table.numberColumn(sizeColumn));
 		}
 		if (opacity != null) {
-//		   builder.opacity(.75);
 			builder.opacity(opacity);
 		}
 		if (color != null) {
