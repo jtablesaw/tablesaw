@@ -202,6 +202,14 @@ public class DataFrameJoiner {
     List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
     validateIndexes(table1Indexes, table2Indexes);
 
+    if (table1.rowCount() == 0 &&
+        (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
+      // Handle special case of empty table here so it doesn't fall through to the behavior
+      // that adds rows for full outer and right outer joins 
+      result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+      return result;
+    }
+
     Selection table1DoneRows = Selection.with();
     Selection table2DoneRows = Selection.with();
     for (Row row : table1) {
