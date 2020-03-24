@@ -793,7 +793,7 @@ public class CsvReaderTest {
     assertEquals(expectedSampleSize, t.rowCount());
     assertEquals(INTEGER, t.column(0).type());
 
-    List<Integer> intValues = (List<Integer>) t.column(0).asList();
+    List<Integer> intValues = t.intColumn(0).asList();
     assertEquals(true, values.containsAll(intValues));
   }
 }
