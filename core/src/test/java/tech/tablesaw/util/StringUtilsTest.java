@@ -31,7 +31,7 @@ public class StringUtilsTest {
 
     // Assert no change to input value
     assertEquals("468", StringUtils.removeZeroDecimal("468"));
-    assertEquals("24.", StringUtils.removeZeroDecimal("24."));
+    assertEquals("24", StringUtils.removeZeroDecimal("24"));
     assertEquals("468.02", StringUtils.removeZeroDecimal("468.02"));
     assertEquals("246.004", StringUtils.removeZeroDecimal("246.004"));
     assertEquals("246.4000", StringUtils.removeZeroDecimal("246.4000"));

@@ -774,7 +774,6 @@ public class CsvReaderTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void testReadCsvWithRowSamplingParsingNumbers() throws IOException {
 
     StringBuilder csv = new StringBuilder();
