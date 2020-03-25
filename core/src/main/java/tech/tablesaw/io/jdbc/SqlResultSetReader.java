@@ -44,23 +44,23 @@ public class SqlResultSetReader {
   private static Map<Integer, ColumnType> initializeMap() {
     return new HashMap<>(
         new ImmutableMap.Builder<Integer, ColumnType>()
-            .put(Types.BINARY, ColumnType.BOOLEAN)
             .put(Types.BOOLEAN, ColumnType.BOOLEAN)
             .put(Types.BIT, ColumnType.BOOLEAN)
-            .put(Types.DATE, ColumnType.LOCAL_DATE)
-            .put(Types.TIME, ColumnType.LOCAL_TIME)
-            // Instant, LocalDateTime, OffsetDateTime and ZonedDateTime are often mapped to
-            // timestamp
-            .put(Types.TIMESTAMP, ColumnType.INSTANT)
             .put(Types.DECIMAL, ColumnType.DOUBLE)
             .put(Types.DOUBLE, ColumnType.DOUBLE)
             .put(Types.FLOAT, ColumnType.DOUBLE)
             .put(Types.NUMERIC, ColumnType.DOUBLE)
             .put(Types.REAL, ColumnType.FLOAT)
+            // Instant, LocalDateTime, OffsetDateTime and ZonedDateTime are often mapped to
+            // timestamp
+            .put(Types.TIMESTAMP, ColumnType.INSTANT)
             .put(Types.INTEGER, ColumnType.INTEGER)
+            .put(Types.DATE, ColumnType.LOCAL_DATE)
+            .put(Types.TIME, ColumnType.LOCAL_TIME)
+            .put(Types.BIGINT, ColumnType.LONG)
             .put(Types.SMALLINT, ColumnType.SHORT)
             .put(Types.TINYINT, ColumnType.SHORT)
-            .put(Types.BIGINT, ColumnType.LONG)
+            .put(Types.BINARY, ColumnType.STRING)
             .put(Types.CHAR, ColumnType.STRING)
             .put(Types.NCHAR, ColumnType.STRING)
             .put(Types.NVARCHAR, ColumnType.STRING)
