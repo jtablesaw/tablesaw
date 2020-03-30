@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.io.Writer;
 import tech.tablesaw.api.Table;
@@ -28,7 +29,8 @@ import tech.tablesaw.io.WriterRegistry;
 public class JsonWriter implements DataWriter<JsonWriteOptions> {
 
   private static final JsonWriter INSTANCE = new JsonWriter();
-  private static final ObjectMapper mapper = new ObjectMapper();
+  private static final ObjectMapper mapper =
+      new ObjectMapper().registerModule(new JavaTimeModule());
 
   static {
     register(Table.defaultWriterRegistry);
