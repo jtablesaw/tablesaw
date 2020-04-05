@@ -13,9 +13,9 @@ public class CsvWriteOptions extends WriteOptions {
   private final boolean header;
   private final boolean ignoreLeadingWhitespaces;
   private final boolean ignoreTrailingWhitespaces;
-  private final char separator;
-  private final char quoteChar;
-  private final char escapeChar;
+  private final Character separator;
+  private final Character quoteChar;
+  private final Character escapeChar;
   private final String lineEnd;
   private final boolean quoteAllFields;
 
@@ -43,11 +43,11 @@ public class CsvWriteOptions extends WriteOptions {
     return ignoreTrailingWhitespaces;
   }
 
-  public char separator() {
+  public Character separator() {
     return separator;
   }
 
-  public char escapeChar() {
+  public Character escapeChar() {
     return escapeChar;
   }
 
@@ -55,7 +55,7 @@ public class CsvWriteOptions extends WriteOptions {
     return quoteAllFields;
   }
 
-  public char quoteChar() {
+  public Character quoteChar() {
     return quoteChar;
   }
 
@@ -89,10 +89,10 @@ public class CsvWriteOptions extends WriteOptions {
     private boolean ignoreLeadingWhitespaces = true;
     private boolean ignoreTrailingWhitespaces = true;
     private boolean quoteAllFields = false;
-    private char separator = ',';
+    private Character separator;
     private String lineEnd = System.lineSeparator();
-    private char escapeChar = '\\';
-    private char quoteChar = '"';
+    private Character escapeChar;
+    private Character quoteChar;
 
     protected Builder(String fileName) throws IOException {
       super(Paths.get(fileName).toFile());

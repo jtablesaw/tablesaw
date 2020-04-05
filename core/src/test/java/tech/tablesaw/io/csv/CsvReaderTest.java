@@ -38,10 +38,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.file.Paths;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -53,6 +56,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.AddCellToColumnException;
 
@@ -737,5 +741,19 @@ public class CsvReaderTest {
 
     List<Integer> intValues = t.intColumn(0).asList();
     assertEquals(true, values.containsAll(intValues));
+  }
+
+  @Test
+  public void preserveQuote() throws IOException {
+    Table table = Table.create("test", StringColumn.create("colName", Arrays.asList("\"")));
+
+    // test CSV writes quote properly
+    Writer writer = new StringWriter();
+    table.write().csv(writer);
+    String string = writer.toString();
+
+    // test CSV reads quote back again
+    Table out = Table.read().csv(new StringReader(string));
+    assertEquals(table.get(0, 0), out.get(0, 0));
   }
 }
