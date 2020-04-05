@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.columns.Column;
@@ -1287,5 +1288,25 @@ public class DataFrameJoinerTest {
         () -> {
           table1.joinOn("ID").inner(table2);
         });
+  }
+
+  @Test
+  public void innerJoinEmptyLeftTable() {
+    Table leftTable = Table.create(StringColumn.create("Animal"));
+    Table joined = leftTable.joinOn("Animal").inner(ANIMAL_NAMES);
+    assertEquals(0, joined.rowCount());
+    for (Column<?> column : joined.columnArray()) {
+      assertEquals(0, column.size());
+    }
+  }
+
+  @Test
+  public void leftOuterJoinEmptyLeftTable() {
+    Table leftTable = Table.create(StringColumn.create("Animal"));
+    Table joined = leftTable.joinOn("Animal").inner(ANIMAL_NAMES);
+    assertEquals(0, joined.rowCount());
+    for (Column<?> column : joined.columnArray()) {
+      assertEquals(0, column.size());
+    }
   }
 }
