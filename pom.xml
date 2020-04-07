@@ -250,8 +250,8 @@
             </plugin>
             <plugin>
                 <groupId>com.cosium.code</groupId>
-                <artifactId>maven-git-code-format</artifactId>
-                <version>1.38</version>
+                <artifactId>git-code-format-maven-plugin</artifactId>
+                <version>2.4</version>
                 <executions>
                     <!-- On commit, format the modified java files -->
                     <execution>
