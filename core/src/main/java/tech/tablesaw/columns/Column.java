@@ -303,7 +303,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         o1 = o2;
       }
     }
-    return (first ? Optional.empty() : Optional.of(o1));
+    return (first ? Optional.<T>empty() : Optional.<T>of(o1));
   }
 
   /**
@@ -323,7 +323,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         o1 = o2;
       }
     }
-    return (first ? Optional.empty() : Optional.of(o1));
+    return (first ? Optional.<T>empty() : Optional.<T>of(o1));
   }
 
   /**
