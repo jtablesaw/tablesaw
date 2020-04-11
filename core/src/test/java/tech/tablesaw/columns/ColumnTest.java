@@ -331,4 +331,13 @@ public class ColumnTest {
     assertContentEquals(
         DoubleColumn.create("t1", new double[] {1, -1, 0}).sorted(Double::compare), -1.0, 0.0, 1.0);
   }
+
+  @Test
+  public void indexOfTest() {
+    DoubleColumn testDoubleCol = DoubleColumn.create("t1", 0, 1, 1);
+    assertEquals(-1, testDoubleCol.indexOf(2));
+    assertEquals(-1, testDoubleCol.indexOf(0));
+    assertEquals(0, testDoubleCol.indexOf(0.0));
+    assertEquals(1, testDoubleCol.indexOf(1.0));
+  }
 }

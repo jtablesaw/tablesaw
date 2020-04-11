@@ -17,6 +17,7 @@ package tech.tablesaw.columns;
 import java.util.Comparator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.selection.Selection;
@@ -145,5 +146,10 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
       sc.append(getUnformattedString(i));
     }
     return sc;
+  }
+
+  @Override
+  public int indexOf(final Object o) {
+    return IntStream.range(0, size()).filter(i -> get(i).equals(o)).findFirst().orElse(-1);
   }
 }
