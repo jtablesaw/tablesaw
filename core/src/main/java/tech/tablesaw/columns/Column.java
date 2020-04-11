@@ -656,4 +656,10 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    * @return a {@link StringColumn} built using the column {@link #getUnformattedString} method
    */
   StringColumn asStringColumn();
+
+  /**
+   * Returns the index of the first occurrence of {@code o} in the column or -1 if the element is
+   * not in the column.
+   */
+  int indexOf(Object o);
 }
