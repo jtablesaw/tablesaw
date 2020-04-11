@@ -218,9 +218,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
           return true;
         }
       } else {
-        if (get(i) == null) {
-          return true;
-        }
+        if (get(i) == null) return true;
       }
     }
     return false;
