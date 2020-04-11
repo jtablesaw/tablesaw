@@ -14,21 +14,23 @@
 
 package tech.tablesaw.columns;
 
-import java.util.Comparator;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.selection.Selection;
 
-/** Partial implementation of the {@link Column} interface */
+import java.util.Comparator;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.IntStream;
+
+/**
+ * Partial implementation of the {@link Column} interface
+ */
 public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T> {
 
   public static final int DEFAULT_ARRAY_SIZE = 128;
-
-  private String name;
-
   private final ColumnType type;
+  private String name;
 
   public AbstractColumn(ColumnType type, final String name) {
     this.type = type;
@@ -145,5 +147,10 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
       sc.append(getUnformattedString(i));
     }
     return sc;
+  }
+
+  @Override
+  public int indexOf(final Object o) {
+    return IntStream.range(0, size()).filter(i -> get(i).equals(o)).findFirst().orElse(-1);
   }
 }
