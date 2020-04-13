@@ -4,11 +4,15 @@ import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.util.StringUtils;
 
 public class IntParser extends AbstractColumnParser<Integer> {
 
+  private final boolean ignoreZeroDecimal;
+
   public IntParser(ColumnType columnType) {
     super(columnType);
+    ignoreZeroDecimal = ReadOptions.DEFAULT_IGNORE_ZERO_DECIMAL;
   }
 
   public IntParser(IntColumnType columnType, ReadOptions readOptions) {
@@ -16,6 +20,7 @@ public class IntParser extends AbstractColumnParser<Integer> {
     if (readOptions.missingValueIndicator() != null) {
       missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
     }
+    ignoreZeroDecimal = readOptions.ignoreZeroDecimal();
   }
 
   @Override
@@ -25,8 +30,8 @@ public class IntParser extends AbstractColumnParser<Integer> {
     }
     String s = str;
     try {
-      if (s.endsWith(".0")) {
-        s = s.substring(0, s.length() - 2);
+      if (ignoreZeroDecimal) {
+        s = StringUtils.removeZeroDecimal(s);
       }
       Integer.parseInt(AbstractColumnParser.remove(s, ','));
       return true;
@@ -52,8 +57,8 @@ public class IntParser extends AbstractColumnParser<Integer> {
       return IntColumnType.missingValueIndicator();
     }
     String s = str;
-    if (s.endsWith(".0")) {
-      s = s.substring(0, s.length() - 2);
+    if (ignoreZeroDecimal) {
+      s = StringUtils.removeZeroDecimal(s);
     }
     return Integer.parseInt(AbstractColumnParser.remove(s, ','));
   }

@@ -36,7 +36,7 @@ import tech.tablesaw.api.Table;
 public class FixedWidthReaderTest {
 
   private final FixedWidthFields car_fields_specs = new FixedWidthFields(4, 5, 40, 40, 8);
-  private final ColumnType[] car_types = {SHORT, STRING, STRING, STRING, FLOAT};
+  private final ColumnType[] car_types = {SHORT, STRING, STRING, STRING, SHORT};
   private final ColumnType[] car_types_with_SKIP = {SHORT, STRING, STRING, SKIP, FLOAT};
 
   @Test

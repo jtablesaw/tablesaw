@@ -40,6 +40,8 @@ import tech.tablesaw.api.ColumnType;
 
 public class ReadOptions {
 
+  public static final boolean DEFAULT_IGNORE_ZERO_DECIMAL = true;
+
   private static final List<ColumnType> DEFAULT_TYPES =
       Lists.newArrayList(
           LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, LONG, DOUBLE, STRING);
@@ -75,6 +77,7 @@ public class ReadOptions {
   protected final String missingValueIndicator;
   protected final boolean minimizeColumnSizes;
   protected final int maxCharsPerColumn;
+  protected final boolean ignoreZeroDecimal;
 
   protected final DateTimeFormatter dateFormatter;
   protected final DateTimeFormatter dateTimeFormatter;
@@ -94,6 +97,7 @@ public class ReadOptions {
     minimizeColumnSizes = builder.minimizeColumnSizes;
     header = builder.header;
     maxCharsPerColumn = builder.maxCharsPerColumn;
+    ignoreZeroDecimal = builder.ignoreZeroDecimal;
 
     dateFormatter = builder.dateFormatter;
     timeFormatter = builder.timeFormatter;
@@ -136,6 +140,10 @@ public class ReadOptions {
 
   public boolean header() {
     return header;
+  }
+
+  public boolean ignoreZeroDecimal() {
+    return ignoreZeroDecimal;
   }
 
   public DateTimeFormatter dateTimeFormatter() {
@@ -186,6 +194,7 @@ public class ReadOptions {
     protected boolean minimizeColumnSizes = false;
     protected boolean header = true;
     protected int maxCharsPerColumn = 4096;
+    protected boolean ignoreZeroDecimal = DEFAULT_IGNORE_ZERO_DECIMAL;
 
     protected Builder() {
       source = null;
@@ -266,6 +275,12 @@ public class ReadOptions {
 
     public Builder maxCharsPerColumn(int maxCharsPerColumn) {
       this.maxCharsPerColumn = maxCharsPerColumn;
+      return this;
+    }
+
+    /** Ignore zero value decimals in data values. Defaults to {@code true}. */
+    public Builder ignoreZeroDecimal(boolean ignoreZeroDecimal) {
+      this.ignoreZeroDecimal = ignoreZeroDecimal;
       return this;
     }
 

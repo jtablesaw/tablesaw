@@ -3,11 +3,15 @@ package tech.tablesaw.columns.numbers;
 import com.google.common.collect.Lists;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.util.StringUtils;
 
 public class ShortParser extends AbstractColumnParser<Short> {
 
+  private final boolean ignoreZeroDecimal;
+
   public ShortParser(ShortColumnType columnType) {
     super(columnType);
+    ignoreZeroDecimal = ReadOptions.DEFAULT_IGNORE_ZERO_DECIMAL;
   }
 
   public ShortParser(ShortColumnType columnType, ReadOptions readOptions) {
@@ -15,6 +19,7 @@ public class ShortParser extends AbstractColumnParser<Short> {
     if (readOptions.missingValueIndicator() != null) {
       missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
     }
+    ignoreZeroDecimal = readOptions.ignoreZeroDecimal();
   }
 
   @Override
@@ -24,8 +29,8 @@ public class ShortParser extends AbstractColumnParser<Short> {
     }
     String s = str;
     try {
-      if (s.endsWith(".0")) {
-        s = s.substring(0, s.length() - 2);
+      if (ignoreZeroDecimal) {
+        s = StringUtils.removeZeroDecimal(s);
       }
       Short.parseShort(AbstractColumnParser.remove(s, ','));
       return true;
@@ -51,8 +56,8 @@ public class ShortParser extends AbstractColumnParser<Short> {
       return ShortColumnType.missingValueIndicator();
     }
     String s = str;
-    if (s.endsWith(".0")) {
-      s = s.substring(0, s.length() - 2);
+    if (ignoreZeroDecimal) {
+      s = StringUtils.removeZeroDecimal(s);
     }
     return Short.parseShort(AbstractColumnParser.remove(s, ','));
   }

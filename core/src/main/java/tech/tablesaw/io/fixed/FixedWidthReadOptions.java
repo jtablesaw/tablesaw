@@ -294,5 +294,11 @@ public class FixedWidthReadOptions extends ReadOptions {
       super.minimizeColumnSizes();
       return this;
     }
+
+    @Override
+    public Builder ignoreZeroDecimal(boolean ignoreZeroDecimal) {
+      super.ignoreZeroDecimal(ignoreZeroDecimal);
+      return this;
+    }
   }
 }
