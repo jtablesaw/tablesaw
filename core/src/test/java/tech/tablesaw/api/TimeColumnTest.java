@@ -14,16 +14,13 @@
 
 package tech.tablesaw.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.tablesaw.columns.times.PackedLocalTime.getMinuteOfDay;
 import static tech.tablesaw.columns.times.PackedLocalTime.getSecondOfDay;
 import static tech.tablesaw.columns.times.PackedLocalTime.of;
 
 import java.nio.ByteBuffer;
+import java.sql.Time;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -405,6 +402,37 @@ public class TimeColumnTest {
     TimeColumn col = TimeColumn.create("Game time");
     col.appendCell(null);
     assertNull(col.get(0));
+  }
+
+  @Test
+  public void testAppendObjNull() {
+    TimeColumn returned = column1.appendObj(null);
+    assertEquals(column1, returned);
+    assertEquals(1, returned.size());
+    assertTrue(returned.isMissing(0));
+  }
+
+  @Test
+  public void testAppendObjLocalTime() {
+    LocalTime localTime = LocalTime.of(9,10,42);
+    TimeColumn returned = column1.appendObj(localTime);
+    assertEquals(column1, returned);
+    assertEquals(1, returned.size());
+    assertEquals(LocalTime.of(9,10,42), returned.get(0));
+  }
+
+  @Test
+  public void testAppendObjTime() {
+    Time time = Time.valueOf("09:10:42");
+    TimeColumn returned = column1.appendObj(time);
+    assertEquals(column1, returned);
+    assertEquals(1, returned.size());
+    assertEquals(LocalTime.of(9,10,42), returned.get(0));
+  }
+
+  @Test
+  public void testAppendObjIllegal() {
+    assertThrows(IllegalArgumentException.class, () -> column1.appendObj(new Object()));
   }
 
   private void assertMinAndMaxEquals(int expected, IntColumn numberColumn) {

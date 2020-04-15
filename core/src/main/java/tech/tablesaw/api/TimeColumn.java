@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.nio.ByteBuffer;
+import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -176,11 +177,15 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     if (obj == null) {
       return appendMissing();
     }
-    if (!(obj instanceof LocalTime)) {
-      throw new IllegalArgumentException(
-          "Cannot append " + obj.getClass().getName() + " to TimeColumn");
+    if (obj instanceof LocalTime) {
+      return append((LocalTime) obj);
     }
-    return append((LocalTime) obj);
+    if (obj instanceof Time) {
+      Time time = (Time) obj;
+      return append(time.toLocalTime());
+    }
+    throw new IllegalArgumentException(
+          "Cannot append " + obj.getClass().getName() + " to TimeColumn");
   }
 
   @Override
