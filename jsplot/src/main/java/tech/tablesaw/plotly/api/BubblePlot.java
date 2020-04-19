@@ -3,6 +3,7 @@ package tech.tablesaw.plotly.api;
 import java.util.List;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
@@ -42,8 +43,8 @@ public class BubblePlot {
 
   public static Figure create(
       String title,
-      NumericColumn xColumn,
-      NumericColumn yColumn,
+      Column xColumn,
+      Column yColumn,
       NumericColumn sizeColumn,
       double[] color,
       SizeMode sizeMode,
