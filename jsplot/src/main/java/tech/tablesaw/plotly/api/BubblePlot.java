@@ -1,8 +1,8 @@
 package tech.tablesaw.plotly.api;
 
 import java.util.List;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
@@ -40,23 +40,21 @@ public class BubblePlot {
     return new Figure(layout, traces);
   }
 
-  public static Figure create(
+  private static Figure create(
       String title,
-      Table table,
-      String xCol,
-      Column xColumn,
-      String yCol,
-      Column yColumn,
-      String sizeColumn,
+      NumericColumn xColumn,
+      NumericColumn yColumn,
+      NumericColumn sizeColumn,
       double[] color,
       SizeMode sizeMode,
       Double opacity) {
-    Layout layout = Layout.builder(title, xCol, yCol).build();
+
+    Layout layout = Layout.builder(title, xColumn.name(), yColumn.name()).build();
 
     Marker marker = null;
     MarkerBuilder builder = Marker.builder();
     if (sizeColumn != null) {
-      builder.size(table.numberColumn(sizeColumn));
+      builder.size(sizeColumn);
     }
     if (opacity != null) {
       builder.opacity(opacity);
@@ -69,16 +67,15 @@ public class BubblePlot {
     }
     marker = builder.build();
 
-    xColumn = (xColumn == null) ? table.numberColumn(xCol) : xColumn;
-    yColumn = (yColumn == null) ? table.numberColumn(yCol) : yColumn;
-
     ScatterTrace trace = ScatterTrace.builder(xColumn, yColumn).marker(marker).build();
     return new Figure(layout, trace);
   }
 
-  public static Figure create(
-      String title, Table table, String xCol, String yCol, String sizeColumn) {
-    return create(title, table, xCol, null, yCol, null, sizeColumn, null, null, null);
+  public static Figure create(String title, Table table, String xCol, String yCol, String sizeCol) {
+    NumericColumn xColumn = table.numberColumn(xCol);
+    NumericColumn yColumn = table.numberColumn(yCol);
+    NumericColumn sizeColumn = table.numberColumn(sizeCol);
+    return create(title, xColumn, yColumn, sizeColumn, null, null, null);
   }
 
   public static Figure create(
