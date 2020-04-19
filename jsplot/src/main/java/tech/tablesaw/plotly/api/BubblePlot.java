@@ -40,7 +40,7 @@ public class BubblePlot {
     return new Figure(layout, traces);
   }
 
-  private static Figure create(
+  public static Figure create(
       String title,
       NumericColumn xColumn,
       NumericColumn yColumn,
