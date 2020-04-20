@@ -41,6 +41,18 @@ public class BubblePlot {
     return new Figure(layout, traces);
   }
 
+  /**
+   * create a bubble plot using more options including color/sizeMode/opacity
+   *
+   * @param title plot title
+   * @param xColumn non-nullable, column data for x-axis
+   * @param yColumn non-nullable, column data for y-axis
+   * @param sizeColumn nullable, indicate the bubble size
+   * @param color color for every data point
+   * @param sizeMode check {@link SizeMode}
+   * @param opacity display opacity
+   * @return bubble plot created from given parameters
+   */
   public static Figure create(
       String title,
       Column xColumn,
@@ -72,10 +84,20 @@ public class BubblePlot {
     return new Figure(layout, trace);
   }
 
+  /**
+   * create a bubble plot using column names
+   *
+   * @param title plot title
+   * @param table source {@link Table} to fetch plot datap points
+   * @param xCol non-nullable, column name for x-axis
+   * @param yCol non-nullable, column name for y-axis
+   * @param sizeCol nullable, column name for bubble size
+   * @return bubble plot created from given parameters
+   */
   public static Figure create(String title, Table table, String xCol, String yCol, String sizeCol) {
     NumericColumn xColumn = table.numberColumn(xCol);
     NumericColumn yColumn = table.numberColumn(yCol);
-    NumericColumn sizeColumn = table.numberColumn(sizeCol);
+    NumericColumn sizeColumn = sizeCol == null ? null : table.numberColumn(sizeCol);
     return create(title, xColumn, yColumn, sizeColumn, null, null, null);
   }
 
