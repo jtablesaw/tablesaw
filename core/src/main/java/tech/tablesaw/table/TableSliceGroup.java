@@ -14,7 +14,6 @@
 
 package tech.tablesaw.table;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -187,7 +186,6 @@ public class TableSliceGroup implements Iterable<TableSlice> {
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
   public Table aggregate(ListMultimap<String, AggregateFunction<?, ?>> functions) {
-    Preconditions.checkArgument(!getSlices().isEmpty());
     Table groupTable = summaryTableName(sourceTable);
     StringColumn groupColumn = StringColumn.create("Group");
     groupTable.addColumns(groupColumn);

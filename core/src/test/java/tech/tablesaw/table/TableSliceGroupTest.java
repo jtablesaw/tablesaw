@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableListMultimap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -138,5 +139,30 @@ public class TableSliceGroupTest {
     Table aggregated =
         group.aggregate(ImmutableListMultimap.of("approval", exaggerate, "approval2", exaggerate));
     assertEquals(aggregated.rowCount(), group.size());
+  }
+
+  /**
+   * Make sure that aggregations are allowed on empty tables. They should however just create new
+   * empty tables.
+   *
+   * <p>see <a href="https://github.com/jtablesaw/tablesaw/issues/785">Issue#785</a>
+   */
+  @Test
+  public void aggregateWithEmptyResult() {
+    // drop all rows in order to carry out aggregation on an empty table
+    table = table.dropRows(IntStream.range(0, table.column(0).size()).toArray());
+
+    TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
+    Table aggregated = group.aggregate("approval", exaggerate);
+    assertEquals(0, aggregated.rowCount(), "result should be empty");
+    assertEquals(2, aggregated.columnCount()); // 1 original column + the aggregation column
+
+    table.addColumns(table.categoricalColumn("approval").copy().setName("approval2"));
+    group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
+
+    aggregated =
+        group.aggregate(ImmutableListMultimap.of("approval", exaggerate, "approval2", exaggerate));
+    assertEquals(0, aggregated.rowCount(), "result should be empty");
+    assertEquals(3, aggregated.columnCount()); // 2 original columns + the aggregation column
   }
 }
