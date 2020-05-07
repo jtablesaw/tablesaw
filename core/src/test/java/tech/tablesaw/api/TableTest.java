@@ -39,6 +39,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class TableTest {
@@ -167,7 +168,7 @@ public class TableTest {
   }
 
   @Test
-  void testDropDuplicateRows() throws Exception {
+  void dropDuplicateRows() throws Exception {
     Table t1 = Table.read().csv("../data/bush.csv");
     int rowCount = t1.rowCount();
     Table t2 = Table.read().csv("../data/bush.csv");
@@ -176,6 +177,21 @@ public class TableTest {
     assertEquals(3 * rowCount, t1.rowCount());
     t1 = t1.dropDuplicateRows();
     assertEquals(rowCount, t1.rowCount());
+  }
+
+  @Test
+  void dropDuplicateRowsWithMissingValue() throws Exception {
+    // Add 4 rows to the table, two of which are duplicates and have missing values.
+    int missing = IntColumnType.missingValueIndicator();
+    Table t1 =
+        Table.create(
+            "T1",
+            IntColumn.create("Id", 0, 1, 2, 1),
+            StringColumn.create("Name", "Joe", "Jay", "Mike", "Jay"),
+            IntColumn.create("ChildId", 100, missing, 101, missing));
+
+    Table t2 = t1.dropDuplicateRows();
+    assertEquals(3, t2.rowCount());
   }
 
   @Test
