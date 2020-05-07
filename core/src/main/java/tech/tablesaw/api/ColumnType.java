@@ -68,6 +68,8 @@ public interface ColumnType {
   AbstractColumnParser<?> customParser(ReadOptions options);
 
   default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {
-    return original.get(rowNumber).equals(temp.get(temp.size() - 1));
+    Object o1 = original.get(rowNumber);
+    Object o2 = temp.get(temp.size() - 1);
+    return o1 == null ? o2 == null : o1.equals(o2);
   }
 }
