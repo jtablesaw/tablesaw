@@ -128,8 +128,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   @Override
   public DateColumn set(int index, LocalDate value) {
-    data.set(index, PackedLocalDate.pack(value));
-    return this;
+    return value == null ? setMissing(index) : set(index, PackedLocalDate.pack(value));
   }
 
   public void setPrintFormatter(DateTimeFormatter dateTimeFormatter, String missingValueString) {
@@ -505,7 +504,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
   }
 
   @Override
-  public Column<LocalDate> setMissing(int i) {
+  public DateColumn setMissing(int i) {
     return set(i, DateColumnType.missingValueIndicator());
   }
 

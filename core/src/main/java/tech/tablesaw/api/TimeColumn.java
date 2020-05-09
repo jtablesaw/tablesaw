@@ -185,7 +185,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
       return append(time.toLocalTime());
     }
     throw new IllegalArgumentException(
-          "Cannot append " + obj.getClass().getName() + " to TimeColumn");
+        "Cannot append " + obj.getClass().getName() + " to TimeColumn");
   }
 
   @Override
@@ -481,8 +481,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
   }
 
   public TimeColumn set(int index, LocalTime value) {
-    set(index, PackedLocalTime.pack(value));
-    return this;
+    return value == null ? setMissing(index) : set(index, PackedLocalTime.pack(value));
   }
 
   /**

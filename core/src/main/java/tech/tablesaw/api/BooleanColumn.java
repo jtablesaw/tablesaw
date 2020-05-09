@@ -84,7 +84,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   }
 
   @Override
-  public Column<Boolean> setMissing(int i) {
+  public BooleanColumn setMissing(int i) {
     set(i, BooleanColumnType.missingValueIndicator());
     return this;
   }
@@ -450,11 +450,11 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   @Override
   public BooleanColumn set(int i, Boolean val) {
-    return set(i, val.booleanValue());
+    return val == null ? setMissing(i) : set(i, val.booleanValue());
   }
 
   @Override
-  public Column<Boolean> set(int row, String stringValue, AbstractColumnParser<?> parser) {
+  public BooleanColumn set(int row, String stringValue, AbstractColumnParser<?> parser) {
     return set(row, parser.parseByte(stringValue));
   }
 

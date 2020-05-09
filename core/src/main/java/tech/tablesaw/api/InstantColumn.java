@@ -164,7 +164,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   }
 
   @Override
-  public Column<Instant> setMissing(int i) {
+  public InstantColumn setMissing(int i) {
     return set(i, InstantColumnType.missingValueIndicator());
   }
 
@@ -528,8 +528,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   @Override
   public InstantColumn set(int index, Instant value) {
-    data.set(index, PackedInstant.pack(value));
-    return this;
+    return value == null ? setMissing(index) : set(index, PackedInstant.pack(value));
   }
 
   /**

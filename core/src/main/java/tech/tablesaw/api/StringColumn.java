@@ -266,6 +266,9 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
 
   @Override
   public StringColumn set(int rowIndex, String stringValue) {
+    if (stringValue == null) {
+      return setMissing(rowIndex);
+    }
     try {
       lookupTable.set(rowIndex, stringValue);
     } catch (NoKeysAvailableException ex) {
@@ -297,7 +300,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   }
 
   @Override
-  public Column<String> setMissing(int i) {
+  public StringColumn setMissing(int i) {
     return set(i, StringColumnType.missingValueIndicator());
   }
 

@@ -219,7 +219,7 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   @Override
   public ShortColumn set(int i, Short val) {
-    return set(i, (short) val);
+    return val == null ? setMissing(i) : set(i, (short) val);
   }
 
   public ShortColumn set(int i, short val) {
@@ -328,7 +328,7 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
   }
 
   @Override
-  public Column<Short> setMissing(int i) {
+  public ShortColumn setMissing(int i) {
     return set(i, ShortColumnType.missingValueIndicator());
   }
 
