@@ -75,8 +75,17 @@ public class NumberColumnFormatter {
     this.missingString = missingString;
   }
 
-  public String format(double value) {
+  public String format(long value) {
+    if (isMissingValue(value)) {
+      return missingString;
+    }
+    if (format == null) {
+      return String.valueOf(value);
+    }
+    return format.format(value);
+  }
 
+  public String format(double value) {
     if (isMissingValue(value)) {
       return missingString;
     }
