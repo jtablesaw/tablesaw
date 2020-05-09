@@ -162,7 +162,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   }
 
   @Override
-  public Column<LocalDateTime> setMissing(int i) {
+  public DateTimeColumn setMissing(int i) {
     return set(i, DateTimeColumnType.missingValueIndicator());
   }
 
@@ -541,8 +541,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public DateTimeColumn set(int index, LocalDateTime value) {
-    data.set(index, PackedLocalDateTime.pack(value));
-    return this;
+    return value == null ? setMissing(index) : set(index, PackedLocalDateTime.pack(value));
   }
 
   /**

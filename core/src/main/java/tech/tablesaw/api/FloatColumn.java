@@ -213,7 +213,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
 
   @Override
   public FloatColumn set(int i, Float val) {
-    return set(i, (float) val);
+    return val == null ? setMissing(i) : set(i, (float) val);
   }
 
   public FloatColumn set(int i, float val) {
@@ -294,7 +294,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   }
 
   @Override
-  public Column<Float> setMissing(int i) {
+  public FloatColumn setMissing(int i) {
     return set(i, FloatColumnType.missingValueIndicator());
   }
 

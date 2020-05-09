@@ -292,7 +292,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   @Override
   public DoubleColumn set(int i, Double val) {
-    return set(i, (double) val);
+    return val == null ? setMissing(i) : set(i, (double) val);
   }
 
   public DoubleColumn set(int i, double val) {

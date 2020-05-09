@@ -244,11 +244,10 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   @Override
   public TextColumn set(int rowIndex, String stringValue) {
-    String str = TextColumnType.missingValueIndicator();
-    if (stringValue != null) {
-      str = stringValue;
+    if (stringValue == null) {
+      return setMissing(rowIndex);
     }
-    values.set(rowIndex, str);
+    values.set(rowIndex, stringValue);
     return this;
   }
 
@@ -269,7 +268,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   @Override
-  public Column<String> setMissing(int i) {
+  public TextColumn setMissing(int i) {
     return set(i, TextColumnType.missingValueIndicator());
   }
 

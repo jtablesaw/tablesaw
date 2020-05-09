@@ -221,7 +221,7 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
 
   @Override
   public IntColumn set(int i, Integer val) {
-    return set(i, (int) val);
+    return val == null ? setMissing(i) : set(i, (int) val);
   }
 
   public IntColumn set(int i, int val) {

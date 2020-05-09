@@ -250,7 +250,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
 
   @Override
   public LongColumn set(int i, Long val) {
-    return set(i, (long) val);
+    return val == null ? setMissing(i) : set(i, (long) val);
   }
 
   public LongColumn set(int i, long val) {
@@ -351,7 +351,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   }
 
   @Override
-  public Column<Long> setMissing(int i) {
+  public LongColumn setMissing(int i) {
     return set(i, LongColumnType.missingValueIndicator());
   }
 
