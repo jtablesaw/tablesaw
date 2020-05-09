@@ -81,7 +81,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
     if (LongColumnType.valueIsMissing(value)) {
       return "";
     }
-    return String.valueOf(getPrintFormatter().format(value));
+    return getPrintFormatter().format(value);
   }
 
   public static boolean valueIsMissing(long value) {
