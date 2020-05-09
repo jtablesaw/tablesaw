@@ -540,6 +540,15 @@ public class NumberColumnTest {
   }
 
   @Test
+  public void testFormatLong() {
+    LongColumn longs = LongColumn.create("longs");
+    long value = 1588838400007002844L;
+    longs.append(value);
+    assertEquals(value, longs.getLong(0));
+    assertEquals(Long.toString(longs.getLong(0)), longs.getString(0));
+  }
+
+  @Test
   public void testCountUniqueShort() {
     ShortColumn shorts = ShortColumn.create("doubles");
     shorts.append((short) 1);
