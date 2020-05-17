@@ -21,5 +21,17 @@ public class ConfigTest {
       Config config = Config.builder().build();
       assertFalse(config.asJavascript().contains("displayModeBar"));
     }
+    {
+      Config config = Config.builder().responsive(true).build();
+      assertTrue(config.asJavascript().contains("responsive: true"));
+    }
+    {
+      Config config = Config.builder().responsive(false).build();
+      assertTrue(config.asJavascript().contains("responsive: false"));
+    }
+    {
+      Config config = Config.builder().build();
+      assertFalse(config.asJavascript().contains("responsive"));
+    }
   }
 }
