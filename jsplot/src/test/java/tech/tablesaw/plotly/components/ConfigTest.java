@@ -11,11 +11,11 @@ public class ConfigTest {
   public void testJavascript() {
     {
       Config config = Config.builder().displayModeBar(true).build();
-      assertTrue(config.asJavascript().contains("displayModeBar: true"));
+      assertTrue(config.asJavascript().contains("\"displayModeBar\" : true"));
     }
     {
       Config config = Config.builder().displayModeBar(false).build();
-      assertTrue(config.asJavascript().contains("displayModeBar: false"));
+      assertTrue(config.asJavascript().contains("\"displayModeBar\" : false"));
     }
     {
       Config config = Config.builder().build();
@@ -23,11 +23,11 @@ public class ConfigTest {
     }
     {
       Config config = Config.builder().responsive(true).build();
-      assertTrue(config.asJavascript().contains("responsive: true"));
+      assertTrue(config.asJavascript().contains("\"responsive\" : true"));
     }
     {
       Config config = Config.builder().responsive(false).build();
-      assertTrue(config.asJavascript().contains("responsive: false"));
+      assertTrue(config.asJavascript().contains("\"responsive\" : false"));
     }
     {
       Config config = Config.builder().build();

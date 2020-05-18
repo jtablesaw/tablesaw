@@ -19,7 +19,12 @@ public class Config extends Component {
 
   @Override
   public String asJavascript() {
-    return asJavascript("config_template.html");
+    return asJSON();
+  }
+
+  @Override
+  protected Map<String, Object> getJSONContext() {
+    return getContext();
   }
 
   @Override
