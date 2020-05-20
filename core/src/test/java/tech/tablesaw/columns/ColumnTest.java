@@ -293,7 +293,7 @@ public class ColumnTest {
   public void testMap2() {
     StringColumn c =
         DoubleColumn.create("t1", new double[] {-1, 0, 1})
-            .map(String::valueOf, name -> StringColumn.create(name, 3));
+            .map(String::valueOf, StringColumn::create);
     assertContentEquals(c, "-1.0", "0.0", "1.0");
   }
 
