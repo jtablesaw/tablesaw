@@ -10,6 +10,10 @@ public class ConfigTest {
   @Test
   public void testJavascript() {
     {
+      Config config = Config.builder().build();
+      assertTrue(config.asJavascript().startsWith("var config"));
+    }
+    {
       Config config = Config.builder().displayModeBar(true).build();
       assertTrue(config.asJavascript().contains("\"displayModeBar\" : true"));
     }

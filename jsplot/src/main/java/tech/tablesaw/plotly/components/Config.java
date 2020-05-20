@@ -19,7 +19,7 @@ public class Config extends Component {
 
   @Override
   public String asJavascript() {
-    return asJSON();
+    return "var config = " + asJSON();
   }
 
   @Override
