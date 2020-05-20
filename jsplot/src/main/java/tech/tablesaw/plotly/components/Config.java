@@ -6,9 +6,11 @@ import java.util.Map;
 public class Config extends Component {
 
   private final Boolean displayModeBar;
+  private final Boolean responsive;
 
   private Config(Builder builder) {
     this.displayModeBar = builder.displayModeBar;
+    this.responsive = builder.responsive;
   }
 
   public static Builder builder() {
@@ -17,24 +19,36 @@ public class Config extends Component {
 
   @Override
   public String asJavascript() {
-    return asJavascript("config_template.html");
+    return "var config = " + asJSON();
+  }
+
+  @Override
+  protected Map<String, Object> getJSONContext() {
+    return getContext();
   }
 
   @Override
   protected Map<String, Object> getContext() {
     Map<String, Object> context = new HashMap<>();
     context.put("displayModeBar", displayModeBar);
+    context.put("responsive", responsive);
     return context;
   }
 
   public static class Builder {
 
     Boolean displayModeBar;
+    Boolean responsive;
 
     private Builder() {}
 
     public Builder displayModeBar(boolean displayModeBar) {
       this.displayModeBar = displayModeBar;
+      return this;
+    }
+
+    public Builder responsive(boolean responsive) {
+      this.responsive = responsive;
       return this;
     }
 
