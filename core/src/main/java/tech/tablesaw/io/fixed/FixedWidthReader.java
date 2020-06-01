@@ -22,7 +22,7 @@ import com.univocity.parsers.fixed.FixedWidthParserSettings;
 import java.io.IOException;
 import java.io.Reader;
 import javax.annotation.concurrent.Immutable;
-import org.apache.commons.math3.util.Pair;
+import org.hipparchus.util.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.DataReader;

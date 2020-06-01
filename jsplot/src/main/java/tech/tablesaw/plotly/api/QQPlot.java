@@ -2,7 +2,7 @@ package tech.tablesaw.plotly.api;
 
 import com.google.common.base.Preconditions;
 import java.util.Arrays;
-import org.apache.commons.math3.stat.StatUtils;
+import org.hipparchus.stat.StatUtils;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Axis;

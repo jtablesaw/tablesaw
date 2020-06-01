@@ -14,7 +14,7 @@
 
 package tech.tablesaw.columns.numbers;
 
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.hipparchus.stat.descriptive.StreamingStatistics;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
@@ -42,14 +42,14 @@ public class Stats {
   }
 
   public static Stats create(final NumericColumn<?> values) {
-    SummaryStatistics summaryStatistics = new SummaryStatistics();
+	StreamingStatistics summaryStatistics = new StreamingStatistics();
     for (int i = 0; i < values.size(); i++) {
       summaryStatistics.addValue(values.getDouble(i));
     }
     return getStats(values, summaryStatistics);
   }
 
-  private static Stats getStats(NumericColumn<?> values, SummaryStatistics summaryStatistics) {
+  private static Stats getStats(NumericColumn<?> values, StreamingStatistics summaryStatistics) {
     Stats stats = new Stats("Column: " + values.name());
     stats.min = summaryStatistics.getMin();
     stats.max = summaryStatistics.getMax();
@@ -62,7 +62,7 @@ public class Stats {
     stats.mean = summaryStatistics.getMean();
     stats.standardDeviation = summaryStatistics.getStandardDeviation();
     stats.sumOfLogs = summaryStatistics.getSumOfLogs();
-    stats.sumOfSquares = summaryStatistics.getSumsq();
+    stats.sumOfSquares = summaryStatistics.getSumOfSquares();
     stats.secondMoment = summaryStatistics.getSecondMoment();
     return stats;
   }

@@ -14,9 +14,9 @@
 
 package tech.tablesaw.columns.numbers;
 
-import org.apache.commons.math3.random.EmpiricalDistribution;
-import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.hipparchus.stat.fitting.EmpiricalDistribution;
+import org.hipparchus.stat.StatUtils;
+import org.hipparchus.stat.descriptive.StreamingStatistics;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumericColumn;
 
@@ -428,7 +428,7 @@ public interface NumberMapFunctions {
     EmpiricalDistribution distribution = new EmpiricalDistribution(binCount);
     distribution.load(asDoubleArray());
     int k = 0;
-    for (SummaryStatistics stats : distribution.getBinStats()) {
+    for (StreamingStatistics stats : distribution.getBinStats()) {
       histogram[k++] = stats.getN();
     }
     return DoubleColumn.create(name() + "[binned]", histogram);

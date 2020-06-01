@@ -43,7 +43,7 @@ import static tech.tablesaw.api.QuerySupport.str;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import org.apache.commons.math3.stat.StatUtils;
+import org.hipparchus.stat.StatUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
