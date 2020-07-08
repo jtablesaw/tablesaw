@@ -102,7 +102,8 @@ public class SqlResultSetReader {
           metaData.getColumnType(i),
           metaData.getColumnName(i));
 
-      Column<?> newColumn = type.create(metaData.getColumnName(i));
+      // prefer alias
+      Column<?> newColumn = type.create(metaData.getColumnLabel(i));
       table.addColumns(newColumn);
     }
 
