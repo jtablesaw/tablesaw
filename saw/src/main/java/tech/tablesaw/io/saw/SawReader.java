@@ -74,8 +74,22 @@ public class SawReader {
    * @throws UncheckedIOException wrapping an IOException if the file cannot be read
    */
   public static Table readTable(File file) {
+    return readTable(file, READER_POOL_SIZE);
+  }
 
-    ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
+  /**
+   * Reads a tablesaw table into memory
+   *
+   * @param file The location of the table data. If not fully specified, it is interpreted as
+   *     relative to the working directory. The path will typically end in ".saw", as in
+   *     "mytables/nasdaq-2015.saw"
+   * @param threadPoolSize The size of the the thread-pool allocated to reading. Each column is read
+   *     in own thread
+   * @throws UncheckedIOException wrapping an IOException if the file cannot be read
+   */
+  public static Table readTable(File file, int threadPoolSize) {
+
+    ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
     CompletionService<Void> readerCompletionService =
         new ExecutorCompletionService<>(executorService);
 
