@@ -27,8 +27,6 @@ import tech.tablesaw.columns.strings.ShortDictionaryMap;
 @Beta
 public class ColumnMetadata {
 
-  // private static final ObjectMapper objectMapper = new ObjectMapper();
-
   private String id;
   private String name;
   private String type;
