@@ -13,6 +13,7 @@ public class CandlestickPlot {
 
   private static final String PLOT_TYPE = "candlestick";
 
+  /** Returns Figure containing candlestick time series plot with a default layout */
   public static Figure create(
       String title,
       Table table,

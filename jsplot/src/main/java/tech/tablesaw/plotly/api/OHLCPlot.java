@@ -13,6 +13,7 @@ public class OHLCPlot {
 
   private static final String PLOT_TYPE = "ohlc";
 
+  /** Returns Figure containing Open-High-Low-Close time series plot with a default layout */
   public static Figure create(
       String title,
       Table table,
