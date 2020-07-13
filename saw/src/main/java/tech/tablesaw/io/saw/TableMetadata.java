@@ -83,6 +83,11 @@ public class TableMetadata {
   /** Default constructor for Jackson json serialization */
   protected TableMetadata() {}
 
+  /**
+   * Returns an instance of TableMetadata constructed from the provided json string
+   *
+   * @param jsonString A json-formatted String consistent with those output by the toJson() method
+   */
   static TableMetadata fromJson(String jsonString) {
     try {
       return objectMapper.readValue(jsonString, TableMetadata.class);
@@ -91,6 +96,11 @@ public class TableMetadata {
     }
   }
 
+  /**
+   * Returns a JSON string that represents this object
+   *
+   * @see static methdod fromJson() which constructs a TableMetadata object from this JSON output
+   */
   String toJson() {
     try {
       return objectMapper.writeValueAsString(this);
@@ -124,6 +134,7 @@ public class TableMetadata {
     return name;
   }
 
+  /** Returns the name of the table */
   public String name() {
     return name;
   }
@@ -139,18 +150,22 @@ public class TableMetadata {
     return rowCount;
   }
 
+  /** Returns the number of rows in the table */
   public int rowCount() {
     return rowCount;
   }
 
+  /** Returns the saw file format version used to create this file */
   public int getVersion() {
     return version;
   }
 
+  /** Returns a list of ColumnMetadata objects, one for each Column in the table */
   List<ColumnMetadata> getColumnMetadataList() {
     return columnMetadataList;
   }
 
+  /** Returns the number of columns in the table */
   public int columnCount() {
     return getColumnMetadataList().size();
   }
