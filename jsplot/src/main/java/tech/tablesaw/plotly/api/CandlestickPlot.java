@@ -2,11 +2,18 @@ package tech.tablesaw.plotly.api;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
-import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.ScatterTrace;
 
+/**
+ * Candlestick time series plot typically used to illustrate price trends for stocks and other
+ * exchange-traded products
+ *
+ * @see OHLCPlot
+ */
 public class CandlestickPlot {
 
+  private static final String PLOT_TYPE = "candlestick";
+
+  /** Returns Figure containing candlestick time series plot with a default layout */
   public static Figure create(
       String title,
       Table table,
@@ -15,16 +22,6 @@ public class CandlestickPlot {
       String highCol,
       String lowCol,
       String closeCol) {
-    Layout layout = Layout.builder(title, xCol).build();
-    ScatterTrace trace =
-        ScatterTrace.builder(
-                table.dateColumn(xCol),
-                table.numberColumn(openCol),
-                table.numberColumn(highCol),
-                table.numberColumn(lowCol),
-                table.numberColumn(closeCol))
-            .type("candlestick")
-            .build();
-    return new Figure(layout, trace);
+    return PricePlot.create(title, table, xCol, openCol, highCol, lowCol, closeCol, PLOT_TYPE);
   }
 }
