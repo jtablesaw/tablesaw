@@ -14,15 +14,23 @@
 
 package tech.tablesaw.io.saw;
 
+import static java.util.stream.Collectors.toList;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
 
@@ -33,13 +41,32 @@ public class TableMetadata {
   static final String METADATA_FILE_NAME = "Metadata.json";
   private static final int SAW_VERSION = 1;
 
+  /**
+   * Returns a TableMetadata instance derived from the json-formatted Metadata.json file in the
+   * directory specified by sawPath
+   *
+   * @param sawPath The path to the folder containing the Saw metadata file and table data
+   * @throws IOException if the file can not be read
+   */
+  static TableMetadata readTableMetadata(Path sawPath) throws IOException {
+
+    Path resolvePath = sawPath.resolve(METADATA_FILE_NAME);
+    byte[] encoded = Files.readAllBytes(resolvePath);
+    return TableMetadata.fromJson(new String(encoded, StandardCharsets.UTF_8));
+  }
+
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
   @JsonProperty("columnMetadata")
   private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
 
+  // The name of the table
   private String name;
+
+  // The number of rows in the table
   private int rowCount;
+
+  // The saw file format version
   private int version;
 
   TableMetadata(Relation table) {
@@ -87,13 +114,32 @@ public class TableMetadata {
     return Objects.hash(name, rowCount, columnMetadataList);
   }
 
+  /**
+   * Returns the name of the table
+   *
+   * @deprecated Use name() instead
+   */
   @SuppressWarnings("WeakerAccess")
   public String getName() {
     return name;
   }
 
+  public String name() {
+    return name;
+  }
+
+  /**
+   * Returns the number of rows in the table
+   *
+   * @deprecated Use rowCount() instead
+   */
   @SuppressWarnings("WeakerAccess")
+  @Deprecated
   public int getRowCount() {
+    return rowCount;
+  }
+
+  public int rowCount() {
     return rowCount;
   }
 
@@ -103,5 +149,39 @@ public class TableMetadata {
 
   List<ColumnMetadata> getColumnMetadataList() {
     return columnMetadataList;
+  }
+
+  public int columnCount() {
+    return getColumnMetadataList().size();
+  }
+
+  /**
+   * Returns a string describing the number of rows and columns in the table. This is analogous to
+   * the shape() method defined on Relation.
+   */
+  public String shape() {
+    return rowCount() + " rows X " + columnCount() + " cols";
+  }
+
+  /** Returns a List of the names of all the columns in this table */
+  public List<String> columnNames() {
+    return columnMetadataList.stream().map(ColumnMetadata::getName).collect(toList());
+  }
+
+  /** Returns a table that describes the columns in this table */
+  public Table structure() {
+    Table t = Table.create("Structure of " + getName());
+    IntColumn index = IntColumn.indexColumn("Index", columnCount(), 0);
+    StringColumn columnName = StringColumn.create("Column Name", columnCount());
+    StringColumn columnType = StringColumn.create("Column Type", columnCount());
+    t.addColumns(index);
+    t.addColumns(columnName);
+    t.addColumns(columnType);
+    for (int i = 0; i < columnCount(); i++) {
+      ColumnMetadata column = columnMetadataList.get(i);
+      columnType.set(i, column.getType());
+      columnName.set(i, columnNames().get(i));
+    }
+    return t;
   }
 }

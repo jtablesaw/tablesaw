@@ -15,6 +15,7 @@
 package tech.tablesaw.io.saw;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Objects;
 import java.util.UUID;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
@@ -87,5 +88,21 @@ public class ColumnMetadata {
 
   public String getStringColumnKeySize() {
     return stringColumnKeySize;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ColumnMetadata that = (ColumnMetadata) o;
+    return Objects.equal(getId(), that.getId())
+        && Objects.equal(getName(), that.getName())
+        && Objects.equal(getType(), that.getType())
+        && Objects.equal(getStringColumnKeySize(), that.getStringColumnKeySize());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(getId(), getName(), getType(), getStringColumnKeySize());
   }
 }
