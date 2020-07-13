@@ -14,7 +14,6 @@
 
 package tech.tablesaw.io.saw;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
 import java.util.UUID;
 import tech.tablesaw.api.StringColumn;
@@ -28,7 +27,7 @@ import tech.tablesaw.columns.strings.ShortDictionaryMap;
 @Beta
 public class ColumnMetadata {
 
-  private static final ObjectMapper objectMapper = new ObjectMapper();
+  // private static final ObjectMapper objectMapper = new ObjectMapper();
 
   private String id;
   private String name;
