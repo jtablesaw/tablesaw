@@ -87,13 +87,34 @@ public class SawWriter {
    * @throws UncheckedIOException wrapping IOException if the file can not be read
    */
   public static String saveTable(String parentFolderName, Relation table) {
+    return saveTable(parentFolderName, table, WRITER_POOL_SIZE);
+  }
+
+  /**
+   * Saves the data from the given table in the location specified by parentFolderName. Within that
+   * folder each table has its own sub-folder, whose name is based on the name of the table.
+   *
+   * <p>NOTE: If you store a table with the same name in the same folder. The data in that folder
+   * will be over-written.
+   *
+   * <p>The storage format is the tablesaw compressed column-oriented format, which consists of a
+   * set of file in a folder. The name of the folder is based on the name of the table.
+   *
+   * @param parentFolderName The location of the table (for example: "mytables")
+   * @param table The table to be saved
+   * @param threadPoolSize The size of the the thread-pool allocated to writing. Each column is
+   *     written in own thread
+   * @return The path and name of the table
+   * @throws UncheckedIOException wrapping IOException if the file can not be read
+   */
+  public static String saveTable(String parentFolderName, Relation table, int threadPoolSize) {
 
     Preconditions.checkArgument(
         parentFolderName != null, "The folder name for the saw output cannot be null");
     Preconditions.checkArgument(
         !parentFolderName.isEmpty(), "The folder name for the saw output cannot be empty");
 
-    ExecutorService executorService = Executors.newFixedThreadPool(WRITER_POOL_SIZE);
+    ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
     CompletionService<Void> writerCompletionService =
         new ExecutorCompletionService<>(executorService);
 
