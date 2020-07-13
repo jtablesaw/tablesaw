@@ -14,37 +14,10 @@
 
 package tech.tablesaw.io.saw;
 
-import static tech.tablesaw.io.saw.SawUtils.BOOLEAN;
-import static tech.tablesaw.io.saw.SawUtils.DOUBLE;
-import static tech.tablesaw.io.saw.SawUtils.FLOAT;
-import static tech.tablesaw.io.saw.SawUtils.INSTANT;
-import static tech.tablesaw.io.saw.SawUtils.INTEGER;
-import static tech.tablesaw.io.saw.SawUtils.LOCAL_DATE;
-import static tech.tablesaw.io.saw.SawUtils.LOCAL_DATE_TIME;
-import static tech.tablesaw.io.saw.SawUtils.LOCAL_TIME;
-import static tech.tablesaw.io.saw.SawUtils.LONG;
-import static tech.tablesaw.io.saw.SawUtils.SHORT;
-import static tech.tablesaw.io.saw.SawUtils.STRING;
-import static tech.tablesaw.io.saw.SawUtils.TEXT;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.UUID;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.InstantColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.TextColumn;
-import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
@@ -83,23 +56,11 @@ public class ColumnMetadata {
     }
   }
 
+  /**
+   * Constructs an instance of ColumnMetaData NB: This constructor is used by Jackson JSON parsing
+   * code so it must be retained even though it isn't explicitly called
+   */
   protected ColumnMetadata() {}
-
-  public static ColumnMetadata fromJson(String jsonString) {
-    try {
-      return objectMapper.readValue(jsonString, ColumnMetadata.class);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  public String toJson() {
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (JsonProcessingException e) {
-      throw new IllegalStateException(e);
-    }
-  }
 
   @Override
   public String toString() {
@@ -129,37 +90,5 @@ public class ColumnMetadata {
 
   public String getStringColumnKeySize() {
     return stringColumnKeySize;
-  }
-
-  public Column<?> createColumn() {
-    final String typeString = getType();
-    switch (typeString) {
-      case FLOAT:
-        return FloatColumn.create(name);
-      case DOUBLE:
-        return DoubleColumn.create(name);
-      case INTEGER:
-        return IntColumn.create(name);
-      case BOOLEAN:
-        return BooleanColumn.create(name);
-      case LOCAL_DATE:
-        return DateColumn.create(name);
-      case LOCAL_TIME:
-        return TimeColumn.create(name);
-      case LOCAL_DATE_TIME:
-        return DateTimeColumn.create(name);
-      case INSTANT:
-        return InstantColumn.create(name);
-      case STRING:
-        return StringColumn.create(name);
-      case TEXT:
-        return TextColumn.create(name);
-      case SHORT:
-        return ShortColumn.create(name);
-      case LONG:
-        return LongColumn.create(name);
-      default:
-        throw new IllegalStateException("Unhandled column type writing columns: " + typeString);
-    }
   }
 }

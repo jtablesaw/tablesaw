@@ -36,7 +36,7 @@ public class TableMetadata {
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
   @JsonProperty("columnMetadata")
-  private List<ColumnMetadata> columnMetadataList = new ArrayList<>();
+  private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
 
   private String name;
   private int rowCount;
