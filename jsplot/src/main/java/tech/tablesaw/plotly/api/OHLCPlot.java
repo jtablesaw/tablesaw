@@ -2,10 +2,16 @@ package tech.tablesaw.plotly.api;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
-import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.ScatterTrace;
 
+/**
+ * Open-High-Low-Close time series plot typically used to illustrate price trends for stocks and
+ * other exchange-traded products
+ *
+ * @see CandlestickPlot
+ */
 public class OHLCPlot {
+
+  private static final String PLOT_TYPE = "ohlc";
 
   public static Figure create(
       String title,
@@ -15,16 +21,6 @@ public class OHLCPlot {
       String highCol,
       String lowCol,
       String closeCol) {
-    Layout layout = Layout.builder(title, xCol).build();
-    ScatterTrace trace =
-        ScatterTrace.builder(
-                table.dateColumn(xCol),
-                table.numberColumn(openCol),
-                table.numberColumn(highCol),
-                table.numberColumn(lowCol),
-                table.numberColumn(closeCol))
-            .type("ohlc")
-            .build();
-    return new Figure(layout, trace);
+    return PricePlot.create(title, table, xCol, openCol, highCol, lowCol, closeCol, PLOT_TYPE);
   }
 }
