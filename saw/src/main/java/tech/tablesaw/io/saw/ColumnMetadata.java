@@ -38,6 +38,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
@@ -148,7 +149,7 @@ public class ColumnMetadata {
       case LOCAL_DATE_TIME:
         return DateTimeColumn.create(name);
       case INSTANT:
-        return DateTimeColumn.create(name);
+        return InstantColumn.create(name);
       case STRING:
         return StringColumn.create(name);
       case TEXT:

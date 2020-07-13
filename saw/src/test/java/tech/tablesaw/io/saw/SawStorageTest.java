@@ -17,15 +17,19 @@ package tech.tablesaw.io.saw;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.api.ColumnType.INSTANT;
 import static tech.tablesaw.api.ColumnType.TEXT;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.StringColumn;
@@ -51,15 +55,21 @@ class SawStorageTest {
   private final Table intsAndText =
       Table.create("Ints and text", IntColumn.indexColumn("index1", 100, 300));
 
+  private final Table instants =
+      Table.create(
+          "Instants",
+          IntColumn.indexColumn("index1", 100, 300),
+          InstantColumn.create("Instants", 100));
+
   private static final int COUNT = 5;
 
-  private static String tempDir = System.getProperty("java.io.tmpdir");
-  private Table table = Table.create("t");
-  private FloatColumn floatColumn = FloatColumn.create("float");
-  private StringColumn categoryColumn = StringColumn.create("string");
-  private DateColumn localDateColumn = DateColumn.create("date");
-  private LongColumn longColumn = LongColumn.create("long");
-  private BooleanColumn booleanColumn = BooleanColumn.create("bool");
+  private static final String tempDir = System.getProperty("java.io.tmpdir");
+  private final Table table = Table.create("t");
+  private final FloatColumn floatColumn = FloatColumn.create("float");
+  private final StringColumn categoryColumn = StringColumn.create("string");
+  private final DateColumn localDateColumn = DateColumn.create("date");
+  private final LongColumn longColumn = LongColumn.create("long");
+  private final BooleanColumn booleanColumn = BooleanColumn.create("bool");
 
   @BeforeEach
   void setUp() {
@@ -79,6 +89,8 @@ class SawStorageTest {
     table.addColumns(categoryColumn);
     table.addColumns(longColumn);
     table.addColumns(booleanColumn);
+
+    instants.instantColumn(1).fillWith((Supplier<Instant>) Instant::now);
   }
 
   @Test
@@ -160,6 +172,16 @@ class SawStorageTest {
     assertTrue(table.column(1).size() > 0);
     assertEquals(TEXT, table.column(1).type());
     assertEquals(intsAndText.rowCount(), table.rowCount());
+  }
+
+  @Test
+  void saveInstants() {
+    String path = SawWriter.saveTable("../testoutput", instants);
+    Table table = SawReader.readTable(path);
+    assertEquals(100, table.column(0).size());
+    assertEquals(INSTANT, table.column(1).type());
+    assertEquals(instants.rowCount(), table.rowCount());
+    assertEquals(instants.instantColumn(1).get(20), table.instantColumn(1).get(20));
   }
 
   @Test
