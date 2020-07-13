@@ -215,13 +215,27 @@ public class IntDictionaryMap implements DictionaryMap {
     keyToCount.addTo(key, 1);
   }
 
-  void updateMaps(int key, String value) {
+  /**
+   * Add an entry into the key value map for the arguments, and increment the count for the
+   * corresponding entry in the keyToCount map.
+   *
+   * <p>NOTE: This should only be used for Saw File storage
+   *
+   * @param key the int encoding for the string argument
+   * @param value the actual string value for the column
+   */
+  void updateMapsFromSaw(int key, String value) {
     put(key, value);
-    keyToCount.addTo(key, 1);
   }
 
-  void addValue(int key) {
+  /**
+   * Add the given key to our values array
+   *
+   * @param key The key representing a string in the column
+   */
+  void addValueFromSaw(int key) {
     values.add(key);
+    keyToCount.addTo(key, 1);
   }
 
   private int getValueId() throws NoKeysAvailableException {

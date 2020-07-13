@@ -69,17 +69,17 @@ public class ByteDictionaryMap implements DictionaryMap {
     valueToKey.put(value, key);
   }
 
-  void updateMaps(byte key, String value) {
+  void updateMapsFromSaw(byte key, String value) {
     put(key, value);
-    keyToCount.addTo(key, 1);
   }
 
   ByteArrayList values() {
     return values;
   }
 
-  void addValue(byte key) {
+  void addValueFromSaw(byte key) {
     values.add(key);
+    keyToCount.addTo(key, 1);
   }
 
   ObjectSet<Byte2ObjectMap.Entry<String>> getKeyValueEntries() {

@@ -15,6 +15,7 @@ import static tech.tablesaw.io.saw.SawUtils.TEXT;
 import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Stopwatch;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
@@ -35,6 +36,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.iq80.snappy.SnappyFramedInputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -75,9 +77,8 @@ public class SawReader {
    */
   public static Table readTable(File file) {
 
-    ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
-    CompletionService<Void> readerCompletionService =
-        new ExecutorCompletionService<>(executorService);
+    ExecutorService executor = Executors.newFixedThreadPool(READER_POOL_SIZE);
+    CompletionService<Void> readerCompletionService = new ExecutorCompletionService<>(executor);
 
     TableMetadata tableMetadata;
 
@@ -122,8 +123,9 @@ public class SawReader {
       throw new IllegalStateException(e);
     } catch (ExecutionException e) {
       throw new IllegalStateException(e);
+    } finally {
+      executor.shutdown();
     }
-    executorService.shutdown();
     return table;
   }
 
@@ -257,7 +259,7 @@ public class SawReader {
 
   private static DateColumn readLocalDateColumn(String fileName, ColumnMetadata metadata)
       throws IOException {
-    DateColumn dates = DateColumn.create(metadata.getName());
+    DateColumn column = DateColumn.create(metadata.getName());
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
@@ -265,13 +267,13 @@ public class SawReader {
       while (!EOF) {
         try {
           int cell = dis.readInt();
-          dates.appendInternal(cell);
+          column.appendInternal(cell);
         } catch (EOFException e) {
           EOF = true;
         }
       }
     }
-    return dates;
+    return column;
   }
 
   private static DateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata)
@@ -314,7 +316,7 @@ public class SawReader {
 
   private static TimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata)
       throws IOException {
-    TimeColumn times = TimeColumn.create(metadata.getName());
+    TimeColumn column = TimeColumn.create(metadata.getName());
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
@@ -322,13 +324,13 @@ public class SawReader {
       while (!EOF) {
         try {
           int cell = dis.readInt();
-          times.appendInternal(cell);
+          column.appendInternal(cell);
         } catch (EOFException e) {
           EOF = true;
         }
       }
     }
-    return times;
+    return column;
   }
 
   /**
@@ -339,29 +341,32 @@ public class SawReader {
       String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
       throws IOException {
 
+    Stopwatch stopwatch = Stopwatch.createStarted();
+    System.out.println(columnMetadata.getName());
+
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
 
       DictionaryMap dictionaryMap;
 
-      if (columnMetadata.getStringColumnKeySize().equals(Integer.class.getSimpleName())) {
-        dictionaryMap = new ByteDictionaryMap().promoteYourself().promoteYourself();
-      } else if (columnMetadata.getStringColumnKeySize().equals(Short.class.getSimpleName())) {
-        dictionaryMap = new ByteDictionaryMap().promoteYourself();
-      } else if (columnMetadata.getStringColumnKeySize().equals(Byte.class.getSimpleName())) {
+      String keySize = columnMetadata.getStringColumnKeySize();
+      if (keySize.equals(Integer.class.getSimpleName())
+          || keySize.equals(Short.class.getSimpleName())
+          || keySize.equals(Byte.class.getSimpleName())) {
         dictionaryMap = new ByteDictionaryMap();
       } else {
         throw new IllegalArgumentException(
-            "Unable to match the dictionary map type for StringColum");
+            "Unable to match the dictionary map type for StringColumn");
       }
-      LookupTableWrapper lookupTable = new LookupTableWrapper(dictionaryMap);
 
-      return lookupTable.readFromStream(
-          dis,
-          columnMetadata.getName(),
-          columnMetadata.getStringColumnKeySize(),
-          tableMetadata.getRowCount());
+      LookupTableWrapper lookupTable = new LookupTableWrapper(dictionaryMap);
+      StringColumn column =
+          lookupTable.readFromStream(
+              dis, columnMetadata.getName(), keySize, tableMetadata.rowCount());
+      System.out.println(
+          columnMetadata.getName() + ": " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+      return column;
     }
   }
 

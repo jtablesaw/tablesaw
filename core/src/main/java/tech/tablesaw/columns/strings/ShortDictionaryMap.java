@@ -104,13 +104,13 @@ public class ShortDictionaryMap implements DictionaryMap {
     return values;
   }
 
-  void updateMaps(short key, String value) {
+  void updateMapsFromSaw(short key, String value) {
     put(key, value);
-    keyToCount.addTo(key, 1);
   }
 
-  void addValue(short key) {
+  void addValueFromSaw(short key) {
     values.add(key);
+    keyToCount.addTo(key, 1);
   }
 
   @Override

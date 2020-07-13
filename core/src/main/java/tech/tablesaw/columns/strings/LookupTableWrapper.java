@@ -38,10 +38,12 @@ public class LookupTableWrapper {
         IntDictionaryMap dictionary = (IntDictionaryMap) dictionaryMap;
         ObjectSet<Int2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
 
+        // write the unique strings and their keys, key first, then string, then next key, etc.
         for (Int2ObjectMap.Entry<String> entry : entries) {
           dos.writeInt(entry.getIntKey());
           dos.writeUTF(entry.getValue());
         }
+        // write the individual keys. These represent the strings in their correct order
         for (int d : dictionary.values()) {
           dos.writeInt(d);
         }
@@ -79,70 +81,89 @@ public class LookupTableWrapper {
   }
 
   public StringColumn readFromStream(
-      DataInputStream dis, String name, String dictionarySizeString, int columnSize) {
+      DataInputStream dis, String name, String dictionarySize, int columnSize) {
 
     StringColumn stringColumn;
 
     try {
-      int stringCount = dis.readInt();
+      // the first value in the stream holds the number of unique strings in the new column
+      int uniqueStringCount = dis.readInt();
 
-      if (dictionarySizeString.equals(Integer.class.getSimpleName())) {
-        IntDictionaryMap dictionaryMap =
-            (IntDictionaryMap) new ByteDictionaryMap().promoteYourself().promoteYourself();
-
-        int j = 0;
-        while (j < stringCount) {
-          int key = dis.readInt();
-          String value = dis.readUTF();
-          dictionaryMap.updateMaps(key, value);
-          j++;
-        }
-        // get the column entries
-        int size = columnSize;
-        for (int i = 0; i < size; i++) {
-          dictionaryMap.addValue(dis.readInt());
-        }
-        stringColumn = StringColumn.createInternal(name, dictionaryMap);
-
-      } else if (dictionarySizeString.equals(Short.class.getSimpleName())) {
-        ShortDictionaryMap dictionaryMap =
-            (ShortDictionaryMap) new ByteDictionaryMap().promoteYourself();
-        int j = 0;
-        while (j < stringCount) {
-          short key = dis.readShort();
-          String value = dis.readUTF();
-          dictionaryMap.updateMaps(key, value);
-          j++;
-        }
-        // get the column entries
-        for (int i = 0; i < columnSize; i++) {
-          dictionaryMap.addValue(dis.readShort());
-        }
-        stringColumn = StringColumn.createInternal(name, dictionaryMap);
-
-      } else if (dictionarySizeString.equals(Byte.class.getSimpleName())) {
-        ByteDictionaryMap dictionaryMap = new ByteDictionaryMap();
-        int j = 0;
-        while (j < stringCount) {
-          byte key = dis.readByte();
-          String value = dis.readUTF();
-          dictionaryMap.updateMaps(key, value);
-          j++;
-        }
-        // get the column entries
-        for (int i = 0; i < columnSize; i++) {
-          dictionaryMap.addValue(dis.readByte());
-        }
-        stringColumn = StringColumn.createInternal(name, dictionaryMap);
+      if (dictionarySize.equals(Integer.class.getSimpleName())) {
+        stringColumn = createColumnUsingInts(dis, name, columnSize, uniqueStringCount);
+      } else if (dictionarySize.equals(Short.class.getSimpleName())) {
+        stringColumn = createColumnUsingShorts(dis, name, columnSize, uniqueStringCount);
+      } else if (dictionarySize.equals(Byte.class.getSimpleName())) {
+        stringColumn = createColumnUsingBytes(dis, name, columnSize, uniqueStringCount);
       } else {
         throw new IllegalArgumentException(
-            "Unable to match the dictionary map type " + dictionarySizeString + " for StringColum");
+            "Unable to match the dictionary map type " + dictionarySize + " for StringColum");
       }
-
     } catch (IOException e) {
-      throw new UncheckedIOException(
-          "Failed reading " + name + " of type " + dictionarySizeString, e);
+      throw new UncheckedIOException("Failed reading " + name + " of type " + dictionarySize, e);
     }
+    return stringColumn;
+  }
+
+  private StringColumn createColumnUsingInts(
+      DataInputStream dis, String name, int columnSize, int uniqueStringCount) throws IOException {
+    StringColumn stringColumn;
+    IntDictionaryMap intDictionaryMap =
+        (IntDictionaryMap) dictionaryMap.promoteYourself().promoteYourself();
+
+    int j = 0;
+    while (j < uniqueStringCount) {
+      int key = dis.readInt();
+      String value = dis.readUTF();
+      intDictionaryMap.updateMapsFromSaw(key, value);
+      j++;
+    }
+    // get the column entries
+    for (int i = 0; i < columnSize; i++) {
+      intDictionaryMap.addValueFromSaw(dis.readInt());
+    }
+    stringColumn = StringColumn.createInternal(name, intDictionaryMap);
+    return stringColumn;
+  }
+
+  private StringColumn createColumnUsingBytes(
+      DataInputStream dis, String name, int columnSize, int uniqueStringCount) throws IOException {
+    StringColumn stringColumn;
+
+    ByteDictionaryMap byteDictionaryMap = (ByteDictionaryMap) dictionaryMap;
+    int j = 0;
+    while (j < uniqueStringCount) {
+      byte key = dis.readByte();
+      String value = dis.readUTF();
+      byteDictionaryMap.updateMapsFromSaw(key, value);
+      j++;
+    }
+    // get the column entries
+    for (int i = 0; i < columnSize; i++) {
+      byteDictionaryMap.addValueFromSaw(dis.readByte());
+    }
+    stringColumn = StringColumn.createInternal(name, byteDictionaryMap);
+    return stringColumn;
+  }
+
+  private StringColumn createColumnUsingShorts(
+      DataInputStream dis, String name, int columnSize, int uniqueStringCount) throws IOException {
+    StringColumn stringColumn;
+    ShortDictionaryMap dictionaryMap =
+        (ShortDictionaryMap) new ByteDictionaryMap().promoteYourself();
+
+    int j = 0;
+    while (j < uniqueStringCount) {
+      short key = dis.readShort();
+      String value = dis.readUTF();
+      dictionaryMap.updateMapsFromSaw(key, value);
+      j++;
+    }
+    // get the column entries
+    for (int i = 0; i < columnSize; i++) {
+      dictionaryMap.addValueFromSaw(dis.readShort());
+    }
+    stringColumn = StringColumn.createInternal(name, dictionaryMap);
     return stringColumn;
   }
 }

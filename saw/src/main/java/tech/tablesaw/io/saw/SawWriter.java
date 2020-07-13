@@ -158,8 +158,9 @@ public class SawWriter {
       throw new IllegalStateException(e);
     } catch (ExecutionException e) {
       throw new IllegalStateException(e);
+    } finally {
+      executorService.shutdown();
     }
-    executorService.shutdown();
     return filePath.toAbsolutePath().toString();
   }
 
