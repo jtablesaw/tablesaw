@@ -15,7 +15,7 @@ import static tech.tablesaw.io.saw.SawUtils.TEXT;
 import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableList;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
@@ -26,17 +26,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.iq80.snappy.SnappyFramedInputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -52,8 +50,6 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.ByteDictionaryMap;
-import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.LookupTableWrapper;
 
 @SuppressWarnings("WeakerAccess")
@@ -67,6 +63,11 @@ public class SawReader {
     return readTable(sawPath.toFile());
   }
 
+  public static Table readTable(String path, int threadPoolSize) {
+    Path sawPath = Paths.get(path);
+    return readTable(sawPath.toFile(), threadPoolSize);
+  }
+
   /**
    * Reads a tablesaw table into memory
    *
@@ -76,13 +77,27 @@ public class SawReader {
    * @throws UncheckedIOException wrapping an IOException if the file cannot be read
    */
   public static Table readTable(File file) {
+    return readTable(file, READER_POOL_SIZE);
+  }
 
-    ExecutorService executor = Executors.newFixedThreadPool(READER_POOL_SIZE);
-    CompletionService<Void> readerCompletionService = new ExecutorCompletionService<>(executor);
+  /**
+   * Reads a tablesaw table into memory
+   *
+   * @param file The location of the table data. If not fully specified, it is interpreted as
+   *     relative to the working directory. The path will typically end in ".saw", as in
+   *     "mytables/nasdaq-2015.saw"
+   * @param threadPoolSize The size of the the thread-pool allocated to reading. Each column is read
+   *     in own thread
+   * @throws UncheckedIOException wrapping an IOException if the file cannot be read
+   */
+  public static Table readTable(File file, int threadPoolSize) {
 
-    TableMetadata tableMetadata;
+    // final ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
+    // final ExecutorService executor = Executors.newCachedThreadPool();
+    final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    Path sawPath = file.toPath();
+    final TableMetadata tableMetadata;
+    final Path sawPath = file.toPath();
 
     try {
       tableMetadata = readTableMetadata(sawPath.resolve(METADATA_FILE_NAME));
@@ -90,34 +105,30 @@ public class SawReader {
       throw new UncheckedIOException("Error attempting to load saw data", e);
     }
 
-    List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
-    Table table = Table.create(tableMetadata.getName());
+    final List<ColumnMetadata> columnMetadata =
+        ImmutableList.copyOf(tableMetadata.getColumnMetadataList());
+    final Table table = Table.create(tableMetadata.name());
 
     // Note: We do some extra work with the hash map to ensure that the columns are returned
     // to the table in original order
-    ConcurrentLinkedQueue<Column<?>> columnList = new ConcurrentLinkedQueue<>();
-    Map<String, Column<?>> columns = new HashMap<>();
+    List<Callable<Column<?>>> callables = new ArrayList<>();
+    Map<String, Column<?>> columns = new ConcurrentHashMap<>();
     try {
       for (ColumnMetadata column : columnMetadata) {
-        readerCompletionService.submit(
+        callables.add(
             () -> {
               Path columnPath = sawPath.resolve(column.getId());
-              columnList.add(readColumn(columnPath.toString(), tableMetadata, column));
-              return null;
+              return readColumn(columnPath.toString(), tableMetadata, column);
             });
       }
-      for (int i = 0; i < columnMetadata.size(); i++) {
-        Future<Void> future = readerCompletionService.take();
-        future.get();
+      List<Future<Column<?>>> futures = executor.invokeAll(callables);
+      for (Future<Column<?>> future : futures) {
+        Column<?> column = future.get();
+        columns.put(column.name(), column);
       }
-      for (Column<?> c : columnList) {
-        columns.put(c.name(), c);
-      }
-
       for (ColumnMetadata metadata : columnMetadata) {
         table.addColumns(columns.get(metadata.getName()));
       }
-
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException(e);
@@ -341,32 +352,15 @@ public class SawReader {
       String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
       throws IOException {
 
-    Stopwatch stopwatch = Stopwatch.createStarted();
-    System.out.println(columnMetadata.getName());
+    try (DataInputStream dis =
+        new DataInputStream(new SnappyFramedInputStream(new FileInputStream(fileName), true))) {
 
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
-
-      DictionaryMap dictionaryMap;
-
-      String keySize = columnMetadata.getStringColumnKeySize();
-      if (keySize.equals(Integer.class.getSimpleName())
-          || keySize.equals(Short.class.getSimpleName())
-          || keySize.equals(Byte.class.getSimpleName())) {
-        dictionaryMap = new ByteDictionaryMap();
-      } else {
-        throw new IllegalArgumentException(
-            "Unable to match the dictionary map type for StringColumn");
-      }
-
-      LookupTableWrapper lookupTable = new LookupTableWrapper(dictionaryMap);
-      StringColumn column =
-          lookupTable.readFromStream(
-              dis, columnMetadata.getName(), keySize, tableMetadata.rowCount());
-      System.out.println(
-          columnMetadata.getName() + ": " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-      return column;
+      return new LookupTableWrapper()
+          .readFromStream(
+              dis,
+              columnMetadata.getName(),
+              columnMetadata.getStringColumnKeySize(),
+              tableMetadata.rowCount());
     }
   }
 

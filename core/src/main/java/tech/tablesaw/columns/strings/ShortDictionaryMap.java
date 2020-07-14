@@ -1,5 +1,6 @@
 package tech.tablesaw.columns.strings;
 
+import com.google.common.base.Objects;
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
@@ -106,11 +107,42 @@ public class ShortDictionaryMap implements DictionaryMap {
 
   void updateMapsFromSaw(short key, String value) {
     put(key, value);
+    try {
+      getValueId();
+    } catch (NoKeysAvailableException e) {
+      e.printStackTrace();
+    }
   }
 
   void addValueFromSaw(short key) {
     values.add(key);
     keyToCount.addTo(key, 1);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ShortDictionaryMap that = (ShortDictionaryMap) o;
+
+    boolean a = Objects.equal(values, that.values);
+    boolean b = Objects.equal(keyToValue, that.keyToValue);
+    boolean c = Objects.equal(valueToKey, that.valueToKey);
+    boolean d = Objects.equal(keyToCount, that.keyToCount);
+    boolean e = Objects.equal(nextIndex.get(), that.nextIndex.get());
+    return a && b && c && d && e;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(
+        reverseDictionarySortComparator,
+        dictionarySortComparator,
+        values,
+        nextIndex,
+        keyToValue,
+        valueToKey,
+        keyToCount);
   }
 
   @Override

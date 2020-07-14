@@ -1,5 +1,6 @@
 package tech.tablesaw.columns.strings;
 
+import com.google.common.base.Objects;
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
@@ -55,6 +56,32 @@ public class ByteDictionaryMap implements DictionaryMap {
   // count of values
   private final Byte2ObjectMap<String> keyToValue = new Byte2ObjectOpenHashMap<>();
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ByteDictionaryMap that = (ByteDictionaryMap) o;
+
+    boolean a = Objects.equal(values, that.values);
+    boolean b = Objects.equal(keyToValue, that.keyToValue);
+    boolean c = Objects.equal(valueToKey, that.valueToKey);
+    boolean d = Objects.equal(keyToCount, that.keyToCount);
+    boolean e = Objects.equal(nextIndex.get(), that.nextIndex.get());
+    return a && b && c && d && e;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(
+        reverseDictionarySortComparator,
+        dictionarySortComparator,
+        values,
+        nextIndex,
+        keyToValue,
+        valueToKey,
+        keyToCount);
+  }
+
   private final Object2ByteOpenHashMap<String> valueToKey = new Object2ByteOpenHashMap<>();
 
   private final Byte2IntOpenHashMap keyToCount = new Byte2IntOpenHashMap();
@@ -71,6 +98,11 @@ public class ByteDictionaryMap implements DictionaryMap {
 
   void updateMapsFromSaw(byte key, String value) {
     put(key, value);
+    try {
+      getValueId();
+    } catch (NoKeysAvailableException e) {
+      e.printStackTrace();
+    }
   }
 
   ByteArrayList values() {

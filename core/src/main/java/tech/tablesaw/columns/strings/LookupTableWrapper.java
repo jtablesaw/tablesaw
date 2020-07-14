@@ -1,5 +1,6 @@
 package tech.tablesaw.columns.strings;
 
+import com.google.common.base.Objects;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -20,6 +21,15 @@ public class LookupTableWrapper {
 
   public LookupTableWrapper(DictionaryMap dictionaryMap) {
     this.dictionaryMap = dictionaryMap;
+  }
+
+  public LookupTableWrapper() {
+    dictionaryMap = null;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(dictionaryMap);
   }
 
   /**
@@ -81,7 +91,7 @@ public class LookupTableWrapper {
   }
 
   public StringColumn readFromStream(
-      DataInputStream dis, String name, String dictionarySize, int columnSize) {
+      DataInputStream dis, String name, String keySize, int columnSize) {
 
     StringColumn stringColumn;
 
@@ -89,18 +99,18 @@ public class LookupTableWrapper {
       // the first value in the stream holds the number of unique strings in the new column
       int uniqueStringCount = dis.readInt();
 
-      if (dictionarySize.equals(Integer.class.getSimpleName())) {
+      if (keySize.equals(Integer.class.getSimpleName())) {
         stringColumn = createColumnUsingInts(dis, name, columnSize, uniqueStringCount);
-      } else if (dictionarySize.equals(Short.class.getSimpleName())) {
+      } else if (keySize.equals(Short.class.getSimpleName())) {
         stringColumn = createColumnUsingShorts(dis, name, columnSize, uniqueStringCount);
-      } else if (dictionarySize.equals(Byte.class.getSimpleName())) {
+      } else if (keySize.equals(Byte.class.getSimpleName())) {
         stringColumn = createColumnUsingBytes(dis, name, columnSize, uniqueStringCount);
       } else {
         throw new IllegalArgumentException(
-            "Unable to match the dictionary map type " + dictionarySize + " for StringColum");
+            "Invalid dictionary type " + keySize + " for StringColum");
       }
     } catch (IOException e) {
-      throw new UncheckedIOException("Failed reading " + name + " of type " + dictionarySize, e);
+      throw new UncheckedIOException("Failed reading " + name + " of type " + keySize, e);
     }
     return stringColumn;
   }
@@ -109,7 +119,7 @@ public class LookupTableWrapper {
       DataInputStream dis, String name, int columnSize, int uniqueStringCount) throws IOException {
     StringColumn stringColumn;
     IntDictionaryMap intDictionaryMap =
-        (IntDictionaryMap) dictionaryMap.promoteYourself().promoteYourself();
+        (IntDictionaryMap) new ByteDictionaryMap().promoteYourself().promoteYourself();
 
     int j = 0;
     while (j < uniqueStringCount) {
@@ -130,7 +140,7 @@ public class LookupTableWrapper {
       DataInputStream dis, String name, int columnSize, int uniqueStringCount) throws IOException {
     StringColumn stringColumn;
 
-    ByteDictionaryMap byteDictionaryMap = (ByteDictionaryMap) dictionaryMap;
+    ByteDictionaryMap byteDictionaryMap = new ByteDictionaryMap();
     int j = 0;
     while (j < uniqueStringCount) {
       byte key = dis.readByte();

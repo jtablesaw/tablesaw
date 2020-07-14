@@ -237,6 +237,11 @@ class SawStorageTest {
     Table table = SawReader.readTable(path);
     assertEquals(wines.columnCount(), table.columnCount());
     assertEquals(wines.rowCount(), table.rowCount());
+    System.out.println(wines.structure().printAll());
+    assertTrue(wines.stringColumn("name").equals(table.stringColumn("name")));
+    SawWriter.saveTable("../testoutput/test_wines", table);
+    Table table1 = SawReader.readTable(path);
+    assertTrue(wines.stringColumn("name").equals(table1.stringColumn("name")));
   }
 
   @Test
@@ -249,5 +254,39 @@ class SawStorageTest {
     String path = SawWriter.saveTable("../testoutput", intsOnlyLarger);
     Table table = SawReader.readTable(path);
     assertEquals(10_000_000, table.rowCount());
+  }
+
+  @Test
+  void saveStrings() {
+
+    StringColumn index2 = StringColumn.create("index2");
+    for (int j = 0; j < 1000; j++) {
+      for (int i = 0; i < 1000; i++) {
+        index2.append(String.valueOf(i));
+      }
+    }
+    StringColumn index3 = StringColumn.create("index3");
+    for (int j = 0; j < 10; j++) {
+      for (int i = 0; i < 100000; i++) {
+        index3.append(String.valueOf(i));
+      }
+    }
+    final Table wines =
+        Table.create(
+            "Ints only, larger",
+            IntColumn.indexColumn("index1", 1_000_000, 1).asStringColumn().setName("index1"),
+            index2,
+            index3);
+    String path = SawWriter.saveTable("../testoutput", wines);
+    Table table = SawReader.readTable(path);
+    assertEquals(wines.columnCount(), table.columnCount());
+    assertEquals(wines.rowCount(), table.rowCount());
+    System.out.println(wines.structure().printAll());
+    assertTrue(wines.stringColumn("index1").equals(table.stringColumn("index1")));
+    assertTrue(wines.stringColumn("index2").equals(table.stringColumn("index2")));
+    SawWriter.saveTable("../testoutput/test_wines", table);
+    Table table1 = SawReader.readTable(path);
+    assertTrue(wines.stringColumn("index1").equals(table1.stringColumn("index1")));
+    assertTrue(wines.stringColumn("index2").equals(table1.stringColumn("index2")));
   }
 }
