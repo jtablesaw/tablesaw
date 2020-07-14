@@ -135,14 +135,14 @@ class SawStorageTest {
 
   @Test
   void saveEmptyTable() {
-    String path = SawWriter.saveTable("../testoutput", empty);
+    String path = SawWriter.saveTable(tempDir, empty);
     Table table = SawReader.readTable(path);
     assertNotNull(table);
   }
 
   @Test
   void saveNoDataTable() {
-    String path = SawWriter.saveTable("../testoutput", noData);
+    String path = SawWriter.saveTable(tempDir, noData);
     Table table = SawReader.readTable(path);
     assertNotNull(table);
     assertTrue(table.columnCount() > 0);
@@ -151,7 +151,7 @@ class SawStorageTest {
 
   @Test
   void saveIntsOnly() {
-    String path = SawWriter.saveTable("../testoutput", intsOnly);
+    String path = SawWriter.saveTable(tempDir, intsOnly);
     Table table = SawReader.readTable(path);
     assertNotNull(table);
     assertEquals(intsOnly.rowCount(), table.rowCount());
@@ -159,7 +159,7 @@ class SawStorageTest {
 
   @Test
   void saveIntsAndStrings() {
-    String path = SawWriter.saveTable("../testoutput", intsAndStrings);
+    String path = SawWriter.saveTable(tempDir, intsAndStrings);
     Table table = SawReader.readTable(path);
     assertNotNull(table);
     assertEquals(intsAndStrings.rowCount(), table.rowCount());
@@ -167,7 +167,7 @@ class SawStorageTest {
 
   @Test
   void saveIntsAndText() {
-    String path = SawWriter.saveTable("../testoutput", intsAndText);
+    String path = SawWriter.saveTable(tempDir, intsAndText);
     Table table = SawReader.readTable(path);
     assertTrue(table.column(1).size() > 0);
     assertEquals(TEXT, table.column(1).type());
@@ -176,7 +176,7 @@ class SawStorageTest {
 
   @Test
   void saveInstants() {
-    String path = SawWriter.saveTable("../testoutput", instants);
+    String path = SawWriter.saveTable(tempDir, instants);
     Table table = SawReader.readTable(path);
     assertEquals(100, table.column(0).size());
     assertEquals(INSTANT, table.column(1).type());
@@ -237,7 +237,6 @@ class SawStorageTest {
     Table table = SawReader.readTable(path);
     assertEquals(wines.columnCount(), table.columnCount());
     assertEquals(wines.rowCount(), table.rowCount());
-    System.out.println(wines.structure().printAll());
     assertTrue(wines.stringColumn("name").equals(table.stringColumn("name")));
     SawWriter.saveTable("../testoutput/test_wines", table);
     Table table1 = SawReader.readTable(path);
@@ -251,7 +250,7 @@ class SawStorageTest {
             "Ints only, larger",
             IntColumn.indexColumn("index1", 10_000_000, 1),
             IntColumn.indexColumn("index2", 10_000_000, 1));
-    String path = SawWriter.saveTable("../testoutput", intsOnlyLarger);
+    String path = SawWriter.saveTable(tempDir, intsOnlyLarger);
     Table table = SawReader.readTable(path);
     assertEquals(10_000_000, table.rowCount());
   }
@@ -273,18 +272,17 @@ class SawStorageTest {
     }
     final Table wines =
         Table.create(
-            "Ints only, larger",
+            "million ints",
             IntColumn.indexColumn("index1", 1_000_000, 1).asStringColumn().setName("index1"),
             index2,
             index3);
-    String path = SawWriter.saveTable("../testoutput", wines);
+    String path = SawWriter.saveTable(tempDir, wines);
     Table table = SawReader.readTable(path);
     assertEquals(wines.columnCount(), table.columnCount());
     assertEquals(wines.rowCount(), table.rowCount());
-    System.out.println(wines.structure().printAll());
     assertTrue(wines.stringColumn("index1").equals(table.stringColumn("index1")));
     assertTrue(wines.stringColumn("index2").equals(table.stringColumn("index2")));
-    SawWriter.saveTable("../testoutput/test_wines", table);
+    SawWriter.saveTable(tempDir, table);
     Table table1 = SawReader.readTable(path);
     assertTrue(wines.stringColumn("index1").equals(table1.stringColumn("index1")));
     assertTrue(wines.stringColumn("index2").equals(table1.stringColumn("index2")));
