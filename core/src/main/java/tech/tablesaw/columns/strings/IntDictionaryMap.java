@@ -1,6 +1,8 @@
 package tech.tablesaw.columns.strings;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -49,15 +51,15 @@ public class IntDictionaryMap implements DictionaryMap {
   // value
   private IntArrayList values = new IntArrayList();
 
-  private final AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
+  private AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
 
   // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
   // count of values
-  private final Int2ObjectMap<String> keyToValue = new Int2ObjectOpenHashMap<>();
+  private Int2ObjectMap<String> keyToValue = new Int2ObjectOpenHashMap<>();
 
-  private final Object2IntOpenHashMap<String> valueToKey = new Object2IntOpenHashMap<>();
+  private Object2IntOpenHashMap<String> valueToKey = new Object2IntOpenHashMap<>();
 
-  private final Int2IntOpenHashMap keyToCount = new Int2IntOpenHashMap();
+  private Int2IntOpenHashMap keyToCount = new Int2IntOpenHashMap();
 
   /** Returns a new DictionaryMap that is a deep copy of the original */
   IntDictionaryMap(DictionaryMap original) throws NoKeysAvailableException {
@@ -70,37 +72,71 @@ public class IntDictionaryMap implements DictionaryMap {
     }
   }
 
+  private IntDictionaryMap(IntDictionaryBuilder builder) {
+    this.nextIndex = builder.nextIndex;
+    this.keyToValue = builder.keyToValue;
+    this.valueToKey = builder.valueToKey;
+    this.keyToCount = builder.keyToCount;
+    this.values = builder.values;
+  }
+
   private void put(int key, String value) {
     keyToValue.put(key, value);
     valueToKey.put(value, key);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    IntDictionaryMap that = (IntDictionaryMap) o;
+
+    boolean a = Objects.equal(values, that.values);
+    boolean b = Objects.equal(keyToValue, that.keyToValue);
+    boolean c = Objects.equal(valueToKey, that.valueToKey);
+    boolean d = Objects.equal(keyToCount, that.keyToCount);
+    boolean e = Objects.equal(nextIndex.get(), that.nextIndex.get());
+    return a && b && c && d && e;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(
+        reverseDictionarySortComparator,
+        dictionarySortComparator,
+        values,
+        nextIndex,
+        keyToValue,
+        valueToKey,
+        keyToCount);
+  }
+
+  /** Returns the number of elements (a.k.a. rows or cells) in the column */
+  @Override
+  public int size() {
+    return values.size();
+  }
+
+  public IntArrayList values() {
+    return values;
   }
 
   private int getKeyForValue(String value) {
     return valueToKey.getInt(value);
   }
 
-  /**
-   * Returns the number of elements (a.k.a. rows or cells) in the column
-   *
-   * @return size as int
-   */
-  @Override
-  public int size() {
-    return values.size();
+  public Int2IntMap.FastEntrySet getKeyCountEntries() {
+    return keyToCount.int2IntEntrySet();
+  }
+
+  public ObjectSet<Int2ObjectMap.Entry<String>> getKeyValueEntries() {
+    return keyToValue.int2ObjectEntrySet();
   }
 
   @Override
   public String getValueForIndex(int rowIndex) {
     int k = values.getInt(rowIndex);
     return getValueForKey(k);
-  }
-
-  ObjectSet<Int2ObjectMap.Entry<String>> getKeyValueEntries() {
-    return keyToValue.int2ObjectEntrySet();
-  }
-
-  IntArrayList values() {
-    return values;
   }
 
   @Override
@@ -216,60 +252,6 @@ public class IntDictionaryMap implements DictionaryMap {
     keyToCount.addTo(key, 1);
   }
 
-  /**
-   * Add an entry into the key value map for the arguments, and increment the count for the
-   * corresponding entry in the keyToCount map.
-   *
-   * <p>NOTE: This should only be used for Saw File storage
-   *
-   * @param key the int encoding for the string argument
-   * @param value the actual string value for the column
-   */
-  void updateMapsFromSaw(int key, String value) {
-    put(key, value);
-    try {
-      getValueId();
-    } catch (NoKeysAvailableException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    IntDictionaryMap that = (IntDictionaryMap) o;
-
-    boolean a = Objects.equal(values, that.values);
-    boolean b = Objects.equal(keyToValue, that.keyToValue);
-    boolean c = Objects.equal(valueToKey, that.valueToKey);
-    boolean d = Objects.equal(keyToCount, that.keyToCount);
-    boolean e = Objects.equal(nextIndex.get(), that.nextIndex.get());
-    return a && b && c && d && e;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(
-        reverseDictionarySortComparator,
-        dictionarySortComparator,
-        values,
-        nextIndex,
-        keyToValue,
-        valueToKey,
-        keyToCount);
-  }
-
-  /**
-   * Add the given key to our values array
-   *
-   * @param key The key representing a string in the column
-   */
-  void addValueFromSaw(int key) {
-    values.add(key);
-    keyToCount.addTo(key, 1);
-  }
-
   private int getValueId() throws NoKeysAvailableException {
     int nextValue = nextIndex.incrementAndGet();
     if (nextValue >= Integer.MAX_VALUE) {
@@ -317,6 +299,7 @@ public class IntDictionaryMap implements DictionaryMap {
 
   @Override
   public void clear() {
+    nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
     values.clear();
     keyToValue.clear();
     valueToKey.clear();
@@ -434,5 +417,62 @@ public class IntDictionaryMap implements DictionaryMap {
   @Override
   public DictionaryMap promoteYourself() {
     return this;
+  }
+
+  @Override
+  public int nextKeyWithoutIncrementing() {
+    return nextIndex.get();
+  }
+
+  public static class IntDictionaryBuilder {
+
+    private AtomicInteger nextIndex;
+
+    // The list of keys that represents the contents of string column in user order
+    private IntArrayList values;
+
+    // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
+    // count of values
+    private Int2ObjectMap<String> keyToValue;
+
+    // the inverse of the above keyToValue map
+    private Object2IntOpenHashMap<String> valueToKey;
+
+    // the map with counts
+    private Int2IntOpenHashMap keyToCount;
+
+    public IntDictionaryBuilder setNextIndex(int value) {
+      nextIndex = new AtomicInteger(value);
+      return this;
+    }
+
+    public IntDictionaryBuilder setKeyToValue(Int2ObjectMap<String> keyToValue) {
+      this.keyToValue = keyToValue;
+      return this;
+    }
+
+    public IntDictionaryBuilder setValueToKey(Object2IntOpenHashMap<String> valueToKey) {
+      this.valueToKey = valueToKey;
+      return this;
+    }
+
+    public IntDictionaryBuilder setKeyToCount(Int2IntOpenHashMap keyToCount) {
+      this.keyToCount = keyToCount;
+      return this;
+    }
+
+    public IntDictionaryBuilder setValues(int[] data) {
+      this.values = new IntArrayList(data);
+      return this;
+    }
+
+    public IntDictionaryMap build() {
+      Preconditions.checkNotNull(nextIndex);
+      Preconditions.checkNotNull(keyToCount);
+      Preconditions.checkNotNull(keyToValue);
+      Preconditions.checkNotNull(valueToKey);
+      Preconditions.checkNotNull(values);
+      return new IntDictionaryMap(this);
+    }
   }
 }

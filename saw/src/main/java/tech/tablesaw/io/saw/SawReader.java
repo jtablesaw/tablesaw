@@ -16,8 +16,19 @@ import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
+import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.io.DataInputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,7 +61,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.LookupTableWrapper;
+import tech.tablesaw.columns.strings.ByteDictionaryMap;
+import tech.tablesaw.columns.strings.IntDictionaryMap;
+import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
 @SuppressWarnings("WeakerAccess")
 @Beta
@@ -92,9 +105,7 @@ public class SawReader {
    */
   public static Table readTable(File file, int threadPoolSize) {
 
-    // final ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
-    // final ExecutorService executor = Executors.newCachedThreadPool();
-    final ExecutorService executor = Executors.newSingleThreadExecutor();
+    final ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
 
     final TableMetadata tableMetadata;
     final Path sawPath = file.toPath();
@@ -127,7 +138,7 @@ public class SawReader {
         columns.put(column.name(), column);
       }
       for (ColumnMetadata metadata : columnMetadata) {
-        table.addColumns(columns.get(metadata.getName()));
+        table.internalAddWithoutValidation(columns.get(metadata.getName()));
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -145,203 +156,129 @@ public class SawReader {
       throws IOException {
 
     final String typeString = columnMetadata.getType();
-
+    final int rowcount = tableMetadata.rowCount();
     switch (typeString) {
       case FLOAT:
-        return readFloatColumn(fileName, columnMetadata);
+        return readFloatColumn(fileName, columnMetadata, rowcount);
       case DOUBLE:
-        return readDoubleColumn(fileName, columnMetadata);
+        return readDoubleColumn(fileName, columnMetadata, rowcount);
       case INTEGER:
-        return readIntColumn(fileName, columnMetadata);
+        return readIntColumn(fileName, columnMetadata, rowcount);
       case BOOLEAN:
-        return readBooleanColumn(fileName, columnMetadata);
+        return readBooleanColumn(fileName, columnMetadata, rowcount);
       case LOCAL_DATE:
-        return readLocalDateColumn(fileName, columnMetadata);
+        return readLocalDateColumn(fileName, columnMetadata, rowcount);
       case LOCAL_TIME:
-        return readLocalTimeColumn(fileName, columnMetadata);
+        return readLocalTimeColumn(fileName, columnMetadata, rowcount);
       case LOCAL_DATE_TIME:
-        return readLocalDateTimeColumn(fileName, columnMetadata);
+        return readLocalDateTimeColumn(fileName, columnMetadata, rowcount);
       case INSTANT:
-        return readInstantColumn(fileName, columnMetadata);
+        return readInstantColumn(fileName, columnMetadata, rowcount);
       case STRING:
-        return readStringColumn(fileName, tableMetadata, columnMetadata);
+        return readStringColumn(fileName, columnMetadata, rowcount);
       case TEXT:
-        return readTextColumn(fileName, tableMetadata, columnMetadata);
+        return readTextColumn(fileName, columnMetadata, rowcount);
       case SHORT:
-        return readShortColumn(fileName, columnMetadata);
+        return readShortColumn(fileName, columnMetadata, rowcount);
       case LONG:
-        return readLongColumn(fileName, columnMetadata);
+        return readLongColumn(fileName, columnMetadata, rowcount);
       default:
         throw new IllegalStateException("Unhandled column type writing columns: " + typeString);
     }
   }
 
-  private static FloatColumn readFloatColumn(String fileName, ColumnMetadata metadata)
+  private static FloatColumn readFloatColumn(String fileName, ColumnMetadata metadata, int rowcount)
       throws IOException {
-    FloatColumn floats = FloatColumn.create(metadata.getName());
+    float[] data = new float[rowcount];
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          float cell = dis.readFloat();
-          floats.append(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
+      for (int i = 0; i < rowcount; i++) {
+        data[i] = dis.readFloat();
       }
     }
-    return floats;
+    return FloatColumn.create(metadata.getName(), data);
   }
 
-  private static DoubleColumn readDoubleColumn(String fileName, ColumnMetadata metadata)
-      throws IOException {
-    DoubleColumn doubles = DoubleColumn.create(metadata.getName());
+  private static DoubleColumn readDoubleColumn(
+      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+    double[] data = new double[rowcount];
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          double cell = dis.readDouble();
-          doubles.append(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
+      for (int i = 0; i < rowcount; i++) {
+        data[i] = dis.readDouble();
       }
     }
-    return doubles;
+    return DoubleColumn.create(metadata.getName(), data);
   }
 
-  private static IntColumn readIntColumn(String fileName, ColumnMetadata metadata)
+  private static IntColumn readIntColumn(String fileName, ColumnMetadata metadata, int rowcount)
       throws IOException {
-    IntColumn ints = IntColumn.create(metadata.getName());
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          ints.append(dis.readInt());
-        } catch (EOFException e) {
-          EOF = true;
-        }
-      }
-    }
-    return ints;
+    return IntColumn.create(metadata.getName(), readIntValues(fileName, rowcount));
   }
 
-  private static ShortColumn readShortColumn(String fileName, ColumnMetadata metadata)
+  private static ShortColumn readShortColumn(String fileName, ColumnMetadata metadata, int rowcount)
       throws IOException {
-    ShortColumn ints = ShortColumn.create(metadata.getName());
+    short[] data = new short[rowcount];
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          ints.append(dis.readShort());
-        } catch (EOFException e) {
-          EOF = true;
-        }
+      for (int i = 0; i < rowcount; i++) {
+        data[i] = dis.readShort();
       }
     }
-    return ints;
+    return ShortColumn.create(metadata.getName(), data);
   }
 
-  private static LongColumn readLongColumn(String fileName, ColumnMetadata metadata)
+  private static LongColumn readLongColumn(String fileName, ColumnMetadata metadata, int rowcount)
       throws IOException {
-    LongColumn ints = LongColumn.create(metadata.getName());
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          ints.append(dis.readLong());
-        } catch (EOFException e) {
-          EOF = true;
-        }
-      }
-    }
-    return ints;
+    return LongColumn.create(metadata.getName(), readLongValues(fileName, rowcount));
   }
 
-  private static DateColumn readLocalDateColumn(String fileName, ColumnMetadata metadata)
-      throws IOException {
-    DateColumn column = DateColumn.create(metadata.getName());
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          int cell = dis.readInt();
-          column.appendInternal(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
-      }
-    }
-    return column;
+  private static DateColumn readLocalDateColumn(
+      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+    return DateColumn.createInternal(metadata.getName(), readIntValues(fileName, rowcount));
   }
 
-  private static DateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata)
-      throws IOException {
-    DateTimeColumn dates = DateTimeColumn.create(metadata.getName());
+  private static int[] readIntValues(String fileName, int rowcount) throws IOException {
+    int[] data = new int[rowcount];
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          long cell = dis.readLong();
-          dates.appendInternal(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
+      for (int i = 0; i < rowcount; i++) {
+        data[i] = dis.readInt();
       }
     }
-    return dates;
+    return data;
   }
 
-  private static InstantColumn readInstantColumn(String fileName, ColumnMetadata metadata)
-      throws IOException {
-    InstantColumn instants = InstantColumn.create(metadata.getName());
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          long cell = dis.readLong();
-          instants.appendInternal(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
-      }
-    }
-    return instants;
+  private static DateTimeColumn readLocalDateTimeColumn(
+      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+    long[] data = readLongValues(fileName, rowcount);
+    return DateTimeColumn.createInternal(metadata.getName(), data);
   }
 
-  private static TimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata)
-      throws IOException {
-    TimeColumn column = TimeColumn.create(metadata.getName());
+  private static long[] readLongValues(String fileName, int rowcount) throws IOException {
+    long[] data = new long[rowcount];
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          int cell = dis.readInt();
-          column.appendInternal(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
+      for (int i = 0; i < rowcount; i++) {
+        data[i] = dis.readLong();
       }
     }
-    return column;
+    return data;
+  }
+
+  private static InstantColumn readInstantColumn(
+      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+    return InstantColumn.createInternal(metadata.getName(), readLongValues(fileName, rowcount));
+  }
+
+  private static TimeColumn readLocalTimeColumn(
+      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+    return TimeColumn.createInternal(metadata.getName(), readIntValues(fileName, rowcount));
   }
 
   /**
@@ -349,58 +286,187 @@ public class SawReader {
    * saving time by updating the dictionary directly and just writing ints to the column's data
    */
   private static StringColumn readStringColumn(
-      String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
-      throws IOException {
+      String fileName, ColumnMetadata columnMetadata, int rowcount) throws IOException {
 
     try (DataInputStream dis =
         new DataInputStream(new SnappyFramedInputStream(new FileInputStream(fileName), true))) {
 
-      return new LookupTableWrapper()
-          .readFromStream(
-              dis,
-              columnMetadata.getName(),
-              columnMetadata.getStringColumnKeySize(),
-              tableMetadata.rowCount());
+      if (columnMetadata.getStringColumnKeySize().equals(Byte.class.getSimpleName())) {
+        return StringColumn.createInternal(
+            columnMetadata.getName(), getByteMap(dis, columnMetadata, rowcount));
+      }
+      if (columnMetadata.getStringColumnKeySize().equals(Integer.class.getSimpleName())) {
+        return StringColumn.createInternal(
+            columnMetadata.getName(), getIntMap(dis, columnMetadata, rowcount));
+      }
+      return StringColumn.createInternal(
+          columnMetadata.getName(), getShortMap(dis, columnMetadata, rowcount));
     }
+  }
+
+  private static ByteDictionaryMap getByteMap(
+      DataInputStream dis, ColumnMetadata metaData, int rowcount) throws IOException {
+
+    int cardinality = metaData.getCardinality();
+
+    byte[] data = new byte[rowcount];
+
+    byte[] keys = new byte[cardinality];
+    byte[] countKeys = new byte[cardinality];
+    String[] values = new String[cardinality];
+    int[] counts = new int[cardinality];
+
+    // process the data
+    // first we read the keys and values for the maps
+    for (int k = 0; k < cardinality; k++) {
+      keys[k] = dis.readByte();
+    }
+    for (int k = 0; k < cardinality; k++) {
+      values[k] = dis.readUTF();
+    }
+    for (int k = 0; k < cardinality; k++) {
+      countKeys[k] = dis.readByte();
+    }
+    for (int k = 0; k < cardinality; k++) {
+      counts[k] = dis.readInt();
+    }
+
+    // get the column entries
+    for (int i = 0; i < rowcount; i++) {
+      data[i] = dis.readByte();
+    }
+
+    Object2ByteOpenHashMap<String> valueToKey = new Object2ByteOpenHashMap<>(values, keys);
+    Byte2ObjectMap<String> keyToValue = new Byte2ObjectOpenHashMap<>(keys, values);
+    Byte2IntOpenHashMap keyToCount = new Byte2IntOpenHashMap(countKeys, counts);
+
+    return new ByteDictionaryMap.ByteDictionaryBuilder()
+        .setValues(data)
+        .setValueToKey(valueToKey)
+        .setKeyToValue(keyToValue)
+        .setKeyToCount(keyToCount)
+        .setNextIndex(metaData.getNextStringKey())
+        .build();
+  }
+
+  private static ShortDictionaryMap getShortMap(
+      DataInputStream dis, ColumnMetadata metaData, int rowcount) throws IOException {
+
+    int cardinality = metaData.getCardinality();
+
+    short[] data = new short[rowcount];
+
+    short[] keys = new short[cardinality];
+    short[] countKeys = new short[cardinality];
+    String[] values = new String[cardinality];
+    int[] counts = new int[cardinality];
+
+    // process the data
+    // first we read the keys and values for the maps
+    for (int k = 0; k < cardinality; k++) {
+      keys[k] = dis.readShort();
+    }
+    for (int k = 0; k < cardinality; k++) {
+      values[k] = dis.readUTF();
+    }
+    for (int k = 0; k < cardinality; k++) {
+      countKeys[k] = dis.readShort();
+    }
+    for (int k = 0; k < cardinality; k++) {
+      counts[k] = dis.readInt();
+    }
+
+    // get the column entries
+    for (int i = 0; i < rowcount; i++) {
+      data[i] = dis.readShort();
+    }
+
+    Object2ShortOpenHashMap<String> valueToKey = new Object2ShortOpenHashMap<>(values, keys);
+    Short2ObjectMap<String> keyToValue = new Short2ObjectOpenHashMap<>(keys, values);
+    Short2IntOpenHashMap keyToCount = new Short2IntOpenHashMap(countKeys, counts);
+
+    return new ShortDictionaryMap.ShortDictionaryBuilder()
+        .setValues(data)
+        .setValueToKey(valueToKey)
+        .setKeyToValue(keyToValue)
+        .setKeyToCount(keyToCount)
+        .setNextIndex(metaData.getNextStringKey())
+        .build();
+  }
+
+  private static IntDictionaryMap getIntMap(
+      DataInputStream dis, ColumnMetadata metaData, int rowcount) throws IOException {
+
+    int cardinality = metaData.getCardinality();
+
+    int[] data = new int[rowcount];
+
+    int[] keys = new int[cardinality];
+    int[] countKeys = new int[cardinality];
+    String[] values = new String[cardinality];
+    int[] counts = new int[cardinality];
+
+    // process the data
+    // first we read the keys and values for the maps
+    for (int k = 0; k < cardinality; k++) {
+      keys[k] = dis.readInt();
+    }
+    for (int k = 0; k < cardinality; k++) {
+      values[k] = dis.readUTF();
+    }
+    for (int k = 0; k < cardinality; k++) {
+      countKeys[k] = dis.readInt();
+    }
+    for (int k = 0; k < cardinality; k++) {
+      counts[k] = dis.readInt();
+    }
+
+    // get the column entries
+    for (int i = 0; i < rowcount; i++) {
+      data[i] = dis.readInt();
+    }
+
+    Object2IntOpenHashMap<String> valueToKey = new Object2IntOpenHashMap<>(values, keys);
+    Int2ObjectMap<String> keyToValue = new Int2ObjectOpenHashMap<>(keys, values);
+    Int2IntOpenHashMap keyToCount = new Int2IntOpenHashMap(countKeys, counts);
+
+    return new IntDictionaryMap.IntDictionaryBuilder()
+        .setValues(data)
+        .setValueToKey(valueToKey)
+        .setKeyToValue(keyToValue)
+        .setKeyToCount(keyToCount)
+        .setNextIndex(metaData.getNextStringKey())
+        .build();
   }
 
   /** Reads the TextColumn data from the given file and stuffs it into a new TextColumn */
   private static TextColumn readTextColumn(
-      String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
-      throws IOException {
+      String fileName, ColumnMetadata columnMetadata, int rowcount) throws IOException {
 
-    TextColumn textColumn = TextColumn.create(columnMetadata.getName());
+    TextColumn textColumn = TextColumn.create(columnMetadata.getName(), rowcount);
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
 
-      int j = 0;
-      while (j < tableMetadata.getRowCount()) {
-        textColumn.append(dis.readUTF());
-        j++;
+      for (int j = 0; j < rowcount; j++) {
+        textColumn.set(j, dis.readUTF());
       }
     }
     return textColumn;
   }
 
-  private static BooleanColumn readBooleanColumn(String fileName, ColumnMetadata metadata)
-      throws IOException {
+  private static BooleanColumn readBooleanColumn(
+      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
 
-    BooleanColumn bools = BooleanColumn.create(metadata.getName());
+    BooleanColumn column = BooleanColumn.create(metadata.getName());
     try (FileInputStream fis = new FileInputStream(fileName);
         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
         DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          byte cell = dis.readByte();
-          bools.append(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
+      for (int i = 0; i < rowcount; i++) {
+        column.append(dis.readByte());
       }
     }
-    return bools;
+    return column;
   }
 
   /**

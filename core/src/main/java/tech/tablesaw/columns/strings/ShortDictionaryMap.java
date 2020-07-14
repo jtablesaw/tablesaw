@@ -1,8 +1,10 @@
 package tech.tablesaw.columns.strings;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import it.unimi.dsi.fastutil.shorts.Short2IntMap;
 import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
@@ -51,15 +53,15 @@ public class ShortDictionaryMap implements DictionaryMap {
   // value
   private ShortArrayList values = new ShortArrayList();
 
-  private final AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
+  private AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
 
   // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
   // count of values
-  private final Short2ObjectMap<String> keyToValue = new Short2ObjectOpenHashMap<>();
+  private Short2ObjectMap<String> keyToValue = new Short2ObjectOpenHashMap<>();
 
-  private final Object2ShortOpenHashMap<String> valueToKey = new Object2ShortOpenHashMap<>();
+  private Object2ShortOpenHashMap<String> valueToKey = new Object2ShortOpenHashMap<>();
 
-  private final Short2IntOpenHashMap keyToCount = new Short2IntOpenHashMap();
+  private Short2IntOpenHashMap keyToCount = new Short2IntOpenHashMap();
 
   /** Returns a new DictionaryMap that is a deep copy of the original */
   ShortDictionaryMap(ByteDictionaryMap original) throws NoKeysAvailableException {
@@ -70,6 +72,14 @@ public class ShortDictionaryMap implements DictionaryMap {
       String value = original.getValueForIndex(i);
       append(value);
     }
+  }
+
+  private ShortDictionaryMap(ShortDictionaryBuilder builder) {
+    this.nextIndex = builder.nextIndex;
+    this.keyToValue = builder.keyToValue;
+    this.valueToKey = builder.valueToKey;
+    this.keyToCount = builder.keyToCount;
+    this.values = builder.values;
   }
 
   private void put(short key, String value) {
@@ -97,26 +107,16 @@ public class ShortDictionaryMap implements DictionaryMap {
     return getValueForKey(k);
   }
 
-  ObjectSet<Short2ObjectMap.Entry<String>> getKeyValueEntries() {
+  public ObjectSet<Short2ObjectMap.Entry<String>> getKeyValueEntries() {
     return keyToValue.short2ObjectEntrySet();
   }
 
-  ShortArrayList values() {
+  public Short2IntMap.FastEntrySet getKeyCountEntries() {
+    return keyToCount.short2IntEntrySet();
+  }
+
+  public ShortArrayList values() {
     return values;
-  }
-
-  void updateMapsFromSaw(short key, String value) {
-    put(key, value);
-    try {
-      getValueId();
-    } catch (NoKeysAvailableException e) {
-      e.printStackTrace();
-    }
-  }
-
-  void addValueFromSaw(short key) {
-    values.add(key);
-    keyToCount.addTo(key, 1);
   }
 
   @Override
@@ -311,6 +311,7 @@ public class ShortDictionaryMap implements DictionaryMap {
 
   @Override
   public void clear() {
+    nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
     values.clear();
     keyToValue.clear();
     valueToKey.clear();
@@ -438,5 +439,62 @@ public class ShortDictionaryMap implements DictionaryMap {
     }
 
     return dictionaryMap;
+  }
+
+  @Override
+  public int nextKeyWithoutIncrementing() {
+    return nextIndex.get();
+  }
+
+  public static class ShortDictionaryBuilder {
+
+    private AtomicInteger nextIndex;
+
+    // The list of keys that represents the contents of string column in user order
+    private ShortArrayList values;
+
+    // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
+    // count of values
+    private Short2ObjectMap<String> keyToValue;
+
+    // the inverse of the above keyToValue map
+    private Object2ShortOpenHashMap<String> valueToKey;
+
+    // the map with counts
+    private Short2IntOpenHashMap keyToCount;
+
+    public ShortDictionaryBuilder setNextIndex(int value) {
+      nextIndex = new AtomicInteger(value);
+      return this;
+    }
+
+    public ShortDictionaryBuilder setKeyToValue(Short2ObjectMap<String> keyToValue) {
+      this.keyToValue = keyToValue;
+      return this;
+    }
+
+    public ShortDictionaryBuilder setValueToKey(Object2ShortOpenHashMap<String> valueToKey) {
+      this.valueToKey = valueToKey;
+      return this;
+    }
+
+    public ShortDictionaryBuilder setKeyToCount(Short2IntOpenHashMap keyToCount) {
+      this.keyToCount = keyToCount;
+      return this;
+    }
+
+    public ShortDictionaryBuilder setValues(short[] data) {
+      this.values = new ShortArrayList(data);
+      return this;
+    }
+
+    public ShortDictionaryMap build() {
+      Preconditions.checkNotNull(nextIndex);
+      Preconditions.checkNotNull(keyToCount);
+      Preconditions.checkNotNull(keyToValue);
+      Preconditions.checkNotNull(valueToKey);
+      Preconditions.checkNotNull(values);
+      return new ShortDictionaryMap(this);
+    }
   }
 }

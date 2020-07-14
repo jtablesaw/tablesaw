@@ -16,10 +16,17 @@ import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import it.unimi.dsi.fastutil.floats.FloatIterator;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+import it.unimi.dsi.fastutil.shorts.Short2IntMap;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -28,7 +35,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,7 +46,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
@@ -56,7 +61,10 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.LookupTableWrapper;
+import tech.tablesaw.columns.strings.ByteDictionaryMap;
+import tech.tablesaw.columns.strings.DictionaryMap;
+import tech.tablesaw.columns.strings.IntDictionaryMap;
+import tech.tablesaw.columns.strings.ShortDictionaryMap;
 import tech.tablesaw.table.Relation;
 
 @SuppressWarnings("WeakerAccess")
@@ -64,10 +72,6 @@ import tech.tablesaw.table.Relation;
 public class SawWriter {
 
   private static final int FLUSH_AFTER_ITERATIONS = 20_000;
-  private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
-  private static final String FILE_EXTENSION = "saw";
-  private static final Pattern SEPARATOR_PATTERN =
-      Pattern.compile(Pattern.quote(FileSystems.getDefault().getSeparator()));
 
   private static final int WRITER_POOL_SIZE = 10;
 
@@ -130,7 +134,7 @@ public class SawWriter {
     }
 
     // creates the folder containing the files
-    String sawFolderName = makeName(table);
+    String sawFolderName = SawUtils.makeName(table.name());
     Path filePath = folderPath.resolve(sawFolderName);
 
     if (Files.exists(filePath)) {
@@ -183,14 +187,6 @@ public class SawWriter {
       executorService.shutdown();
     }
     return filePath.toAbsolutePath().toString();
-  }
-
-  private static String makeName(Relation table) {
-
-    String name = table.name();
-    name = WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from table name
-    name = SEPARATOR_PATTERN.matcher(name).replaceAll("_"); // remove path separators from name
-    return name + '.' + FILE_EXTENSION;
   }
 
   private static void writeColumn(String fileName, Column<?> column) {
@@ -291,8 +287,140 @@ public class SawWriter {
         DataOutputStream dos = new DataOutputStream(sos)) {
 
       // write the strings
-      LookupTableWrapper lookupTable = column.getLookupTable();
-      lookupTable.writeToStream(dos);
+
+      DictionaryMap lookupTable = column.getDictionary();
+      if (lookupTable.getClass().equals(ByteDictionaryMap.class)) {
+        writeToStream((ByteDictionaryMap) lookupTable, dos);
+      } else if (lookupTable.getClass().equals(ShortDictionaryMap.class)) {
+        writeToStream((ShortDictionaryMap) lookupTable, dos);
+      } else {
+        writeToStream((IntDictionaryMap) lookupTable, dos);
+      }
+    }
+  }
+
+  /**
+   * Writes the contents of the dictionaryMap to a stream in saw file format
+   *
+   * @param dos The stream to write on
+   */
+  private static void writeToStream(ByteDictionaryMap dictionary, DataOutputStream dos) {
+
+    try {
+      // write the maps
+      // we write each one keys first, then values
+      // the idea is that there are relatively few unique values so it's cheap to write them more
+      // than once
+      ObjectSet<Byte2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
+      for (Byte2ObjectMap.Entry<String> entry : entries) {
+        dos.writeByte(entry.getByteKey());
+      }
+
+      for (Byte2ObjectMap.Entry<String> entry : entries) {
+        dos.writeUTF(entry.getValue());
+      }
+
+      ObjectSet<Byte2IntMap.Entry> counts = dictionary.getKeyCountEntries();
+
+      for (Byte2IntMap.Entry count : counts) {
+        dos.writeByte(count.getByteKey());
+      }
+
+      for (Byte2IntMap.Entry count : counts) {
+        dos.writeInt(count.getIntValue());
+      }
+
+      // write the values in column order, including repeats
+      for (byte d : dictionary.values()) {
+        dos.writeByte(d);
+      }
+      dos.flush();
+    } catch (IOException exception) {
+      throw new UncheckedIOException(exception);
+    }
+  }
+
+  /**
+   * Writes the contents of the dictionaryMap to a stream in saw file format
+   *
+   * @param dos The stream to write on
+   */
+  private static void writeToStream(ShortDictionaryMap dictionary, DataOutputStream dos) {
+
+    try {
+      // write the maps
+      // we write each one keys first, then values
+      // the idea is that there are relatively few unique values so it's cheap to write them more
+      // than once
+      ObjectSet<Short2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
+
+      for (Short2ObjectMap.Entry<String> entry : entries) {
+        dos.writeShort(entry.getShortKey());
+      }
+
+      for (Short2ObjectMap.Entry<String> entry : entries) {
+        dos.writeUTF(entry.getValue());
+      }
+
+      ObjectSet<Short2IntMap.Entry> counts = dictionary.getKeyCountEntries();
+
+      for (Short2IntMap.Entry count : counts) {
+        dos.writeShort(count.getShortKey());
+      }
+
+      for (Short2IntMap.Entry count : counts) {
+        dos.writeInt(count.getIntValue());
+      }
+
+      // write the values in column order, including repeats
+      for (short d : dictionary.values()) {
+        dos.writeShort(d);
+      }
+      dos.flush();
+    } catch (IOException exception) {
+      throw new UncheckedIOException(exception);
+    }
+  }
+
+  /**
+   * Writes the contents of the dictionaryMap to a stream in saw file format
+   *
+   * @param dos The stream to write on
+   */
+  private static void writeToStream(IntDictionaryMap dictionary, DataOutputStream dos) {
+
+    try {
+      // write the maps
+      // we write each one keys first, then values
+      // the idea is that there are relatively few unique values so it's cheap to write them more
+      // than once
+      ObjectSet<Int2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
+
+      for (Int2ObjectMap.Entry<String> entry : entries) {
+        dos.writeInt(entry.getIntKey());
+      }
+
+      for (Int2ObjectMap.Entry<String> entry : entries) {
+        dos.writeUTF(entry.getValue());
+      }
+
+      ObjectSet<Int2IntMap.Entry> counts = dictionary.getKeyCountEntries();
+
+      for (Int2IntMap.Entry count : counts) {
+        dos.writeInt(count.getIntKey());
+      }
+
+      for (Int2IntMap.Entry count : counts) {
+        dos.writeInt(count.getIntValue());
+      }
+
+      // write the values in column order, including repeats
+      for (int d : dictionary.values()) {
+        dos.writeInt(d);
+      }
+      dos.flush();
+    } catch (IOException exception) {
+      throw new UncheckedIOException(exception);
     }
   }
 

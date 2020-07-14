@@ -100,4 +100,6 @@ public interface DictionaryMap {
   boolean isMissing(int rowNumber);
 
   DictionaryMap promoteYourself();
+
+  int nextKeyWithoutIncrementing();
 }
