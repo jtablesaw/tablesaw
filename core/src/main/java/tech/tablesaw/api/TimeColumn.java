@@ -76,6 +76,10 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
+  public static TimeColumn createInternal(String name, int[] data) {
+    return new TimeColumn(name, new IntArrayList(data));
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
