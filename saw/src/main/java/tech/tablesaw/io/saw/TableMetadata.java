@@ -130,34 +130,15 @@ public class TableMetadata {
     return Objects.hash(name, rowCount, columnMetadataList);
   }
 
-  /**
-   * Returns the name of the table
-   *
-   * @deprecated Use name() instead
-   */
+  /** Returns the name of the table */
   @SuppressWarnings("WeakerAccess")
   public String getName() {
     return name;
   }
 
-  /** Returns the name of the table */
-  public String name() {
-    return name;
-  }
-
-  /**
-   * Returns the number of rows in the table
-   *
-   * @deprecated Use rowCount() instead
-   */
-  @SuppressWarnings("WeakerAccess")
-  @Deprecated
-  public int getRowCount() {
-    return rowCount;
-  }
-
   /** Returns the number of rows in the table */
-  public int rowCount() {
+  @SuppressWarnings("WeakerAccess")
+  public int getRowCount() {
     return rowCount;
   }
 
@@ -181,7 +162,7 @@ public class TableMetadata {
    * the shape() method defined on Relation.
    */
   public String shape() {
-    return rowCount() + " rows X " + columnCount() + " cols";
+    return getRowCount() + " rows X " + columnCount() + " cols";
   }
 
   /** Returns a List of the names of all the columns in this table */

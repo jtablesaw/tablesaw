@@ -2,7 +2,6 @@ package tech.tablesaw.io.saw;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,11 +26,11 @@ class TableMetadataTest {
   }
 
   @Test
-  void testReadTableMetaDataFromFile() throws IOException {
+  void testReadTableMetaDataFromFile() {
     String path = SawWriter.saveTable("../testoutput/bush", table1);
     TableMetadata metadata = TableMetadata.readTableMetadata(Paths.get(path));
-    assertEquals(table1.name(), metadata.name());
-    assertEquals(table1.rowCount(), metadata.rowCount());
+    assertEquals(table1.name(), metadata.getName());
+    assertEquals(table1.rowCount(), metadata.getRowCount());
     assertEquals(table1.columnNames(), metadata.columnNames());
 
     String json = tableMetadata1.toJson();
@@ -52,7 +51,7 @@ class TableMetadataTest {
 
   @Test
   void getRowCount() {
-    assertEquals(table1.rowCount(), tableMetadata1.rowCount());
+    assertEquals(table1.rowCount(), tableMetadata1.getRowCount());
   }
 
   @Test

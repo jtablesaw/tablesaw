@@ -118,7 +118,7 @@ public class SawReader {
 
     final List<ColumnMetadata> columnMetadata =
         ImmutableList.copyOf(tableMetadata.getColumnMetadataList());
-    final Table table = Table.create(tableMetadata.name());
+    final Table table = Table.create(tableMetadata.getName());
 
     // Note: We do some extra work with the hash map to ensure that the columns are returned
     // to the table in original order
@@ -156,7 +156,7 @@ public class SawReader {
       throws IOException {
 
     final String typeString = columnMetadata.getType();
-    final int rowcount = tableMetadata.rowCount();
+    final int rowcount = tableMetadata.getRowCount();
     switch (typeString) {
       case FLOAT:
         return readFloatColumn(fileName, columnMetadata, rowcount);
