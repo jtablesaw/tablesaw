@@ -17,6 +17,7 @@ package tech.tablesaw.api;
 import static tech.tablesaw.columns.DateAndTimePredicates.isMissing;
 import static tech.tablesaw.columns.DateAndTimePredicates.isNotMissing;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
@@ -73,6 +74,14 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
   private TimeColumn(String name) {
     super(TimeColumnType.instance(), name);
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TimeColumn that = (TimeColumn) o;
+    return name().equals(that.name()) && Objects.equal(data, that.data);
   }
 
   public static boolean valueIsMissing(int i) {

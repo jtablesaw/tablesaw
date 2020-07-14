@@ -17,6 +17,7 @@ package tech.tablesaw.api;
 import static tech.tablesaw.columns.temporal.TemporalPredicates.isMissing;
 import static tech.tablesaw.columns.temporal.TemporalPredicates.isNotMissing;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -77,6 +78,14 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   public static InstantColumn create(String name) {
     return new InstantColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    InstantColumn that = (InstantColumn) o;
+    return name().equals(that.name()) && Objects.equal(data, that.data);
   }
 
   public static InstantColumn create(String name, int initialSize) {

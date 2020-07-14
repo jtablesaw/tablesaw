@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -66,6 +67,14 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   private TextColumn(String name) {
     super(TextColumnType.instance(), name);
     values = new ArrayList<>(DEFAULT_ARRAY_SIZE);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TextColumn that = (TextColumn) o;
+    return name().equals(that.name()) && Objects.equal(values, that.values);
   }
 
   private TextColumn(String name, String[] strings) {

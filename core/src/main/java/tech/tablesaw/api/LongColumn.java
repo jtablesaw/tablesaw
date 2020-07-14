@@ -1,5 +1,6 @@
 package tech.tablesaw.api;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
@@ -34,6 +35,14 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
 
   public static LongColumn create(String name, long... arr) {
     return new LongColumn(name, new LongArrayList(arr));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    LongColumn that = (LongColumn) o;
+    return name().equals(that.name()) && Objects.equal(data, that.data);
   }
 
   public static LongColumn create(String name, int initialSize) {

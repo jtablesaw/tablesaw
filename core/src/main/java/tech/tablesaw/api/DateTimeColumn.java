@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -71,6 +72,19 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   private DateTimeColumn(String name, LongArrayList data) {
     super(DateTimeColumnType.instance(), name);
     this.data = data;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DateTimeColumn that = (DateTimeColumn) o;
+    return name().equals(that.name()) && Objects.equal(data, that.data);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(data);
   }
 
   public static DateTimeColumn create(String name) {
