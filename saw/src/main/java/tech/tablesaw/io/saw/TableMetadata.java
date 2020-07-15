@@ -46,12 +46,11 @@ public class TableMetadata {
    * directory specified by sawPath
    *
    * @param sawPath The path to the folder containing the Saw metadata file and table data
-   * @throws UncheckedIOException if the file can not be read
    */
   static TableMetadata readTableMetadata(Path sawPath) throws UncheckedIOException {
 
     Path resolvePath = sawPath.resolve(METADATA_FILE_NAME);
-    byte[] encoded = new byte[0];
+    byte[] encoded;
     try {
       encoded = Files.readAllBytes(resolvePath);
     } catch (IOException e) {
