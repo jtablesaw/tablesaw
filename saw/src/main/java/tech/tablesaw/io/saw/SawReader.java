@@ -101,7 +101,6 @@ public class SawReader {
    *     "mytables/nasdaq-2015.saw"
    * @param threadPoolSize The size of the the thread-pool allocated to reading. Each column is read
    *     in own thread
-   * @throws UncheckedIOException wrapping an IOException if the file cannot be read
    */
   public static Table readTable(File file, int threadPoolSize) {
 
@@ -308,9 +307,7 @@ public class SawReader {
       DataInputStream dis, ColumnMetadata metaData, int rowcount) throws IOException {
 
     int cardinality = metaData.getCardinality();
-
     byte[] data = new byte[rowcount];
-
     byte[] keys = new byte[cardinality];
     byte[] countKeys = new byte[cardinality];
     String[] values = new String[cardinality];
@@ -353,9 +350,7 @@ public class SawReader {
       DataInputStream dis, ColumnMetadata metaData, int rowcount) throws IOException {
 
     int cardinality = metaData.getCardinality();
-
     short[] data = new short[rowcount];
-
     short[] keys = new short[cardinality];
     short[] countKeys = new short[cardinality];
     String[] values = new String[cardinality];
@@ -398,9 +393,7 @@ public class SawReader {
       DataInputStream dis, ColumnMetadata metaData, int rowcount) throws IOException {
 
     int cardinality = metaData.getCardinality();
-
     int[] data = new int[rowcount];
-
     int[] keys = new int[cardinality];
     int[] countKeys = new int[cardinality];
     String[] values = new String[cardinality];
