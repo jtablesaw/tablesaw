@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 
 class TableMetadataTest {
 
@@ -39,12 +40,6 @@ class TableMetadataTest {
   }
 
   @Test
-  void testEquals() {}
-
-  @Test
-  void testHashCode() {}
-
-  @Test
   void getName() {
     assertEquals(table1.name(), tableMetadata1.getName());
   }
@@ -60,7 +55,13 @@ class TableMetadataTest {
   }
 
   @Test
-  void getColumnMetadataList() {}
+  void getColumnMetadataList() {
+    for (int i = 0; i < table1.columnCount(); i++) {
+      Column<?> c = table1.columns().get(i);
+      ColumnMetadata cmd = tableMetadata1.getColumnMetadataList().get(i);
+      assertEquals(c.name(), cmd.getName());
+    }
+  }
 
   @Test
   void getColumnCount() {

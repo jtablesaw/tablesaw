@@ -46,8 +46,9 @@ class SawUtils {
   static final String BOOLEAN = "BOOLEAN";
 
   static String makeName(String name) {
-    name = WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from table name
-    name = SEPARATOR_PATTERN.matcher(name).replaceAll("_"); // remove path separators from name
-    return name + '.' + FILE_EXTENSION;
+    // remove whitespace from table name
+    String nm = WHITE_SPACE_PATTERN.matcher(name).replaceAll("");
+    nm = SEPARATOR_PATTERN.matcher(nm).replaceAll("_"); // remove path separators from name
+    return nm + '.' + FILE_EXTENSION;
   }
 }
