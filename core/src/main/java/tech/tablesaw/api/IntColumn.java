@@ -1,6 +1,5 @@
 package tech.tablesaw.api;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
@@ -26,11 +25,6 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
     super(IntColumnType.instance(), name);
     setPrintFormatter(NumberColumnFormatter.ints());
     this.data = data;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(data);
   }
 
   public static IntColumn create(final String name) {
