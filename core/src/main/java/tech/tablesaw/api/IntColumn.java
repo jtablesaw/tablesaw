@@ -29,14 +29,6 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    IntColumn integers = (IntColumn) o;
-    return name().equals(integers.name()) && Objects.equal(data, integers.data);
-  }
-
-  @Override
   public int hashCode() {
     return Objects.hashCode(data);
   }

@@ -1,6 +1,5 @@
 package tech.tablesaw.api;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Shorts;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
@@ -28,14 +27,6 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
     super(ShortColumnType.instance(), name);
     setPrintFormatter(NumberColumnFormatter.ints());
     this.data = data;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ShortColumn that = (ShortColumn) o;
-    return name().equals(that.name()) && Objects.equal(data, that.data);
   }
 
   public static ShortColumn create(final String name) {

@@ -237,10 +237,12 @@ class SawStorageTest {
     Table table = SawReader.readTable(path);
     assertEquals(wines.columnCount(), table.columnCount());
     assertEquals(wines.rowCount(), table.rowCount());
-    assertTrue(wines.stringColumn("name").equals(table.stringColumn("name")));
+    assertEquals(
+        wines.stringColumn("name").getDictionary(), table.stringColumn("name").getDictionary());
     SawWriter.saveTable("../testoutput/test_wines", table);
     Table table1 = SawReader.readTable(path);
-    assertTrue(wines.stringColumn("name").equals(table1.stringColumn("name")));
+    assertEquals(
+        wines.stringColumn("name").getDictionary(), table1.stringColumn("name").getDictionary());
   }
 
   @Test
@@ -280,11 +282,15 @@ class SawStorageTest {
     Table table = SawReader.readTable(path);
     assertEquals(wines.columnCount(), table.columnCount());
     assertEquals(wines.rowCount(), table.rowCount());
-    assertTrue(wines.stringColumn("index1").equals(table.stringColumn("index1")));
-    assertTrue(wines.stringColumn("index2").equals(table.stringColumn("index2")));
+    assertEquals(
+        wines.stringColumn("index2").getDictionary(), table.stringColumn("index2").getDictionary());
     SawWriter.saveTable(tempDir, table);
     Table table1 = SawReader.readTable(path);
-    assertTrue(wines.stringColumn("index1").equals(table1.stringColumn("index1")));
-    assertTrue(wines.stringColumn("index2").equals(table1.stringColumn("index2")));
+    assertEquals(
+        wines.stringColumn("index1").getDictionary(),
+        table1.stringColumn("index1").getDictionary());
+    assertEquals(
+        wines.stringColumn("index2").getDictionary(),
+        table1.stringColumn("index2").getDictionary());
   }
 }

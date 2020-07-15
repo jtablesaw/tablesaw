@@ -85,14 +85,6 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DateTimeColumn that = (DateTimeColumn) o;
-    return name().equals(that.name()) && Objects.equal(data, that.data);
-  }
-
-  @Override
   public int hashCode() {
     return Objects.hashCode(data);
   }

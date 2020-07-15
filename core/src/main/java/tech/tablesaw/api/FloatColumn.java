@@ -1,6 +1,5 @@
 package tech.tablesaw.api;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
@@ -33,14 +32,6 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
       return "";
     }
     return String.valueOf(getPrintFormatter().format(value));
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    FloatColumn floats = (FloatColumn) o;
-    return name().equals(floats.name()) && Objects.equal(data, floats.data);
   }
 
   public static FloatColumn create(String name) {

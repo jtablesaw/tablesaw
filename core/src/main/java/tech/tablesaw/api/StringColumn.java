@@ -63,14 +63,6 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
     return this;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    StringColumn strings = (StringColumn) o;
-    return name().equals(strings.name()) && lookupTable.equals(strings.lookupTable);
-  }
-
   public static StringColumn create(String name) {
     return new StringColumn(name);
   }

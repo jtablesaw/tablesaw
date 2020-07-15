@@ -16,7 +16,6 @@ package tech.tablesaw.api;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.base.Objects;
 import it.unimi.dsi.fastutil.booleans.BooleanIterable;
 import it.unimi.dsi.fastutil.booleans.BooleanIterator;
 import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
@@ -213,14 +212,6 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     }
     ByteArrayList list = new ByteArrayList(count);
     return new BooleanColumn(name() + " Unique values", list);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    BooleanColumn that = (BooleanColumn) o;
-    return name().equals(that.name()) && Objects.equal(data, that.data);
   }
 
   public BooleanColumn append(boolean b) {

@@ -14,7 +14,6 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
@@ -70,14 +69,6 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   public static DateColumn createInternal(String name, int[] data) {
     return new DateColumn(name, new IntArrayList(data));
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DateColumn dates = (DateColumn) o;
-    return name().equals(dates.name()) && Objects.equal(data, dates.data);
   }
 
   public static DateColumn create(final String name, final int initialSize) {

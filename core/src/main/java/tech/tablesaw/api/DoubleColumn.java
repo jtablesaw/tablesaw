@@ -1,6 +1,5 @@
 package tech.tablesaw.api;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrays;
@@ -39,14 +38,6 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   public static boolean valueIsMissing(double value) {
     return DoubleColumnType.valueIsMissing(value);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DoubleColumn that = (DoubleColumn) o;
-    return name().equals(that.name()) && Objects.equal(data, that.data);
   }
 
   @Override
