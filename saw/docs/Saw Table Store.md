@@ -27,7 +27,7 @@ Other possible enhancements include:
 - Save formatting information with the table. For example you could specify that floating point columns should be printed as percentages with 2 decimal places. 
 - Ability to store indexes with the table
 - Ability to store queries with the table (in query format, or as selections?)
-- Ability to encrypt the data on disk and on the wire between the disk and memory
+- Ability to encrypt the data while it's streaming, so it's secure on the wire and on disk
 - Ability to wrap the entire table in a single tar file to make it easier to move around
 
 ## Limitations

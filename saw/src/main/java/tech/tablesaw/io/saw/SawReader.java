@@ -13,6 +13,8 @@ import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
 
+import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
@@ -27,9 +29,11 @@ import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,18 +62,54 @@ import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
+@Beta
 public class SawReader {
 
-  final Path sawPath;
+  private final Path sawPath;
 
-  final SawMetadata sawMetadata;
+  private final SawMetadata sawMetadata;
 
-  final ReadOptions readOptions;
+  private ReadOptions readOptions = ReadOptions.defaultOptions();
+
+  public SawReader(Path sawPath) {
+    this.sawPath = sawPath;
+    this.sawMetadata = SawMetadata.readMetadata(sawPath);
+  }
 
   public SawReader(Path sawPath, ReadOptions options) {
     this.sawPath = sawPath;
     this.readOptions = options;
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
+  }
+
+  public SawReader(File sawPathFile) {
+    this.sawPath = sawPathFile.toPath();
+    this.sawMetadata = SawMetadata.readMetadata(sawPath);
+  }
+
+  public SawReader(File sawPathFile, ReadOptions options) {
+    this.sawPath = sawPathFile.toPath();
+    this.readOptions = options;
+    this.sawMetadata = SawMetadata.readMetadata(sawPath);
+  }
+
+  public SawReader(String sawPathName) {
+    this.sawPath = setPath(sawPathName);
+    this.sawMetadata = SawMetadata.readMetadata(sawPath);
+  }
+
+  public SawReader(String sawPathName, ReadOptions options) {
+    this.sawPath = setPath(sawPathName);
+    this.readOptions = options;
+    this.sawMetadata = SawMetadata.readMetadata(sawPath);
+  }
+
+  private Path setPath(String parentFolderName) {
+    Preconditions.checkArgument(
+        parentFolderName != null, "The folder name for the saw output cannot be null");
+    Preconditions.checkArgument(
+        !parentFolderName.isEmpty(), "The folder name for the saw output cannot be empty");
+    return Paths.get(parentFolderName);
   }
 
   public String shape() {

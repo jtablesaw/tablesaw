@@ -29,7 +29,7 @@ class SawMetadataTest {
 
   @Test
   void testReadTableMetaDataFromFile() {
-    String path = SawTable.write("../testoutput/bush", table1);
+    String path = new SawWriter("../testoutput/bush", table1).write();
     SawMetadata metadata = SawMetadata.readMetadata(Paths.get(path));
     assertEquals(table1.name(), metadata.getTableName());
     assertEquals(table1.rowCount(), metadata.getRowCount());

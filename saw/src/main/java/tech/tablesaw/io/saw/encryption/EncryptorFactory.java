@@ -6,8 +6,6 @@ import com.google.common.base.Strings;
 /** Returns a compressor of the type specified in the input */
 public class EncryptorFactory {
 
-  public static final EncryptorDecryptor NONE = NullEncryptor.get();
-
   // holds the single instance of standard text encryptor for this database. All encryption and
   // decryption must be done
   // with one algorithm/password
@@ -24,8 +22,6 @@ public class EncryptorFactory {
           standard = new StandardTextEncryptor(password);
         }
         return standard;
-      case NONE:
-        return NONE;
       default:
         throw new RuntimeException("No Encryptor available for specified type: " + type.name());
     }

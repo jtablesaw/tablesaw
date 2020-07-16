@@ -14,6 +14,8 @@ import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
 
+import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
@@ -36,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletionService;
@@ -66,9 +69,9 @@ import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
-import tech.tablesaw.table.Relation;
 
-class SawWriter {
+@Beta
+public class SawWriter {
 
   private static final String CRYPTO_TRANSFORM = "AES/CBC/PKCS5Padding";
 
@@ -88,9 +91,52 @@ class SawWriter {
     this.writeOptions = options;
   }
 
+  public SawWriter(String path, Table table, WriteOptions options) {
+    this.path = setPath(path);
+    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
+    this.table = table;
+    this.writeOptions = options;
+  }
+
+  public SawWriter(File file, Table table, WriteOptions options) {
+    this.path = file.toPath();
+    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
+    this.table = table;
+    this.writeOptions = options;
+  }
+
+  public SawWriter(Path path, Table table) {
+    this.path = path;
+    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
+    this.table = table;
+    this.writeOptions = WriteOptions.defaultOptions();
+  }
+
+  public SawWriter(File file, Table table) {
+    this.path = file.toPath();
+    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
+    this.table = table;
+    this.writeOptions = WriteOptions.defaultOptions();
+  }
+
+  public SawWriter(String path, Table table) {
+    this.path = setPath(path);
+    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
+    this.table = table;
+    this.writeOptions = WriteOptions.defaultOptions();
+  }
+
+  private Path setPath(String parentFolderName) {
+    Preconditions.checkArgument(
+        parentFolderName != null, "The folder name for the saw output cannot be null");
+    Preconditions.checkArgument(
+        !parentFolderName.isEmpty(), "The folder name for the saw output cannot be empty");
+    return Paths.get(parentFolderName);
+  }
+
   public String write() {
     try {
-      return saveTable(path, table, writeOptions.threadPoolSize);
+      return saveTable();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -106,24 +152,20 @@ class SawWriter {
    * <p>The storage format is the tablesaw compressed column-oriented format, which consists of a
    * set of file in a folder. The name of the folder is based on the name of the table.
    *
-   * @param folderPath Path representing the name of the folder where we will store the table (for
-   *     example: "mytables")
-   * @param table The table to be saved
-   * @param threadPoolSize The size of the the thread-pool allocated to writing. Each column is
-   *     written in own thread
    * @return The path and name of the table
    */
-  public String saveTable(Path folderPath, Relation table, int threadPoolSize) throws IOException {
+  private String saveTable() throws IOException {
 
-    ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
+    ExecutorService executorService =
+        Executors.newFixedThreadPool(writeOptions.getThreadPoolSize());
     CompletionService<Void> writerCompletionService =
         new ExecutorCompletionService<>(executorService);
 
-    createFolder(folderPath);
+    createFolder(path);
 
     // creates the folder containing the files
     String sawFolderName = SawUtils.makeName(table.name());
-    Path filePath = folderPath.resolve(sawFolderName);
+    Path filePath = path.resolve(sawFolderName);
 
     if (Files.exists(filePath)) {
       try (Stream<Path> stream = Files.walk(filePath)) {
