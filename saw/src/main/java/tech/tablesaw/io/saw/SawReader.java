@@ -12,7 +12,6 @@ import static tech.tablesaw.io.saw.SawUtils.LONG;
 import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
-import static tech.tablesaw.io.saw.TableMetadata.readTableMetadata;
 
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
@@ -28,7 +27,6 @@ import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -60,13 +58,19 @@ import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
-public abstract class SawReader {
+public class SawReader {
+
+  final Path sawPath;
 
   final TableMetadata tableMetadata;
 
-  public abstract Table read();
+  final ReadOptions readOptions;
 
-  public abstract Table read(ReadOptions options);
+  public SawReader(Path sawPath, ReadOptions options) {
+    this.sawPath = sawPath;
+    this.readOptions = options;
+    this.tableMetadata = TableMetadata.readTableMetadata(sawPath);
+  }
 
   public String shape() {
     return tableMetadata.shape();
@@ -92,26 +96,9 @@ public abstract class SawReader {
     return tableMetadata;
   }
 
-  public SawReader(TableMetadata tableMetadata) {
-    this.tableMetadata = tableMetadata;
-  }
+  public Table read() {
 
-  /**
-   * Reads a tablesaw table into memory
-   *
-   * @param file The location of the table data. If not fully specified, it is interpreted as
-   *     relative to the working directory. The path will typically end in ".saw", as in
-   *     "mytables/nasdaq-2015.saw"
-   * @param options Options that determine how the data should be read
-   */
-  public Table readTable(File file, ReadOptions options) {
-
-    final ExecutorService executor = Executors.newFixedThreadPool(options.getThreadPoolSize());
-
-    final TableMetadata tableMetadata;
-    final Path sawPath = file.toPath();
-
-    tableMetadata = readTableMetadata(sawPath);
+    final ExecutorService executor = Executors.newFixedThreadPool(readOptions.getThreadPoolSize());
 
     final List<ColumnMetadata> columnMetadata =
         ImmutableList.copyOf(tableMetadata.getColumnMetadataList());
@@ -435,10 +422,7 @@ public abstract class SawReader {
       throws IOException {
 
     TextColumn textColumn = TextColumn.create(columnMetadata.getName(), rowcount);
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
-
+    try (DataInputStream dis = inputStream(fileName)) {
       for (int j = 0; j < rowcount; j++) {
         textColumn.set(j, dis.readUTF());
       }
@@ -450,9 +434,7 @@ public abstract class SawReader {
       throws IOException {
 
     BooleanColumn column = BooleanColumn.create(metadata.getName());
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
+    try (DataInputStream dis = inputStream(fileName)) {
       for (int i = 0; i < rowcount; i++) {
         column.append(dis.readByte());
       }

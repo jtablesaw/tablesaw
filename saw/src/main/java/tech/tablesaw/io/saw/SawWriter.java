@@ -68,8 +68,7 @@ import tech.tablesaw.columns.strings.IntDictionaryMap;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 import tech.tablesaw.table.Relation;
 
-@SuppressWarnings("WeakerAccess")
-public abstract class SawWriter {
+class SawWriter {
 
   private static final String CRYPTO_TRANSFORM = "AES/CBC/PKCS5Padding";
 
@@ -84,13 +83,9 @@ public abstract class SawWriter {
 
   public SawWriter(Path path, Table table, WriteOptions options) {
     this.path = path;
-    this.tableMetadata = new TableMetadata(table);
+    this.tableMetadata = new TableMetadata(table, CompressionType.SNAPPY);
     this.table = table;
     this.writeOptions = options;
-  }
-
-  public TableMetadata getTableMetadata() {
-    return tableMetadata;
   }
 
   public String write() {
@@ -228,7 +223,7 @@ public abstract class SawWriter {
   }
 
   private void writeColumn(String fileName, FloatColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       int i = 0;
       FloatIterator iterator = (FloatIterator) column.iterator();
       while (iterator.hasNext()) {
@@ -244,7 +239,7 @@ public abstract class SawWriter {
   }
 
   private void writeColumn(String fileName, DoubleColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       int i = 0;
       for (double d : column) {
         dos.writeDouble(d);
@@ -266,7 +261,7 @@ public abstract class SawWriter {
    * the opposite order
    */
   private void writeColumn(String fileName, StringColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
 
       // write the strings
       DictionaryMap lookupTable = column.getDictionary();
@@ -405,7 +400,7 @@ public abstract class SawWriter {
     }
   }
 
-  private DataOutputStream outputStream(String fileName) throws IOException {
+  DataOutputStream columnOutputStream(String fileName) throws IOException {
     FileOutputStream fos = new FileOutputStream(fileName);
     final SecretKeySpec key = new SecretKeySpec(getUTF8Bytes("1234567890123456"), "AES");
     final IvParameterSpec iv = new IvParameterSpec(getUTF8Bytes("1234567890123456"));
@@ -419,13 +414,13 @@ public abstract class SawWriter {
   }
 
   /** Returns UTFByte array converted from the given input String */
-  private static byte[] getUTF8Bytes(String input) {
+  static byte[] getUTF8Bytes(String input) {
     return input.getBytes(StandardCharsets.UTF_8);
   }
 
   /** Writes out the values of the TextColumn */
   private void writeColumn(String fileName, TextColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       for (String str : column) {
         dos.writeUTF(str);
       }
@@ -434,7 +429,7 @@ public abstract class SawWriter {
   }
 
   private void writeColumn(String fileName, IntColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       writeIntStream(dos, column.intIterator());
       dos.flush();
     }
@@ -466,7 +461,7 @@ public abstract class SawWriter {
   }
 
   private void writeColumn(String fileName, ShortColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       int i = 0;
       ShortIterator iterator = (ShortIterator) column.iterator();
       while (iterator.hasNext()) {
@@ -482,34 +477,34 @@ public abstract class SawWriter {
   }
 
   private void writeColumn(String fileName, LongColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       writeLongStream(dos, column.longIterator());
       dos.flush();
     }
   }
 
   private void writeColumn(String fileName, DateColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       writeIntStream(dos, column.intIterator());
       dos.flush();
     }
   }
 
   private void writeColumn(String fileName, DateTimeColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       writeLongStream(dos, column.longIterator());
       dos.flush();
     }
   }
 
   private void writeColumn(String fileName, InstantColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       writeLongStream(dos, column.longIterator());
     }
   }
 
   private void writeColumn(String fileName, TimeColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       writeIntStream(dos, column.intIterator());
       dos.flush();
     }
@@ -517,7 +512,7 @@ public abstract class SawWriter {
 
   // TODO(lwhite): save the column using compressed bitmap?
   private void writeColumn(String fileName, BooleanColumn column) throws IOException {
-    try (DataOutputStream dos = outputStream(fileName)) {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       int i = 0;
       ByteIterator iterator = column.byteIterator();
       while (iterator.hasNext()) {

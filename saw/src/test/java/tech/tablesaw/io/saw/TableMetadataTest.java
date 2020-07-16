@@ -1,6 +1,7 @@
 package tech.tablesaw.io.saw;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static tech.tablesaw.io.saw.CompressionType.SNAPPY;
 
 import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,7 @@ class TableMetadataTest {
   @BeforeEach
   void setUp() throws Exception {
     table1 = Table.read().csv("../data/bush.csv");
-    tableMetadata1 = new TableMetadata(table1);
+    tableMetadata1 = new TableMetadata(table1, SNAPPY);
   }
 
   @Test
@@ -33,6 +34,7 @@ class TableMetadataTest {
     assertEquals(table1.name(), metadata.getName());
     assertEquals(table1.rowCount(), metadata.getRowCount());
     assertEquals(table1.columnNames(), metadata.columnNames());
+    assertEquals(SNAPPY, metadata.getCompressionType());
 
     String json = tableMetadata1.toJson();
     TableMetadata copy = TableMetadata.fromJson(json);

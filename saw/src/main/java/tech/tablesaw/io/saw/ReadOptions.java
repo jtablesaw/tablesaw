@@ -14,6 +14,10 @@ public class ReadOptions {
   private int threadPoolSize = READER_POOL_SIZE;
   private Selection selection = null;
 
+  public static ReadOptions defaultOptions() {
+    return new ReadOptions();
+  }
+
   public ReadOptions threadPoolSize(int size) {
     Preconditions.checkArgument(size > 0);
     this.threadPoolSize = size;

@@ -96,7 +96,7 @@ class SawStorageTest {
   @Test
   void testWriteTable() {
     SawTable.write(tempDir + "/zeta", table);
-    Table t = SawTable.readFile(tempDir + "/zeta/t.saw").read();
+    Table t = SawTable.read(tempDir + "/zeta/t.saw");
     assertEquals(table.columnCount(), t.columnCount());
     assertEquals(table.rowCount(), t.rowCount());
     for (int i = 0; i < table.rowCount(); i++) {
@@ -109,7 +109,7 @@ class SawStorageTest {
   void testWriteTable2() {
 
     SawTable.write(tempDir + "/zeta", table);
-    Table t = SawTable.readFile(tempDir + "/zeta/t.saw").read();
+    Table t = SawTable.read(tempDir + "/zeta/t.saw");
     assertEquals(table.columnCount(), t.columnCount());
     assertEquals(table.rowCount(), t.rowCount());
     for (int i = 0; i < table.rowCount(); i++) {
@@ -122,11 +122,11 @@ class SawStorageTest {
   void testWriteTableTwice() {
 
     SawTable.write(tempDir + "/mytables2", table);
-    Table t = SawTable.readFile(tempDir + "/mytables2/t.saw").read();
+    Table t = SawTable.read(tempDir + "/mytables2/t.saw");
     t.floatColumn("float").setName("a float column");
 
     SawTable.write(tempDir + "/mytables2", table);
-    t = SawTable.readFile(tempDir + "/mytables2/t.saw").read();
+    t = SawTable.read(tempDir + "/mytables2/t.saw");
 
     assertEquals(table.name(), t.name());
     assertEquals(table.rowCount(), t.rowCount());
@@ -136,14 +136,14 @@ class SawStorageTest {
   @Test
   void saveEmptyTable() {
     String path = SawTable.write(tempDir, empty);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertNotNull(table);
   }
 
   @Test
   void saveNoDataTable() {
     String path = SawTable.write(tempDir, noData);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertNotNull(table);
     assertTrue(table.columnCount() > 0);
     assertTrue(table.isEmpty());
@@ -152,7 +152,7 @@ class SawStorageTest {
   @Test
   void saveIntsOnly() {
     String path = SawTable.write(tempDir, intsOnly);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertNotNull(table);
     assertEquals(intsOnly.rowCount(), table.rowCount());
   }
@@ -160,7 +160,7 @@ class SawStorageTest {
   @Test
   void saveIntsAndStrings() {
     String path = SawTable.write(tempDir, intsAndStrings);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertNotNull(table);
     assertEquals(intsAndStrings.rowCount(), table.rowCount());
   }
@@ -168,7 +168,7 @@ class SawStorageTest {
   @Test
   void saveIntsAndText() {
     String path = SawTable.write(tempDir, intsAndText);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertTrue(table.column(1).size() > 0);
     assertEquals(TEXT, table.column(1).type());
     assertEquals(intsAndText.rowCount(), table.rowCount());
@@ -177,7 +177,7 @@ class SawStorageTest {
   @Test
   void saveInstants() {
     String path = SawTable.write(tempDir, instants);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertEquals(100, table.column(0).size());
     assertEquals(INSTANT, table.column(1).type());
     assertEquals(instants.rowCount(), table.rowCount());
@@ -188,7 +188,7 @@ class SawStorageTest {
   void bush() throws Exception {
     Table bush = Table.read().csv("../data/bush.csv");
     String path = SawTable.write("../testoutput/bush", bush);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertEquals(table.column(1).size(), bush.rowCount());
   }
 
@@ -196,7 +196,7 @@ class SawStorageTest {
   void tornado() throws Exception {
     Table tornado = Table.read().csv("../data/tornadoes_1950-2014.csv");
     String path = SawTable.write("../testoutput/tornadoes_1950-2014", tornado);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertTrue(table.column(1).size() > 0);
     assertEquals(tornado.columnCount(), table.columnCount());
     assertEquals(tornado.rowCount(), table.rowCount());
@@ -206,7 +206,7 @@ class SawStorageTest {
   void baseball() throws Exception {
     Table baseball = Table.read().csv("../data/baseball.csv");
     String path = SawTable.write("../testoutput/baseball", baseball);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertTrue(baseball.column(1).size() > 0);
     assertEquals(baseball.columnCount(), table.columnCount());
     assertEquals(baseball.rowCount(), table.rowCount());
@@ -216,7 +216,7 @@ class SawStorageTest {
   void boston_roberies() throws Exception {
     Table robereries = Table.read().csv("../data/boston-robberies.csv");
     String path = SawTable.write("../testoutput/boston_robberies", robereries);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertEquals(robereries.columnCount(), table.columnCount());
     assertEquals(robereries.rowCount(), table.rowCount());
   }
@@ -225,7 +225,7 @@ class SawStorageTest {
   void sacramento() throws Exception {
     Table sacramento = Table.read().csv("../data/sacramento_real_estate_transactions.csv");
     String path = SawTable.write("../testoutput/sacramento", sacramento);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertEquals(sacramento.columnCount(), table.columnCount());
     assertEquals(sacramento.rowCount(), table.rowCount());
   }
@@ -234,13 +234,13 @@ class SawStorageTest {
   void test_wines() throws Exception {
     Table wines = Table.read().csv("../data/test_wines.csv");
     String path = SawTable.write("../testoutput/test_wines", wines);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertEquals(wines.columnCount(), table.columnCount());
     assertEquals(wines.rowCount(), table.rowCount());
     assertEquals(
         wines.stringColumn("name").getDictionary(), table.stringColumn("name").getDictionary());
     SawTable.write("../testoutput/test_wines", table);
-    Table table1 = SawTable.readFile(path).read();
+    Table table1 = SawTable.read(path);
     assertEquals(
         wines.stringColumn("name").getDictionary(), table1.stringColumn("name").getDictionary());
   }
@@ -253,7 +253,7 @@ class SawStorageTest {
             IntColumn.indexColumn("index1", 10_000_000, 1),
             IntColumn.indexColumn("index2", 10_000_000, 1));
     String path = SawTable.write(tempDir, intsOnlyLarger);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertEquals(10_000_000, table.rowCount());
   }
 
@@ -279,13 +279,13 @@ class SawStorageTest {
             index2,
             index3);
     String path = SawTable.write(tempDir, wines);
-    Table table = SawTable.readFile(path).read();
+    Table table = SawTable.read(path);
     assertEquals(wines.columnCount(), table.columnCount());
     assertEquals(wines.rowCount(), table.rowCount());
     assertEquals(
         wines.stringColumn("index2").getDictionary(), table.stringColumn("index2").getDictionary());
     SawTable.write(tempDir, table);
-    Table table1 = SawTable.readFile(path).read();
+    Table table1 = SawTable.read(path);
     assertEquals(
         wines.stringColumn("index1").getDictionary(),
         table1.stringColumn("index1").getDictionary());

@@ -74,7 +74,9 @@ public class TableMetadata {
   // The saw file format version
   private int version;
 
-  TableMetadata(Relation table) {
+  private CompressionType compressionType;
+
+  TableMetadata(Relation table, CompressionType compressionType) {
     this.name = table.name();
     this.rowCount = table.rowCount();
 
@@ -83,6 +85,7 @@ public class TableMetadata {
       columnMetadataList.add(metadata);
     }
     this.version = SAW_VERSION;
+    this.compressionType = compressionType;
   }
 
   /** Default constructor for Jackson json serialization */
@@ -139,6 +142,10 @@ public class TableMetadata {
   @SuppressWarnings("WeakerAccess")
   public int getRowCount() {
     return rowCount;
+  }
+
+  public CompressionType getCompressionType() {
+    return compressionType;
   }
 
   /** Returns the saw file format version used to create this file */
