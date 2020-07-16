@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
-import tech.tablesaw.selection.Selection;
 
 /**
  * Specifies options for reading a table from Saw storage
@@ -18,7 +17,6 @@ public class ReadOptions {
 
   private List<String> selectedColumns = new ArrayList<>();
   private int threadPoolSize = READER_POOL_SIZE;
-  private Selection selection = null;
 
   public static ReadOptions defaultOptions() {
     return new ReadOptions();
@@ -40,20 +38,11 @@ public class ReadOptions {
     return this;
   }
 
-  public ReadOptions selection(Selection selection) {
-    this.selection = selection;
-    return this;
-  }
-
   public List<String> getSelectedColumns() {
     return selectedColumns;
   }
 
   public int getThreadPoolSize() {
     return threadPoolSize;
-  }
-
-  public Selection getSelection() {
-    return selection;
   }
 }
