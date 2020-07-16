@@ -14,7 +14,6 @@ import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
 import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
@@ -68,7 +67,6 @@ import tech.tablesaw.columns.strings.ShortDictionaryMap;
 import tech.tablesaw.table.Relation;
 
 @SuppressWarnings("WeakerAccess")
-@Beta
 public class SawWriter {
 
   private static final int FLUSH_AFTER_ITERATIONS = 20_000;

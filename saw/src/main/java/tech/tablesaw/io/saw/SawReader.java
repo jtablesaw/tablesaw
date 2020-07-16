@@ -12,9 +12,8 @@ import static tech.tablesaw.io.saw.SawUtils.LONG;
 import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
-import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
+import static tech.tablesaw.io.saw.TableMetadata.readTableMetadata;
 
-import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
@@ -32,11 +31,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,32 +60,26 @@ import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
-@SuppressWarnings("WeakerAccess")
-@Beta
-public class SawReader {
+public abstract class SawReader {
 
-  private static final int READER_POOL_SIZE = 10;
+  final TableMetadata tableMetadata;
 
-  public static Table readTable(String path) {
-    Path sawPath = Paths.get(path);
-    return readTable(sawPath.toFile());
-  }
+  public abstract Table read();
 
-  public static Table readTable(String path, int threadPoolSize) {
-    Path sawPath = Paths.get(path);
-    return readTable(sawPath.toFile(), threadPoolSize);
-  }
+  public abstract Table read(ReadOptions options);
 
-  /**
-   * Reads a tablesaw table into memory
-   *
-   * @param file The location of the table data. If not fully specified, it is interpreted as
-   *     relative to the working directory. The path will typically end in ".saw", as in
-   *     "mytables/nasdaq-2015.saw"
-   * @throws UncheckedIOException wrapping an IOException if the file cannot be read
-   */
-  public static Table readTable(File file) {
-    return readTable(file, READER_POOL_SIZE);
+  public abstract String shape();
+
+  public abstract Table structure();
+
+  public abstract int columnCount();
+
+  public abstract int rowCount();
+
+  public abstract List<String> columnNames();
+
+  public SawReader(TableMetadata tableMetadata) {
+    this.tableMetadata = tableMetadata;
   }
 
   /**
@@ -99,21 +88,16 @@ public class SawReader {
    * @param file The location of the table data. If not fully specified, it is interpreted as
    *     relative to the working directory. The path will typically end in ".saw", as in
    *     "mytables/nasdaq-2015.saw"
-   * @param threadPoolSize The size of the the thread-pool allocated to reading. Each column is read
-   *     in own thread
+   * @param options Options that determine how the data should be read
    */
-  public static Table readTable(File file, int threadPoolSize) {
+  public Table readTable(File file, ReadOptions options) {
 
-    final ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
+    final ExecutorService executor = Executors.newFixedThreadPool(options.getThreadPoolSize());
 
     final TableMetadata tableMetadata;
     final Path sawPath = file.toPath();
 
-    try {
-      tableMetadata = readTableMetadata(sawPath.resolve(METADATA_FILE_NAME));
-    } catch (IOException e) {
-      throw new UncheckedIOException("Error attempting to load saw data", e);
-    }
+    tableMetadata = readTableMetadata(sawPath);
 
     final List<ColumnMetadata> columnMetadata =
         ImmutableList.copyOf(tableMetadata.getColumnMetadataList());
@@ -150,7 +134,7 @@ public class SawReader {
     return table;
   }
 
-  private static Column<?> readColumn(
+  private Column<?> readColumn(
       String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
       throws IOException {
 
@@ -186,12 +170,21 @@ public class SawReader {
     }
   }
 
-  private static FloatColumn readFloatColumn(String fileName, ColumnMetadata metadata, int rowcount)
+  /**
+   * Returns a data input stream for reading from a file with the given name
+   *
+   * @throws IOException if anything goes wrong
+   */
+  private DataInputStream inputStream(String fileName) throws IOException {
+    FileInputStream fis = new FileInputStream(fileName);
+    SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+    return new DataInputStream(sis);
+  }
+
+  private FloatColumn readFloatColumn(String fileName, ColumnMetadata metadata, int rowcount)
       throws IOException {
     float[] data = new float[rowcount];
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
+    try (DataInputStream dis = inputStream(fileName)) {
       for (int i = 0; i < rowcount; i++) {
         data[i] = dis.readFloat();
       }
@@ -199,12 +192,10 @@ public class SawReader {
     return FloatColumn.create(metadata.getName(), data);
   }
 
-  private static DoubleColumn readDoubleColumn(
-      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+  private DoubleColumn readDoubleColumn(String fileName, ColumnMetadata metadata, int rowcount)
+      throws IOException {
     double[] data = new double[rowcount];
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
+    try (DataInputStream dis = inputStream(fileName)) {
       for (int i = 0; i < rowcount; i++) {
         data[i] = dis.readDouble();
       }
@@ -212,17 +203,15 @@ public class SawReader {
     return DoubleColumn.create(metadata.getName(), data);
   }
 
-  private static IntColumn readIntColumn(String fileName, ColumnMetadata metadata, int rowcount)
+  private IntColumn readIntColumn(String fileName, ColumnMetadata metadata, int rowcount)
       throws IOException {
     return IntColumn.create(metadata.getName(), readIntValues(fileName, rowcount));
   }
 
-  private static ShortColumn readShortColumn(String fileName, ColumnMetadata metadata, int rowcount)
+  private ShortColumn readShortColumn(String fileName, ColumnMetadata metadata, int rowcount)
       throws IOException {
     short[] data = new short[rowcount];
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
+    try (DataInputStream dis = inputStream(fileName)) {
       for (int i = 0; i < rowcount; i++) {
         data[i] = dis.readShort();
       }
@@ -230,21 +219,19 @@ public class SawReader {
     return ShortColumn.create(metadata.getName(), data);
   }
 
-  private static LongColumn readLongColumn(String fileName, ColumnMetadata metadata, int rowcount)
+  private LongColumn readLongColumn(String fileName, ColumnMetadata metadata, int rowcount)
       throws IOException {
     return LongColumn.create(metadata.getName(), readLongValues(fileName, rowcount));
   }
 
-  private static DateColumn readLocalDateColumn(
-      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+  private DateColumn readLocalDateColumn(String fileName, ColumnMetadata metadata, int rowcount)
+      throws IOException {
     return DateColumn.createInternal(metadata.getName(), readIntValues(fileName, rowcount));
   }
 
-  private static int[] readIntValues(String fileName, int rowcount) throws IOException {
+  private int[] readIntValues(String fileName, int rowcount) throws IOException {
     int[] data = new int[rowcount];
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
+    try (DataInputStream dis = inputStream(fileName)) {
       for (int i = 0; i < rowcount; i++) {
         data[i] = dis.readInt();
       }
@@ -252,17 +239,15 @@ public class SawReader {
     return data;
   }
 
-  private static DateTimeColumn readLocalDateTimeColumn(
+  private DateTimeColumn readLocalDateTimeColumn(
       String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
     long[] data = readLongValues(fileName, rowcount);
     return DateTimeColumn.createInternal(metadata.getName(), data);
   }
 
-  private static long[] readLongValues(String fileName, int rowcount) throws IOException {
+  private long[] readLongValues(String fileName, int rowcount) throws IOException {
     long[] data = new long[rowcount];
-    try (FileInputStream fis = new FileInputStream(fileName);
-        SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-        DataInputStream dis = new DataInputStream(sis)) {
+    try (DataInputStream dis = inputStream(fileName)) {
       for (int i = 0; i < rowcount; i++) {
         data[i] = dis.readLong();
       }
@@ -270,13 +255,13 @@ public class SawReader {
     return data;
   }
 
-  private static InstantColumn readInstantColumn(
-      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+  private InstantColumn readInstantColumn(String fileName, ColumnMetadata metadata, int rowcount)
+      throws IOException {
     return InstantColumn.createInternal(metadata.getName(), readLongValues(fileName, rowcount));
   }
 
-  private static TimeColumn readLocalTimeColumn(
-      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+  private TimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata, int rowcount)
+      throws IOException {
     return TimeColumn.createInternal(metadata.getName(), readIntValues(fileName, rowcount));
   }
 
@@ -284,11 +269,10 @@ public class SawReader {
    * Reads the encoded StringColumn from the given file and stuffs it into a new StringColumn,
    * saving time by updating the dictionary directly and just writing ints to the column's data
    */
-  private static StringColumn readStringColumn(
+  private StringColumn readStringColumn(
       String fileName, ColumnMetadata columnMetadata, int rowcount) throws IOException {
 
-    try (DataInputStream dis =
-        new DataInputStream(new SnappyFramedInputStream(new FileInputStream(fileName), true))) {
+    try (DataInputStream dis = inputStream(fileName)) {
 
       if (columnMetadata.getStringColumnKeySize().equals(Byte.class.getSimpleName())) {
         return StringColumn.createInternal(
@@ -303,8 +287,8 @@ public class SawReader {
     }
   }
 
-  private static ByteDictionaryMap getByteMap(
-      DataInputStream dis, ColumnMetadata metaData, int rowcount) throws IOException {
+  private ByteDictionaryMap getByteMap(DataInputStream dis, ColumnMetadata metaData, int rowcount)
+      throws IOException {
 
     int cardinality = metaData.getCardinality();
     byte[] data = new byte[rowcount];
@@ -346,8 +330,8 @@ public class SawReader {
         .build();
   }
 
-  private static ShortDictionaryMap getShortMap(
-      DataInputStream dis, ColumnMetadata metaData, int rowcount) throws IOException {
+  private ShortDictionaryMap getShortMap(DataInputStream dis, ColumnMetadata metaData, int rowcount)
+      throws IOException {
 
     int cardinality = metaData.getCardinality();
     short[] data = new short[rowcount];
@@ -389,8 +373,8 @@ public class SawReader {
         .build();
   }
 
-  private static IntDictionaryMap getIntMap(
-      DataInputStream dis, ColumnMetadata metaData, int rowcount) throws IOException {
+  private IntDictionaryMap getIntMap(DataInputStream dis, ColumnMetadata metaData, int rowcount)
+      throws IOException {
 
     int cardinality = metaData.getCardinality();
     int[] data = new int[rowcount];
@@ -433,8 +417,8 @@ public class SawReader {
   }
 
   /** Reads the TextColumn data from the given file and stuffs it into a new TextColumn */
-  private static TextColumn readTextColumn(
-      String fileName, ColumnMetadata columnMetadata, int rowcount) throws IOException {
+  private TextColumn readTextColumn(String fileName, ColumnMetadata columnMetadata, int rowcount)
+      throws IOException {
 
     TextColumn textColumn = TextColumn.create(columnMetadata.getName(), rowcount);
     try (FileInputStream fis = new FileInputStream(fileName);
@@ -448,8 +432,8 @@ public class SawReader {
     return textColumn;
   }
 
-  private static BooleanColumn readBooleanColumn(
-      String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
+  private BooleanColumn readBooleanColumn(String fileName, ColumnMetadata metadata, int rowcount)
+      throws IOException {
 
     BooleanColumn column = BooleanColumn.create(metadata.getName());
     try (FileInputStream fis = new FileInputStream(fileName);
@@ -460,18 +444,5 @@ public class SawReader {
       }
     }
     return column;
-  }
-
-  /**
-   * Reads in a json-formatted file and creates a TableMetadata instance from it. Files are expected
-   * to be in the format provided by TableMetadata}
-   *
-   * @param filePath The path
-   * @throws IOException if the file can not be read
-   */
-  private static TableMetadata readTableMetadata(Path filePath) throws IOException {
-
-    byte[] encoded = Files.readAllBytes(filePath);
-    return TableMetadata.fromJson(new String(encoded, StandardCharsets.UTF_8));
   }
 }
