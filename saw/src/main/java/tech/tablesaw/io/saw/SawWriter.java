@@ -75,7 +75,6 @@ public class SawWriter {
 
   private static final String CRYPTO_TRANSFORM = "AES/CBC/PKCS5Padding";
 
-  // TODO: Add this to method for writing TextColumn
   // We flush the output stream repeatedly to ensure it doesn't grow without bounds for big files
   private static final int FLUSH_AFTER_ITERATIONS = 20_000;
 
@@ -463,8 +462,14 @@ public class SawWriter {
   /** Writes out the values of the TextColumn */
   private void writeColumn(String fileName, TextColumn column) throws IOException {
     try (DataOutputStream dos = columnOutputStream(fileName)) {
-      for (String str : column) {
-        dos.writeUTF(str);
+      int i = 0;
+      for (String s : column) {
+        dos.writeUTF(s);
+        i++;
+        if (i == FLUSH_AFTER_ITERATIONS) {
+          dos.flush();
+          i = 0;
+        }
       }
       dos.flush();
     }

@@ -224,6 +224,18 @@ class SawStorageTest {
   }
 
   @Test
+  void selectedColumns() throws Exception {
+    Table baseball = Table.read().csv("../data/baseball.csv");
+    String path = new SawWriter("../testoutput/baseball", baseball).write();
+    Table bb2 = new SawReader(path, new ReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
+    assertEquals(3, bb2.columnCount());
+    assertTrue(bb2.columnNames().contains("OBP"));
+    assertTrue(bb2.columnNames().contains("SLG"));
+    assertTrue(bb2.columnNames().contains("BA"));
+    assertEquals(baseball.rowCount(), bb2.rowCount());
+  }
+
+  @Test
   void boston_roberies() throws Exception {
     Table robereries = Table.read().csv("../data/boston-robberies.csv");
     String path = new SawWriter("../testoutput/boston_robberies", robereries).write();

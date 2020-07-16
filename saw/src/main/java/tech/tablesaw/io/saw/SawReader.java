@@ -35,14 +35,17 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import org.iq80.snappy.SnappyFramedInputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -135,9 +138,11 @@ public class SawReader {
   public Table read() {
 
     final ExecutorService executor = Executors.newFixedThreadPool(readOptions.getThreadPoolSize());
+    // The column names to filter for, if we don't want the whole table
+    final Set<String> selectedColumns = new HashSet<>(readOptions.getSelectedColumns());
 
-    final List<ColumnMetadata> columnMetadata =
-        ImmutableList.copyOf(sawMetadata.getColumnMetadataList());
+    final List<ColumnMetadata> columnMetadata = getMetadata(selectedColumns);
+
     final Table table = Table.create(sawMetadata.getTableName());
 
     // Note: We do some extra work with the hash map to ensure that the columns are returned
@@ -169,6 +174,16 @@ public class SawReader {
       executor.shutdown();
     }
     return table;
+  }
+
+  private List<ColumnMetadata> getMetadata(Set<String> selectedColumns) {
+    if (selectedColumns.isEmpty()) {
+      return ImmutableList.copyOf(sawMetadata.getColumnMetadataList());
+    }
+    return ImmutableList.copyOf(
+        sawMetadata.getColumnMetadataList().stream()
+            .filter(x -> selectedColumns.contains(x.getName()))
+            .collect(Collectors.toList()));
   }
 
   private Column<?> readColumn(
