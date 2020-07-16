@@ -47,6 +47,7 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.InstantColumn;
@@ -177,6 +178,48 @@ class AggregateFunctionsTest {
     assertTrue(anyTrue.summarize(bc));
     assertFalse(noneTrue.summarize(bc));
     assertFalse(allTrue.summarize(bc));
+  }
+
+  @Test
+  void testBooleanNumericAggregateFunctions() {
+    boolean[] values = {true, false, false, false};
+    BooleanColumn bc = BooleanColumn.create("test", values);
+    assertEquals(0.25, proportionTrue.summarize(bc));
+    assertEquals(0.75, proportionFalse.summarize(bc));
+  }
+
+  @Test
+  void testBooleanNumericFunctionGroup() {
+    boolean[] values = {true, false, false, false, true, true, true, false};
+    String[] group = {"a", "a", "a", "a", "b", "b", "b", "b"};
+    BooleanColumn bc = BooleanColumn.create("test", values);
+    StringColumn sc = StringColumn.create("group_key", group);
+
+    Table table = Table.create(sc, bc);
+    Table summarized = table.summarize("test", proportionTrue, proportionFalse)
+                            .by("group_key");
+
+    assertEquals(2, summarized.rowCount());
+    assertEquals(1, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
+                              .rowCount());
+    assertEquals(1, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
+                              .rowCount());
+    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
+                                              .column(proportionTrue.functionName() + " [test]").type());
+    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
+                                              .column(proportionFalse.functionName() + " [test]").type());
+    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
+                                              .column(proportionTrue.functionName() + " [test]").type());
+    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
+                                              .column(proportionFalse.functionName() + " [test]").type());
+    assertEquals(0.25, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
+                                 .doubleColumn(proportionTrue.functionName() + " [test]").get(0));
+    assertEquals(0.75, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
+                                 .doubleColumn(proportionFalse.functionName() + " [test]").get(0));
+    assertEquals(0.75, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
+                                 .doubleColumn(proportionTrue.functionName() + " [test]").get(0));
+    assertEquals(0.25, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
+                                 .doubleColumn(proportionFalse.functionName() + " [test]").get(0));
   }
 
   @Test
