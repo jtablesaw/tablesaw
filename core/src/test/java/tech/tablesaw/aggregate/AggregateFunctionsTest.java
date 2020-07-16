@@ -200,26 +200,16 @@ class AggregateFunctionsTest {
                             .by("group_key");
 
     assertEquals(2, summarized.rowCount());
-    assertEquals(1, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
-                              .rowCount());
-    assertEquals(1, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
-                              .rowCount());
-    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
-                                              .column(proportionTrue.functionName() + " [test]").type());
-    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
-                                              .column(proportionFalse.functionName() + " [test]").type());
-    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
-                                              .column(proportionTrue.functionName() + " [test]").type());
-    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
-                                              .column(proportionFalse.functionName() + " [test]").type());
-    assertEquals(0.25, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
-                                 .doubleColumn(proportionTrue.functionName() + " [test]").get(0));
-    assertEquals(0.75, summarized.where(summarized.stringColumn("group_key").isEqualTo("a"))
-                                 .doubleColumn(proportionFalse.functionName() + " [test]").get(0));
-    assertEquals(0.75, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
-                                 .doubleColumn(proportionTrue.functionName() + " [test]").get(0));
-    assertEquals(0.25, summarized.where(summarized.stringColumn("group_key").isEqualTo("b"))
-                                 .doubleColumn(proportionFalse.functionName() + " [test]").get(0));
+    assertEquals(1, summarized.where(summarized.stringColumn("group_key").isEqualTo("a")).rowCount());
+    assertEquals(1, summarized.where(summarized.stringColumn("group_key").isEqualTo("b")).rowCount());
+    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn(0).isEqualTo("a")).column(1).type());
+    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn(0).isEqualTo("a")).column(2).type());
+    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn(0).isEqualTo("b")).column(1).type());
+    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn(0).isEqualTo("b")).column(2).type());
+    assertEquals(0.25, summarized.where(summarized.stringColumn(0).isEqualTo("a")).doubleColumn(1).get(0));
+    assertEquals(0.75, summarized.where(summarized.stringColumn(0).isEqualTo("a")).doubleColumn(2).get(0));
+    assertEquals(0.75, summarized.where(summarized.stringColumn(0).isEqualTo("b")).doubleColumn(1).get(0));
+    assertEquals(0.25, summarized.where(summarized.stringColumn(0).isEqualTo("b")).doubleColumn(2).get(0));
   }
 
   @Test
