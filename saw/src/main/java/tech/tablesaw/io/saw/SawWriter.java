@@ -1,5 +1,6 @@
 package tech.tablesaw.io.saw;
 
+import static tech.tablesaw.io.saw.SawMetadata.METADATA_FILE_NAME;
 import static tech.tablesaw.io.saw.SawUtils.BOOLEAN;
 import static tech.tablesaw.io.saw.SawUtils.DOUBLE;
 import static tech.tablesaw.io.saw.SawUtils.FLOAT;
@@ -12,7 +13,6 @@ import static tech.tablesaw.io.saw.SawUtils.LONG;
 import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
-import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
@@ -76,14 +76,14 @@ class SawWriter {
   // We flush the output stream repeatedly to ensure it doesn't grow without bounds for big files
   private static final int FLUSH_AFTER_ITERATIONS = 20_000;
 
-  private final TableMetadata tableMetadata;
+  private final SawMetadata sawMetadata;
   private final Table table;
   private final WriteOptions writeOptions;
   private final Path path;
 
   public SawWriter(Path path, Table table, WriteOptions options) {
     this.path = path;
-    this.tableMetadata = new TableMetadata(table, CompressionType.SNAPPY);
+    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
     this.table = table;
     this.writeOptions = options;
   }
@@ -134,13 +134,13 @@ class SawWriter {
       }
     }
     Files.createDirectories(filePath);
-    writeTableMetadata(filePath, tableMetadata);
+    writeTableMetadata(filePath, sawMetadata);
 
     try {
       List<Column<?>> columns = table.columns();
       for (int i = 0; i < columns.size(); i++) {
         Column<?> column = columns.get(i);
-        String pathString = tableMetadata.getColumnMetadataList().get(i).getId();
+        String pathString = sawMetadata.getColumnMetadataList().get(i).getId();
 
         writerCompletionService.submit(
             () -> {
@@ -534,7 +534,7 @@ class SawWriter {
    * @param filePath The full file path including file name
    * @throws IOException if the file can not be read
    */
-  private void writeTableMetadata(Path filePath, TableMetadata metadata) throws IOException {
+  private void writeTableMetadata(Path filePath, SawMetadata metadata) throws IOException {
     Path metaDataPath = filePath.resolve(METADATA_FILE_NAME);
     try {
       Files.createFile(metaDataPath);

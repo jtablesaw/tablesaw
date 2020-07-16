@@ -9,79 +9,79 @@ import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 
-class TableMetadataTest {
+class SawMetadataTest {
 
   private static Table table1;
-  private static TableMetadata tableMetadata1;
+  private static SawMetadata metadata1;
 
   @BeforeEach
   void setUp() throws Exception {
     table1 = Table.read().csv("../data/bush.csv");
-    tableMetadata1 = new TableMetadata(table1, SNAPPY);
+    metadata1 = new SawMetadata(table1, SNAPPY);
   }
 
   @Test
   void toAndFromJson() {
-    String json = tableMetadata1.toJson();
-    TableMetadata copy = TableMetadata.fromJson(json);
-    assertEquals(tableMetadata1, copy);
+    String json = metadata1.toJson();
+    SawMetadata copy = SawMetadata.fromJson(json);
+    assertEquals(metadata1, copy);
   }
 
   @Test
   void testReadTableMetaDataFromFile() {
     String path = SawTable.write("../testoutput/bush", table1);
-    TableMetadata metadata = TableMetadata.readTableMetadata(Paths.get(path));
-    assertEquals(table1.name(), metadata.getName());
+    SawMetadata metadata = SawMetadata.readMetadata(Paths.get(path));
+    assertEquals(table1.name(), metadata.getTableName());
     assertEquals(table1.rowCount(), metadata.getRowCount());
     assertEquals(table1.columnNames(), metadata.columnNames());
     assertEquals(SNAPPY, metadata.getCompressionType());
 
-    String json = tableMetadata1.toJson();
-    TableMetadata copy = TableMetadata.fromJson(json);
-    assertEquals(tableMetadata1, copy);
+    String json = metadata.toJson();
+    SawMetadata copy = SawMetadata.fromJson(json);
+    assertEquals(metadata1, copy);
   }
 
   @Test
   void getName() {
-    assertEquals(table1.name(), tableMetadata1.getName());
+    assertEquals(table1.name(), metadata1.getTableName());
   }
 
   @Test
   void getRowCount() {
-    assertEquals(table1.rowCount(), tableMetadata1.getRowCount());
+    assertEquals(table1.rowCount(), metadata1.getRowCount());
   }
 
   @Test
   void getVersion() {
-    assertEquals(1, tableMetadata1.getVersion());
+    assertEquals(1, metadata1.getVersion());
   }
 
   @Test
   void getColumnMetadataList() {
     for (int i = 0; i < table1.columnCount(); i++) {
       Column<?> c = table1.columns().get(i);
-      ColumnMetadata cmd = tableMetadata1.getColumnMetadataList().get(i);
+      ColumnMetadata cmd = metadata1.getColumnMetadataList().get(i);
       assertEquals(c.name(), cmd.getName());
     }
   }
 
   @Test
   void getColumnCount() {
-    assertEquals(table1.columnCount(), tableMetadata1.columnCount());
+    assertEquals(table1.columnCount(), metadata1.columnCount());
   }
 
   @Test
   void shape() {
-    assertEquals(table1.shape(), tableMetadata1.shape());
+    assertEquals(table1.shape(), metadata1.shape());
   }
 
   @Test
   void columnNames() {
-    assertEquals(table1.columnNames(), tableMetadata1.columnNames());
+    assertEquals(table1.columnNames(), metadata1.columnNames());
   }
 
   @Test
   void structure() {
-    assertEquals(table1.structure().toString(), tableMetadata1.structure().toString());
+    assertEquals(table1.structure().toString(), metadata1.structure().toString());
   }
 }

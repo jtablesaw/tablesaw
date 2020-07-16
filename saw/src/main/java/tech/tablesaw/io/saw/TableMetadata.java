@@ -22,9 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,28 +35,6 @@ import tech.tablesaw.table.Relation;
 @Beta
 public class TableMetadata {
 
-  static final String METADATA_FILE_NAME = "Metadata.json";
-  private static final int SAW_VERSION = 1;
-
-  /**
-   * Returns a TableMetadata instance derived from the json-formatted Metadata.json file in the
-   * directory specified by sawPath
-   *
-   * @param sawPath The path to the folder containing the Saw metadata file and table data
-   */
-  static TableMetadata readTableMetadata(Path sawPath) {
-
-    Path resolvePath = sawPath.resolve(METADATA_FILE_NAME);
-    byte[] encoded;
-    try {
-      encoded = Files.readAllBytes(resolvePath);
-    } catch (IOException e) {
-      throw new UncheckedIOException(
-          "Unable to read TableMetadata file at " + resolvePath.toString(), e);
-    }
-    return TableMetadata.fromJson(new String(encoded, StandardCharsets.UTF_8));
-  }
-
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
   @JsonProperty("columnMetadata")
@@ -71,12 +46,7 @@ public class TableMetadata {
   // The number of rows in the table
   private int rowCount;
 
-  // The saw file format version
-  private int version;
-
-  private CompressionType compressionType;
-
-  TableMetadata(Relation table, CompressionType compressionType) {
+  TableMetadata(Relation table) {
     this.name = table.name();
     this.rowCount = table.rowCount();
 
@@ -84,8 +54,6 @@ public class TableMetadata {
       ColumnMetadata metadata = new ColumnMetadata(column);
       columnMetadataList.add(metadata);
     }
-    this.version = SAW_VERSION;
-    this.compressionType = compressionType;
   }
 
   /** Default constructor for Jackson json serialization */
@@ -142,15 +110,6 @@ public class TableMetadata {
   @SuppressWarnings("WeakerAccess")
   public int getRowCount() {
     return rowCount;
-  }
-
-  public CompressionType getCompressionType() {
-    return compressionType;
-  }
-
-  /** Returns the saw file format version used to create this file */
-  public int getVersion() {
-    return version;
   }
 
   /** Returns a list of ColumnMetadata objects, one for each Column in the table */

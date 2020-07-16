@@ -62,38 +62,34 @@ public class SawReader {
 
   final Path sawPath;
 
-  final TableMetadata tableMetadata;
+  final SawMetadata sawMetadata;
 
   final ReadOptions readOptions;
 
   public SawReader(Path sawPath, ReadOptions options) {
     this.sawPath = sawPath;
     this.readOptions = options;
-    this.tableMetadata = TableMetadata.readTableMetadata(sawPath);
+    this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
   public String shape() {
-    return tableMetadata.shape();
+    return sawMetadata.shape();
   }
 
   public int columnCount() {
-    return tableMetadata.columnCount();
+    return sawMetadata.columnCount();
   }
 
   public int rowCount() {
-    return tableMetadata.getRowCount();
+    return sawMetadata.getRowCount();
   }
 
   public List<String> columnNames() {
-    return tableMetadata.columnNames();
+    return sawMetadata.columnNames();
   }
 
   public Table structure() {
-    return tableMetadata.structure();
-  }
-
-  public TableMetadata getTableMetadata() {
-    return tableMetadata;
+    return sawMetadata.structure();
   }
 
   public Table read() {
@@ -101,8 +97,8 @@ public class SawReader {
     final ExecutorService executor = Executors.newFixedThreadPool(readOptions.getThreadPoolSize());
 
     final List<ColumnMetadata> columnMetadata =
-        ImmutableList.copyOf(tableMetadata.getColumnMetadataList());
-    final Table table = Table.create(tableMetadata.getName());
+        ImmutableList.copyOf(sawMetadata.getColumnMetadataList());
+    final Table table = Table.create(sawMetadata.getTableName());
 
     // Note: We do some extra work with the hash map to ensure that the columns are returned
     // to the table in original order
@@ -113,7 +109,7 @@ public class SawReader {
         callables.add(
             () -> {
               Path columnPath = sawPath.resolve(column.getId());
-              return readColumn(columnPath.toString(), tableMetadata, column);
+              return readColumn(columnPath.toString(), sawMetadata, column);
             });
       }
       List<Future<Column<?>>> futures = executor.invokeAll(callables);
@@ -136,11 +132,10 @@ public class SawReader {
   }
 
   private Column<?> readColumn(
-      String fileName, TableMetadata tableMetadata, ColumnMetadata columnMetadata)
-      throws IOException {
+      String fileName, SawMetadata sawMetadata, ColumnMetadata columnMetadata) throws IOException {
 
     final String typeString = columnMetadata.getType();
-    final int rowcount = tableMetadata.getRowCount();
+    final int rowcount = sawMetadata.getRowCount();
     switch (typeString) {
       case FLOAT:
         return readFloatColumn(fileName, columnMetadata, rowcount);
