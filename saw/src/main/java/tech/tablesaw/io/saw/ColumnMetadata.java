@@ -62,8 +62,10 @@ public class ColumnMetadata {
   }
 
   /**
-   * Constructs an instance of ColumnMetaData NB: This constructor is used by Jackson JSON parsing
-   * code so it must be retained even though it isn't explicitly called
+   * Constructs an instance of ColumnMetaData
+   *
+   * <p>NB: This constructor is used by Jackson JSON parsing code so it must be retained even though
+   * it isn't explicitly called
    */
   protected ColumnMetadata() {}
 

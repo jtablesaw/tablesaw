@@ -30,6 +30,11 @@ public class ReadOptions {
     return this;
   }
 
+  public ReadOptions selection(Selection selection) {
+    this.selection = selection;
+    return this;
+  }
+
   public List<String> getSelectedColumns() {
     return selectedColumns;
   }

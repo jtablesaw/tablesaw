@@ -33,12 +33,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -46,6 +48,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.crypto.stream.CryptoOutputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -69,6 +74,8 @@ import tech.tablesaw.table.Relation;
 @SuppressWarnings("WeakerAccess")
 public class SawWriter {
 
+  private static final String CRYPTO_TRANSFORM = "AES/CBC/PKCS5Padding";
+
   private static final int FLUSH_AFTER_ITERATIONS = 20_000;
 
   private static final int WRITER_POOL_SIZE = 10;
@@ -88,7 +95,7 @@ public class SawWriter {
    * @return The path and name of the table
    * @throws UncheckedIOException wrapping IOException if the file can not be read
    */
-  public static String saveTable(String parentFolderName, Relation table) {
+  public String saveTable(String parentFolderName, Relation table) {
     return saveTable(parentFolderName, table, WRITER_POOL_SIZE);
   }
 
@@ -109,7 +116,7 @@ public class SawWriter {
    * @return The path and name of the table
    * @throws UncheckedIOException wrapping IOException if the file can not be read
    */
-  public static String saveTable(String parentFolderName, Relation table, int threadPoolSize) {
+  public String saveTable(String parentFolderName, Relation table, int threadPoolSize) {
 
     Preconditions.checkArgument(
         parentFolderName != null, "The folder name for the saw output cannot be null");
@@ -187,7 +194,7 @@ public class SawWriter {
     return filePath.toAbsolutePath().toString();
   }
 
-  private static void writeColumn(String fileName, Column<?> column) {
+  private void writeColumn(String fileName, Column<?> column) {
     try {
       final String typeName = column.type().name();
       switch (typeName) {
@@ -235,10 +242,8 @@ public class SawWriter {
     }
   }
 
-  private static void writeColumn(String fileName, FloatColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  private void writeColumn(String fileName, FloatColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
       int i = 0;
       FloatIterator iterator = (FloatIterator) column.iterator();
       while (iterator.hasNext()) {
@@ -253,10 +258,8 @@ public class SawWriter {
     }
   }
 
-  private static void writeColumn(String fileName, DoubleColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  private void writeColumn(String fileName, DoubleColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
       int i = 0;
       for (double d : column) {
         dos.writeDouble(d);
@@ -276,16 +279,11 @@ public class SawWriter {
    *
    * <p>The files are written Strings first, then the ints that encode them so they can be read in
    * the opposite order
-   *
-   * @throws IOException IOException if the file can not be read
    */
-  private static void writeColumn(String fileName, StringColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  private void writeColumn(String fileName, StringColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
 
       // write the strings
-
       DictionaryMap lookupTable = column.getDictionary();
       if (lookupTable.getClass().equals(ByteDictionaryMap.class)) {
         writeToStream((ByteDictionaryMap) lookupTable, dos);
@@ -302,7 +300,7 @@ public class SawWriter {
    *
    * @param dos The stream to write on
    */
-  private static void writeToStream(ByteDictionaryMap dictionary, DataOutputStream dos) {
+  private void writeToStream(ByteDictionaryMap dictionary, DataOutputStream dos) {
 
     try {
       // write the maps
@@ -343,7 +341,7 @@ public class SawWriter {
    *
    * @param dos The stream to write on
    */
-  private static void writeToStream(ShortDictionaryMap dictionary, DataOutputStream dos) {
+  private void writeToStream(ShortDictionaryMap dictionary, DataOutputStream dos) {
 
     try {
       // write the maps
@@ -385,7 +383,7 @@ public class SawWriter {
    *
    * @param dos The stream to write on
    */
-  private static void writeToStream(IntDictionaryMap dictionary, DataOutputStream dos) {
+  private void writeToStream(IntDictionaryMap dictionary, DataOutputStream dos) {
 
     try {
       // write the maps
@@ -422,19 +420,25 @@ public class SawWriter {
     }
   }
 
-  /**
-   * Writes out the values of the TextColumn
-   *
-   * <p>
-   *
-   * @throws IOException IOException if the file can not be written
-   */
-  private static void writeColumn(String fileName, TextColumn column) throws IOException {
+  private DataOutputStream outputStream(String fileName) throws IOException {
+    FileOutputStream fos = new FileOutputStream(fileName);
+    final SecretKeySpec key = new SecretKeySpec(getUTF8Bytes("1234567890123456"), "AES");
+    final IvParameterSpec iv = new IvParameterSpec(getUTF8Bytes("1234567890123456"));
 
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+    CryptoOutputStream cos =
+        new CryptoOutputStream(CRYPTO_TRANSFORM, new Properties(), fos, key, iv);
+    SnappyFramedOutputStream sos = new SnappyFramedOutputStream(cos);
+    return new DataOutputStream(sos);
+  }
 
+  /** Returns UTFByte array converted from the given input String */
+  private static byte[] getUTF8Bytes(String input) {
+    return input.getBytes(StandardCharsets.UTF_8);
+  }
+
+  /** Writes out the values of the TextColumn */
+  private void writeColumn(String fileName, TextColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
       for (String str : column) {
         dos.writeUTF(str);
       }
@@ -442,29 +446,40 @@ public class SawWriter {
     }
   }
 
-  // TODO(lwhite): saveTable the column using integer compression
-  private static void writeColumn(String fileName, IntColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      IntIterator iterator = (IntIterator) column.iterator();
-      while (iterator.hasNext()) {
-        dos.writeInt(iterator.nextInt());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) { // TODO does this break the pipelining?
-          dos.flush();
-          i = 0;
-        }
-      }
+  private void writeColumn(String fileName, IntColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
+      writeIntStream(dos, column.intIterator());
       dos.flush();
     }
   }
 
-  private static void writeColumn(String fileName, ShortColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  // TODO(lwhite): save the column using integer compression?
+  private void writeIntStream(DataOutputStream dos, IntIterator iterator) throws IOException {
+    int i = 0;
+    while (iterator.hasNext()) {
+      dos.writeInt(iterator.nextInt());
+      i++;
+      if (i == FLUSH_AFTER_ITERATIONS) { // TODO does this break the pipelining?
+        dos.flush();
+        i = 0;
+      }
+    }
+  }
+
+  private void writeLongStream(DataOutputStream dos, LongIterator iterator) throws IOException {
+    int i = 0;
+    while (iterator.hasNext()) {
+      dos.writeLong(iterator.nextLong());
+      i++;
+      if (i == FLUSH_AFTER_ITERATIONS) { // TODO does this break the pipelining?
+        dos.flush();
+        i = 0;
+      }
+    }
+  }
+
+  private void writeColumn(String fileName, ShortColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
       int i = 0;
       ShortIterator iterator = (ShortIterator) column.iterator();
       while (iterator.hasNext()) {
@@ -479,103 +494,43 @@ public class SawWriter {
     }
   }
 
-  private static void writeColumn(String fileName, LongColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      LongIterator iterator = (LongIterator) column.iterator();
-      while (iterator.hasNext()) {
-        dos.writeLong(iterator.nextLong());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
+  private void writeColumn(String fileName, LongColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
+      writeLongStream(dos, column.longIterator());
       dos.flush();
     }
   }
 
-  // TODO(lwhite): saveTable the column using integer compression?
-  private static void writeColumn(String fileName, DateColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      IntIterator iterator = column.intIterator();
-      while (iterator.hasNext()) {
-        dos.writeInt(iterator.nextInt());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
+  private void writeColumn(String fileName, DateColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
+      writeIntStream(dos, column.intIterator());
       dos.flush();
     }
   }
 
-  private static void writeColumn(String fileName, DateTimeColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      LongIterator iterator = column.longIterator();
-      while (iterator.hasNext()) {
-        dos.writeLong(iterator.nextLong());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
+  private void writeColumn(String fileName, DateTimeColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
+      writeLongStream(dos, column.longIterator());
       dos.flush();
     }
   }
 
-  private static void writeColumn(String fileName, InstantColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      LongIterator iterator = column.longIterator();
-      while (iterator.hasNext()) {
-        dos.writeLong(iterator.nextLong());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
-      dos.flush();
+  private void writeColumn(String fileName, InstantColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
+      writeLongStream(dos, column.longIterator());
     }
   }
 
-  // TODO(lwhite): save the column using integer compression?
-  private static void writeColumn(String fileName, TimeColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      IntIterator iterator = column.intIterator();
-      while (iterator.hasNext()) {
-        dos.writeInt(iterator.nextInt());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
+  private void writeColumn(String fileName, TimeColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
+      writeIntStream(dos, column.intIterator());
       dos.flush();
     }
   }
 
   // TODO(lwhite): save the column using compressed bitmap?
-  private static void writeColumn(String fileName, BooleanColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  private void writeColumn(String fileName, BooleanColumn column) throws IOException {
+    try (DataOutputStream dos = outputStream(fileName)) {
       int i = 0;
       ByteIterator iterator = column.byteIterator();
       while (iterator.hasNext()) {
@@ -597,11 +552,11 @@ public class SawWriter {
    * @param filePath The full file path including file name
    * @throws IOException if the file can not be read
    */
-  private static void writeTableMetadata(Path filePath, TableMetadata metadata) throws IOException {
+  private void writeTableMetadata(Path filePath, TableMetadata metadata) throws IOException {
     try {
       Files.createFile(filePath);
     } catch (FileAlreadyExistsException e) {
-      // do nothing. overwrite existing file
+      /*overwrite existing file*/
     }
     try (FileOutputStream fOut = new FileOutputStream(filePath.toFile());
         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {

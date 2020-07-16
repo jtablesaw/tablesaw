@@ -30,7 +30,7 @@ public class SawTable {
     return url(new URL(url));
   }
 
-  public static SawWriter write() {
+  public static SawWriter file() {
     return new SawWriter();
   }
 }

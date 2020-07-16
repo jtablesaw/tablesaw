@@ -68,15 +68,29 @@ public abstract class SawReader {
 
   public abstract Table read(ReadOptions options);
 
-  public abstract String shape();
+  public String shape() {
+    return tableMetadata.shape();
+  }
 
-  public abstract Table structure();
+  public int columnCount() {
+    return tableMetadata.columnCount();
+  }
 
-  public abstract int columnCount();
+  public int rowCount() {
+    return tableMetadata.getRowCount();
+  }
 
-  public abstract int rowCount();
+  public List<String> columnNames() {
+    return tableMetadata.columnNames();
+  }
 
-  public abstract List<String> columnNames();
+  public Table structure() {
+    return tableMetadata.structure();
+  }
+
+  public TableMetadata getTableMetadata() {
+    return tableMetadata;
+  }
 
   public SawReader(TableMetadata tableMetadata) {
     this.tableMetadata = tableMetadata;

@@ -1,7 +1,6 @@
 package tech.tablesaw.io.saw;
 
 import java.io.File;
-import java.util.List;
 import tech.tablesaw.api.Table;
 
 public class SawFileReader extends SawReader {
@@ -15,36 +14,11 @@ public class SawFileReader extends SawReader {
 
   @Override
   public Table read() {
-    return readTable(sawFile, 10);
+    return readTable(sawFile, new ReadOptions());
   }
 
   @Override
   public Table read(ReadOptions options) {
-    return readTable(sawFile, options.getThreadPoolSize());
-  }
-
-  @Override
-  public String shape() {
-    return tableMetadata.shape();
-  }
-
-  @Override
-  public int columnCount() {
-    return tableMetadata.columnCount();
-  }
-
-  @Override
-  public int rowCount() {
-    return tableMetadata.getRowCount();
-  }
-
-  @Override
-  public List<String> columnNames() {
-    return tableMetadata.columnNames();
-  }
-
-  @Override
-  public Table structure() {
-    return tableMetadata.structure();
+    return readTable(sawFile, options);
   }
 }

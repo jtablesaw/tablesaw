@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.longs.LongComparators;
+import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongListIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -227,6 +228,10 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
 
   @Override
   public Iterator<Long> iterator() {
+    return data.iterator();
+  }
+
+  public LongIterator longIterator() {
     return data.iterator();
   }
 
