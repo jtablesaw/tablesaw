@@ -14,7 +14,6 @@ import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
 import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
-import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
@@ -37,10 +36,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -50,7 +47,6 @@ import java.util.concurrent.Future;
 import java.util.stream.Stream;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.crypto.stream.CryptoOutputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -62,6 +58,7 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
@@ -72,31 +69,36 @@ import tech.tablesaw.columns.strings.ShortDictionaryMap;
 import tech.tablesaw.table.Relation;
 
 @SuppressWarnings("WeakerAccess")
-public class SawWriter {
+public abstract class SawWriter {
 
   private static final String CRYPTO_TRANSFORM = "AES/CBC/PKCS5Padding";
 
+  // TODO: Add this to method for writing TextColumn
+  // We flush the output stream repeatedly to ensure it doesn't grow without bounds for big files
   private static final int FLUSH_AFTER_ITERATIONS = 20_000;
 
-  private static final int WRITER_POOL_SIZE = 10;
+  private final TableMetadata tableMetadata;
+  private final Table table;
+  private final WriteOptions writeOptions;
+  private final Path path;
 
-  /**
-   * Saves the data from the given table in the location specified by parentFolderName. Within that
-   * folder each table has its own sub-folder, whose name is based on the name of the table.
-   *
-   * <p>NOTE: If you store a table with the same name in the same folder. The data in that folder
-   * will be over-written.
-   *
-   * <p>The storage format is the tablesaw compressed column-oriented format, which consists of a
-   * set of file in a folder. The name of the folder is based on the name of the table.
-   *
-   * @param parentFolderName The location of the table (for example: "mytables")
-   * @param table The table to be saved
-   * @return The path and name of the table
-   * @throws UncheckedIOException wrapping IOException if the file can not be read
-   */
-  public String saveTable(String parentFolderName, Relation table) {
-    return saveTable(parentFolderName, table, WRITER_POOL_SIZE);
+  public SawWriter(Path path, Table table, WriteOptions options) {
+    this.path = path;
+    this.tableMetadata = new TableMetadata(table);
+    this.table = table;
+    this.writeOptions = options;
+  }
+
+  public TableMetadata getTableMetadata() {
+    return tableMetadata;
+  }
+
+  public String write() {
+    try {
+      return saveTable(path, table, writeOptions.threadPoolSize);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   /**
@@ -109,34 +111,20 @@ public class SawWriter {
    * <p>The storage format is the tablesaw compressed column-oriented format, which consists of a
    * set of file in a folder. The name of the folder is based on the name of the table.
    *
-   * @param parentFolderName The location of the table (for example: "mytables")
+   * @param folderPath Path representing the name of the folder where we will store the table (for
+   *     example: "mytables")
    * @param table The table to be saved
    * @param threadPoolSize The size of the the thread-pool allocated to writing. Each column is
    *     written in own thread
    * @return The path and name of the table
-   * @throws UncheckedIOException wrapping IOException if the file can not be read
    */
-  public String saveTable(String parentFolderName, Relation table, int threadPoolSize) {
-
-    Preconditions.checkArgument(
-        parentFolderName != null, "The folder name for the saw output cannot be null");
-    Preconditions.checkArgument(
-        !parentFolderName.isEmpty(), "The folder name for the saw output cannot be empty");
+  public String saveTable(Path folderPath, Relation table, int threadPoolSize) throws IOException {
 
     ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
     CompletionService<Void> writerCompletionService =
         new ExecutorCompletionService<>(executorService);
 
-    // creates the containing foler
-    Path folderPath = Paths.get(parentFolderName);
-
-    if (!Files.exists(folderPath)) {
-      try {
-        Files.createDirectories(folderPath);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    }
+    createFolder(folderPath);
 
     // creates the folder containing the files
     String sawFolderName = SawUtils.makeName(table.name());
@@ -148,23 +136,12 @@ public class SawWriter {
             .map(Path::toFile)
             .sorted((o1, o2) -> Comparator.<File>reverseOrder().compare(o1, o2))
             .forEach(File::delete);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
       }
     }
-    try {
-      Files.createDirectories(filePath);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    Files.createDirectories(filePath);
+    writeTableMetadata(filePath, tableMetadata);
 
     try {
-      TableMetadata tableMetadata = new TableMetadata(table);
-
-      Path metaDataPath = filePath.resolve(METADATA_FILE_NAME);
-
-      writeTableMetadata(metaDataPath, tableMetadata);
-
       List<Column<?>> columns = table.columns();
       for (int i = 0; i < columns.size(); i++) {
         Column<?> column = columns.get(i);
@@ -181,8 +158,6 @@ public class SawWriter {
         Future<Void> future = writerCompletionService.take();
         future.get();
       }
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException(e);
@@ -192,6 +167,16 @@ public class SawWriter {
       executorService.shutdown();
     }
     return filePath.toAbsolutePath().toString();
+  }
+
+  private void createFolder(Path folderPath) {
+    if (!Files.exists(folderPath)) {
+      try {
+        Files.createDirectories(folderPath);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    }
   }
 
   private void writeColumn(String fileName, Column<?> column) {
@@ -425,9 +410,11 @@ public class SawWriter {
     final SecretKeySpec key = new SecretKeySpec(getUTF8Bytes("1234567890123456"), "AES");
     final IvParameterSpec iv = new IvParameterSpec(getUTF8Bytes("1234567890123456"));
 
-    CryptoOutputStream cos =
-        new CryptoOutputStream(CRYPTO_TRANSFORM, new Properties(), fos, key, iv);
-    SnappyFramedOutputStream sos = new SnappyFramedOutputStream(cos);
+    /*
+        CryptoOutputStream cos =
+            new CryptoOutputStream(CRYPTO_TRANSFORM, new Properties(), fos, key, iv);
+    */
+    SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
     return new DataOutputStream(sos);
   }
 
@@ -553,12 +540,13 @@ public class SawWriter {
    * @throws IOException if the file can not be read
    */
   private void writeTableMetadata(Path filePath, TableMetadata metadata) throws IOException {
+    Path metaDataPath = filePath.resolve(METADATA_FILE_NAME);
     try {
-      Files.createFile(filePath);
+      Files.createFile(metaDataPath);
     } catch (FileAlreadyExistsException e) {
       /*overwrite existing file*/
     }
-    try (FileOutputStream fOut = new FileOutputStream(filePath.toFile());
+    try (FileOutputStream fOut = new FileOutputStream(metaDataPath.toFile());
         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
       String output = metadata.toJson();
       myOutWriter.append(output);
