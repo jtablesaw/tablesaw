@@ -45,7 +45,7 @@ import tech.tablesaw.columns.dates.DateMapFunctions;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.selection.Selection;
 
-/** A column in a base table that contains float values */
+/** A column that contains local date values */
 public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     implements DateFilters,
         DateFillers<DateColumn>,
@@ -641,5 +641,23 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
   @Override
   public int compare(LocalDate o1, LocalDate o2) {
     return o1.compareTo(o2);
+  }
+
+  /**
+   * Returns a DateRangeColumn with the argument as the start of the range ("from") and this column
+   * as the end ("to")
+   */
+  public DateRangeColumn rangeFrom(DateColumn from) {
+    String nm = from.name() + "-" + name();
+    return DateRangeColumn.create(nm, from, this);
+  }
+
+  /**
+   * Returns a DateRangeColumn with this column as the start of the range ("from") and the argument
+   * as the end ("to")
+   */
+  public DateRangeColumn rangeTo(DateColumn to) {
+    String nm = name() + "-" + to.name();
+    return DateRangeColumn.create(nm, this, to);
   }
 }

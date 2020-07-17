@@ -35,7 +35,6 @@ import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.dates.DateRangeColumnFormatter;
 import tech.tablesaw.columns.dates.DateRangeColumnType;
 import tech.tablesaw.columns.dates.DateRangeFillers;
@@ -44,7 +43,12 @@ import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.temporal.DateRange;
 import tech.tablesaw.selection.Selection;
 
-/** A column in a base table that contains float values */
+/**
+ * A column that contains date ranges, where a date range represents the interval between two dates
+ *
+ * <p>The column supports operations similar to those in Guava's Range class, as well as some
+ * aspects of the Joda Time Interval class, and the Java Time Period class
+ */
 public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
     implements DateRangeFillers<DateRangeColumn>,
         // DateFilters,
@@ -107,6 +111,21 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
     return column;
   }
 
+  public static DateRangeColumn create(String name, Column<LocalDate> from, Column<LocalDate> to) {
+    Preconditions.checkArgument(
+        from.size() == to.size(), "The from and to collections must be the same size.");
+    DateRangeColumn column =
+        new DateRangeColumn(name, new IntArrayList(from.size()), new IntArrayList(to.size()));
+    Iterator<LocalDate> frIterator = from.iterator();
+    Iterator<LocalDate> toIterator = to.iterator();
+    while (frIterator.hasNext()) {
+      LocalDate fromDate = frIterator.next();
+      LocalDate toDate = toIterator.next();
+      column.append(fromDate, toDate);
+    }
+    return column;
+  }
+
   // OK
   public static DateRangeColumn create(String name, Stream<LocalDate> from, Stream<LocalDate> to) {
     DateRangeColumn column = create(name);
@@ -122,7 +141,7 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
 
   // OK
   private DateRangeColumn(String name, IntArrayList from, IntArrayList to) {
-    super(DateColumnType.instance(), name);
+    super(DateRangeColumnType.instance(), name);
     this.from = from;
     this.to = to;
   }
@@ -246,7 +265,7 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
     int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
-      dest[i] = DateColumnType.missingValueIndicator();
+      dest[i] = DateRangeColumnType.missingValueIndicator();
     }
 
     System.arraycopy(from.toIntArray(), srcPos, dest, destPos, length);
@@ -596,17 +615,20 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
 
   @Override // OK
   public DateRangeColumn setMissing(int i) {
-    return set(i, DateColumnType.missingValueIndicator(), DateColumnType.missingValueIndicator());
+    return set(
+        i,
+        DateRangeColumnType.missingValueIndicator(),
+        DateRangeColumnType.missingValueIndicator());
   }
 
   // OK
   public DateRangeColumn setFromMissing(int i) {
-    return setFrom(i, DateColumnType.missingValueIndicator());
+    return setFrom(i, DateRangeColumnType.missingValueIndicator());
   }
 
   // OK
   public DateRangeColumn setToMissing(int i) {
-    return setTo(i, DateColumnType.missingValueIndicator());
+    return setTo(i, DateRangeColumnType.missingValueIndicator());
   }
 
   @Override // OK
