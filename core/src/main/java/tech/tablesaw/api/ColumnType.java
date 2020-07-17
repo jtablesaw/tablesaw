@@ -8,6 +8,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.SkipColumnType;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.DateColumnType;
+import tech.tablesaw.columns.dates.DateRangeColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.instant.InstantColumnType;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -38,6 +39,7 @@ public interface ColumnType {
   InstantColumnType INSTANT = InstantColumnType.instance();
   TextColumnType TEXT = TextColumnType.instance();
   SkipColumnType SKIP = SkipColumnType.instance();
+  DateRangeColumnType DATE_RANGE = DateRangeColumnType.instance();
 
   static void register(ColumnType type) {
     values.put(type.name(), type);
