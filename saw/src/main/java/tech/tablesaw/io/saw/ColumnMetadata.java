@@ -15,12 +15,12 @@
 package tech.tablesaw.io.saw;
 
 import com.google.common.annotations.Beta;
-import java.util.UUID;
+import com.google.common.base.Objects;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
+import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
-import tech.tablesaw.columns.strings.LookupTableWrapper;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
 /** Data about a specific column used in it's persistence */
@@ -30,20 +30,28 @@ public class ColumnMetadata {
   private String id;
   private String name;
   private String type;
+
+  // number of unique values in column - not all columns will provide this as it can be expensive
+  private int cardinality;
+
+  // these attributes are specific to string columns
   private String stringColumnKeySize;
+  private int nextStringKey;
 
   ColumnMetadata(Column<?> column) {
-    this.id = UUID.randomUUID().toString();
+    this.id = SawUtils.makeName(column.name());
     this.name = column.name();
     this.type = column.type().name();
     if (column instanceof StringColumn) {
       StringColumn stringColumn = (StringColumn) column;
-      LookupTableWrapper lookupTable = stringColumn.getLookupTable();
-      if (lookupTable.dictionaryClass().equals(IntDictionaryMap.class)) {
+      cardinality = stringColumn.countUnique();
+      DictionaryMap lookupTable = stringColumn.getDictionary();
+      nextStringKey = lookupTable.nextKeyWithoutIncrementing();
+      if (lookupTable.getClass().equals(IntDictionaryMap.class)) {
         stringColumnKeySize = Integer.class.getSimpleName();
-      } else if (lookupTable.dictionaryClass().equals(ByteDictionaryMap.class)) {
+      } else if (lookupTable.getClass().equals(ByteDictionaryMap.class)) {
         stringColumnKeySize = Byte.class.getSimpleName();
-      } else if (lookupTable.dictionaryClass().equals(ShortDictionaryMap.class)) {
+      } else if (lookupTable.getClass().equals(ShortDictionaryMap.class)) {
         stringColumnKeySize = Short.class.getSimpleName();
       } else {
         stringColumnKeySize = "";
@@ -54,8 +62,10 @@ public class ColumnMetadata {
   }
 
   /**
-   * Constructs an instance of ColumnMetaData NB: This constructor is used by Jackson JSON parsing
-   * code so it must be retained even though it isn't explicitly called
+   * Constructs an instance of ColumnMetaData
+   *
+   * <p>NB: This constructor is used by Jackson JSON parsing code so it must be retained even though
+   * it isn't explicitly called
    */
   protected ColumnMetadata() {}
 
@@ -87,5 +97,29 @@ public class ColumnMetadata {
 
   public String getStringColumnKeySize() {
     return stringColumnKeySize;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ColumnMetadata that = (ColumnMetadata) o;
+    return Objects.equal(getId(), that.getId())
+        && Objects.equal(getName(), that.getName())
+        && Objects.equal(getType(), that.getType())
+        && Objects.equal(getStringColumnKeySize(), that.getStringColumnKeySize());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(getId(), getName(), getType(), getStringColumnKeySize());
+  }
+
+  public int getNextStringKey() {
+    return nextStringKey;
+  }
+
+  public int getCardinality() {
+    return cardinality;
   }
 }

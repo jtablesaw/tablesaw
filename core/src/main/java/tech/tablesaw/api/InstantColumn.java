@@ -79,6 +79,16 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return new InstantColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
   }
 
+  /**
+   * For internal Tablesaw use only Returns a new column with the given name and data
+   *
+   * @param name The column name
+   * @param data An array of longs representing Instant values in Tablesaw internal format
+   */
+  public static InstantColumn createInternal(String name, long[] data) {
+    return new InstantColumn(name, new LongArrayList(data));
+  }
+
   public static InstantColumn create(String name, int initialSize) {
     InstantColumn column = new InstantColumn(name, new LongArrayList(initialSize));
     for (int i = 0; i < initialSize; i++) {

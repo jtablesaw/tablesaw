@@ -1,5 +1,8 @@
 package tech.tablesaw.columns.strings;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
@@ -49,19 +52,29 @@ public class ByteDictionaryMap implements DictionaryMap {
   // value
   private ByteArrayList values = new ByteArrayList();
 
-  private final AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
+  private AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
 
   // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
   // count of values
-  private final Byte2ObjectMap<String> keyToValue = new Byte2ObjectOpenHashMap<>();
+  private Byte2ObjectMap<String> keyToValue = new Byte2ObjectOpenHashMap<>();
 
-  private final Object2ByteOpenHashMap<String> valueToKey = new Object2ByteOpenHashMap<>();
+  // the inverse of the keyToValue map
+  private Object2ByteOpenHashMap<String> valueToKey = new Object2ByteOpenHashMap<>();
 
-  private final Byte2IntOpenHashMap keyToCount = new Byte2IntOpenHashMap();
+  // the map with counts
+  private Byte2IntOpenHashMap keyToCount = new Byte2IntOpenHashMap();
 
   public ByteDictionaryMap() {
     valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
     keyToCount.defaultReturnValue(0);
+  }
+
+  private ByteDictionaryMap(ByteDictionaryBuilder builder) {
+    this.nextIndex = builder.nextIndex;
+    this.keyToValue = builder.keyToValue;
+    this.valueToKey = builder.valueToKey;
+    this.keyToCount = builder.keyToCount;
+    this.values = builder.values;
   }
 
   private void put(byte key, String value) {
@@ -69,35 +82,52 @@ public class ByteDictionaryMap implements DictionaryMap {
     valueToKey.put(value, key);
   }
 
-  void updateMaps(byte key, String value) {
-    put(key, value);
-    keyToCount.addTo(key, 1);
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ByteDictionaryMap that = (ByteDictionaryMap) o;
+
+    boolean a = Objects.equal(values, that.values);
+    boolean b = Objects.equal(keyToValue, that.keyToValue);
+    boolean c = Objects.equal(valueToKey, that.valueToKey);
+    boolean d = Objects.equal(keyToCount, that.keyToCount);
+    boolean e = Objects.equal(nextIndex.get(), that.nextIndex.get());
+    return a && b && c && d && e;
   }
 
-  ByteArrayList values() {
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(
+        reverseDictionarySortComparator,
+        dictionarySortComparator,
+        values,
+        nextIndex,
+        keyToValue,
+        valueToKey,
+        keyToCount);
+  }
+
+  /** Returns the number of elements (a.k.a. rows or cells) in the column */
+  @Override
+  public int size() {
+    return values.size();
+  }
+
+  public ByteArrayList values() {
     return values;
-  }
-
-  void addValue(byte key) {
-    values.add(key);
-  }
-
-  ObjectSet<Byte2ObjectMap.Entry<String>> getKeyValueEntries() {
-    return keyToValue.byte2ObjectEntrySet();
   }
 
   private byte getKeyForValue(String value) {
     return valueToKey.getByte(value);
   }
 
-  /**
-   * Returns the number of elements (a.k.a. rows or cells) in the column
-   *
-   * @return size as int
-   */
-  @Override
-  public int size() {
-    return values.size();
+  public ObjectSet<Byte2ObjectMap.Entry<String>> getKeyValueEntries() {
+    return keyToValue.byte2ObjectEntrySet();
+  }
+
+  public Byte2IntMap.FastEntrySet getKeyCountEntries() {
+    return keyToCount.byte2IntEntrySet();
   }
 
   @Override
@@ -269,6 +299,7 @@ public class ByteDictionaryMap implements DictionaryMap {
 
   @Override
   public void clear() {
+    nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
     values.clear();
     keyToValue.clear();
     valueToKey.clear();
@@ -400,5 +431,62 @@ public class ByteDictionaryMap implements DictionaryMap {
       throw new IllegalStateException(e);
     }
     return dictionaryMap;
+  }
+
+  @Override
+  public int nextKeyWithoutIncrementing() {
+    return nextIndex.get();
+  }
+
+  public static class ByteDictionaryBuilder {
+
+    private AtomicInteger nextIndex;
+
+    // The list of keys that represents the contents of string column in user order
+    private ByteArrayList values;
+
+    // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
+    // count of values
+    private Byte2ObjectMap<String> keyToValue;
+
+    // the inverse of the above keyToValue map
+    private Object2ByteOpenHashMap<String> valueToKey;
+
+    // the map with counts
+    private Byte2IntOpenHashMap keyToCount;
+
+    public ByteDictionaryBuilder setNextIndex(int value) {
+      nextIndex = new AtomicInteger(value);
+      return this;
+    }
+
+    public ByteDictionaryBuilder setKeyToValue(Byte2ObjectMap<String> keyToValue) {
+      this.keyToValue = keyToValue;
+      return this;
+    }
+
+    public ByteDictionaryBuilder setValueToKey(Object2ByteOpenHashMap<String> valueToKey) {
+      this.valueToKey = valueToKey;
+      return this;
+    }
+
+    public ByteDictionaryBuilder setKeyToCount(Byte2IntOpenHashMap keyToCount) {
+      this.keyToCount = keyToCount;
+      return this;
+    }
+
+    public ByteDictionaryBuilder setValues(byte[] bytes) {
+      this.values = new ByteArrayList(bytes);
+      return this;
+    }
+
+    public ByteDictionaryMap build() {
+      Preconditions.checkNotNull(nextIndex);
+      Preconditions.checkNotNull(keyToCount);
+      Preconditions.checkNotNull(keyToValue);
+      Preconditions.checkNotNull(valueToKey);
+      Preconditions.checkNotNull(values);
+      return new ByteDictionaryMap(this);
+    }
   }
 }

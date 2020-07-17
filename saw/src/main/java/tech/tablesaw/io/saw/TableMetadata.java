@@ -14,15 +14,16 @@
 
 package tech.tablesaw.io.saw;
 
+import static java.util.stream.Collectors.toList;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
 
@@ -30,17 +31,14 @@ import tech.tablesaw.table.Relation;
 @Beta
 public class TableMetadata {
 
-  static final String METADATA_FILE_NAME = "Metadata.json";
-  private static final int SAW_VERSION = 1;
-
-  private static final ObjectMapper objectMapper = new ObjectMapper();
-
   @JsonProperty("columnMetadata")
   private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
 
+  // The name of the table
   private String name;
+
+  // The number of rows in the table
   private int rowCount;
-  private int version;
 
   TableMetadata(Relation table) {
     this.name = table.name();
@@ -50,58 +48,75 @@ public class TableMetadata {
       ColumnMetadata metadata = new ColumnMetadata(column);
       columnMetadataList.add(metadata);
     }
-    this.version = SAW_VERSION;
   }
 
   /** Default constructor for Jackson json serialization */
   protected TableMetadata() {}
 
-  static TableMetadata fromJson(String jsonString) {
-    try {
-      return objectMapper.readValue(jsonString, TableMetadata.class);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  String toJson() {
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (JsonProcessingException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    TableMetadata that = (TableMetadata) o;
-    return rowCount == that.rowCount
-        && Objects.equals(name, that.name)
-        && Objects.equals(columnMetadataList, that.columnMetadataList);
+    TableMetadata metadata = (TableMetadata) o;
+    return getRowCount() == metadata.getRowCount()
+        && Objects.equal(getColumnMetadataList(), metadata.getColumnMetadataList())
+        && Objects.equal(getName(), metadata.getName());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, rowCount, columnMetadataList);
+    return Objects.hashCode(getColumnMetadataList(), getName(), getRowCount());
   }
 
+  /** Returns the name of the table */
   @SuppressWarnings("WeakerAccess")
   public String getName() {
     return name;
   }
 
+  /** Returns the number of rows in the table */
   @SuppressWarnings("WeakerAccess")
   public int getRowCount() {
     return rowCount;
   }
 
-  public int getVersion() {
-    return version;
-  }
-
+  /** Returns a list of ColumnMetadata objects, one for each Column in the table */
   List<ColumnMetadata> getColumnMetadataList() {
     return columnMetadataList;
+  }
+
+  /** Returns the number of columns in the table */
+  public int columnCount() {
+    return getColumnMetadataList().size();
+  }
+
+  /**
+   * Returns a string describing the number of rows and columns in the table. This is analogous to
+   * the shape() method defined on Relation.
+   */
+  public String shape() {
+    return getRowCount() + " rows X " + columnCount() + " cols";
+  }
+
+  /** Returns a List of the names of all the columns in this table */
+  public List<String> columnNames() {
+    return columnMetadataList.stream().map(ColumnMetadata::getName).collect(toList());
+  }
+
+  /** Returns a table that describes the columns in this table */
+  public Table structure() {
+    Table t = Table.create("Structure of " + getName());
+    IntColumn index = IntColumn.indexColumn("Index", columnCount(), 0);
+    StringColumn columnName = StringColumn.create("Column Name", columnCount());
+    StringColumn columnType = StringColumn.create("Column Type", columnCount());
+    t.addColumns(index);
+    t.addColumns(columnName);
+    t.addColumns(columnType);
+    for (int i = 0; i < columnCount(); i++) {
+      ColumnMetadata column = columnMetadataList.get(i);
+      columnType.set(i, column.getType());
+      columnName.set(i, columnNames().get(i));
+    }
+    return t;
   }
 }

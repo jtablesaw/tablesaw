@@ -73,6 +73,16 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     this.data = data;
   }
 
+  /**
+   * For internal Tablesaw use only Returns a new column with the given name and data
+   *
+   * @param name The column name
+   * @param longs An array of longs representing datetime values in Tablesaw internal format
+   */
+  public static DateTimeColumn createInternal(String name, long[] longs) {
+    return new DateTimeColumn(name, new LongArrayList(longs));
+  }
+
   public static DateTimeColumn create(String name) {
     return new DateTimeColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
   }

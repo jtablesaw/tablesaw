@@ -67,6 +67,10 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return new DateColumn(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
   }
 
+  public static DateColumn createInternal(String name, int[] data) {
+    return new DateColumn(name, new IntArrayList(data));
+  }
+
   public static DateColumn create(final String name, final int initialSize) {
     DateColumn column = new DateColumn(name, new IntArrayList(initialSize));
     for (int i = 0; i < initialSize; i++) {

@@ -1,5 +1,6 @@
 package tech.tablesaw.io.saw;
 
+import static tech.tablesaw.io.saw.SawMetadata.METADATA_FILE_NAME;
 import static tech.tablesaw.io.saw.SawUtils.BOOLEAN;
 import static tech.tablesaw.io.saw.SawUtils.DOUBLE;
 import static tech.tablesaw.io.saw.SawUtils.FLOAT;
@@ -12,14 +13,20 @@ import static tech.tablesaw.io.saw.SawUtils.LONG;
 import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
-import static tech.tablesaw.io.saw.TableMetadata.METADATA_FILE_NAME;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import it.unimi.dsi.fastutil.floats.FloatIterator;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+import it.unimi.dsi.fastutil.shorts.Short2IntMap;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -28,7 +35,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,7 +46,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
@@ -53,41 +58,82 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.LookupTableWrapper;
-import tech.tablesaw.table.Relation;
+import tech.tablesaw.columns.strings.ByteDictionaryMap;
+import tech.tablesaw.columns.strings.DictionaryMap;
+import tech.tablesaw.columns.strings.IntDictionaryMap;
+import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
-@SuppressWarnings("WeakerAccess")
 @Beta
 public class SawWriter {
 
+  // We flush the output stream repeatedly to ensure it doesn't grow without bounds for big files
   private static final int FLUSH_AFTER_ITERATIONS = 20_000;
-  private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
-  private static final String FILE_EXTENSION = "saw";
-  private static final Pattern SEPARATOR_PATTERN =
-      Pattern.compile(Pattern.quote(FileSystems.getDefault().getSeparator()));
 
-  private static final int WRITER_POOL_SIZE = 10;
+  private final SawMetadata sawMetadata;
+  private final Table table;
+  private final WriteOptions writeOptions;
+  private final Path path;
 
-  /**
-   * Saves the data from the given table in the location specified by parentFolderName. Within that
-   * folder each table has its own sub-folder, whose name is based on the name of the table.
-   *
-   * <p>NOTE: If you store a table with the same name in the same folder. The data in that folder
-   * will be over-written.
-   *
-   * <p>The storage format is the tablesaw compressed column-oriented format, which consists of a
-   * set of file in a folder. The name of the folder is based on the name of the table.
-   *
-   * @param parentFolderName The location of the table (for example: "mytables")
-   * @param table The table to be saved
-   * @return The path and name of the table
-   * @throws UncheckedIOException wrapping IOException if the file can not be read
-   */
-  public static String saveTable(String parentFolderName, Relation table) {
-    return saveTable(parentFolderName, table, WRITER_POOL_SIZE);
+  public SawWriter(Path path, Table table, WriteOptions options) {
+    this.path = path;
+    this.sawMetadata = new SawMetadata(table, options);
+    this.table = table;
+    this.writeOptions = options;
+  }
+
+  public SawWriter(String path, Table table, WriteOptions options) {
+    this.path = setPath(path);
+    this.sawMetadata = new SawMetadata(table, options);
+    this.table = table;
+    this.writeOptions = options;
+  }
+
+  public SawWriter(File file, Table table, WriteOptions options) {
+    this.path = file.toPath();
+    this.sawMetadata = new SawMetadata(table, options);
+    this.table = table;
+    this.writeOptions = options;
+  }
+
+  public SawWriter(Path path, Table table) {
+    this.path = path;
+    this.table = table;
+    this.writeOptions = WriteOptions.defaultOptions();
+    this.sawMetadata = new SawMetadata(table, writeOptions);
+  }
+
+  public SawWriter(File file, Table table) {
+    this.path = file.toPath();
+    this.table = table;
+    this.writeOptions = WriteOptions.defaultOptions();
+    this.sawMetadata = new SawMetadata(table, writeOptions);
+  }
+
+  public SawWriter(String path, Table table) {
+    this.path = setPath(path);
+    this.table = table;
+    this.writeOptions = WriteOptions.defaultOptions();
+    this.sawMetadata = new SawMetadata(table, writeOptions);
+  }
+
+  private Path setPath(String parentFolderName) {
+    Preconditions.checkArgument(
+        parentFolderName != null, "The folder name for the saw output cannot be null");
+    Preconditions.checkArgument(
+        !parentFolderName.isEmpty(), "The folder name for the saw output cannot be empty");
+    return Paths.get(parentFolderName);
+  }
+
+  public String write() {
+    try {
+      return saveTable();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   /**
@@ -100,38 +146,20 @@ public class SawWriter {
    * <p>The storage format is the tablesaw compressed column-oriented format, which consists of a
    * set of file in a folder. The name of the folder is based on the name of the table.
    *
-   * @param parentFolderName The location of the table (for example: "mytables")
-   * @param table The table to be saved
-   * @param threadPoolSize The size of the the thread-pool allocated to writing. Each column is
-   *     written in own thread
    * @return The path and name of the table
-   * @throws UncheckedIOException wrapping IOException if the file can not be read
    */
-  public static String saveTable(String parentFolderName, Relation table, int threadPoolSize) {
+  private String saveTable() throws IOException {
 
-    Preconditions.checkArgument(
-        parentFolderName != null, "The folder name for the saw output cannot be null");
-    Preconditions.checkArgument(
-        !parentFolderName.isEmpty(), "The folder name for the saw output cannot be empty");
-
-    ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
+    ExecutorService executorService =
+        Executors.newFixedThreadPool(writeOptions.getThreadPoolSize());
     CompletionService<Void> writerCompletionService =
         new ExecutorCompletionService<>(executorService);
 
-    // creates the containing foler
-    Path folderPath = Paths.get(parentFolderName);
-
-    if (!Files.exists(folderPath)) {
-      try {
-        Files.createDirectories(folderPath);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    }
+    createFolder(path);
 
     // creates the folder containing the files
-    String sawFolderName = makeName(table);
-    Path filePath = folderPath.resolve(sawFolderName);
+    String sawFolderName = SawUtils.makeName(table.name());
+    Path filePath = path.resolve(sawFolderName);
 
     if (Files.exists(filePath)) {
       try (Stream<Path> stream = Files.walk(filePath)) {
@@ -139,27 +167,16 @@ public class SawWriter {
             .map(Path::toFile)
             .sorted((o1, o2) -> Comparator.<File>reverseOrder().compare(o1, o2))
             .forEach(File::delete);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
       }
     }
-    try {
-      Files.createDirectories(filePath);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    Files.createDirectories(filePath);
+    writeTableMetadata(filePath, sawMetadata);
 
     try {
-      TableMetadata tableMetadata = new TableMetadata(table);
-
-      Path metaDataPath = filePath.resolve(METADATA_FILE_NAME);
-
-      writeTableMetadata(metaDataPath, tableMetadata);
-
       List<Column<?>> columns = table.columns();
       for (int i = 0; i < columns.size(); i++) {
         Column<?> column = columns.get(i);
-        String pathString = tableMetadata.getColumnMetadataList().get(i).getId();
+        String pathString = sawMetadata.getColumnMetadataList().get(i).getId();
 
         writerCompletionService.submit(
             () -> {
@@ -172,27 +189,28 @@ public class SawWriter {
         Future<Void> future = writerCompletionService.take();
         future.get();
       }
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException(e);
     } catch (ExecutionException e) {
       throw new IllegalStateException(e);
+    } finally {
+      executorService.shutdown();
     }
-    executorService.shutdown();
     return filePath.toAbsolutePath().toString();
   }
 
-  private static String makeName(Relation table) {
-
-    String name = table.name();
-    name = WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from table name
-    name = SEPARATOR_PATTERN.matcher(name).replaceAll("_"); // remove path separators from name
-    return name + '.' + FILE_EXTENSION;
+  private void createFolder(Path folderPath) {
+    if (!Files.exists(folderPath)) {
+      try {
+        Files.createDirectories(folderPath);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    }
   }
 
-  private static void writeColumn(String fileName, Column<?> column) {
+  private void writeColumn(String fileName, Column<?> column) {
     try {
       final String typeName = column.type().name();
       switch (typeName) {
@@ -240,10 +258,8 @@ public class SawWriter {
     }
   }
 
-  private static void writeColumn(String fileName, FloatColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  private void writeColumn(String fileName, FloatColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       int i = 0;
       FloatIterator iterator = (FloatIterator) column.iterator();
       while (iterator.hasNext()) {
@@ -258,10 +274,8 @@ public class SawWriter {
     }
   }
 
-  private static void writeColumn(String fileName, DoubleColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  private void writeColumn(String fileName, DoubleColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       int i = 0;
       for (double d : column) {
         dos.writeDouble(d);
@@ -281,51 +295,165 @@ public class SawWriter {
    *
    * <p>The files are written Strings first, then the ints that encode them so they can be read in
    * the opposite order
-   *
-   * @throws IOException IOException if the file can not be read
    */
-  private static void writeColumn(String fileName, StringColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  private void writeColumn(String fileName, StringColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
 
       // write the strings
-      LookupTableWrapper lookupTable = column.getLookupTable();
-      lookupTable.writeToStream(dos);
+      DictionaryMap lookupTable = column.getDictionary();
+      if (lookupTable.getClass().equals(ByteDictionaryMap.class)) {
+        writeToStream((ByteDictionaryMap) lookupTable, dos);
+      } else if (lookupTable.getClass().equals(ShortDictionaryMap.class)) {
+        writeToStream((ShortDictionaryMap) lookupTable, dos);
+      } else {
+        writeToStream((IntDictionaryMap) lookupTable, dos);
+      }
     }
   }
 
   /**
-   * Writes out the values of the TextColumn
+   * Writes the contents of the dictionaryMap to a stream in saw file format
    *
-   * <p>
-   *
-   * @throws IOException IOException if the file can not be written
+   * @param dos The stream to write on
    */
-  private static void writeColumn(String fileName, TextColumn column) throws IOException {
+  private void writeToStream(ByteDictionaryMap dictionary, DataOutputStream dos) {
 
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+    try {
+      // write the maps
+      // we write each one keys first, then values
+      // the idea is that there are relatively few unique values so it's cheap to write them more
+      // than once
+      ObjectSet<Byte2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
+      for (Byte2ObjectMap.Entry<String> entry : entries) {
+        dos.writeByte(entry.getByteKey());
+      }
 
-      for (String str : column) {
-        dos.writeUTF(str);
+      for (Byte2ObjectMap.Entry<String> entry : entries) {
+        dos.writeUTF(entry.getValue());
+      }
+
+      ObjectSet<Byte2IntMap.Entry> counts = dictionary.getKeyCountEntries();
+
+      for (Byte2IntMap.Entry count : counts) {
+        dos.writeByte(count.getByteKey());
+      }
+
+      for (Byte2IntMap.Entry count : counts) {
+        dos.writeInt(count.getIntValue());
+      }
+
+      // write the values in column order, including repeats
+      for (byte d : dictionary.values()) {
+        dos.writeByte(d);
       }
       dos.flush();
+    } catch (IOException exception) {
+      throw new UncheckedIOException(exception);
     }
   }
 
-  // TODO(lwhite): saveTable the column using integer compression
-  private static void writeColumn(String fileName, IntColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  /**
+   * Writes the contents of the dictionaryMap to a stream in saw file format
+   *
+   * @param dos The stream to write on
+   */
+  private void writeToStream(ShortDictionaryMap dictionary, DataOutputStream dos) {
+
+    try {
+      // write the maps
+      // we write each one keys first, then values
+      // the idea is that there are relatively few unique values so it's cheap to write them more
+      // than once
+      ObjectSet<Short2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
+
+      for (Short2ObjectMap.Entry<String> entry : entries) {
+        dos.writeShort(entry.getShortKey());
+      }
+
+      for (Short2ObjectMap.Entry<String> entry : entries) {
+        dos.writeUTF(entry.getValue());
+      }
+
+      ObjectSet<Short2IntMap.Entry> counts = dictionary.getKeyCountEntries();
+
+      for (Short2IntMap.Entry count : counts) {
+        dos.writeShort(count.getShortKey());
+      }
+
+      for (Short2IntMap.Entry count : counts) {
+        dos.writeInt(count.getIntValue());
+      }
+
+      // write the values in column order, including repeats
+      for (short d : dictionary.values()) {
+        dos.writeShort(d);
+      }
+      dos.flush();
+    } catch (IOException exception) {
+      throw new UncheckedIOException(exception);
+    }
+  }
+
+  /**
+   * Writes the contents of the dictionaryMap to a stream in saw file format
+   *
+   * @param dos The stream to write on
+   */
+  private void writeToStream(IntDictionaryMap dictionary, DataOutputStream dos) {
+
+    try {
+      // write the maps
+      // we write each one keys first, then values
+      // the idea is that there are relatively few unique values so it's cheap to write them more
+      // than once
+      ObjectSet<Int2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
+
+      for (Int2ObjectMap.Entry<String> entry : entries) {
+        dos.writeInt(entry.getIntKey());
+      }
+
+      for (Int2ObjectMap.Entry<String> entry : entries) {
+        dos.writeUTF(entry.getValue());
+      }
+
+      ObjectSet<Int2IntMap.Entry> counts = dictionary.getKeyCountEntries();
+
+      for (Int2IntMap.Entry count : counts) {
+        dos.writeInt(count.getIntKey());
+      }
+
+      for (Int2IntMap.Entry count : counts) {
+        dos.writeInt(count.getIntValue());
+      }
+
+      // write the values in column order, including repeats
+      for (int d : dictionary.values()) {
+        dos.writeInt(d);
+      }
+      dos.flush();
+    } catch (IOException exception) {
+      throw new UncheckedIOException(exception);
+    }
+  }
+
+  DataOutputStream columnOutputStream(String fileName) throws IOException {
+    FileOutputStream fos = new FileOutputStream(fileName);
+    if (sawMetadata.getCompressionType().equals(CompressionType.NONE)) {
+      return new DataOutputStream(fos);
+    } else {
+      SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
+      return new DataOutputStream(sos);
+    }
+  }
+
+  /** Writes out the values of the TextColumn */
+  private void writeColumn(String fileName, TextColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       int i = 0;
-      IntIterator iterator = (IntIterator) column.iterator();
-      while (iterator.hasNext()) {
-        dos.writeInt(iterator.nextInt());
+      for (String s : column) {
+        dos.writeUTF(s);
         i++;
-        if (i == FLUSH_AFTER_ITERATIONS) { // TODO does this break the pipelining?
+        if (i == FLUSH_AFTER_ITERATIONS) {
           dos.flush();
           i = 0;
         }
@@ -334,10 +462,40 @@ public class SawWriter {
     }
   }
 
-  private static void writeColumn(String fileName, ShortColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  private void writeColumn(String fileName, IntColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
+      writeIntStream(dos, column.intIterator());
+      dos.flush();
+    }
+  }
+
+  // TODO(lwhite): save the column using integer compression?
+  private void writeIntStream(DataOutputStream dos, IntIterator iterator) throws IOException {
+    int i = 0;
+    while (iterator.hasNext()) {
+      dos.writeInt(iterator.nextInt());
+      i++;
+      if (i == FLUSH_AFTER_ITERATIONS) {
+        dos.flush();
+        i = 0;
+      }
+    }
+  }
+
+  private void writeLongStream(DataOutputStream dos, LongIterator iterator) throws IOException {
+    int i = 0;
+    while (iterator.hasNext()) {
+      dos.writeLong(iterator.nextLong());
+      i++;
+      if (i == FLUSH_AFTER_ITERATIONS) {
+        dos.flush();
+        i = 0;
+      }
+    }
+  }
+
+  private void writeColumn(String fileName, ShortColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       int i = 0;
       ShortIterator iterator = (ShortIterator) column.iterator();
       while (iterator.hasNext()) {
@@ -352,103 +510,43 @@ public class SawWriter {
     }
   }
 
-  private static void writeColumn(String fileName, LongColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      LongIterator iterator = (LongIterator) column.iterator();
-      while (iterator.hasNext()) {
-        dos.writeLong(iterator.nextLong());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
+  private void writeColumn(String fileName, LongColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
+      writeLongStream(dos, column.longIterator());
       dos.flush();
     }
   }
 
-  // TODO(lwhite): saveTable the column using integer compression?
-  private static void writeColumn(String fileName, DateColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      IntIterator iterator = column.intIterator();
-      while (iterator.hasNext()) {
-        dos.writeInt(iterator.nextInt());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
+  private void writeColumn(String fileName, DateColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
+      writeIntStream(dos, column.intIterator());
       dos.flush();
     }
   }
 
-  private static void writeColumn(String fileName, DateTimeColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      LongIterator iterator = column.longIterator();
-      while (iterator.hasNext()) {
-        dos.writeLong(iterator.nextLong());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
+  private void writeColumn(String fileName, DateTimeColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
+      writeLongStream(dos, column.longIterator());
       dos.flush();
     }
   }
 
-  private static void writeColumn(String fileName, InstantColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      LongIterator iterator = column.longIterator();
-      while (iterator.hasNext()) {
-        dos.writeLong(iterator.nextLong());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
-      dos.flush();
+  private void writeColumn(String fileName, InstantColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
+      writeLongStream(dos, column.longIterator());
     }
   }
 
-  // TODO(lwhite): save the column using integer compression?
-  private static void writeColumn(String fileName, TimeColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      IntIterator iterator = column.intIterator();
-      while (iterator.hasNext()) {
-        dos.writeInt(iterator.nextInt());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
+  private void writeColumn(String fileName, TimeColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
+      writeIntStream(dos, column.intIterator());
       dos.flush();
     }
   }
 
   // TODO(lwhite): save the column using compressed bitmap?
-  private static void writeColumn(String fileName, BooleanColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-        SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-        DataOutputStream dos = new DataOutputStream(sos)) {
+  private void writeColumn(String fileName, BooleanColumn column) throws IOException {
+    try (DataOutputStream dos = columnOutputStream(fileName)) {
       int i = 0;
       ByteIterator iterator = column.byteIterator();
       while (iterator.hasNext()) {
@@ -470,13 +568,14 @@ public class SawWriter {
    * @param filePath The full file path including file name
    * @throws IOException if the file can not be read
    */
-  private static void writeTableMetadata(Path filePath, TableMetadata metadata) throws IOException {
+  private void writeTableMetadata(Path filePath, SawMetadata metadata) throws IOException {
+    Path metaDataPath = filePath.resolve(METADATA_FILE_NAME);
     try {
-      Files.createFile(filePath);
+      Files.createFile(metaDataPath);
     } catch (FileAlreadyExistsException e) {
-      // do nothing. overwrite existing file
+      /*overwrite existing file*/
     }
-    try (FileOutputStream fOut = new FileOutputStream(filePath.toFile());
+    try (FileOutputStream fOut = new FileOutputStream(metaDataPath.toFile());
         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
       String output = metadata.toJson();
       myOutWriter.append(output);

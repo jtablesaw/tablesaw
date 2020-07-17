@@ -243,6 +243,15 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
+   * For internal Tablesaw use only
+   *
+   * <p>Adds the given column to this table without performing duplicate-name or column size checks
+   */
+  public void internalAddWithoutValidation(final Column<?> c) {
+    columnList.add(c);
+  }
+
+  /**
    * Throws an IllegalArgumentException if a column with the given name is already in the table, or
    * if the number of rows in the column does not match the number of rows in the table
    */

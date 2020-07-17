@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparators;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -198,6 +199,10 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
 
   @Override
   public Iterator<Integer> iterator() {
+    return data.iterator();
+  }
+
+  public IntIterator intIterator() {
     return data.iterator();
   }
 

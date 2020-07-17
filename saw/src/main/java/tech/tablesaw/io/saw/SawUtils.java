@@ -15,6 +15,8 @@
 package tech.tablesaw.io.saw;
 
 import com.google.common.annotations.Beta;
+import java.nio.file.FileSystems;
+import java.util.regex.Pattern;
 
 /**
  * Utilities and constants for reading and writing data in Tablesaw's own compressed,
@@ -22,6 +24,11 @@ import com.google.common.annotations.Beta;
  */
 @Beta
 class SawUtils {
+
+  private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
+  private static final String FILE_EXTENSION = "saw";
+  private static final Pattern SEPARATOR_PATTERN =
+      Pattern.compile(Pattern.quote(FileSystems.getDefault().getSeparator()));
 
   private SawUtils() {}
 
@@ -37,4 +44,11 @@ class SawUtils {
   static final String LOCAL_TIME = "LOCAL_TIME";
   static final String LOCAL_DATE_TIME = "LOCAL_DATE_TIME";
   static final String BOOLEAN = "BOOLEAN";
+
+  static String makeName(String name) {
+    // remove whitespace from table name
+    String nm = WHITE_SPACE_PATTERN.matcher(name).replaceAll("");
+    nm = SEPARATOR_PATTERN.matcher(nm).replaceAll("_"); // remove path separators from name
+    return nm + '.' + FILE_EXTENSION;
+  }
 }
