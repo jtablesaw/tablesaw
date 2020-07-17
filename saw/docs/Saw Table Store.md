@@ -2,7 +2,7 @@
 
 Reading CSV files is a normal part of most analytic workflows. Unfortunately, file parsing and column type detection take time. If you run your analysis in an IDE, that means waiting for files to load on every iteration.
 
-Saw is an alternative pure-Java table store. It's designed to be simple, fast, small, and convenient. 
+Saw is an alternative pure-Java table store. It's simple, fast, small, and convenient. 
 
 For example, an 800 MB CSV file with 1M rows and 130 columns took 45 seconds to load, even with the column types specified in advance. In Saw format, it takes 3 seconds to read. On disk, it uses only 185 MB of storage. That's 15 times faster and 4 times smaller than the original. 
 
@@ -24,7 +24,7 @@ Planned enhancements include control over which rows from the table are loaded u
 
 Other possible enhancements include: 
 
-- Save formatting information with the table. For example you could specify that floating point columns should be printed as percentages with 2 decimal places. 
+- Save formatting information with the table. For example, you could specify that floating-point columns should be printed as percentages with 2 decimal places. 
 - Ability to store indexes with the table
 - Ability to store queries with the table (in query format, or as selections?)
 - Ability to encrypt the data while it's streaming, so it's secure on the wire and on disk
@@ -33,7 +33,7 @@ Other possible enhancements include:
 ## Limitations
 
 - Saw is not thread-safe. It is designed for use by a single analyst or process, so the table cannot be updated while it's being written. This is, of course, true for most Tablesaw operations.
-- The data format is non-standard, not human-readable, and not directly useable by other applications.
+- The data format is non-standard, not human-readable, and not directly usable by other applications.
 
 ### Enhancements that were considered, but rejected:
 
