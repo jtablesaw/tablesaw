@@ -48,8 +48,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -443,15 +441,21 @@ public class SawWriter {
 
   DataOutputStream columnOutputStream(String fileName) throws IOException {
     FileOutputStream fos = new FileOutputStream(fileName);
-    final SecretKeySpec key = new SecretKeySpec(getUTF8Bytes("1234567890123456"), "AES");
-    final IvParameterSpec iv = new IvParameterSpec(getUTF8Bytes("1234567890123456"));
+    if (sawMetadata.getCompressionType().equals(CompressionType.NONE)) {
+      return new DataOutputStream(fos);
+    } else {
+      SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
+      return new DataOutputStream(sos);
+    }
 
     /*
-        CryptoOutputStream cos =
+    final SecretKeySpec key = new SecretKeySpec(getUTF8Bytes("1234567890123456"), "AES");
+    final IvParameterSpec iv = new IvParameterSpec(getUTF8Bytes("1234567890123456"));
+    CryptoOutputStream cos =
             new CryptoOutputStream(CRYPTO_TRANSFORM, new Properties(), fos, key, iv);
-    */
     SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
     return new DataOutputStream(sos);
+     */
   }
 
   /** Returns UTFByte array converted from the given input String */

@@ -19,7 +19,7 @@ public class WriteOptions {
     return this;
   }
 
-  public WriteOptions CompressionType(CompressionType compressionType) {
+  public WriteOptions compressionType(CompressionType compressionType) {
     this.compressionType = compressionType;
     return this;
   }

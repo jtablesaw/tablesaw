@@ -19,7 +19,7 @@ public class SawMetadata {
   static final String METADATA_FILE_NAME = "Metadata.json";
 
   // The version of the Saw Storage system used to write the file
-  private static final int SAW_VERSION = 1;
+  private static final int SAW_VERSION = 2;
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
 

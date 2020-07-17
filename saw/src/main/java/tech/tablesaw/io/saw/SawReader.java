@@ -228,8 +228,12 @@ public class SawReader {
    */
   private DataInputStream inputStream(String fileName) throws IOException {
     FileInputStream fis = new FileInputStream(fileName);
-    SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-    return new DataInputStream(sis);
+    if (sawMetadata.getCompressionType().equals(CompressionType.NONE)) {
+      return new DataInputStream(fis);
+    } else {
+      SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+      return new DataInputStream(sis);
+    }
   }
 
   private FloatColumn readFloatColumn(String fileName, ColumnMetadata metadata, int rowcount)
