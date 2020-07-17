@@ -1,10 +1,9 @@
-package tech.tablesaw.columns.dates;
+package tech.tablesaw.columns.dateranges;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateRangeColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.columns.temporal.DateRange;
 import tech.tablesaw.io.ReadOptions;
 
 public class DateRangeColumnType extends AbstractColumnType {

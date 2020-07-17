@@ -31,5 +31,16 @@ class DateRangeColumnTest {
     assertNotNull(range);
     table1.addColumns(range);
     System.out.println(table1.structure());
+    System.out.println(table1);
+  }
+
+  @Test
+  void leadAndLag() {
+    DateRangeColumn range = table1.dateColumn("start").rangeTo(table1.dateColumn("end"));
+    DateRangeColumn lead = range.lead(1);
+    DateRangeColumn lag = range.lag(1);
+    table1.addColumns(range, lead, lag);
+    assertEquals(range.get(2), lead.get(1));
+    assertEquals(range.get(2), lag.get(3));
   }
 }

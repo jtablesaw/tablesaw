@@ -1,12 +1,12 @@
-package tech.tablesaw.columns.temporal;
+package tech.tablesaw.columns.dateranges;
 
 import com.google.common.base.Objects;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.StringJoiner;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 
 public class DateRange implements Comparable<DateRange> {
+  static final String DEFAULT_SEPARATOR = "/";
   private final int from;
   private final int to;
 
@@ -21,9 +21,11 @@ public class DateRange implements Comparable<DateRange> {
   }
 
   // TODO
-  //     Maybe we need to pass a DateRangeFormatter
-  public static DateRange parse(String s, DateTimeFormatter formatter) {
-    return null;
+  public static DateRange parse(String s, String separator, DateTimeFormatter formatter) {
+    String[] tokens = s.split(separator);
+    LocalDate from = LocalDate.parse(tokens[0], formatter);
+    LocalDate to = LocalDate.parse(tokens[1], formatter);
+    return new DateRange(from, to);
   }
 
   public LocalDate getFrom() {
@@ -62,9 +64,17 @@ public class DateRange implements Comparable<DateRange> {
    */
   @Override
   public String toString() {
-    return new StringJoiner(DateTimeFormatter.ISO_LOCAL_DATE.format(getFrom()))
-        .add("/" + DateTimeFormatter.ISO_LOCAL_DATE.format(getTo()))
-        .toString();
+    LocalDate f = getFrom();
+    LocalDate t = getTo();
+    String fString = "";
+    String tString = "";
+    if (f != null) {
+      fString = DateTimeFormatter.ISO_LOCAL_DATE.format(getFrom());
+    }
+    if (t != null) {
+      tString = DateTimeFormatter.ISO_LOCAL_DATE.format(getTo());
+    }
+    return new StringBuilder(fString).append(DEFAULT_SEPARATOR).append(tString).toString();
   }
 
   /**

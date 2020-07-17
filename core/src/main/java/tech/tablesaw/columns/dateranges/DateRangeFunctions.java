@@ -1,7 +1,6 @@
-package tech.tablesaw.columns.dates;
+package tech.tablesaw.columns.dateranges;
 
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.temporal.DateRange;
 
 public interface DateRangeFunctions extends Column<DateRange> {
   DateRange min();

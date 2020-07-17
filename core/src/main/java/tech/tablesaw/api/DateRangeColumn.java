@@ -35,12 +35,12 @@ import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.DateRangeColumnFormatter;
-import tech.tablesaw.columns.dates.DateRangeColumnType;
-import tech.tablesaw.columns.dates.DateRangeFillers;
-import tech.tablesaw.columns.dates.DateRangeFunctions;
+import tech.tablesaw.columns.dateranges.DateRange;
+import tech.tablesaw.columns.dateranges.DateRangeColumnFormatter;
+import tech.tablesaw.columns.dateranges.DateRangeColumnType;
+import tech.tablesaw.columns.dateranges.DateRangeFillers;
+import tech.tablesaw.columns.dateranges.DateRangeFunctions;
 import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.columns.temporal.DateRange;
 import tech.tablesaw.selection.Selection;
 
 /**
@@ -111,6 +111,7 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
     return column;
   }
 
+  // OK
   public static DateRangeColumn create(String name, Column<LocalDate> from, Column<LocalDate> to) {
     Preconditions.checkArgument(
         from.size() == to.size(), "The from and to collections must be the same size.");
@@ -250,28 +251,32 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
     to.clear();
   }
 
-  @Override // TODO
+  @Override // OK
   public DateRangeColumn lead(int n) {
     DateRangeColumn column = lag(-n);
     column.setName(name() + " lead(" + n + ")");
     return column;
   }
 
-  @Override // TODO
+  @Override // OK
   public DateRangeColumn lag(int n) {
     int srcPos = n >= 0 ? 0 : 0 - n;
-    int[] dest = new int[size()];
+    int[] fromDest = new int[size()];
+    int[] toDest = new int[size()];
     int destPos = n <= 0 ? 0 : n;
     int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
-      dest[i] = DateRangeColumnType.missingValueIndicator();
+      fromDest[i] = DateRangeColumnType.missingValueIndicator();
+      toDest[i] = DateRangeColumnType.missingValueIndicator();
     }
 
-    System.arraycopy(from.toIntArray(), srcPos, dest, destPos, length);
+    System.arraycopy(from.toIntArray(), srcPos, fromDest, destPos, length);
+    System.arraycopy(to.toIntArray(), srcPos, toDest, destPos, length);
 
     DateRangeColumn copy = emptyCopy(size());
-    copy.from = new IntArrayList(dest);
+    copy.from = new IntArrayList(fromDest);
+    copy.to = new IntArrayList(toDest);
     copy.setName(name() + " lag(" + n + ")");
     return copy;
   }
@@ -482,7 +487,7 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
 
   // OK
   public int getToInternal(int index) {
-    return from.getInt(index);
+    return to.getInt(index);
   }
 
   /**

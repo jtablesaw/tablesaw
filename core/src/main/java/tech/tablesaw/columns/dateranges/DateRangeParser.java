@@ -1,4 +1,4 @@
-package tech.tablesaw.columns.dates;
+package tech.tablesaw.columns.dateranges;
 
 import com.google.common.collect.Lists;
 import java.time.LocalDate;
@@ -8,7 +8,6 @@ import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.temporal.DateRange;
 import tech.tablesaw.io.ReadOptions;
 
 public class DateRangeParser extends AbstractColumnParser<DateRange> {
@@ -106,6 +105,6 @@ public class DateRangeParser extends AbstractColumnParser<DateRange> {
     if (isMissing(s)) {
       return null;
     }
-    return DateRange.parse(s, formatter);
+    return DateRange.parse(s, "/", formatter);
   }
 }

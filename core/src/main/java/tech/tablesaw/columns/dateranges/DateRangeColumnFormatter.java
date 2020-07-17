@@ -1,4 +1,4 @@
-package tech.tablesaw.columns.dates;
+package tech.tablesaw.columns.dateranges;
 
 import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
 
@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.StringJoiner;
 import javax.annotation.concurrent.Immutable;
-import tech.tablesaw.columns.temporal.DateRange;
 
 @Immutable
 public class DateRangeColumnFormatter {

@@ -12,11 +12,10 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.columns.dates;
+package tech.tablesaw.columns.dateranges;
 
 import java.util.Iterator;
 import java.util.function.Supplier;
-import tech.tablesaw.columns.temporal.DateRange;
 
 public interface DateRangeFillers<T> {
 
