@@ -34,7 +34,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -70,8 +69,6 @@ import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
 @Beta
 public class SawWriter {
-
-  private static final String CRYPTO_TRANSFORM = "AES/CBC/PKCS5Padding";
 
   // We flush the output stream repeatedly to ensure it doesn't grow without bounds for big files
   private static final int FLUSH_AFTER_ITERATIONS = 20_000;
@@ -447,20 +444,6 @@ public class SawWriter {
       SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
       return new DataOutputStream(sos);
     }
-
-    /*
-    final SecretKeySpec key = new SecretKeySpec(getUTF8Bytes("1234567890123456"), "AES");
-    final IvParameterSpec iv = new IvParameterSpec(getUTF8Bytes("1234567890123456"));
-    CryptoOutputStream cos =
-            new CryptoOutputStream(CRYPTO_TRANSFORM, new Properties(), fos, key, iv);
-    SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-    return new DataOutputStream(sos);
-     */
-  }
-
-  /** Returns UTFByte array converted from the given input String */
-  static byte[] getUTF8Bytes(String input) {
-    return input.getBytes(StandardCharsets.UTF_8);
   }
 
   /** Writes out the values of the TextColumn */
@@ -492,7 +475,7 @@ public class SawWriter {
     while (iterator.hasNext()) {
       dos.writeInt(iterator.nextInt());
       i++;
-      if (i == FLUSH_AFTER_ITERATIONS) { // TODO does this break the pipelining?
+      if (i == FLUSH_AFTER_ITERATIONS) {
         dos.flush();
         i = 0;
       }
@@ -504,7 +487,7 @@ public class SawWriter {
     while (iterator.hasNext()) {
       dos.writeLong(iterator.nextLong());
       i++;
-      if (i == FLUSH_AFTER_ITERATIONS) { // TODO does this break the pipelining?
+      if (i == FLUSH_AFTER_ITERATIONS) {
         dos.flush();
         i = 0;
       }

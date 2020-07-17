@@ -17,14 +17,10 @@ package tech.tablesaw.io.saw;
 import static java.util.stream.Collectors.toList;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.Beta;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -34,8 +30,6 @@ import tech.tablesaw.table.Relation;
 /** Data about a specific physical table used in its persistence */
 @Beta
 public class TableMetadata {
-
-  private static final ObjectMapper objectMapper = new ObjectMapper();
 
   @JsonProperty("columnMetadata")
   private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
@@ -59,45 +53,19 @@ public class TableMetadata {
   /** Default constructor for Jackson json serialization */
   protected TableMetadata() {}
 
-  /**
-   * Returns an instance of TableMetadata constructed from the provided json string
-   *
-   * @param jsonString A json-formatted String consistent with those output by the toJson() method
-   */
-  static TableMetadata fromJson(String jsonString) {
-    try {
-      return objectMapper.readValue(jsonString, TableMetadata.class);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  /**
-   * Returns a JSON string that represents this object
-   *
-   * @see static methdod fromJson() which constructs a TableMetadata object from this JSON output
-   */
-  String toJson() {
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (JsonProcessingException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    TableMetadata that = (TableMetadata) o;
-    return rowCount == that.rowCount
-        && Objects.equals(name, that.name)
-        && Objects.equals(columnMetadataList, that.columnMetadataList);
+    TableMetadata metadata = (TableMetadata) o;
+    return getRowCount() == metadata.getRowCount()
+        && Objects.equal(getColumnMetadataList(), metadata.getColumnMetadataList())
+        && Objects.equal(getName(), metadata.getName());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, rowCount, columnMetadataList);
+    return Objects.hashCode(getColumnMetadataList(), getName(), getRowCount());
   }
 
   /** Returns the name of the table */
