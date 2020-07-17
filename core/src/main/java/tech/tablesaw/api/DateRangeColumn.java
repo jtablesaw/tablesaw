@@ -16,20 +16,20 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
@@ -39,6 +39,7 @@ import tech.tablesaw.columns.dateranges.DateRange;
 import tech.tablesaw.columns.dateranges.DateRangeColumnFormatter;
 import tech.tablesaw.columns.dateranges.DateRangeColumnType;
 import tech.tablesaw.columns.dateranges.DateRangeFillers;
+import tech.tablesaw.columns.dateranges.DateRangeFilters;
 import tech.tablesaw.columns.dateranges.DateRangeFunctions;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.selection.Selection;
@@ -50,11 +51,12 @@ import tech.tablesaw.selection.Selection;
  * aspects of the Joda Time Interval class, and the Java Time Period class
  */
 public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
-    implements DateRangeFillers<DateRangeColumn>,
-        // DateFilters,
-        DateRangeFunctions
+    implements DateRangeFillers<DateRangeColumn>, DateRangeFilters, DateRangeFunctions
 // CategoricalColumn<LocalDate>  TODO
 {
+
+  public static final Predicate<DateRange> isMissing = DateRangeColumn::valueIsMissing;
+  public static final Predicate<DateRange> isNotMissing = e -> !valueIsMissing(e);
 
   private IntArrayList from;
   private IntArrayList to;
@@ -74,6 +76,8 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
         }
         return Integer.compare(t1, t2);
       };
+
+  private final Comparator<DateRange> dateRangeComparator = DateRange::compareTo;
 
   // OK
   private DateRangeColumnFormatter printFormatter = new DateRangeColumnFormatter();
@@ -281,14 +285,14 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
     return copy;
   }
 
-  @Override // TODO
+  @Override // OK
   public void sortAscending() {
-    from.sort(IntComparators.NATURAL_COMPARATOR);
+    sorted(dateRangeComparator);
   }
 
-  @Override // TODO
+  @Override // OK
   public void sortDescending() {
-    from.sort(IntComparators.OPPOSITE_COMPARATOR);
+    sorted(dateRangeComparator.reversed());
   }
 
   @Override // OK
@@ -433,14 +437,14 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
     return comparator;
   }
 
-  @Override // TODO
+  @Override // OK
   public Selection isMissing() {
-    return null;
+    return eval(isMissing);
   }
 
-  @Override // TODO
+  @Override // OK
   public Selection isNotMissing() {
-    return null;
+    return eval(isNotMissing);
   }
 
   // OK
@@ -475,9 +479,10 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
     return appendObj(parser.parse(string));
   }
 
-  @Override
+  @Override // OK
   public Column<DateRange> set(int row, DateRange value) {
-    return null;
+    set(row, value.getFromInternal(), value.getToInternal());
+    return this;
   }
 
   // OK
@@ -495,7 +500,7 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
    *
    * @return the summary table
    */
-  @Override
+  @Override // TODO
   public Table summary() {
 
     Table table = Table.create("Column: " + name());
@@ -519,8 +524,19 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
     return table;
   }
 
+  /** Returns true if both from and to represent missing values */
+  // OK
   public static boolean valueIsMissing(int from, int to) {
     return DateRangeColumnType.valueIsMissing(from, to);
+  }
+
+  /** Returns true if the DateRange is null, or if its from and to values are both missing */
+  // OK
+  public static boolean valueIsMissing(DateRange range) {
+    if (range == null) {
+      return true;
+    }
+    return DateRangeColumnType.valueIsMissing(range.getFromInternal(), range.getToInternal());
   }
 
   /** Returns the count of missing values in this column */
@@ -542,13 +558,13 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
    *     greater than the number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
-  // TODO
-  public List<LocalDate> top(int n) {
-    List<LocalDate> top = new ArrayList<>();
-    int[] values = from.toIntArray();
-    IntArrays.parallelQuickSort(values, IntComparators.OPPOSITE_COMPARATOR);
-    for (int i = 0; i < n && i < values.length; i++) {
-      top.add(PackedLocalDate.asLocalDate(values[i]));
+  // OK
+  public List<DateRange> top(int n) {
+    List<DateRange> top = new ArrayList<>();
+    List<DateRange> values = asList();
+    values.sort(dateRangeComparator.reversed());
+    for (int i = 0; i < n && i < values.size(); i++) {
+      top.add(values.get(i));
     }
     return top;
   }
@@ -560,13 +576,13 @@ public class DateRangeColumn extends AbstractColumn<DateRangeColumn, DateRange>
    *     greater than the number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
-  // TODO
-  public List<LocalDate> bottom(int n) {
-    List<LocalDate> bottom = new ArrayList<>();
-    int[] values = from.toIntArray();
-    IntArrays.parallelQuickSort(values);
-    for (int i = 0; i < n && i < values.length; i++) {
-      bottom.add(PackedLocalDate.asLocalDate(values[i]));
+  // OK
+  public List<DateRange> bottom(int n) {
+    List<DateRange> bottom = new ArrayList<>();
+    List<DateRange> values = asList();
+    values.sort(dateRangeComparator);
+    for (int i = 0; i < n && i < values.size(); i++) {
+      bottom.add(values.get(i));
     }
     return bottom;
   }

@@ -1,10 +1,16 @@
 package tech.tablesaw.columns.dateranges;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 
+/**
+ * A DateRange class for use with DateRangeColumn There is no standard Java implementation of this
+ * class, or the concept it represents
+ */
 public class DateRange implements Comparable<DateRange> {
   static final String DEFAULT_SEPARATOR = "/";
   private final int from;
@@ -15,13 +21,35 @@ public class DateRange implements Comparable<DateRange> {
     this.to = PackedLocalDate.pack(to);
   }
 
+  /**
+   * Returns a new DateRange created from ints representing Tableaw packedLocalDates
+   *
+   * @param packedDateFrom The start of the range in tablesaw PackedLocalDate representation
+   * @param packedDateTo The end of the range in tablesaw PackedLocalDate representation
+   */
   public DateRange(int packedDateFrom, int packedDateTo) {
     this.from = packedDateFrom;
     this.to = packedDateTo;
   }
 
-  // TODO
+  /**
+   * Returns a DateRange object parsed from the given string s
+   *
+   * <p>If the s
+   *
+   * @param s The string to parse in the form [fromDate][separator][toDate]
+   * @param separator The delimiter separating the from and to parts of the range. If it's null or
+   *     empty, DateRange.DEFAULT_SEPARATOR is used
+   * @param formatter The formatter to use for parsing. It is applied to from and to individually,
+   *     parsing them into LocalDate values
+   * @return a new DateRange
+   */
   public static DateRange parse(String s, String separator, DateTimeFormatter formatter) {
+    String parseError =
+        "String %s could not be parsed because it doesn't contain the separator [%s]";
+    String sep = Strings.isNullOrEmpty(separator) ? DEFAULT_SEPARATOR : separator;
+    Preconditions.checkArgument(s.contains(sep), String.format(parseError, s, sep));
+
     String[] tokens = s.split(separator);
     LocalDate from = LocalDate.parse(tokens[0], formatter);
     LocalDate to = LocalDate.parse(tokens[1], formatter);
