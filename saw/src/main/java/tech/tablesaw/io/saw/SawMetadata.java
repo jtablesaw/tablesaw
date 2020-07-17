@@ -26,6 +26,7 @@ public class SawMetadata {
   private TableMetadata tableMetadata;
   private int version;
   private CompressionType compressionType;
+  private EncryptionType encryptionType;
 
   /**
    * Returns a SawMetadata instance derived from the json-formatted Metadata.json file in the
@@ -46,16 +47,11 @@ public class SawMetadata {
     return SawMetadata.fromJson(new String(encoded, StandardCharsets.UTF_8));
   }
 
-  public SawMetadata(TableMetadata tableMetadata, CompressionType compressionType) {
-    this.tableMetadata = tableMetadata;
-    this.version = SAW_VERSION;
-    this.compressionType = compressionType;
-  }
-
-  public SawMetadata(Table table, CompressionType compressionType) {
+  public SawMetadata(Table table, WriteOptions options) {
     this.tableMetadata = new TableMetadata(table);
     this.version = SAW_VERSION;
-    this.compressionType = compressionType;
+    this.compressionType = options.getCompressionType();
+    this.encryptionType = options.getEncryptionType();
   }
 
   /** Default constructor for Jackson json serialization */
@@ -98,6 +94,10 @@ public class SawMetadata {
 
   public CompressionType getCompressionType() {
     return compressionType;
+  }
+
+  public EncryptionType getEncryptionType() {
+    return encryptionType;
   }
 
   @JsonIgnore

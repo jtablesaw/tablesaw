@@ -83,44 +83,44 @@ public class SawWriter {
 
   public SawWriter(Path path, Table table, WriteOptions options) {
     this.path = path;
-    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
+    this.sawMetadata = new SawMetadata(table, options);
     this.table = table;
     this.writeOptions = options;
   }
 
   public SawWriter(String path, Table table, WriteOptions options) {
     this.path = setPath(path);
-    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
+    this.sawMetadata = new SawMetadata(table, options);
     this.table = table;
     this.writeOptions = options;
   }
 
   public SawWriter(File file, Table table, WriteOptions options) {
     this.path = file.toPath();
-    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
+    this.sawMetadata = new SawMetadata(table, options);
     this.table = table;
     this.writeOptions = options;
   }
 
   public SawWriter(Path path, Table table) {
     this.path = path;
-    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
     this.table = table;
     this.writeOptions = WriteOptions.defaultOptions();
+    this.sawMetadata = new SawMetadata(table, writeOptions);
   }
 
   public SawWriter(File file, Table table) {
     this.path = file.toPath();
-    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
     this.table = table;
     this.writeOptions = WriteOptions.defaultOptions();
+    this.sawMetadata = new SawMetadata(table, writeOptions);
   }
 
   public SawWriter(String path, Table table) {
     this.path = setPath(path);
-    this.sawMetadata = new SawMetadata(table, CompressionType.SNAPPY);
     this.table = table;
     this.writeOptions = WriteOptions.defaultOptions();
+    this.sawMetadata = new SawMetadata(table, writeOptions);
   }
 
   private Path setPath(String parentFolderName) {

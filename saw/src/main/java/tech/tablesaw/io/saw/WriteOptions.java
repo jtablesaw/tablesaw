@@ -8,6 +8,7 @@ public class WriteOptions {
 
   private int threadPoolSize = DEFAULT_POOL_SIZE;
   private CompressionType compressionType = CompressionType.SNAPPY;
+  private EncryptionType encryptionType = EncryptionType.NONE;
 
   public static WriteOptions defaultOptions() {
     return new WriteOptions();
@@ -24,11 +25,24 @@ public class WriteOptions {
     return this;
   }
 
+  /**
+   * Sets the encryption type for the storage NOTE: This is a placeholder-only, to allow for adding
+   * encryption support later without changing the format of the metadata file
+   */
+  public WriteOptions encryptionType(EncryptionType type) {
+    this.encryptionType = type;
+    return this;
+  }
+
   public int getThreadPoolSize() {
     return threadPoolSize;
   }
 
   public CompressionType getCompressionType() {
     return compressionType;
+  }
+
+  public EncryptionType getEncryptionType() {
+    return encryptionType;
   }
 }
