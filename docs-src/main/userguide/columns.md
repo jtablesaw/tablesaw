@@ -109,7 +109,7 @@ Just about anything you can do with an individual LocalDate you can do with an e
 DateColumn weekLater = dates.plusDays(7);
 ```
 
-This is an example of a mapping function. You can find the date mapping functions in the interface [DateMapFunctions](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/dates/DateMapFunctions.html). Many of the methods there deal with adding and subtracting units of time (days, weeks, months, etc), and calculating the column-wise differences between two date columns. Others provide access to elements of a date. The method *month()*, for example, returns a StringColumn containing the month for a given date. The methods *year()*, *dayOfWeek()*, *dayOfMonth()*, etc. function similarly.
+This is an example of a mapping function. You can find the date mapping functions in the interface [DateMapFunctions](https://www.javadoc.io/doc/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/columns/dates/DateMapFunctions.html). Many of the methods there deal with adding and subtracting units of time (days, weeks, months, etc), and calculating the column-wise differences between two date columns. Others provide access to elements of a date. The method *month()*, for example, returns a StringColumn containing the month for a given date. The methods *year()*, *dayOfWeek()*, *dayOfMonth()*, etc. function similarly.
 
 Other columns have similar mapping functions. 
 
