@@ -95,7 +95,7 @@ class SawStorageTest {
 
   @Test
   void testWriteTable() {
-    new SawWriter(tempDir + "/zeta", table);
+    new SawWriter(tempDir + "/zeta", table).write();
     Table t = new SawReader(tempDir + "/zeta/t.saw").read();
     assertEquals(table.columnCount(), t.columnCount());
     assertEquals(table.rowCount(), t.rowCount());
@@ -108,7 +108,7 @@ class SawStorageTest {
   @Test
   void testWriteTable2() {
 
-    new SawWriter(tempDir + "/zeta", table);
+    new SawWriter(tempDir + "/zeta", table).write();
     Table t = new SawReader(tempDir + "/zeta/t.saw").read();
     assertEquals(table.columnCount(), t.columnCount());
     assertEquals(table.rowCount(), t.rowCount());
@@ -121,7 +121,7 @@ class SawStorageTest {
   @Test
   void testWriteTableTwice() {
 
-    new SawWriter(tempDir + "/mytables2", table);
+    new SawWriter(tempDir + "/mytables2", table).write();
     Table t = new SawReader(tempDir + "/mytables2/t.saw").read();
     t.floatColumn("float").setName("a float column");
 
