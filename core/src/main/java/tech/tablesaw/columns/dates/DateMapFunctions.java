@@ -200,7 +200,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
    * you don't want months from different years aggregated together).
    */
   default StringColumn yearWeek() {
-    StringColumn newColumn = StringColumn.create(this.name() + " year & month");
+    StringColumn newColumn = StringColumn.create(this.name() + " year & week");
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getIntInternal(r);
       if (DateColumn.valueIsMissing(c1)) {
