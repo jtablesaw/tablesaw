@@ -14,7 +14,24 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.daysUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfMonth;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfWeek;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getHour;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinute;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinuteOfDay;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMonthValue;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getQuarter;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecondOfDay;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getWeekOfYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.hoursUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.minutesUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.monthsUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.pack;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.weeksUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.yearsUntil;
 
 import com.google.common.base.Strings;
 import java.time.LocalDateTime;
@@ -273,7 +290,7 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
    * you don't want months from different years aggregated together).
    */
   default StringColumn yearWeek() {
-    StringColumn newColumn = StringColumn.create(this.name() + " year & month");
+    StringColumn newColumn = StringColumn.create(this.name() + " year & week");
     for (int r = 0; r < this.size(); r++) {
       long c1 = this.getLongInternal(r);
       if (DateTimeColumn.valueIsMissing(c1)) {
