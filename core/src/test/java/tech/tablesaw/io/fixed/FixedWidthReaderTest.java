@@ -53,12 +53,14 @@ public class FixedWidthReaderTest {
                     .systemLineEnding()
                     .build());
 
-    assertEquals("[Year, Make, Model, Description, Price]", table.columnNames().toString());
+    String[] expected = new String[]{"Year", "Make", "Model", "Description", "Price"};
+    assertArrayEquals(expected, table.columnNames().toArray());
 
     table = table.sortDescendingOn("Year");
     table.removeColumns("Description");
 
-    assertEquals("[Year, Make, Model, Price]", table.columnNames().toString());
+    expected = new String[]{"Year", "Make", "Model", "Price"};
+    assertArrayEquals(expected, table.columnNames().toArray());
   }
 
   @Test
@@ -77,7 +79,8 @@ public class FixedWidthReaderTest {
 
     assertEquals(4, table.columnCount());
 
-    assertEquals("[Year, Make, Model, Price]", table.columnNames().toString());
+    String[] expected = new String[]{"Year", "Make", "Model", "Price"};
+    assertArrayEquals(expected, table.columnNames().toArray());
   }
 
   @Test
@@ -97,7 +100,8 @@ public class FixedWidthReaderTest {
 
     assertEquals(4, table.columnCount());
 
-    assertEquals("[C0, C1, C2, C4]", table.columnNames().toString());
+    String[] expected = new String[]{"C0", "C1", "C2", "C4"};
+    assertArrayEquals(expected, table.columnNames().toArray());
   }
 
   @Test
@@ -158,11 +162,13 @@ public class FixedWidthReaderTest {
                     .skipTrailingCharsUntilNewline(true)
                     .build());
 
-    assertEquals("[Year, Make, Model, Description, Price]", table.columnNames().toString());
+    String[] expected = new String[]{"Year", "Make", "Model", "Description", "Price"};
+    assertArrayEquals(expected, table.columnNames().toArray());
 
     table = table.sortDescendingOn("Year");
     table.removeColumns("Price");
 
-    assertEquals("[Year, Make, Model, Description]", table.columnNames().toString());
+    expected = new String[]{"Year", "Make", "Model", "Description"};
+    assertArrayEquals(expected, table.columnNames().toArray());
   }
 }
