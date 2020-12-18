@@ -256,7 +256,7 @@ rows by default, but you can also use *table.printAll()*, or *table.print(n)* to
 
 Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to
 explore your data. These facilities are described in the documentation on statistics and
-[plotting](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_plotting), respectively.
+[plotting](userguide/Introduction_to_plotting.md), respectively.
 
 #### Working with a table's columns
 
@@ -403,7 +403,7 @@ See the section on [Cross Tabs](https://jtablesaw.github.io/tablesaw/userguide/c
 
 We've covered a lot of ground. To learn more, please take a look at the
 [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc) or API documentation
-([Java Docs](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/index)).
+([Java Docs](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/index.html)).
 
 [^1]: Note that containsString(String subString) is different from contains(). The first method looks at each
 string in the column to see if it conains the substring. The second method looks at every row in the column and returns
