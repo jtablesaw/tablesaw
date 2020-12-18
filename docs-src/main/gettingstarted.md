@@ -256,7 +256,7 @@ rows by default, but you can also use *table.printAll()*, or *table.print(n)* to
 
 Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to
 explore your data. These facilities are described in the documentation on statistics and
-[plotting](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_Plotting.html), respectively.
+[plotting](userguide/Introduction_to_plotting.md), respectively.
 
 #### Working with a table's columns
 
