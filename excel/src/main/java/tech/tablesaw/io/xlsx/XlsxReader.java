@@ -14,24 +14,8 @@
 
 package tech.tablesaw.io.xlsx;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import javax.annotation.concurrent.Immutable;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
@@ -41,6 +25,17 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
+
+import javax.annotation.concurrent.Immutable;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static org.apache.poi.ss.usermodel.CellType.FORMULA;
 
 @Immutable
 public class XlsxReader implements DataReader<XlsxReadOptions> {
@@ -146,7 +141,8 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   private ColumnType getColumnType(Cell cell) {
-    switch (cell.getCellType()) {
+    CellType cellType = cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
+    switch (cellType) {
       case STRING:
         return ColumnType.STRING;
       case NUMERIC:
@@ -289,7 +285,8 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
 
   @SuppressWarnings("unchecked")
   private Column<?> appendValue(Column<?> column, Cell cell) {
-    switch (cell.getCellType()) {
+    CellType cellType = cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
+    switch (cellType) {
       case STRING:
         column.appendCell(cell.getRichStringCellValue().getString());
         return null;
