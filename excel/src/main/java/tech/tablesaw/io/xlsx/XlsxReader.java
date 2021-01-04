@@ -35,6 +35,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static org.apache.poi.ss.usermodel.CellType.FORMULA;
+
 @Immutable
 public class XlsxReader implements DataReader<XlsxReadOptions> {
 
@@ -138,7 +140,8 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     return null;
   }
 
-  private ColumnType getColumnType(Cell cell, CellType cellType) {
+  private ColumnType getColumnType(Cell cell) {
+    CellType cellType = cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
     switch (cellType) {
       case STRING:
         return ColumnType.STRING;
@@ -147,7 +150,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
       case BOOLEAN:
         return ColumnType.BOOLEAN;
       case FORMULA:
-        return getColumnType(cell, cell.getCachedFormulaResultType());
+        return getColumnType(cell);
       default:
         break;
     }
@@ -264,7 +267,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
               column.appendMissing();
             }
           }
-          Column<?> altColumn = appendValue(column, cell,cell.getCellType());
+          Column<?> altColumn = appendValue(column, cell);
           if (altColumn != null && altColumn != column) {
             column = altColumn;
             columns.set(colNum, column);
@@ -283,7 +286,8 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   @SuppressWarnings("unchecked")
-  private Column<?> appendValue(Column<?> column, Cell cell, CellType cellType) {
+  private Column<?> appendValue(Column<?> column, Cell cell) {
+    CellType cellType = cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
     switch (cellType) {
       case STRING:
         column.appendCell(cell.getRichStringCellValue().getString());
@@ -340,7 +344,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
           return null;
         }
       case FORMULA:
-        return appendValue(column, cell, cell.getCachedFormulaResultType());
+        return appendValue(column, cell);
       default:
         break;
     }
@@ -349,7 +353,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
 
   private Column<?> createColumn(String name, Cell cell) {
     Column<?> column;
-    ColumnType columnType = getColumnType(cell,cell.getCellType());
+    ColumnType columnType = getColumnType(cell);
     if (columnType == null) {
       columnType = ColumnType.STRING;
     }
