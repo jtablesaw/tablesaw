@@ -83,21 +83,18 @@ public class XlsxReaderTest {
             "doublecol",
             "booleancol",
             "datecol",
-                "formulacol");
-    //        stringcol   shortcol    intcol  longcol doublecol   booleancol  datecol
-    //        Hallvard    123 12345678    12345678900 12,34   TRUE    22/02/2019 20:54:09
-    //        Marit       124 12345679    12345678901 13,35   FALSE   23/03/2020 21:55:10
+            "formulacol");
+    //        stringcol   shortcol    intcol  longcol doublecol   booleancol  datecol       formulacol  
+    //        Hallvard    123 12345678    12345678900 12,34   TRUE    22/02/2019 20:54:09   135.34
+    //        Marit       124 12345679    12345678901 13,35   FALSE   23/03/2020 21:55:10   137.35
     assertColumnValues(table.stringColumn("stringcol"), "Hallvard", "Marit");
     assertColumnValues(table.intColumn("shortcol"), 123, 124);
     assertColumnValues(table.intColumn("intcol"), 12345678, 12345679);
     assertColumnValues(table.longColumn("longcol"), 12345678900L, 12345678901L);
     assertColumnValues(table.doubleColumn("doublecol"), 12.34, 13.35);
     assertColumnValues(table.booleanColumn("booleancol"), true, false);
-    assertColumnValues(
-        table.dateTimeColumn("datecol"),
-        LocalDateTime.of(2019, 2, 22, 20, 54, 9),
-        LocalDateTime.of(2020, 3, 23, 21, 55, 10));
-    assertColumnValues(table.doubleColumn("formulacol"),135.34 ,137.35);
+    assertColumnValues(table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), LocalDateTime.of(2020, 3, 23, 21, 55, 10));
+    assertColumnValues(table.doubleColumn("formulacol"), 135.34 , 137.35);
   }
 
   @Test
@@ -113,7 +110,7 @@ public class XlsxReaderTest {
             "doublecol",
             "booleancol",
             "datecol",
-                "formulacol");
+            "formulacol");
     //        stringcol    shortcol    intcol        longcol        doublecol    booleancol
     // datecol
     //        Hallvard                12345678    12345678900                TRUE        22/02/2019
@@ -125,9 +122,8 @@ public class XlsxReaderTest {
     assertColumnValues(table.longColumn("longcol"), 12345678900L, null);
     assertColumnValues(table.doubleColumn("doublecol"), null, 13.35);
     assertColumnValues(table.booleanColumn("booleancol"), true, null);
-    assertColumnValues(
-        table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
-    assertColumnValues(table.doubleColumn("formulacol"),null ,137.35);
+    assertColumnValues(table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
+    assertColumnValues(table.doubleColumn("formulacol"), null ,137.35);
 
   }
 
