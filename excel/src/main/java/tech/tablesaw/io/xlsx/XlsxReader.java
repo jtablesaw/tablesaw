@@ -149,8 +149,6 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
         return DateUtil.isCellDateFormatted(cell) ? ColumnType.LOCAL_DATE_TIME : ColumnType.INTEGER;
       case BOOLEAN:
         return ColumnType.BOOLEAN;
-      case FORMULA:
-        return getColumnType(cell);
       default:
         break;
     }
@@ -343,8 +341,6 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
           booleanColumn.append(cell.getBooleanCellValue());
           return null;
         }
-      case FORMULA:
-        return appendValue(column, cell);
       default:
         break;
     }
