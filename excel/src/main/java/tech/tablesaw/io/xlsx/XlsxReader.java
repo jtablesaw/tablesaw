@@ -14,24 +14,8 @@
 
 package tech.tablesaw.io.xlsx;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import javax.annotation.concurrent.Immutable;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
@@ -41,6 +25,15 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
+
+import javax.annotation.concurrent.Immutable;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Immutable
 public class XlsxReader implements DataReader<XlsxReadOptions> {
@@ -145,14 +138,16 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     return null;
   }
 
-  private ColumnType getColumnType(Cell cell) {
-    switch (cell.getCellType()) {
+  private ColumnType getColumnType(Cell cell,CellType cellType) {
+    switch (cellType) {
       case STRING:
         return ColumnType.STRING;
       case NUMERIC:
         return DateUtil.isCellDateFormatted(cell) ? ColumnType.LOCAL_DATE_TIME : ColumnType.INTEGER;
       case BOOLEAN:
         return ColumnType.BOOLEAN;
+      case FORMULA:
+        return getColumnType(cell,cell.getCachedFormulaResultType());
       default:
         break;
     }
@@ -269,7 +264,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
               column.appendMissing();
             }
           }
-          Column<?> altColumn = appendValue(column, cell);
+          Column<?> altColumn = appendValue(column, cell,cell.getCellType());
           if (altColumn != null && altColumn != column) {
             column = altColumn;
             columns.set(colNum, column);
@@ -288,8 +283,8 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   @SuppressWarnings("unchecked")
-  private Column<?> appendValue(Column<?> column, Cell cell) {
-    switch (cell.getCellType()) {
+  private Column<?> appendValue(Column<?> column, Cell cell,CellType cellType) {
+    switch (cellType) {
       case STRING:
         column.appendCell(cell.getRichStringCellValue().getString());
         return null;
@@ -344,6 +339,8 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
           booleanColumn.append(cell.getBooleanCellValue());
           return null;
         }
+      case FORMULA:
+        return appendValue(column,cell,cell.getCachedFormulaResultType());
       default:
         break;
     }
@@ -352,7 +349,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
 
   private Column<?> createColumn(String name, Cell cell) {
     Column<?> column;
-    ColumnType columnType = getColumnType(cell);
+    ColumnType columnType = getColumnType(cell,cell.getCellType());
     if (columnType == null) {
       columnType = ColumnType.STRING;
     }

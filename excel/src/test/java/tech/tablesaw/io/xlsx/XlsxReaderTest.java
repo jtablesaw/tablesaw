@@ -14,17 +14,15 @@
 
 package tech.tablesaw.io.xlsx;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class XlsxReaderTest {
 
@@ -84,7 +82,8 @@ public class XlsxReaderTest {
             "longcol",
             "doublecol",
             "booleancol",
-            "datecol");
+            "datecol",
+                "formulacol");
     //        stringcol   shortcol    intcol  longcol doublecol   booleancol  datecol
     //        Hallvard    123 12345678    12345678900 12,34   TRUE    22/02/2019 20:54:09
     //        Marit       124 12345679    12345678901 13,35   FALSE   23/03/2020 21:55:10
@@ -98,6 +97,7 @@ public class XlsxReaderTest {
         table.dateTimeColumn("datecol"),
         LocalDateTime.of(2019, 2, 22, 20, 54, 9),
         LocalDateTime.of(2020, 3, 23, 21, 55, 10));
+    assertColumnValues(table.doubleColumn("formulacol"),135.34 ,137.35);
   }
 
   @Test
@@ -112,7 +112,8 @@ public class XlsxReaderTest {
             "longcol",
             "doublecol",
             "booleancol",
-            "datecol");
+            "datecol",
+                "formulacol");
     //        stringcol    shortcol    intcol        longcol        doublecol    booleancol
     // datecol
     //        Hallvard                12345678    12345678900                TRUE        22/02/2019
@@ -126,6 +127,8 @@ public class XlsxReaderTest {
     assertColumnValues(table.booleanColumn("booleancol"), true, null);
     assertColumnValues(
         table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
+    assertColumnValues(table.doubleColumn("formulacol"),null ,137.35);
+
   }
 
   @Test
