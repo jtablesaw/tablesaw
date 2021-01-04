@@ -138,7 +138,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     return null;
   }
 
-  private ColumnType getColumnType(Cell cell,CellType cellType) {
+  private ColumnType getColumnType(Cell cell, CellType cellType) {
     switch (cellType) {
       case STRING:
         return ColumnType.STRING;
@@ -147,7 +147,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
       case BOOLEAN:
         return ColumnType.BOOLEAN;
       case FORMULA:
-        return getColumnType(cell,cell.getCachedFormulaResultType());
+        return getColumnType(cell, cell.getCachedFormulaResultType());
       default:
         break;
     }
@@ -283,7 +283,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   @SuppressWarnings("unchecked")
-  private Column<?> appendValue(Column<?> column, Cell cell,CellType cellType) {
+  private Column<?> appendValue(Column<?> column, Cell cell, CellType cellType) {
     switch (cellType) {
       case STRING:
         column.appendCell(cell.getRichStringCellValue().getString());
@@ -340,7 +340,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
           return null;
         }
       case FORMULA:
-        return appendValue(column,cell,cell.getCachedFormulaResultType());
+        return appendValue(column, cell, cell.getCachedFormulaResultType());
       default:
         break;
     }
