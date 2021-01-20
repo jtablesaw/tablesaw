@@ -61,6 +61,15 @@ public class BooleanColumnTest {
   }
 
   @Test
+  public void fixNPESortingWithMissingValues() {
+    assertFalse(column.all());
+    column.appendMissing();
+    column.appendMissing();
+    column.sortAscending(); // Look. No NPE
+    assertEquals(2, column.countMissing());
+  }
+
+  @Test
   public void testNone() {
     assertFalse(column.none());
     BooleanColumn filtered = column.where(column.isFalse());
