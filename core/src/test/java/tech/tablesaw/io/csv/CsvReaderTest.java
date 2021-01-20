@@ -64,6 +64,7 @@ import tech.tablesaw.io.AddCellToColumnException;
 public class CsvReaderTest {
 
   private static final String LINE_END = System.lineSeparator();
+  private static final String COMMA = ",";
 
   private final ColumnType[] bus_types = {SHORT, STRING, STRING, FLOAT, FLOAT};
   private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
@@ -121,6 +122,24 @@ public class CsvReaderTest {
     assertEquals(4, table.columnCount());
     // Look at the column names
     assertEquals("[stop_id, stop_name, stop_lat, stop_lon]", table.columnNames().toString());
+  }
+
+  @Test
+  void allowDuplicateColumnNames() throws IOException {
+    final Reader reader1 =
+        new StringReader(
+            "Col1" + COMMA + "Col2" + LINE_END + "\"first\"" + COMMA + "second" + LINE_END);
+    Table noDupes = Table.read().csv(reader1);
+    assertEquals("Col1", noDupes.columnNames().get(0));
+    assertEquals("Col2", noDupes.columnNames().get(1));
+
+    final Reader reader2 =
+        new StringReader(
+            "Col1" + COMMA + "Col1" + LINE_END + "\"first\"" + COMMA + "second" + LINE_END);
+    Table dupes =
+        Table.read().csv(CsvReadOptions.builder(reader2).allowDuplicateColumnNames(true).build());
+    assertEquals("Col1", dupes.columnNames().get(0));
+    assertEquals("Col1-2", dupes.columnNames().get(1));
   }
 
   @Test

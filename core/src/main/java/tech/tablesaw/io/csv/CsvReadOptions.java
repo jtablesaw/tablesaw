@@ -240,6 +240,18 @@ public class CsvReadOptions extends ReadOptions {
       return this;
     }
 
+    /**
+     * Enable reading of a table with duplicate column names. After the first appearance of a column
+     * name, subsequent appearances will have a number appended.
+     *
+     * @param allow if true, duplicate names will be allowed
+     */
+    @Override
+    public Builder allowDuplicateColumnNames(Boolean allow) {
+      super.allowDuplicateColumnNames(allow);
+      return this;
+    }
+
     @Override
     public Builder tableName(String tableName) {
       super.tableName(tableName);

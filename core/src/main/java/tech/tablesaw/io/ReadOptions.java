@@ -78,6 +78,7 @@ public class ReadOptions {
   protected final boolean minimizeColumnSizes;
   protected final int maxCharsPerColumn;
   protected final boolean ignoreZeroDecimal;
+  protected final boolean allowDuplicateColumnNames;
 
   protected final DateTimeFormatter dateFormatter;
   protected final DateTimeFormatter dateTimeFormatter;
@@ -103,6 +104,8 @@ public class ReadOptions {
     timeFormatter = builder.timeFormatter;
     dateTimeFormatter = builder.dateTimeFormatter;
 
+    allowDuplicateColumnNames = builder.allowDuplicateColumnNames;
+
     if (builder.locale == null) {
       locale = Locale.getDefault();
     } else {
@@ -116,6 +119,10 @@ public class ReadOptions {
 
   public String tableName() {
     return tableName;
+  }
+
+  public boolean allowDuplicateColumnNames() {
+    return allowDuplicateColumnNames;
   }
 
   public List<ColumnType> columnTypesToDetect() {
@@ -195,6 +202,7 @@ public class ReadOptions {
     protected boolean header = true;
     protected int maxCharsPerColumn = 4096;
     protected boolean ignoreZeroDecimal = DEFAULT_IGNORE_ZERO_DECIMAL;
+    private boolean allowDuplicateColumnNames = false;
 
     protected Builder() {
       source = null;
@@ -241,6 +249,11 @@ public class ReadOptions {
 
     public Builder dateFormat(DateTimeFormatter dateFormat) {
       this.dateFormatter = dateFormat;
+      return this;
+    }
+
+    public Builder allowDuplicateColumnNames(Boolean allow) {
+      this.allowDuplicateColumnNames = allow;
       return this;
     }
 
