@@ -299,6 +299,23 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
+   * Return a new table (shallow copy) that contains all the columns in this table, in the order
+   * given in the argument. Throw an IllegalArgument exception if the number of names given does not
+   * match the number of columns in this table. NOTE: This does not make a copy of the columns, so
+   * they are shared between the two tables.
+   *
+   * @param columnNames a column name or array of names
+   */
+  public Table reorderColumns(String... columnNames) {
+    Preconditions.checkArgument(columnNames.length == columnCount());
+    Table table = Table.create(name);
+    for (String name : columnNames) {
+      table.addColumns(column(name));
+    }
+    return table;
+  }
+
+  /**
    * Replaces an existing column (by index) in this table with the given new column
    *
    * @param colIndex Zero-based index of the column to be replaced
