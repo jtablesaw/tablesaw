@@ -49,8 +49,8 @@ public class TableTest {
   private static final Random RANDOM = new Random();
 
   private Table table;
-  private DoubleColumn f1 = DoubleColumn.create("f1");
-  private DoubleColumn numberColumn = DoubleColumn.create("d1");
+  private final DoubleColumn f1 = DoubleColumn.create("f1");
+  private final DoubleColumn numberColumn = DoubleColumn.create("d1");
 
   @BeforeEach
   void setUp() {
@@ -73,6 +73,22 @@ public class TableTest {
   void testColumn() {
     Column<?> column1 = table.column(0);
     assertNotNull(column1);
+  }
+
+  @Test
+  void reorderColumns() throws Exception {
+    Table t = Table.read().csv("../data/bush.csv");
+    List<String> names = t.columnNames();
+    assertEquals(names.get(0), "date");
+    assertEquals(names.get(1), "approval");
+    assertEquals(names.get(2), "who");
+
+    Table reordered = t.reorderColumns("who", "approval", "date");
+    List<String> reorderedNames = reordered.columnNames();
+
+    assertEquals(reorderedNames.get(0), "who");
+    assertEquals(reorderedNames.get(1), "approval");
+    assertEquals(reorderedNames.get(2), "date");
   }
 
   @Test
