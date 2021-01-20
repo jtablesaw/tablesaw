@@ -17,6 +17,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -186,7 +187,7 @@ public class ShortDictionaryMap implements DictionaryMap {
   }
 
   public Set<String> asSet() {
-    return categories();
+    return new HashSet<>(categories());
   }
 
   public int firstIndexOf(String value) {

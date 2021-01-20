@@ -14,11 +14,16 @@
 
 package tech.tablesaw.api;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,6 +72,15 @@ class StringColumnTest {
     String[] array2 = {"1", "2", null, "", "5"};
     Table table2 = Table.create("table2", StringColumn.create("id", array2));
     assertEquals("", table2.stringColumn("id").get(3));
+  }
+
+  /** Test that asSet returns a different set each time. */
+  @Test
+  void asSet() {
+    Set<String> set1 = column.asSet();
+    Set<String> set2 = column.asSet();
+    set1.remove("Value 2");
+    assertNotEquals(set1.size(), set2.size());
   }
 
   @Test
