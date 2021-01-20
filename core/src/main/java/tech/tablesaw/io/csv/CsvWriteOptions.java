@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import tech.tablesaw.io.Destination;
 import tech.tablesaw.io.WriteOptions;
 
@@ -18,6 +19,8 @@ public class CsvWriteOptions extends WriteOptions {
   private final Character escapeChar;
   private final String lineEnd;
   private final boolean quoteAllFields;
+  private final DateTimeFormatter dateFormatter;
+  private final DateTimeFormatter dateTimeFormatter;
 
   private CsvWriteOptions(Builder builder) {
     super(builder);
@@ -29,6 +32,8 @@ public class CsvWriteOptions extends WriteOptions {
     this.ignoreLeadingWhitespaces = builder.ignoreLeadingWhitespaces;
     this.ignoreTrailingWhitespaces = builder.ignoreTrailingWhitespaces;
     this.quoteAllFields = builder.quoteAllFields;
+    this.dateFormatter = builder.dateFormatter;
+    this.dateTimeFormatter = builder.dateTimeFormatter;
   }
 
   public boolean header() {
@@ -63,6 +68,14 @@ public class CsvWriteOptions extends WriteOptions {
     return lineEnd;
   }
 
+  public DateTimeFormatter dateTimeFormatter() {
+    return dateTimeFormatter;
+  }
+
+  public DateTimeFormatter dateFormatter() {
+    return dateFormatter;
+  }
+
   public static Builder builder(Destination dest) {
     return new Builder(dest);
   }
@@ -93,6 +106,8 @@ public class CsvWriteOptions extends WriteOptions {
     private String lineEnd = System.lineSeparator();
     private Character escapeChar;
     private Character quoteChar;
+    private DateTimeFormatter dateTimeFormatter;
+    private DateTimeFormatter dateFormatter;
 
     protected Builder(String fileName) throws IOException {
       super(Paths.get(fileName).toFile());
@@ -121,6 +136,16 @@ public class CsvWriteOptions extends WriteOptions {
 
     public CsvWriteOptions.Builder quoteChar(char quoteChar) {
       this.quoteChar = quoteChar;
+      return this;
+    }
+
+    public CsvWriteOptions.Builder dateFormatter(DateTimeFormatter dateFormatter) {
+      this.dateFormatter = dateFormatter;
+      return this;
+    }
+
+    public CsvWriteOptions.Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+      this.dateTimeFormatter = dateTimeFormatter;
       return this;
     }
 
