@@ -70,8 +70,11 @@ public abstract class FileReader {
   /** Returns the column names for each column in the source. */
   public String[] getColumnNames(
       ReadOptions options, ColumnType[] types, AbstractParser<?> parser) {
+
     if (options.header()) {
+
       String[] headerNames = parser.parseNext();
+
       // work around issue where Univocity returns null if a column has no header.
       for (int i = 0; i < headerNames.length; i++) {
         if (headerNames[i] == null) {
@@ -79,6 +82,9 @@ public abstract class FileReader {
         } else {
           headerNames[i] = headerNames[i].trim();
         }
+      }
+      if (options.allowDuplicateColumnNames()) {
+        renameDuplicateColumnHeaders(headerNames);
       }
       return headerNames;
     } else {
@@ -88,6 +94,28 @@ public abstract class FileReader {
         headerNames[i] = "C" + i;
       }
       return headerNames;
+    }
+  }
+
+  /**
+   * Renames any column header that appears more than once. Subsequent appearances have "-[count]"
+   * appended; For example, the first (or only) appearance of "foo" is named "foo", the second
+   * appearance is named "foo-2" The header array is modified in place.
+   *
+   * @param headerNames The header names to be potentially adjusted.
+   */
+  private void renameDuplicateColumnHeaders(String[] headerNames) {
+    Map<String, Integer> nameCounter = new HashMap<>();
+    for (int i = 0; i < headerNames.length; i++) {
+      String name = headerNames[i];
+      Integer count = nameCounter.get(name);
+      if (count == null) {
+        nameCounter.put(name, 1);
+      } else {
+        count++;
+        nameCounter.put(name, count);
+        headerNames[i] = name + "-" + count;
+      }
     }
   }
 
