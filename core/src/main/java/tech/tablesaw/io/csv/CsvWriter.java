@@ -53,7 +53,8 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
       if (options.header()) {
         String[] header = new String[table.columnCount()];
         for (int c = 0; c < table.columnCount(); c++) {
-          header[c] = table.column(c).name();
+          String name = table.column(c).name();
+          header[c] = options.columnNameMap().getOrDefault(name, name);
         }
         csvWriter.writeHeaders(header);
       }
