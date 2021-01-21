@@ -3,10 +3,12 @@ package tech.tablesaw.io.csv;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.StringColumn;
@@ -64,5 +66,18 @@ public class CsvWriterTest {
                 .build());
     assertEquals(
         "dt\n" + "\"Jan 1, 2011 - 04:30\"\n", writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  void transformColumnNames() throws IOException {
+    Table table = Table.read().csv("../data/bush.csv").rows(1);
+    Map<String, String> nameMap = ImmutableMap.of("approval", "popularity", "who", "pollster");
+    StringWriter writer = new StringWriter();
+    table
+        .write()
+        .usingOptions(CsvWriteOptions.builder(writer).transformColumnNames(nameMap).build());
+    assertEquals(
+        "date,popularity,pollster\n" + "2004-01-21,53,fox\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
   }
 }

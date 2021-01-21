@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import tech.tablesaw.io.Destination;
 import tech.tablesaw.io.WriteOptions;
 
@@ -21,6 +23,7 @@ public class CsvWriteOptions extends WriteOptions {
   private final boolean quoteAllFields;
   private final DateTimeFormatter dateFormatter;
   private final DateTimeFormatter dateTimeFormatter;
+  private final Map<String, String> columnNameMap;
 
   private CsvWriteOptions(Builder builder) {
     super(builder);
@@ -34,6 +37,7 @@ public class CsvWriteOptions extends WriteOptions {
     this.quoteAllFields = builder.quoteAllFields;
     this.dateFormatter = builder.dateFormatter;
     this.dateTimeFormatter = builder.dateTimeFormatter;
+    this.columnNameMap = builder.columnNameMap;
   }
 
   public boolean header() {
@@ -58,6 +62,10 @@ public class CsvWriteOptions extends WriteOptions {
 
   public boolean quoteAllFields() {
     return quoteAllFields;
+  }
+
+  public Map<String, String> columnNameMap() {
+    return columnNameMap;
   }
 
   public Character quoteChar() {
@@ -108,6 +116,7 @@ public class CsvWriteOptions extends WriteOptions {
     private Character quoteChar;
     private DateTimeFormatter dateTimeFormatter;
     private DateTimeFormatter dateFormatter;
+    private Map<String, String> columnNameMap = new HashMap<>();
 
     protected Builder(String fileName) throws IOException {
       super(Paths.get(fileName).toFile());
@@ -131,6 +140,17 @@ public class CsvWriteOptions extends WriteOptions {
 
     public CsvWriteOptions.Builder separator(char separator) {
       this.separator = separator;
+      return this;
+    }
+
+    /**
+     * Transform one or more column names as they are written to a file. The original column name is
+     * unchanged.
+     *
+     * @param nameMap A map from existing column names to the desired output name
+     */
+    public CsvWriteOptions.Builder transformColumnNames(Map<String, String> nameMap) {
+      this.columnNameMap = nameMap;
       return this;
     }
 
