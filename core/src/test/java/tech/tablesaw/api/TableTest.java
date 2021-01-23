@@ -25,8 +25,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -349,6 +352,47 @@ public class TableTest {
     RowConsumer rowConsumer = new RowConsumer();
     t.steppingStream(3).forEach(rowConsumer);
     assertEquals(sum1, rowConsumer.getSum());
+  }
+
+  @Test
+  void melt() throws Exception {
+    String df =
+        "subject, time, age, weight, height\n"
+            + "John Smith,    1,  33,     90,   1.87\n"
+            + "Mary Smith,    1,  NA,     NA,   1.54";
+    StringReader reader = new StringReader(df);
+    Table t = Table.read().csv(reader);
+    t.columnNames();
+    List<String> ids = ImmutableList.of("subject", "time");
+    List<NumericColumn<?>> measures = t.numericColumns("age", "weight", "height");
+    ;
+    Table melted = t.melt(ids, measures);
+    melted.write().csv("../data/molten_smiths.csv");
+    assertEquals(
+        "                                              \n"
+            + "  subject    |  time  |  variable  |  value  |\n"
+            + "----------------------------------------------\n"
+            + " John Smith  |     1  |       age  |     33  |\n"
+            + " John Smith  |     1  |    weight  |     90  |\n"
+            + " John Smith  |     1  |    height  |   1.87  |\n"
+            + " Mary Smith  |     1  |       age  |         |\n"
+            + " Mary Smith  |     1  |    weight  |         |\n"
+            + " Mary Smith  |     1  |    height  |   1.54  |",
+        melted.toString());
+  }
+
+  @Test
+  void cast() throws IOException {
+    Table molten = Table.read().csv("../data/molten_smiths.csv");
+    Table cast = molten.cast();
+    StringWriter writer = new StringWriter();
+    cast.write().csv(writer);
+    String writeString = writer.toString();
+    assertEquals(
+        "subject,time,weight,age,height\n"
+            + "John Smith,1,90.0,33.0,1.87\n"
+            + "Mary Smith,1,,,1.54\n",
+        writeString);
   }
 
   private static class RowConsumer implements Consumer<Row[]> {

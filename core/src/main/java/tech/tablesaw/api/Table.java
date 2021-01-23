@@ -56,10 +56,7 @@ import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.Sort;
 import tech.tablesaw.sorting.SortUtils;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
-import tech.tablesaw.table.Relation;
-import tech.tablesaw.table.Rows;
-import tech.tablesaw.table.StandardTableSliceGroup;
-import tech.tablesaw.table.TableSliceGroup;
+import tech.tablesaw.table.*;
 
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
@@ -1308,6 +1305,220 @@ public class Table extends Relation implements Iterable<Row> {
       transposed.addColumns(column);
     }
     return transposed;
+  }
+
+  /**
+   * Melt implements the 'tidy' melt operation as described in these papers by Hadley Wickham:
+   *
+   * <p>Tidy concepts:
+   *
+   * <p>Melt function details:
+   *
+   * <p>Returns a table that contains all the data in this table, but organized such that there is a
+   * set of identifier variables (columns and a single measured variable (column). For example,
+   * given a table with columns:
+   *
+   * <p>patient_id, gender, age, weight, temperature,
+   *
+   * <p>it returns a table with the columns:
+   *
+   * <p>patient_id, variable, value
+   *
+   * <p>In the new format, the strings age, weight, and temperature have become cells in the
+   * measurement table, such that a single row in the source table might look like this in the
+   * result table:
+   *
+   * <p>1234, gender, male 1234, age, 42 1234, weight, 186 1234, temperature, 97.4
+   *
+   * <p>This kind of structure often makes for a good intermediate format for performing subsequent
+   * transformations. It is especially useful when combined with the {@link #cast()} operation
+   *
+   * @param idVariables A list of column names intended to be used as identifiers. In he example,
+   *     only patient_id would be an identifier
+   * @param measuredVariables A list of columns intended to be used as measured variables. All
+   *     columns must have the same type
+   */
+  public Table melt(List<String> idVariables, List<NumericColumn<?>> measuredVariables) {
+    Table result = Table.create(name);
+    for (String idColName : idVariables) {
+      result.addColumns(column(idColName).type().create(idColName));
+    }
+    result.addColumns(StringColumn.create("variable"), DoubleColumn.create("value"));
+
+    List<String> measureColumnNames =
+        measuredVariables.stream().map(Column::name).collect(Collectors.toList());
+
+    TableSliceGroup slices = splitOn(idVariables.toArray(new String[0]));
+    for (TableSlice slice : slices) {
+      // TODO: This is inefficient, but it looks like perhaps there is a bug in row iteration over
+      // slices
+      Table temp = slice.asTable();
+      for (Row row : temp) {
+        for (String colName : measureColumnNames) {
+          writeIdVariables(idVariables, result, row);
+          result.stringColumn("variable").append(colName);
+          result.doubleColumn("value").append(row.getNumber(colName));
+        }
+      }
+    }
+
+    return result;
+  }
+
+  private void writeIdVariables(List<String> idVariables, Table result, Row row) {
+    for (String id : idVariables) {
+      Column<?> resultColumn = result.column(id);
+      if (resultColumn.type().equals(ColumnType.STRING)) {
+        StringColumn sc = (StringColumn) resultColumn;
+        sc.append(row.getString(resultColumn.name()));
+      }
+      if (resultColumn.type().equals(ColumnType.TEXT)) {
+        TextColumn sc = (TextColumn) resultColumn;
+        sc.append(row.getString(resultColumn.name()));
+      } else if (resultColumn.type().equals(ColumnType.INTEGER)) {
+        IntColumn ic = (IntColumn) resultColumn;
+        ic.append(row.getInt(resultColumn.name()));
+      } else if (resultColumn.type().equals(ColumnType.LONG)) {
+        LongColumn ic = (LongColumn) resultColumn;
+        ic.append(row.getLong(resultColumn.name()));
+      } else if (resultColumn.type().equals(ColumnType.SHORT)) {
+        ShortColumn ic = (ShortColumn) resultColumn;
+        ic.append(row.getShort(resultColumn.name()));
+      } else if (resultColumn.type().equals(ColumnType.LOCAL_DATE)) {
+        DateColumn ic = (DateColumn) resultColumn;
+        ic.append(
+            row.getDate(
+                resultColumn.name())); // TODO: Can we use packed dates here to avoid boxing?
+      } else if (resultColumn.type().equals(ColumnType.LOCAL_DATE_TIME)) {
+        DateTimeColumn ic = (DateTimeColumn) resultColumn;
+        ic.append(
+            row.getDateTime(
+                resultColumn.name())); // TODO: Can we use packed dates here to avoid boxing?
+      } else if (resultColumn.type().equals(ColumnType.LOCAL_TIME)) {
+        TimeColumn ic = (TimeColumn) resultColumn;
+        ic.append(
+            row.getTime(
+                resultColumn.name())); // TODO: Can we use packed dates here to avoid boxing?
+      } else if (resultColumn.type().equals(ColumnType.INSTANT)) {
+        InstantColumn ic = (InstantColumn) resultColumn;
+        ic.append(
+            row.getInstant(
+                resultColumn.name())); // TODO: Can we use packed dates here to avoid boxing?
+      } else if (resultColumn.type().equals(ColumnType.BOOLEAN)) {
+        BooleanColumn ic = (BooleanColumn) resultColumn;
+        ic.append(
+            row.getBoolean(resultColumn.name())); // TODO: Can we use bytes here to avoid boxing?
+      } else if (resultColumn.type().equals(ColumnType.DOUBLE)) {
+        DoubleColumn ic = (DoubleColumn) resultColumn;
+        ic.append(row.getDouble(resultColumn.name()));
+      } else if (resultColumn.type().equals(ColumnType.FLOAT)) {
+        FloatColumn ic = (FloatColumn) resultColumn;
+        ic.append(row.getFloat(resultColumn.name()));
+      }
+    }
+  }
+
+  /**
+   * Cast implements the 'tidy' cast operation as described in these papers by Hadley Wickham:
+   *
+   * <p>Cast takes a table in 'molten' format, such as is produced by the {@link #melt(List, List)}
+   * t} method, and returns a version in standard tidy format.
+   *
+   * <p>The molten table should have a StringColumn called "variable" and a column called "value"
+   * Every unique variable name will become a column in the output table.
+   *
+   * <p>All other columns in this table are considered identifier variable. Each combination of
+   * identifier variables specifies an observation, so there will be one row for each, with the
+   * other variables added.
+   *
+   * <p>Tidy concepts: {@see https://www.jstatsoft.org/article/view/v059i10}
+   *
+   * <p>Cast function details: {@see https://www.jstatsoft.org/article/view/v021i12}
+   */
+  public Table cast() {
+    final String varColumnName = "variable";
+    final String valColumnName = "value";
+    StringColumn variableNames = stringColumn(varColumnName);
+    DoubleColumn values = doubleColumn(valColumnName);
+    List<Column<?>> idColumns =
+        columnList.stream()
+            .filter(
+                column ->
+                    !column.name().equals(varColumnName) && !column.name().equals(valColumnName))
+            .collect(toList());
+    Table result = Table.create(name);
+    for (Column<?> idColumn : idColumns) {
+      result.addColumns(idColumn.type().create(idColumn.name()));
+    }
+    StringColumn uniqueVariableNames = variableNames.unique();
+    for (String varName : uniqueVariableNames) {
+      result.addColumns(DoubleColumn.create(varName));
+    }
+    TableSliceGroup slices = splitOn(idColumns.stream().map(Column::name).toArray(String[]::new));
+    for (TableSlice slice : slices) {
+      Table sliceTable = slice.asTable();
+      for (Column<?> idColumn : idColumns) {
+        if (idColumn.type().equals(ColumnType.STRING)) {
+          StringColumn source = (StringColumn) sliceTable.column(idColumn.name());
+          StringColumn dest = (StringColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+        if (idColumn.type().equals(ColumnType.TEXT)) {
+          TextColumn source = (TextColumn) sliceTable.column(idColumn.name());
+          TextColumn dest = (TextColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+        if (idColumn.type().equals(ColumnType.INTEGER)) {
+          IntColumn source = (IntColumn) sliceTable.column(idColumn.name());
+          IntColumn dest = (IntColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+        if (idColumn.type().equals(ColumnType.LONG)) {
+          LongColumn source = (LongColumn) sliceTable.column(idColumn.name());
+          LongColumn dest = (LongColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+        if (idColumn.type().equals(ColumnType.SHORT)) {
+          ShortColumn source = (ShortColumn) sliceTable.column(idColumn.name());
+          ShortColumn dest = (ShortColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+        if (idColumn.type().equals(ColumnType.BOOLEAN)) {
+          BooleanColumn source = (BooleanColumn) sliceTable.column(idColumn.name());
+          BooleanColumn dest = (BooleanColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+        if (idColumn.type().equals(ColumnType.LOCAL_DATE)) {
+          DateColumn source = (DateColumn) sliceTable.column(idColumn.name());
+          DateColumn dest = (DateColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+        if (idColumn.type().equals(ColumnType.LOCAL_DATE_TIME)) {
+          DateTimeColumn source = (DateTimeColumn) sliceTable.column(idColumn.name());
+          DateTimeColumn dest = (DateTimeColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+        if (idColumn.type().equals(ColumnType.INSTANT)) {
+          InstantColumn source = (InstantColumn) sliceTable.column(idColumn.name());
+          InstantColumn dest = (InstantColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+        if (idColumn.type().equals(ColumnType.LOCAL_TIME)) {
+          TimeColumn source = (TimeColumn) sliceTable.column(idColumn.name());
+          TimeColumn dest = (TimeColumn) result.column(idColumn.name());
+          dest.append(source.get(0));
+        }
+      }
+      for (String varName : uniqueVariableNames) {
+        DoubleColumn dest = (DoubleColumn) result.column(varName);
+        Table sliceRow =
+            sliceTable.where(sliceTable.stringColumn(varColumnName).isEqualTo(varName));
+        if (!sliceRow.isEmpty()) {
+          dest.append(sliceRow.doubleColumn(valColumnName).get(0));
+        }
+      }
+    }
+    return result;
   }
 
   /**
