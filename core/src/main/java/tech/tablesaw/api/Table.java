@@ -80,6 +80,10 @@ public class Table extends Relation implements Iterable<Row> {
   /** The name of the table */
   private String name;
 
+  // standard column names for melt and cast operations
+  public static final String MELT_VARIABLE_COLUMN_NAME = "variable";
+  public static final String MELT_VALUE_COLUMN_NAME = "value";
+
   /** Returns a new table */
   private Table() {}
 
@@ -1347,11 +1351,14 @@ public class Table extends Relation implements Iterable<Row> {
   @Beta
   public Table melt(
       List<String> idVariables, List<NumericColumn<?>> measuredVariables, Boolean dropMissing) {
+
     Table result = Table.create(name);
     for (String idColName : idVariables) {
       result.addColumns(column(idColName).type().create(idColName));
     }
-    result.addColumns(StringColumn.create("variable"), DoubleColumn.create("value"));
+    result.addColumns(
+        StringColumn.create(MELT_VARIABLE_COLUMN_NAME),
+        DoubleColumn.create(MELT_VALUE_COLUMN_NAME));
 
     List<String> measureColumnNames =
         measuredVariables.stream().map(Column::name).collect(Collectors.toList());
@@ -1365,8 +1372,8 @@ public class Table extends Relation implements Iterable<Row> {
         for (String colName : measureColumnNames) {
           if (!dropMissing || !row.isMissing(colName)) {
             writeIdVariables(idVariables, result, row);
-            result.stringColumn("variable").append(colName);
-            result.doubleColumn("value").append(row.getNumber(colName));
+            result.stringColumn(MELT_VARIABLE_COLUMN_NAME).append(colName);
+            result.doubleColumn(MELT_VALUE_COLUMN_NAME).append(row.getNumber(colName));
           }
         }
       }
@@ -1441,14 +1448,13 @@ public class Table extends Relation implements Iterable<Row> {
    */
   @Beta
   public Table cast() {
-    final String varColumnName = "variable";
-    final String valColumnName = "value";
-    StringColumn variableNames = stringColumn(varColumnName);
+    StringColumn variableNames = stringColumn(MELT_VARIABLE_COLUMN_NAME);
     List<Column<?>> idColumns =
         columnList.stream()
             .filter(
                 column ->
-                    !column.name().equals(varColumnName) && !column.name().equals(valColumnName))
+                    !column.name().equals(MELT_VARIABLE_COLUMN_NAME)
+                        && !column.name().equals(MELT_VALUE_COLUMN_NAME))
             .collect(toList());
     Table result = Table.create(name);
     for (Column<?> idColumn : idColumns) {
@@ -1516,9 +1522,9 @@ public class Table extends Relation implements Iterable<Row> {
       for (String varName : uniqueVariableNames) {
         DoubleColumn dest = (DoubleColumn) result.column(varName);
         Table sliceRow =
-            sliceTable.where(sliceTable.stringColumn(varColumnName).isEqualTo(varName));
+            sliceTable.where(sliceTable.stringColumn(MELT_VARIABLE_COLUMN_NAME).isEqualTo(varName));
         if (!sliceRow.isEmpty()) {
-          dest.append(sliceRow.doubleColumn(valColumnName).get(0));
+          dest.append(sliceRow.doubleColumn(MELT_VALUE_COLUMN_NAME).get(0));
         } else {
           dest.appendMissing();
         }
