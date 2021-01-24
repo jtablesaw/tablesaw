@@ -171,6 +171,16 @@ public class Row implements Iterator<Row> {
     return getBoolean(columnNames[columnIndex]);
   }
 
+  /** Returns an element from a Boolean column in its internal byte form, avoiding boxing */
+  public byte getBooleanAsByte(int columnIndex) {
+    return getBooleanAsByte(columnNames[columnIndex]);
+  }
+
+  /** Returns an element from a Boolean column in its internal byte form, avoiding boxing */
+  public byte getBooleanAsByte(String columnName) {
+    return booleanColumnMap.get(columnName).getByte(getIndex(rowNumber));
+  }
+
   public Boolean getBoolean(String columnName) {
     return booleanColumnMap.get(columnName).get(getIndex(rowNumber));
   }
@@ -245,6 +255,14 @@ public class Row implements Iterator<Row> {
 
   public int getPackedDate(int columnIndex) {
     return dateColumnMap.get(columnNames[columnIndex]).getIntInternal(getIndex(rowNumber));
+  }
+
+  public long getPackedInstant(int columnIndex) {
+    return instantColumnMap.get(columnNames[columnIndex]).getLongInternal(getIndex(rowNumber));
+  }
+
+  public long getPackedInstant(String columnName) {
+    return instantColumnMap.get(columnName).getLongInternal(getIndex(rowNumber));
   }
 
   public long getPackedDateTime(String columnName) {
