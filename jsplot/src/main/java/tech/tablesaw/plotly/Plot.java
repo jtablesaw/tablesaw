@@ -53,7 +53,7 @@ public class Plot {
     show(figure, DEFAULT_DIV_NAME, outputFile);
   }
 
-  private static File defaultFile() {
+  protected static File defaultFile() {
     Path path = Paths.get(DEFAULT_OUTPUT_FOLDER, DEFAULT_OUTPUT_FILE);
     try {
       Files.createDirectories(path.getParent());
@@ -63,7 +63,7 @@ public class Plot {
     return path.toFile();
   }
 
-  private static File randomFile() {
+  protected static File randomFile() {
     Path path = Paths.get(DEFAULT_OUTPUT_FOLDER, randomizedFileName());
     try {
       Files.createDirectories(path.getParent());
@@ -73,7 +73,7 @@ public class Plot {
     return path.toFile();
   }
 
-  private static String randomizedFileName() {
+  protected static String randomizedFileName() {
     return DEFAULT_OUTPUT_FILE_NAME + UUID.randomUUID().toString() + ".html";
   }
 }
