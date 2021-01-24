@@ -1385,43 +1385,45 @@ public class Table extends Relation implements Iterable<Row> {
   private void writeIdVariables(List<String> idVariables, Table result, Row row) {
     for (String id : idVariables) {
       Column<?> resultColumn = result.column(id);
-      if (resultColumn.type().equals(ColumnType.STRING)) {
+      final ColumnType columnType = resultColumn.type();
+      if (columnType.equals(ColumnType.STRING)) {
         StringColumn sc = (StringColumn) resultColumn;
         sc.append(row.getString(resultColumn.name()));
-      }
-      if (resultColumn.type().equals(ColumnType.TEXT)) {
+      } else if (columnType.equals(ColumnType.TEXT)) {
         TextColumn sc = (TextColumn) resultColumn;
         sc.append(row.getString(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.INTEGER)) {
+      } else if (columnType.equals(ColumnType.INTEGER)) {
         IntColumn ic = (IntColumn) resultColumn;
         ic.append(row.getInt(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.LONG)) {
+      } else if (columnType.equals(ColumnType.LONG)) {
         LongColumn ic = (LongColumn) resultColumn;
         ic.append(row.getLong(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.SHORT)) {
+      } else if (columnType.equals(ColumnType.SHORT)) {
         ShortColumn ic = (ShortColumn) resultColumn;
         ic.append(row.getShort(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.LOCAL_DATE)) {
+      } else if (columnType.equals(ColumnType.LOCAL_DATE)) {
         DateColumn ic = (DateColumn) resultColumn;
         ic.appendInternal(row.getPackedDate(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.LOCAL_DATE_TIME)) {
+      } else if (columnType.equals(ColumnType.LOCAL_DATE_TIME)) {
         DateTimeColumn ic = (DateTimeColumn) resultColumn;
         ic.appendInternal(row.getPackedDateTime(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.LOCAL_TIME)) {
+      } else if (columnType.equals(ColumnType.LOCAL_TIME)) {
         TimeColumn ic = (TimeColumn) resultColumn;
         ic.appendInternal(row.getPackedTime(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.INSTANT)) {
+      } else if (columnType.equals(ColumnType.INSTANT)) {
         InstantColumn ic = (InstantColumn) resultColumn;
         ic.appendInternal(row.getPackedInstant(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.BOOLEAN)) {
+      } else if (columnType.equals(ColumnType.BOOLEAN)) {
         BooleanColumn ic = (BooleanColumn) resultColumn;
         ic.append(row.getBooleanAsByte(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.DOUBLE)) {
+      } else if (columnType.equals(ColumnType.DOUBLE)) {
         DoubleColumn ic = (DoubleColumn) resultColumn;
         ic.append(row.getDouble(resultColumn.name()));
-      } else if (resultColumn.type().equals(ColumnType.FLOAT)) {
+      } else if (columnType.equals(ColumnType.FLOAT)) {
         FloatColumn ic = (FloatColumn) resultColumn;
         ic.append(row.getFloat(resultColumn.name()));
+      } else {
+        throw new IllegalArgumentException("melt() does not support column type " + columnType);
       }
     }
   }
@@ -1429,8 +1431,8 @@ public class Table extends Relation implements Iterable<Row> {
   /**
    * Cast implements the 'tidy' cast operation as described in these papers by Hadley Wickham:
    *
-   * <p>Cast takes a table in 'molten' format, such as is produced by the {@link #melt(List, List)}
-   * t} method, and returns a version in standard tidy format.
+   * <p>Cast takes a table in 'molten' format, such as is produced by the {@link #melt(List, List,
+   * Boolean)} t} method, and returns a version in standard tidy format.
    *
    * <p>The molten table should have a StringColumn called "variable" and a column called "value"
    * Every unique variable name will become a column in the output table.
@@ -1468,52 +1470,44 @@ public class Table extends Relation implements Iterable<Row> {
     for (TableSlice slice : slices) {
       Table sliceTable = slice.asTable();
       for (Column<?> idColumn : idColumns) {
-        if (idColumn.type().equals(ColumnType.STRING)) {
+        final ColumnType columnType = idColumn.type();
+        if (columnType.equals(ColumnType.STRING)) {
           StringColumn source = (StringColumn) sliceTable.column(idColumn.name());
           StringColumn dest = (StringColumn) result.column(idColumn.name());
           dest.append(source.get(0));
-        }
-        if (idColumn.type().equals(ColumnType.TEXT)) {
+        } else if (columnType.equals(ColumnType.TEXT)) {
           TextColumn source = (TextColumn) sliceTable.column(idColumn.name());
           TextColumn dest = (TextColumn) result.column(idColumn.name());
           dest.append(source.get(0));
-        }
-        if (idColumn.type().equals(ColumnType.INTEGER)) {
+        } else if (columnType.equals(ColumnType.INTEGER)) {
           IntColumn source = (IntColumn) sliceTable.column(idColumn.name());
           IntColumn dest = (IntColumn) result.column(idColumn.name());
           dest.append(source.get(0));
-        }
-        if (idColumn.type().equals(ColumnType.LONG)) {
+        } else if (columnType.equals(ColumnType.LONG)) {
           LongColumn source = (LongColumn) sliceTable.column(idColumn.name());
           LongColumn dest = (LongColumn) result.column(idColumn.name());
           dest.append(source.get(0));
-        }
-        if (idColumn.type().equals(ColumnType.SHORT)) {
+        } else if (columnType.equals(ColumnType.SHORT)) {
           ShortColumn source = (ShortColumn) sliceTable.column(idColumn.name());
           ShortColumn dest = (ShortColumn) result.column(idColumn.name());
           dest.append(source.get(0));
-        }
-        if (idColumn.type().equals(ColumnType.BOOLEAN)) {
+        } else if (columnType.equals(ColumnType.BOOLEAN)) {
           BooleanColumn source = (BooleanColumn) sliceTable.column(idColumn.name());
           BooleanColumn dest = (BooleanColumn) result.column(idColumn.name());
           dest.append(source.get(0));
-        }
-        if (idColumn.type().equals(ColumnType.LOCAL_DATE)) {
+        } else if (columnType.equals(ColumnType.LOCAL_DATE)) {
           DateColumn source = (DateColumn) sliceTable.column(idColumn.name());
           DateColumn dest = (DateColumn) result.column(idColumn.name());
           dest.append(source.get(0));
-        }
-        if (idColumn.type().equals(ColumnType.LOCAL_DATE_TIME)) {
+        } else if (columnType.equals(ColumnType.LOCAL_DATE_TIME)) {
           DateTimeColumn source = (DateTimeColumn) sliceTable.column(idColumn.name());
           DateTimeColumn dest = (DateTimeColumn) result.column(idColumn.name());
           dest.append(source.get(0));
-        }
-        if (idColumn.type().equals(ColumnType.INSTANT)) {
+        } else if (columnType.equals(ColumnType.INSTANT)) {
           InstantColumn source = (InstantColumn) sliceTable.column(idColumn.name());
           InstantColumn dest = (InstantColumn) result.column(idColumn.name());
           dest.append(source.get(0));
-        }
-        if (idColumn.type().equals(ColumnType.LOCAL_TIME)) {
+        } else if (columnType.equals(ColumnType.LOCAL_TIME)) {
           TimeColumn source = (TimeColumn) sliceTable.column(idColumn.name());
           TimeColumn dest = (TimeColumn) result.column(idColumn.name());
           dest.append(source.get(0));
