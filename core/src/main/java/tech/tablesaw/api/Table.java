@@ -19,6 +19,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
 import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
@@ -1308,15 +1309,19 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Melt implements the 'tidy' melt operation as described in these papers by Hadley Wickham:
+   * Melt implements the 'tidy' melt operation as described in these papers by Hadley Wickham.
    *
-   * <p>Tidy concepts:
+   * <p>Tidy concepts: {@see https://www.jstatsoft.org/article/view/v059i10}
    *
-   * <p>Melt function details:
+   * <p>Cast function details: {@see https://www.jstatsoft.org/article/view/v021i12}
    *
-   * <p>Returns a table that contains all the data in this table, but organized such that there is a
-   * set of identifier variables (columns and a single measured variable (column). For example,
-   * given a table with columns:
+   * <p>In short, melt turns columns into rows, but in a particular way. Used with the cast method,
+   * it can help make data tidy. In a tidy dataset, every variable is a column and every observation
+   * a row.
+   *
+   * <p>This method returns a table that contains all the data in this table, but organized such
+   * that there is a set of identifier variables (columns) and a single measured variable (column).
+   * For example, given a table with columns:
    *
    * <p>patient_id, gender, age, weight, temperature,
    *
@@ -1337,8 +1342,11 @@ public class Table extends Relation implements Iterable<Row> {
    *     only patient_id would be an identifier
    * @param measuredVariables A list of columns intended to be used as measured variables. All
    *     columns must have the same type
+   * @param dropMissing drop any row where the value is missing
    */
-  public Table melt(List<String> idVariables, List<NumericColumn<?>> measuredVariables) {
+  @Beta
+  public Table melt(
+      List<String> idVariables, List<NumericColumn<?>> measuredVariables, Boolean dropMissing) {
     Table result = Table.create(name);
     for (String idColName : idVariables) {
       result.addColumns(column(idColName).type().create(idColName));
@@ -1350,14 +1358,16 @@ public class Table extends Relation implements Iterable<Row> {
 
     TableSliceGroup slices = splitOn(idVariables.toArray(new String[0]));
     for (TableSlice slice : slices) {
-      // TODO: This is inefficient, but it looks like perhaps there is a bug in row iteration over
-      // slices
+      // TODO: This is inefficient, but it looks like there is a bug in row iteration on slices
       Table temp = slice.asTable();
+
       for (Row row : temp) {
         for (String colName : measureColumnNames) {
-          writeIdVariables(idVariables, result, row);
-          result.stringColumn("variable").append(colName);
-          result.doubleColumn("value").append(row.getNumber(colName));
+          if (!dropMissing || !row.isMissing(colName)) {
+            writeIdVariables(idVariables, result, row);
+            result.stringColumn("variable").append(colName);
+            result.doubleColumn("value").append(row.getNumber(colName));
+          }
         }
       }
     }
@@ -1386,28 +1396,19 @@ public class Table extends Relation implements Iterable<Row> {
         ic.append(row.getShort(resultColumn.name()));
       } else if (resultColumn.type().equals(ColumnType.LOCAL_DATE)) {
         DateColumn ic = (DateColumn) resultColumn;
-        ic.append(
-            row.getDate(
-                resultColumn.name())); // TODO: Can we use packed dates here to avoid boxing?
+        ic.appendInternal(row.getPackedDate(resultColumn.name()));
       } else if (resultColumn.type().equals(ColumnType.LOCAL_DATE_TIME)) {
         DateTimeColumn ic = (DateTimeColumn) resultColumn;
-        ic.append(
-            row.getDateTime(
-                resultColumn.name())); // TODO: Can we use packed dates here to avoid boxing?
+        ic.appendInternal(row.getPackedDateTime(resultColumn.name()));
       } else if (resultColumn.type().equals(ColumnType.LOCAL_TIME)) {
         TimeColumn ic = (TimeColumn) resultColumn;
-        ic.append(
-            row.getTime(
-                resultColumn.name())); // TODO: Can we use packed dates here to avoid boxing?
+        ic.appendInternal(row.getPackedTime(resultColumn.name()));
       } else if (resultColumn.type().equals(ColumnType.INSTANT)) {
         InstantColumn ic = (InstantColumn) resultColumn;
-        ic.append(
-            row.getInstant(
-                resultColumn.name())); // TODO: Can we use packed dates here to avoid boxing?
+        ic.appendInternal(row.getPackedInstant(resultColumn.name()));
       } else if (resultColumn.type().equals(ColumnType.BOOLEAN)) {
         BooleanColumn ic = (BooleanColumn) resultColumn;
-        ic.append(
-            row.getBoolean(resultColumn.name())); // TODO: Can we use bytes here to avoid boxing?
+        ic.append(row.getBooleanAsByte(resultColumn.name()));
       } else if (resultColumn.type().equals(ColumnType.DOUBLE)) {
         DoubleColumn ic = (DoubleColumn) resultColumn;
         ic.append(row.getDouble(resultColumn.name()));
@@ -1431,15 +1432,18 @@ public class Table extends Relation implements Iterable<Row> {
    * identifier variables specifies an observation, so there will be one row for each, with the
    * other variables added.
    *
+   * <p>Variable columns are returned in an arbitrary order. Use {@link #reorderColumns(String...)}
+   * if column order is important.
+   *
    * <p>Tidy concepts: {@see https://www.jstatsoft.org/article/view/v059i10}
    *
    * <p>Cast function details: {@see https://www.jstatsoft.org/article/view/v021i12}
    */
+  @Beta
   public Table cast() {
     final String varColumnName = "variable";
     final String valColumnName = "value";
     StringColumn variableNames = stringColumn(varColumnName);
-    DoubleColumn values = doubleColumn(valColumnName);
     List<Column<?>> idColumns =
         columnList.stream()
             .filter(
@@ -1515,6 +1519,8 @@ public class Table extends Relation implements Iterable<Row> {
             sliceTable.where(sliceTable.stringColumn(varColumnName).isEqualTo(varName));
         if (!sliceRow.isEmpty()) {
           dest.append(sliceRow.doubleColumn(valColumnName).get(0));
+        } else {
+          dest.appendMissing();
         }
       }
     }
