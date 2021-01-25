@@ -8,20 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.InstantColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.Row;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.DateColumnType;
@@ -202,10 +189,9 @@ public class DataFrameJoiner {
     List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
     validateIndexes(table1Indexes, table2Indexes);
 
-    if (table1.rowCount() == 0 &&
-        (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
+    if (table1.rowCount() == 0 && (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
       // Handle special case of empty table here so it doesn't fall through to the behavior
-      // that adds rows for full outer and right outer joins 
+      // that adds rows for full outer and right outer joins
       result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
       return result;
     }
@@ -286,8 +272,10 @@ public class DataFrameJoiner {
       return new LongIndex(table.instantColumn(colIndex));
     } else if (type instanceof TimeColumnType) {
       return new IntIndex(table.timeColumn(colIndex));
-    } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
+    } else if (type instanceof StringColumnType) {
       return new StringIndex(table.stringColumn(colIndex));
+    } else if (type instanceof TextColumnType) {
+      return new StringIndex(table.textColumn(colIndex));
     } else if (type instanceof IntColumnType) {
       return new IntIndex(table.intColumn(colIndex));
     } else if (type instanceof LongColumnType) {
@@ -327,9 +315,13 @@ public class DataFrameJoiner {
       LongIndex index = (LongIndex) rawIndex;
       long value = ((InstantColumn) valueColumn).getLongInternal(rowIndex);
       return index.get(value);
-    } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
+    } else if (type instanceof StringColumnType) {
       StringIndex index = (StringIndex) rawIndex;
       String value = ((StringColumn) valueColumn).get(rowIndex);
+      return index.get(value);
+    } else if (type instanceof TextColumnType) {
+      StringIndex index = (StringIndex) rawIndex;
+      String value = ((TextColumn) valueColumn).get(rowIndex);
       return index.get(value);
     } else if (type instanceof IntColumnType) {
       IntIndex index = (IntIndex) rawIndex;

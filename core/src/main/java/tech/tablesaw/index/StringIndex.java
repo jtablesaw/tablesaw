@@ -17,7 +17,7 @@ package tech.tablesaw.index;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.columns.strings.AbstractStringColumn;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -26,7 +26,7 @@ public class StringIndex implements Index {
 
   private final Map<String, IntArrayList> index;
 
-  public StringIndex(StringColumn column) {
+  public StringIndex(AbstractStringColumn<?> column) {
     int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
     Map<String, IntArrayList> tempMap = new HashMap<>(sizeEstimate);
     for (int i = 0; i < column.size(); i++) {

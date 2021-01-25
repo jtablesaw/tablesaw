@@ -19,12 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 
+import com.google.common.base.Joiner;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
 
 public class TextColumnTest {
@@ -73,6 +77,36 @@ public class TextColumnTest {
     assertEquals("Value 2", c1.get(0));
     assertEquals("Value 3", c1.get(1));
     assertEquals("", c1.get(3));
+  }
+
+  @Test
+  public void joinTablesWithStringColumnsSuccess() throws IOException {
+    Table t1 =
+        Table.read()
+            .usingOptions(
+                CsvReadOptions.builderFromString(
+                        Joiner.on(System.lineSeparator())
+                            .join(
+                                "TIME,TEMP SENSOR 1",
+                                "13:21:50.430,23.7",
+                                "13:21:51,23.1",
+                                "13:21:52.451,24.2"))
+                    .columnTypesToDetect(Arrays.asList(ColumnType.DOUBLE, ColumnType.TEXT)));
+
+    Table t2 =
+        Table.read()
+            .usingOptions(
+                CsvReadOptions.builderFromString(
+                        Joiner.on(System.lineSeparator())
+                            .join(
+                                "TIME,TEMP SENSOR 2",
+                                "13:21:50.430,24.9",
+                                "13:21:51,25.2",
+                                "13:21:52.451,26.1"))
+                    .columnTypesToDetect(Arrays.asList(ColumnType.DOUBLE, ColumnType.TEXT)));
+
+    String result = t1.joinOn("TIME").fullOuter(t2).printAll();
+    System.out.println("RESULT:\n" + result);
   }
 
   @Test
