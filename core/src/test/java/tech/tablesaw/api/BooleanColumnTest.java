@@ -54,6 +54,12 @@ public class BooleanColumnTest {
   }
 
   @Test
+  public void asDoubleColumn() {
+    DoubleColumn doubleColumn = column.asDoubleColumn();
+    assertEquals(column.size(), doubleColumn.size());
+  }
+
+  @Test
   public void inRange() {
     assertFalse(column.all());
     BooleanColumn filtered = column.inRange(0, 2);
