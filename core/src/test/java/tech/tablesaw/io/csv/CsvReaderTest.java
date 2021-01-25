@@ -20,15 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
-import static tech.tablesaw.api.ColumnType.FLOAT;
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
-import static tech.tablesaw.api.ColumnType.SHORT;
-import static tech.tablesaw.api.ColumnType.SKIP;
-import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.api.ColumnType.*;
 
 import com.univocity.parsers.common.TextParsingException;
 import java.io.File;
@@ -108,6 +100,23 @@ public class CsvReaderTest {
 
     table = table.sortDescendingOn("stop_id");
     table.removeColumns("stop_desc");
+  }
+
+  @Test
+  void textColumnShutoff() throws IOException {
+
+    Table table = Table.read().csv(CsvReadOptions.builder("../data/cities-states-zipcode.csv"));
+    ColumnType[] types = {INTEGER, STRING, DOUBLE, BOOLEAN};
+    List<ColumnType> typesToDetect = Arrays.asList(types);
+    Table table2 =
+        Table.read()
+            .csv(
+                CsvReadOptions.builder("../data/cities-states-zipcode.csv")
+                    .columnTypesToDetect(typesToDetect)
+                    .build());
+
+    assertEquals(table.column("WorldRegion").type(), TEXT);
+    assertEquals(table2.column("WorldRegion").type(), STRING);
   }
 
   @Test

@@ -1,5 +1,6 @@
 package tech.tablesaw.io;
 
+import static tech.tablesaw.api.ColumnType.STRING;
 import static tech.tablesaw.api.ColumnType.TEXT;
 
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
-import tech.tablesaw.columns.strings.StringColumnType;
 
 public class ColumnTypeDetector {
 
@@ -98,8 +98,9 @@ public class ColumnTypeDetector {
     // now detect
     for (List<String> valuesList : columnData) {
       ColumnType detectedType = detectType(valuesList, options);
-      if (detectedType.equals(StringColumnType.STRING)
-          && rowCount > STRING_COLUMN_ROW_COUNT_CUTOFF) {
+      if (detectedType.equals(STRING)
+          && rowCount > STRING_COLUMN_ROW_COUNT_CUTOFF
+          && options.columnTypesToDetect().contains(TEXT)) {
         HashSet<String> unique = new HashSet<>(valuesList);
         double uniquePct = unique.size() / (valuesList.size() * 1.0);
         if (uniquePct > STRING_COLUMN_CUTOFF) {
