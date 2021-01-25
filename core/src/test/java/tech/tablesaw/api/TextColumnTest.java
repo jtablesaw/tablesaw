@@ -105,8 +105,8 @@ public class TextColumnTest {
                                 "13:21:52.451,26.1"))
                     .columnTypesToDetect(Arrays.asList(ColumnType.DOUBLE, ColumnType.TEXT)));
 
-    String result = t1.joinOn("TIME").fullOuter(t2).printAll();
-    System.out.println("RESULT:\n" + result);
+    Table joined = t1.joinOn("TIME").fullOuter(t2);
+    assertEquals(3, joined.columnCount());
   }
 
   @Test
