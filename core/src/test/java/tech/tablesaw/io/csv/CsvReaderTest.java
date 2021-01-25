@@ -107,7 +107,7 @@ public class CsvReaderTest {
 
     Table table = Table.read().csv(CsvReadOptions.builder("../data/cities-states-zipcode.csv"));
     ColumnType[] types = {INTEGER, STRING, DOUBLE, BOOLEAN};
-    List<ColumnType> typesToDetect = Arrays.asList(types);
+    List<ColumnType> typesToDetect = asList(types);
     Table table2 =
         Table.read()
             .csv(
