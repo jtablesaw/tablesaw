@@ -21,6 +21,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
@@ -249,6 +251,20 @@ public class CsvReadOptions extends ReadOptions {
     @Override
     public Builder allowDuplicateColumnNames(Boolean allow) {
       super.allowDuplicateColumnNames(allow);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypesToDetect(List<ColumnType> columnTypesToDetect) {
+      // Types need to be in certain order as more general types like string come last
+      // Otherwise everything will be parsed as a string
+      List<ColumnType> orderedTypes = new ArrayList<>();
+      for (ColumnType t : EXTENDED_TYPES) {
+        if (columnTypesToDetect.contains(t)) {
+          orderedTypes.add(t);
+        }
+      }
+      this.columnTypesToDetect = orderedTypes;
       return this;
     }
 

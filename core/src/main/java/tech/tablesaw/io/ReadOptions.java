@@ -44,7 +44,7 @@ public class ReadOptions {
 
   private static final List<ColumnType> DEFAULT_TYPES =
       Lists.newArrayList(
-          LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, LONG, DOUBLE, STRING);
+          LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, LONG, DOUBLE, STRING, TEXT);
 
   /**
    * An extended list of types that are used if minimizeColumnSizes is true. By including extra
@@ -52,7 +52,7 @@ public class ReadOptions {
    * for the programmer if, for example, they will subsequently modify the data in a way that
    * exceeds the range of the type.
    */
-  private static final List<ColumnType> EXTENDED_TYPES =
+  protected static final List<ColumnType> EXTENDED_TYPES =
       Lists.newArrayList(
           LOCAL_DATE_TIME,
           LOCAL_TIME,
