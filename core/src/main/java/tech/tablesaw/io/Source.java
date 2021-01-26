@@ -34,6 +34,13 @@ public class Source {
     this.charset = charset;
   }
 
+  public Source(InputStreamReader reader) {
+    this.file = null;
+    this.reader = reader;
+    this.inputStream = null;
+    this.charset = Charset.forName(reader.getEncoding());
+  }
+
   public Source(Reader reader) {
     this.file = null;
     this.reader = reader;
@@ -72,13 +79,19 @@ public class Source {
     return inputStream;
   }
 
+  public Charset getCharset() {
+    return charset;
+  }
+
   /**
    * If cachedBytes are not null, returns a Reader created from the cachedBytes. Otherwise, returns
    * a Reader from the underlying source.
    */
   public Reader createReader(byte[] cachedBytes) throws IOException {
     if (cachedBytes != null) {
-      return new InputStreamReader(new ByteArrayInputStream(cachedBytes));
+      return charset != null
+          ? new InputStreamReader(new ByteArrayInputStream(cachedBytes), charset)
+          : new InputStreamReader(new ByteArrayInputStream(cachedBytes));
     }
     if (inputStream != null) {
       return new InputStreamReader(inputStream, charset);

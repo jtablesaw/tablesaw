@@ -17,6 +17,7 @@ package tech.tablesaw.io.csv;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
@@ -103,6 +104,17 @@ public class CsvReadOptions extends ReadOptions {
     return new Builder(reader);
   }
 
+  /**
+   * This method may cause tablesaw to buffer the entire InputStream.
+   *
+   * <p>If you have a large amount of data, you can do one of the following: 1. Use the method
+   * taking a File instead of a reader, or 2. Provide the array of column types as an option. If you
+   * provide the columnType array, we skip type detection and can avoid reading the entire file
+   */
+  public static Builder builder(InputStreamReader reader) {
+    return new Builder(reader);
+  }
+
   public ColumnType[] columnTypes() {
     return columnTypes;
   }
@@ -165,6 +177,10 @@ public class CsvReadOptions extends ReadOptions {
 
     protected Builder(File file) {
       super(file);
+    }
+
+    protected Builder(InputStreamReader reader) {
+      super(reader);
     }
 
     protected Builder(Reader reader) {
