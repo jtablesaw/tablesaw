@@ -19,6 +19,7 @@ import static tech.tablesaw.columns.numbers.NumberPredicates.isNonNegative;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isPositive;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isZero;
 
+import java.util.Collection;
 import java.util.function.BiPredicate;
 import java.util.function.DoublePredicate;
 import tech.tablesaw.api.NumericColumn;
@@ -64,13 +65,9 @@ public interface NumberFilters extends NumberFilterSpec<Selection> {
     return eval(NumberPredicates.isLessThanOrEqualTo(f));
   }
 
-  Selection isIn(Number... numbers);
+  Selection isIn(Collection<Number> numbers);
 
-  Selection isIn(double... doubles);
-
-  Selection isNotIn(Number... doubles);
-
-  Selection isNotIn(double... doubles);
+  Selection isNotIn(Collection<Number> numbers);
 
   default Selection isZero() {
     return eval(isZero);

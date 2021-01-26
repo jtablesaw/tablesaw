@@ -1,13 +1,7 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparators;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntListIterator;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.*;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.stream.IntStream;
@@ -16,6 +10,8 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 public class IntColumn extends NumberColumn<IntColumn, Integer>
     implements CategoricalColumn<Integer> {
@@ -430,6 +426,24 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
       }
     }
     return result;
+  }
+
+  public Selection isIn(final int... numbers) {
+    final Selection results = new BitmapBackedSelection();
+    final IntRBTreeSet intSet = new IntRBTreeSet(numbers);
+    for (int i = 0; i < size(); i++) {
+      if (intSet.contains(getInt(i))) {
+        results.add(i);
+      }
+    }
+    return results;
+  }
+
+  public Selection isNotIn(final int... numbers) {
+    final Selection results = new BitmapBackedSelection();
+    results.addRange(0, size());
+    results.andNot(isIn(numbers));
+    return results;
   }
 
   /**

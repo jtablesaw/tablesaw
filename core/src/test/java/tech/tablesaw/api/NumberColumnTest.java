@@ -18,7 +18,6 @@ import static java.lang.Double.NaN;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.median;
 import static tech.tablesaw.aggregate.AggregateFunctions.percentile;
@@ -32,6 +31,7 @@ import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
 import com.google.common.base.Stopwatch;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleBinaryOperator;
@@ -201,20 +201,21 @@ public class NumberColumnTest {
   }
 
   @Test
-  public void testDoubleIsIn() {
-    int[] originalValues = new int[] {32, 42, 40, 57, 52, -2};
-    double[] inValues = new double[] {10, -2, 57, -5};
+  public void testIsIn() {
+    Number[] originalValues = {32, 42, 40, 57, 52, -2};
+    Number[] resultValues = {10.0, -2.0, 57.0, -5.0};
+    List<Number> inValues = Arrays.asList(resultValues);
 
-    DoubleColumn initial = DoubleColumn.create("Test", originalValues.length);
+    DoubleColumn initial = DoubleColumn.create("Test");
     Table t = Table.create("t", initial);
 
-    for (int value : originalValues) {
+    for (Number value : originalValues) {
       initial.append(value);
     }
 
     Selection filter = t.numberColumn("Test").isIn(inValues);
     Table result = t.where(filter);
-    assertNotNull(result);
+    assertEquals(2, result.rowCount());
   }
 
   @Test

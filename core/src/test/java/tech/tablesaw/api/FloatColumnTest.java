@@ -18,8 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.selection.Selection;
 
 public class FloatColumnTest {
+
+  private final float[] floatColumnValues = {4, 5, 9.3f, 33.2f, 121, 77};
+  private final FloatColumn floatColumn = FloatColumn.create("fc", floatColumnValues);
 
   @Test
   public void appendFloat() {
@@ -44,5 +48,19 @@ public class FloatColumnTest {
     assertEquals(2.5f, floatColumn.get(0));
     assertTrue(floatColumn.isMissing(1));
     assertEquals(4.0f, floatColumn.get(2));
+  }
+
+  @Test
+  void isIn() {
+    Selection result = floatColumn.isIn(4, 40);
+    assertEquals(1, result.size());
+    assertTrue(floatColumn.where(result).contains(4f));
+  }
+
+  @Test
+  void isNotIn() {
+    Selection result = floatColumn.isNotIn(4, 40);
+    assertEquals(5, result.size());
+    assertTrue(floatColumn.where(result).contains(5f));
   }
 }

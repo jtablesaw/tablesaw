@@ -30,7 +30,7 @@ public class DotPlotExample {
     IntColumn year = bush.dateColumn("date").year();
     year.setName("year");
     bush.addColumns(year);
-    bush.dropWhere(bush.intColumn("year").isIn((Number) 2001, (Number) 2002));
+    bush.dropWhere(bush.intColumn("year").isIn(2001, 2002));
     Table summary = bush.summarize("approval", AggregateFunctions.mean).by("who", "year");
 
     Layout layout2 =

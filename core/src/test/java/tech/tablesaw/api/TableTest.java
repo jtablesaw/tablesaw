@@ -14,14 +14,7 @@
 
 package tech.tablesaw.api;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
@@ -742,6 +735,16 @@ public class TableTest {
       result.set(r, sum);
     }
     return result;
+  }
+
+  @Test
+  void ambiguousMethodCallError() {
+    StringColumn s1 = StringColumn.create("1", "1", "2", "3");
+    StringColumn s2 = StringColumn.create("2", "2", "2", "2");
+    StringColumn s3 = StringColumn.create("3", "3", "2", "1");
+    IntColumn s4 = IntColumn.create("4", 1, 2, 3);
+    Table t = Table.create("t", s3, s2, s1, s4);
+    assertDoesNotThrow(() -> t.where(t.intColumn("4").isIn((int) 1, (int) 2)));
   }
 
   @Test

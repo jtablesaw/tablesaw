@@ -5,9 +5,8 @@ import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isNotMissing;
 
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
-import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
 import java.text.NumberFormat;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.DoubleBinaryOperator;
@@ -67,16 +66,10 @@ public interface NumericColumn<T extends Number>
   }
 
   @Override
-  default Selection isIn(final Number... numbers) {
-    return isIn(Arrays.stream(numbers).mapToDouble(Number::doubleValue).toArray());
-  }
-
-  @Override
-  default Selection isIn(final double... doubles) {
+  default Selection isIn(Collection<Number> numbers) {
     final Selection results = new BitmapBackedSelection();
-    final DoubleRBTreeSet doubleSet = new DoubleRBTreeSet(doubles);
     for (int i = 0; i < size(); i++) {
-      if (doubleSet.contains(getDouble(i))) {
+      if (numbers.contains(getDouble(i))) {
         results.add(i);
       }
     }
@@ -84,18 +77,10 @@ public interface NumericColumn<T extends Number>
   }
 
   @Override
-  default Selection isNotIn(final Number... numbers) {
+  default Selection isNotIn(Collection<Number> numbers) {
     final Selection results = new BitmapBackedSelection();
     results.addRange(0, size());
     results.andNot(isIn(numbers));
-    return results;
-  }
-
-  @Override
-  default Selection isNotIn(final double... doubles) {
-    final Selection results = new BitmapBackedSelection();
-    results.addRange(0, size());
-    results.andNot(isIn(doubles));
     return results;
   }
 
