@@ -1,12 +1,7 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import it.unimi.dsi.fastutil.floats.FloatArrays;
-import it.unimi.dsi.fastutil.floats.FloatComparators;
-import it.unimi.dsi.fastutil.floats.FloatListIterator;
-import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
-import it.unimi.dsi.fastutil.floats.FloatSet;
+import it.unimi.dsi.fastutil.floats.*;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -14,6 +9,8 @@ import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 public class FloatColumn extends NumberColumn<FloatColumn, Float> {
 
@@ -91,6 +88,24 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
       c.append(getFloat(row));
     }
     return c;
+  }
+
+  public Selection isNotIn(final float... numbers) {
+    final Selection results = new BitmapBackedSelection();
+    results.addRange(0, size());
+    results.andNot(isIn(numbers));
+    return results;
+  }
+
+  public Selection isIn(final float... numbers) {
+    final Selection results = new BitmapBackedSelection();
+    final FloatRBTreeSet doubleSet = new FloatRBTreeSet(numbers);
+    for (int i = 0; i < size(); i++) {
+      if (doubleSet.contains(getFloat(i))) {
+        results.add(i);
+      }
+    }
+    return results;
   }
 
   @Override

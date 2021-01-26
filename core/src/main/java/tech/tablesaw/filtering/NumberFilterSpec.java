@@ -1,6 +1,7 @@
 package tech.tablesaw.filtering;
 
 import com.google.common.annotations.Beta;
+import java.util.Collection;
 import tech.tablesaw.api.NumericColumn;
 
 @Beta
@@ -20,13 +21,9 @@ public interface NumberFilterSpec<T> extends FilterSpec<T> {
 
   T isLessThanOrEqualTo(double f);
 
-  T isIn(Number... numbers);
+  T isIn(Collection<Number> numbers);
 
-  T isIn(double... doubles);
-
-  T isNotIn(Number... numbers);
-
-  T isNotIn(double... doubles);
+  T isNotIn(Collection<Number> numbers);
 
   T isZero();
 

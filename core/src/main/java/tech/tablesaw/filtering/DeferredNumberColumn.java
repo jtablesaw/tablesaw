@@ -1,6 +1,7 @@
 package tech.tablesaw.filtering;
 
 import com.google.common.annotations.Beta;
+import java.util.Collection;
 import java.util.function.Function;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
@@ -50,23 +51,13 @@ public class DeferredNumberColumn extends DeferredColumn
   }
 
   @Override
-  public Function<Table, Selection> isIn(Number... numbers) {
+  public Function<Table, Selection> isIn(Collection<Number> numbers) {
     return table -> table.numberColumn(name()).isIn(numbers);
   }
 
   @Override
-  public Function<Table, Selection> isIn(double... doubles) {
-    return table -> table.numberColumn(name()).isIn(doubles);
-  }
-
-  @Override
-  public Function<Table, Selection> isNotIn(Number... numbers) {
+  public Function<Table, Selection> isNotIn(Collection<Number> numbers) {
     return table -> table.numberColumn(name()).isNotIn(numbers);
-  }
-
-  @Override
-  public Function<Table, Selection> isNotIn(double... doubles) {
-    return table -> table.numberColumn(name()).isNotIn(doubles);
   }
 
   @Override

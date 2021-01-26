@@ -1,13 +1,7 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparators;
-import it.unimi.dsi.fastutil.longs.LongIterator;
-import it.unimi.dsi.fastutil.longs.LongListIterator;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.longs.*;
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -18,6 +12,8 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 public class LongColumn extends NumberColumn<LongColumn, Long> implements CategoricalColumn<Long> {
 
@@ -112,6 +108,24 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
       c.append(getLong(row));
     }
     return c;
+  }
+
+  public Selection isIn(final long... numbers) {
+    final Selection results = new BitmapBackedSelection();
+    final LongRBTreeSet intSet = new LongRBTreeSet(numbers);
+    for (int i = 0; i < size(); i++) {
+      if (intSet.contains(getLong(i))) {
+        results.add(i);
+      }
+    }
+    return results;
+  }
+
+  public Selection isNotIn(final long... numbers) {
+    final Selection results = new BitmapBackedSelection();
+    results.addRange(0, size());
+    results.andNot(isIn(numbers));
+    return results;
   }
 
   @Override
