@@ -31,6 +31,7 @@ import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -224,6 +225,10 @@ public class ReadOptions {
 
     protected Builder(InputStream stream) {
       this.source = new Source(stream);
+    }
+
+    protected Builder(InputStreamReader reader) {
+      this.source = new Source(reader);
     }
 
     protected Builder(Reader reader) {

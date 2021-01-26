@@ -62,7 +62,8 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
     if (types == null) {
       Reader reader = source.createReader(bytesCache);
       if (source.file() == null) {
-        bytesCache = CharStreams.toString(reader).getBytes();
+        String s = CharStreams.toString(reader);
+        bytesCache = source.getCharset() != null ? s.getBytes(source.getCharset()) : s.getBytes();
         // create a new reader since we just exhausted the existing one
         reader = source.createReader(bytesCache);
       }
