@@ -1365,15 +1365,13 @@ public class Table extends Relation implements Iterable<Row> {
 
     TableSliceGroup slices = splitOn(idVariables.toArray(new String[0]));
     for (TableSlice slice : slices) {
-      // TODO: This is inefficient, but it looks like there is a bug in row iteration on slices
-      Table temp = slice.asTable();
-
-      for (Row row : temp) {
+      for (Row row : slice) {
         for (String colName : measureColumnNames) {
           if (!dropMissing || !row.isMissing(colName)) {
             writeIdVariables(idVariables, result, row);
             result.stringColumn(MELT_VARIABLE_COLUMN_NAME).append(colName);
-            result.doubleColumn(MELT_VALUE_COLUMN_NAME).append(row.getNumber(colName));
+            double value = row.getNumber(colName);
+            result.doubleColumn(MELT_VALUE_COLUMN_NAME).append(value);
           }
         }
       }
@@ -1382,6 +1380,7 @@ public class Table extends Relation implements Iterable<Row> {
     return result;
   }
 
+  /** Writes one row of id variables into the result table */
   private void writeIdVariables(List<String> idVariables, Table result, Row row) {
     for (String id : idVariables) {
       Column<?> resultColumn = result.column(id);

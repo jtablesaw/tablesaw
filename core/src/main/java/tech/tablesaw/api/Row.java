@@ -12,6 +12,13 @@ import java.util.NoSuchElementException;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
 
+/**
+ * Represents a row in a Relation (either a Table or TableSlice), allowing iteration ofover the
+ * relation.
+ *
+ * <p>Implementation Note: The row is always implemented over a TableSlice. If the constructor
+ * argument is a table, it is wrapped by a slice over the whole table.
+ */
 public class Row implements Iterator<Row> {
 
   /**
@@ -448,7 +455,7 @@ public class Row implements Iterator<Row> {
   }
 
   public double getNumber(String columnName) {
-    return numericColumnMap.get(columnName).getDouble(rowNumber);
+    return numericColumnMap.get(columnName).getDouble(getIndex(rowNumber));
   }
 
   public ColumnType getColumnType(String columnName) {
