@@ -15,12 +15,18 @@
 package tech.tablesaw.io.csv;
 
 import com.univocity.parsers.csv.CsvWriterSettings;
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.concurrent.Immutable;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataWriter;
 import tech.tablesaw.io.Destination;
 import tech.tablesaw.io.WriterRegistry;
@@ -43,7 +49,9 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
 
   public void write(Table table, CsvWriteOptions options) {
     CsvWriterSettings settings = createSettings(options);
-
+    
+    Map<String, NumberFormat> columnSpecificFormats=setupNumberFormatters(table, options);
+    
     com.univocity.parsers.csv.CsvWriter csvWriter = null;
     // Creates a writer with the above settings;
     try {
@@ -58,23 +66,36 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
         }
         csvWriter.writeHeaders(header);
       }
-      for (int r = 0; r < table.rowCount(); r++) {
-        String[] entries = new String[table.columnCount()];
-        for (int c = 0; c < table.columnCount(); c++) {
-          table.get(r, c);
-          DateTimeFormatter dateFormatter = options.dateFormatter();
-          DateTimeFormatter dateTimeFormatter = options.dateTimeFormatter();
-          ColumnType columnType = table.column(c).type();
-          if (dateFormatter != null && columnType.equals(ColumnType.LOCAL_DATE)) {
-            DateColumn dc = (DateColumn) table.column(c);
-            entries[c] = options.dateFormatter().format(dc.get(r));
-          } else if (dateTimeFormatter != null && columnType.equals(ColumnType.LOCAL_DATE_TIME)) {
-            DateTimeColumn dc = (DateTimeColumn) table.column(c);
-            entries[c] = options.dateTimeFormatter().format(dc.get(r));
-          } else {
-            entries[c] = table.getUnformatted(r, c);
-          }
-        }
+        for (int r = 0; r < table.rowCount(); r++) {
+            String[] entries = new String[table.columnCount()];
+            for (int c = 0; c < table.columnCount(); c++) {
+                table.get(r, c);//Why this statement?
+                DateTimeFormatter dateFormatter = options.dateFormatter();
+                DateTimeFormatter dateTimeFormatter = options.dateTimeFormatter();
+                ColumnType columnType = table.column(c).type();
+                if (dateFormatter != null && columnType.equals(ColumnType.LOCAL_DATE)) {
+                    DateColumn dc = (DateColumn) table.column(c);
+                    entries[c] = options.dateFormatter().format(dc.get(r));
+                } else if (dateTimeFormatter != null && columnType.equals(ColumnType.LOCAL_DATE_TIME)) {
+                    DateTimeColumn dc = (DateTimeColumn) table.column(c);
+                    entries[c] = options.dateTimeFormatter().format(dc.get(r));
+                } else if (columnSpecificFormats != null && (table.column(c) instanceof NumberColumn)) {
+                    NumberFormat numberFormat = columnSpecificFormats.get(table.column(c).name());
+                    if (numberFormat != null) {
+                        NumberColumn nc = (NumberColumn) table.column(c);
+                        try {
+                            entries[c] = numberFormat.format(nc.get(r));
+                        } catch (Exception e) {
+                            //NumberFormat.format throws illegalArgumentException for missing values. Fall back on unformatted value
+                            entries[c] = table.getUnformatted(r, c);
+                        }
+                    } else {
+                        entries[c] = table.getUnformatted(r, c);
+                    }
+                } else {
+                    entries[c] = table.getUnformatted(r, c);
+                }
+            }
         csvWriter.writeRow(entries);
       }
     } finally {
@@ -113,4 +134,52 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
   public void write(Table table, Destination dest) {
     write(table, CsvWriteOptions.builder(dest).build());
   }
+  
+  
+  /**Setup a complete Map where both Default NumberFormatters and column specific NumberFormatters
+   * are applied to relevant columns
+   * 
+   * @param table
+   * @param options
+   * @return null if no Formatting options has been set, a complete Map with keys for all 
+   * NumberColumns otherwise. The NumberFormat for a particular column may still be 
+   * null if no option has been set that covers the column.
+   */
+  private Map<String, NumberFormat> setupNumberFormatters(Table  table, CsvWriteOptions options){
+     
+      if(options.defaultDecimalNumberFormat()==null && options.defaultWholeNumberFormat()==null && options.columnSpecificNumberFormatMap()==null){
+          return null;
+      }else{
+          Map<String, NumberFormat> numberFormatMap=new HashMap<>();
+                  
+          if(options.columnSpecificNumberFormatMap()!=null){
+              numberFormatMap.putAll(options.columnSpecificNumberFormatMap());
+          }
+          List<String> columnNames=table.columnNames();
+          
+          for (String columnName : columnNames) {
+              Column column=table.column(columnName);
+              ColumnType numberType=column.type();
+              
+              if(numberFormatMap.get(columnName)!=null && !(column instanceof NumberColumn)){
+                  throw new IllegalArgumentException("Column specific NumberFormat applied to non Numeric column");
+              }else if(numberFormatMap.get(columnName)!=null && column instanceof NumberColumn){
+                  //leave the current NumberFormat unchanged
+              }else if(numberFormatMap.get(columnName)==null 
+                      && options.defaultDecimalNumberFormat()!=null 
+                      && (numberType.equals(ColumnType.DOUBLE)||numberType.equals(ColumnType.FLOAT))){          
+                  numberFormatMap.put(columnName, options.defaultDecimalNumberFormat());
+              }else if(numberFormatMap.get(columnName)==null 
+                      && options.defaultWholeNumberFormat()!=null 
+                      && (numberType.equals(ColumnType.INTEGER)||numberType.equals(ColumnType.LONG)||numberType.equals(ColumnType.SHORT))){
+                  numberFormatMap.put(columnName,options.defaultWholeNumberFormat());
+              }
+              else{
+                  numberFormatMap.put(columnName,null);
+              }
+          }
+          return numberFormatMap;
+      }
+  }
+      
 }
