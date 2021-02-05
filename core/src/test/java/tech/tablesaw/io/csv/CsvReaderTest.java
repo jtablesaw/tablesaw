@@ -489,6 +489,22 @@ public class CsvReaderTest {
     assertEquals(1, t.numberColumn(2).countMissing());
   }
 
+  /** Tests the auto-detection of missing values, using multiple missing value indicators */
+  @Test
+  public void testWithMissingValue2() throws IOException {
+
+    CsvReadOptions options =
+        CsvReadOptions.builder("../data/missing_values2.csv")
+            .dateFormat(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+            .header(true)
+            .build();
+
+    Table t = Table.read().csv(options);
+    assertEquals(1, t.stringColumn(0).countMissing());
+    assertEquals(1, t.numberColumn(1).countMissing());
+    assertEquals(1, t.numberColumn(2).countMissing());
+  }
+
   @Test
   public void testWindowsAndLinuxLineEndings() throws IOException {
     Reader reader =
