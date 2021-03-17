@@ -1,9 +1,7 @@
 package tech.tablesaw.table;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static tech.tablesaw.aggregate.AggregateFunctions.countTrue;
-import static tech.tablesaw.aggregate.AggregateFunctions.latestDateTime;
+import static org.junit.jupiter.api.Assertions.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,5 +49,19 @@ public class RollingColumnTest {
     assertEquals(0, result.getDouble(2), 0.0);
     assertEquals(1, result.getDouble(3), 0.0);
     assertEquals(2, result.getDouble(4), 0.0);
+  }
+
+  @Test
+  public void testCenter() {
+    double[] data = new double[] {1, 2, 3, 4, 5};
+    DoubleColumn doubleColumn = DoubleColumn.create("data", data);
+
+    DoubleColumn result = (DoubleColumn) doubleColumn.rolling(3, true).calc(mean);
+
+    assertEquals(Double.NaN, result.getDouble(0), 0.0);
+    assertNotEquals(Double.NaN, result.getDouble(1), 0.0);
+    assertNotEquals(Double.NaN, result.getDouble(2), 0.0);
+    assertNotEquals(Double.NaN, result.getDouble(3), 0.0);
+    assertEquals(Double.NaN, result.getDouble(4), 0.0);
   }
 }

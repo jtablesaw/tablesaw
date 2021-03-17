@@ -164,6 +164,10 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     return new RollingColumn(this, windowSize);
   }
 
+  default RollingColumn rolling(final int windowSize, final boolean center) {
+    return new RollingColumn(this, windowSize, center);
+  }
+
   String getUnformattedString(int r);
 
   boolean isMissing(int rowNumber);
