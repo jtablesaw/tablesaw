@@ -515,7 +515,8 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     Instant[] output = new Instant[epochSeconds.size()];
     for (int i = 0; i < epochSeconds.size(); i++) {
       LocalDateTime dateTime =
-          LocalDateTime.from(Instant.ofEpochSecond(epochSeconds.getLong(i), secondNanos.getInt(i)));
+          LocalDateTime.ofEpochSecond(
+              epochSeconds.getLong(i), secondNanos.getInt(i), ZoneOffset.UTC);
       if (dateTime == null) {
         output[i] = null;
       } else {
