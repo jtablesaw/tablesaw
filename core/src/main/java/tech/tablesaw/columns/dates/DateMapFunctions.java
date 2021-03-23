@@ -29,8 +29,8 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.columns.times.PackedLocalTime;
 
 /** An interface for mapping operations unique to Date columns */
 public interface DateMapFunctions extends Column<LocalDate> {
@@ -408,7 +408,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         newColumn.appendMissing();
       } else {
         LocalDate value1 = PackedLocalDate.asLocalDate(c1);
-        newColumn.appendInternal(PackedLocalDateTime.pack(value1, time));
+        newColumn.append(value1.atTime(time));
       }
     }
     return newColumn;
@@ -426,7 +426,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
       if (valueIsMissing(c1) || valueIsMissing(c2)) {
         newColumn.appendMissing();
       } else {
-        newColumn.appendInternal(PackedLocalDateTime.create(c1, c2));
+        newColumn.append(get(r).atTime(PackedLocalTime.asLocalTime(c2)));
       }
     }
     return newColumn;

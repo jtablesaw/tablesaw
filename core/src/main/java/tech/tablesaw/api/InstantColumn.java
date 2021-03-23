@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.instant.InstantColumnFormatter;
 import tech.tablesaw.columns.instant.InstantColumnType;
 import tech.tablesaw.columns.instant.InstantMapFunctions;
@@ -383,6 +384,8 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   }
 
   public Instant get(int index) {
+    if (epochSeconds.getLong(index) == DateTimeColumnType.missingValueIndicator()) return null;
+
     return Instant.ofEpochSecond(epochSeconds.getLong(index), secondNanos.getInt(index));
   }
 

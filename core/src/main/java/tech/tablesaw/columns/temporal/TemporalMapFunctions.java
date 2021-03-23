@@ -14,9 +14,8 @@
 
 package tech.tablesaw.columns.temporal;
 
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.asLocalDateTime;
-
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
@@ -64,10 +63,11 @@ public interface TemporalMapFunctions<T extends Temporal> extends TemporalColumn
       if (this.isMissing(r) || column2.isMissing(r)) {
         newColumn.appendMissing();
       } else {
-        long c1 = this.getLongInternal(r);
-        long c2 = column2.getLongInternal(r);
-        LocalDateTime value1 = asLocalDateTime(c1);
-        LocalDateTime value2 = asLocalDateTime(c2);
+        LocalDateTime value1 =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        LocalDateTime value2 =
+            LocalDateTime.ofEpochSecond(
+                column2.getLongInternal(r), column2.getIntInternal(r), ZoneOffset.UTC);
         if (value1 != null && value2 != null) {
           newColumn.append(unit.between(value1, value2));
         } else {

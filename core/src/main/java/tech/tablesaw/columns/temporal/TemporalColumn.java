@@ -9,5 +9,7 @@ public interface TemporalColumn<T extends Temporal> extends Column<T> {
 
   long getLongInternal(int r);
 
+  int getIntInternal(int r);
+
   TemporalColumn<T> appendInternal(long value);
 }

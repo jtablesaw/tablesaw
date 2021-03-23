@@ -14,29 +14,11 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.daysUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfMonth;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfWeek;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getHour;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinute;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinuteOfDay;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMonthValue;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getQuarter;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecondOfDay;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getWeekOfYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.hoursUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.minutesUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.monthsUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.pack;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.weeksUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.yearsUntil;
-
 import com.google.common.base.Strings;
 import java.time.LocalDateTime;
-import java.time.Month;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
@@ -44,7 +26,6 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
-import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.temporal.TemporalMapFunctions;
@@ -56,8 +37,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
     IntColumn newColumn = IntColumn.create(name() + "[" + "hour" + "]");
     for (int r = 0; r < size(); r++) {
       if (!isMissing(r)) {
-        long c1 = getLongInternal(r);
-        newColumn.append(getHour(c1));
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.append(ldt.getHour());
       } else {
         newColumn.appendMissing();
       }
@@ -69,8 +51,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
     IntColumn newColumn = IntColumn.create(name() + "[" + "minute-of-day" + "]");
     for (int r = 0; r < size(); r++) {
       if (!isMissing(r)) {
-        long c1 = getLongInternal(r);
-        newColumn.append((short) getMinuteOfDay(c1));
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.append(ldt.getHour() * 60 + ldt.getMinute());
       } else {
         newColumn.appendMissing();
       }
@@ -82,8 +65,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
     IntColumn newColumn = IntColumn.create(name() + "[" + "second-of-day" + "]");
     for (int r = 0; r < size(); r++) {
       if (!isMissing(r)) {
-        long c1 = getLongInternal(r);
-        newColumn.append(getSecondOfDay(c1));
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.append(ldt.getHour() * 3600 + ldt.getMinute() * 60 + ldt.getSecond());
       } else {
         newColumn.appendMissing();
       }
@@ -105,11 +89,12 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
   default TimeColumn time() {
     TimeColumn newColumn = TimeColumn.create(this.name() + " time");
     for (int r = 0; r < this.size(); r++) {
-      long c1 = getLongInternal(r);
-      if (DateTimeColumn.valueIsMissing(c1)) {
+      LocalDateTime ldt =
+          LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+      if (DateTimeColumn.valueIsMissing(getLongInternal(r))) {
         newColumn.appendInternal(TimeColumnType.missingValueIndicator());
       } else {
-        newColumn.appendInternal(PackedLocalDateTime.time(c1));
+        newColumn.append(ldt.toLocalTime());
       }
     }
     return newColumn;
@@ -121,8 +106,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
       if (isMissing(r)) {
         newColumn.appendMissing();
       } else {
-        long c1 = getLongInternal(r);
-        newColumn.append((short) getMonthValue(c1));
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.append(ldt.getMonthValue());
       }
     }
     return newColumn;
@@ -132,11 +118,12 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
   default StringColumn month() {
     StringColumn newColumn = StringColumn.create(this.name() + " month");
     for (int r = 0; r < this.size(); r++) {
-      long c1 = this.getLongInternal(r);
-      if (DateTimeColumn.valueIsMissing(c1)) {
+      LocalDateTime ldt =
+          LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+      if (DateTimeColumn.valueIsMissing(getLongInternal(r))) {
         newColumn.append(StringColumnType.missingValueIndicator());
       } else {
-        newColumn.append(Month.of(getMonthValue(c1)).name());
+        newColumn.append(ldt.getMonth().name());
       }
     }
     return newColumn;
@@ -153,11 +140,13 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
   default StringColumn yearQuarter() {
     StringColumn newColumn = StringColumn.create(this.name() + " year & quarter");
     for (int r = 0; r < this.size(); r++) {
-      long c1 = this.getLongInternal(r);
-      if (DateTimeColumn.valueIsMissing(c1)) {
+      long epochSecond = this.getLongInternal(r);
+      if (DateTimeColumn.valueIsMissing(epochSecond)) {
         newColumn.append(StringColumnType.missingValueIndicator());
       } else {
-        String yq = getYear(c1) + "-" + getQuarter(c1);
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        String yq = ldt.getYear() + "-" + ldt.get(IsoFields.QUARTER_OF_YEAR);
         newColumn.append(yq);
       }
     }
@@ -227,8 +216,10 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
       if (DateTimeColumn.valueIsMissing(c1)) {
         newColumn.append(StringColumnType.missingValueIndicator());
       } else {
-        String ym = String.valueOf(getYear(c1));
-        ym = ym + "-" + Strings.padStart(String.valueOf(getMonthValue(c1)), 2, '0');
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        String ym = String.valueOf(ldt.getYear());
+        ym = ym + "-" + Strings.padStart(String.valueOf(ldt.getMonthValue()), 2, '0');
         newColumn.append(ym);
       }
     }
@@ -250,8 +241,10 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
       if (DateTimeColumn.valueIsMissing(c1)) {
         newColumn.append(StringColumnType.missingValueIndicator());
       } else {
-        String ym = String.valueOf(getYear(c1));
-        ym = ym + "-" + Strings.padStart(String.valueOf(getDayOfYear(c1)), 3, '0');
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        String ym = String.valueOf(ldt.getYear());
+        ym = ym + "-" + Strings.padStart(String.valueOf(ldt.getDayOfYear()), 3, '0');
         newColumn.append(ym);
       }
     }
@@ -273,8 +266,10 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
       if (DateTimeColumn.valueIsMissing(c1)) {
         newColumn.append(StringColumnType.missingValueIndicator());
       } else {
-        String hm = Strings.padStart(String.valueOf(getHour(c1)), 2, '0');
-        hm = hm + ":" + Strings.padStart(String.valueOf(getMinute(c1)), 2, '0');
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        String hm = Strings.padStart(String.valueOf(ldt.getHour()), 2, '0');
+        hm = hm + ":" + Strings.padStart(String.valueOf(ldt.getMinute()), 2, '0');
         newColumn.append(hm);
       }
     }
@@ -296,8 +291,14 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
       if (DateTimeColumn.valueIsMissing(c1)) {
         newColumn.append(StringColumnType.missingValueIndicator());
       } else {
-        String ym = String.valueOf(getYear(c1));
-        ym = ym + "-" + Strings.padStart(String.valueOf(getWeekOfYear(c1)), 2, '0');
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        String ym = String.valueOf(ldt.getYear());
+        ym =
+            ym
+                + "-"
+                + Strings.padStart(
+                    String.valueOf(ldt.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)), 2, '0');
         newColumn.append(ym);
       }
     }
@@ -311,8 +312,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
       if (isMissing(r)) {
         newColumn.appendMissing();
       } else {
-        long c1 = getLongInternal(r);
-        newColumn.appendInternal(PackedLocalDateTime.date(c1));
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.append(ldt.toLocalDate());
       }
     }
     return newColumn;
@@ -324,8 +326,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
       if (isMissing(r)) {
         newColumn.appendMissing();
       } else {
-        long c1 = getLongInternal(r);
-        newColumn.append(PackedLocalDate.getYear(PackedLocalDateTime.date(c1)));
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.append(ldt.getYear());
       }
     }
     return newColumn;
@@ -336,7 +339,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
     for (int r = 0; r < this.size(); r++) {
       long c1 = this.getLongInternal(r);
       if (!DateTimeColumn.valueIsMissing(c1)) {
-        newColumn.set(r, getDayOfWeek(c1).toString());
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.set(r, ldt.getDayOfWeek().name());
       }
     }
     return newColumn;
@@ -346,8 +351,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
     IntColumn newColumn = IntColumn.create(this.name() + " day of week value", this.size());
     for (int r = 0; r < this.size(); r++) {
       if (!isMissing(r)) {
-        long c1 = this.getLongInternal(r);
-        newColumn.set(r, (short) getDayOfWeek(c1).getValue());
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.set(r, (short) ldt.getDayOfWeek().getValue());
       }
     }
     return newColumn;
@@ -357,8 +363,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
     IntColumn newColumn = IntColumn.create(this.name() + " day of year", this.size());
     for (int r = 0; r < this.size(); r++) {
       if (!isMissing(r)) {
-        long c1 = this.getLongInternal(r);
-        newColumn.set(r, (short) getDayOfYear(c1));
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.set(r, (short) ldt.getDayOfYear());
       }
     }
     return newColumn;
@@ -368,8 +375,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
     IntColumn newColumn = IntColumn.create(this.name() + " day of month", size());
     for (int r = 0; r < this.size(); r++) {
       if (!isMissing(r)) {
-        long c1 = this.getLongInternal(r);
-        newColumn.set(r, getDayOfMonth(c1));
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.set(r, ldt.getDayOfMonth());
       }
     }
     return newColumn;
@@ -390,34 +398,38 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
    */
   default LongColumn timeWindow(ChronoUnit unit, int n, LocalDateTime start) {
     String newColumnName = "" + n + " " + unit.toString() + " window [" + name() + "]";
-    long packedStartDate = pack(start);
     LongColumn numberColumn = LongColumn.create(newColumnName, size());
     for (int i = 0; i < size(); i++) {
-      long packedDate = getLongInternal(i);
+      if (getLongInternal(i) == DateTimeColumnType.missingValueIndicator()) {
+        numberColumn.set(i, DateTimeColumnType.missingValueIndicator());
+        continue;
+      }
+      LocalDateTime ldt =
+          LocalDateTime.ofEpochSecond(getLongInternal(i), getIntInternal(i), ZoneOffset.UTC);
       long result;
       switch (unit) {
         case MINUTES:
-          result = minutesUntil(packedDate, packedStartDate) / n;
+          result = ChronoUnit.MINUTES.between(start, ldt) / n;
           numberColumn.set(i, result);
           break;
         case HOURS:
-          result = hoursUntil(packedDate, packedStartDate) / n;
+          result = ChronoUnit.HOURS.between(start, ldt) / n;
           numberColumn.set(i, result);
           break;
         case DAYS:
-          result = daysUntil(packedDate, packedStartDate) / n;
+          result = ChronoUnit.DAYS.between(start, ldt) / n;
           numberColumn.set(i, result);
           break;
         case WEEKS:
-          result = weeksUntil(packedDate, packedStartDate) / n;
+          result = ChronoUnit.WEEKS.between(start, ldt) / n;
           numberColumn.set(i, result);
           break;
         case MONTHS:
-          result = monthsUntil(packedDate, packedStartDate) / n;
+          result = ChronoUnit.MONTHS.between(start, ldt) / n;
           numberColumn.set(i, result);
           break;
         case YEARS:
-          result = yearsUntil(packedDate, packedStartDate) / n;
+          result = ChronoUnit.YEARS.between(start, ldt) / n;
           numberColumn.set(i, result);
           break;
         default:
@@ -433,8 +445,9 @@ public interface DateTimeMapFunctions extends TemporalMapFunctions<LocalDateTime
     IntColumn newColumn = IntColumn.create(name() + "[" + "minute" + "]", size());
     for (int r = 0; r < size(); r++) {
       if (!isMissing(r)) {
-        long c1 = getLongInternal(r);
-        newColumn.set(r, getMinute(c1));
+        LocalDateTime ldt =
+            LocalDateTime.ofEpochSecond(getLongInternal(r), getIntInternal(r), ZoneOffset.UTC);
+        newColumn.set(r, ldt.getMinute());
       }
     }
     return newColumn;

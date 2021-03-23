@@ -526,14 +526,20 @@ public class SawWriter {
 
   private void writeColumn(String fileName, DateTimeColumn column) throws IOException {
     try (DataOutputStream dos = columnOutputStream(fileName)) {
-      writeLongStream(dos, column.longIterator());
+      for (int i = 0; i < column.size(); i++) {
+        dos.writeLong(column.getLongInternal(i));
+        dos.writeInt(column.getIntInternal(i));
+      }
       dos.flush();
     }
   }
 
   private void writeColumn(String fileName, InstantColumn column) throws IOException {
     try (DataOutputStream dos = columnOutputStream(fileName)) {
-      writeLongStream(dos, column.longIterator());
+      for (int i = 0; i < column.size(); i++) {
+        dos.writeLong(column.getLongInternal(i));
+        dos.writeInt(column.getIntInternal(i));
+      }
     }
   }
 

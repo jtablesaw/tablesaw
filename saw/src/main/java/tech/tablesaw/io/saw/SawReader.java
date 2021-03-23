@@ -296,8 +296,15 @@ public class SawReader {
 
   private DateTimeColumn readLocalDateTimeColumn(
       String fileName, ColumnMetadata metadata, int rowcount) throws IOException {
-    long[] data = readLongValues(fileName, rowcount);
-    return DateTimeColumn.createInternal(metadata.getName(), data);
+    long[] epochSeconds = new long[rowcount];
+    int[] secondNanos = new int[rowcount];
+    try (DataInputStream dis = inputStream(fileName)) {
+      for (int i = 0; i < rowcount; i++) {
+        epochSeconds[i] = dis.readLong();
+        secondNanos[i] = dis.readInt();
+      }
+    }
+    return DateTimeColumn.createInternal(metadata.getName(), epochSeconds, secondNanos);
   }
 
   private long[] readLongValues(String fileName, int rowcount) throws IOException {
@@ -312,7 +319,15 @@ public class SawReader {
 
   private InstantColumn readInstantColumn(String fileName, ColumnMetadata metadata, int rowcount)
       throws IOException {
-    return InstantColumn.createInternal(metadata.getName(), readLongValues(fileName, rowcount));
+    long[] epochSeconds = new long[rowcount];
+    int[] secondNanos = new int[rowcount];
+    try (DataInputStream dis = inputStream(fileName)) {
+      for (int i = 0; i < rowcount; i++) {
+        epochSeconds[i] = dis.readLong();
+        secondNanos[i] = dis.readInt();
+      }
+    }
+    return InstantColumn.createInternal(metadata.getName(), epochSeconds, secondNanos);
   }
 
   private TimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata, int rowcount)

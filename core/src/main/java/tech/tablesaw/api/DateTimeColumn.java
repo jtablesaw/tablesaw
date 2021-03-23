@@ -239,6 +239,10 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   @Override
   public DateTimeColumn appendCell(String stringValue) {
     LocalDateTime ldt = DateTimeColumnType.DEFAULT_PARSER.parse(stringValue);
+    if (ldt == null)
+      return appendInternal(
+          DateTimeColumnType.missingValueIndicator(), IntColumnType.missingValueIndicator());
+
     return appendInternal(ldt.toEpochSecond(ZoneOffset.UTC), ldt.getNano());
   }
 
@@ -290,12 +294,13 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public String getString(int row) {
-    return get(row).toString();
+    return printFormatter.format(epochSeconds.getLong(row), secondNanos.getInt(row));
   }
 
   @Override
   public String getUnformattedString(int row) {
-    return get(row).toString();
+    return DateTimeColumnFormatter.defaultFormat(
+        epochSeconds.getLong(row), secondNanos.getInt(row));
   }
 
   @Override
@@ -402,6 +407,8 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   }
 
   public LocalDateTime get(int index) {
+    if (epochSeconds.getLong(index) == DateTimeColumnType.missingValueIndicator()) return null;
+
     return LocalDateTime.ofEpochSecond(
         epochSeconds.getLong(index), secondNanos.getInt(index), ZoneOffset.UTC);
   }
@@ -489,7 +496,8 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     long[] output = new long[epochSeconds.size()];
     for (int i = 0; i < epochSeconds.size(); i++) {
       LocalDateTime dateTime =
-          LocalDateTime.from(Instant.ofEpochSecond(epochSeconds.getLong(i), secondNanos.getInt(i)));
+          LocalDateTime.ofEpochSecond(
+              epochSeconds.getLong(i), secondNanos.getInt(i), ZoneOffset.UTC);
       if (dateTime == null) {
         output[i] = DateTimeColumnType.missingValueIndicator();
       } else {
@@ -575,7 +583,8 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public DateTimeColumn appendMissing() {
-    appendInternal(DateTimeColumnType.missingValueIndicator());
+    appendInternal(
+        DateTimeColumnType.missingValueIndicator(), IntColumnType.missingValueIndicator());
     return this;
   }
 

@@ -249,13 +249,15 @@ public interface DateTimeFilters
   }
 
   default Selection isBetweenExcluding(LocalDateTime lowValue, LocalDateTime highValue) {
-    return isBetweenExcluding(
-        lowValue.toEpochSecond(ZoneOffset.UTC), highValue.toEpochSecond(ZoneOffset.UTC));
+    return eval(LocalDateTime::isAfter, lowValue).and(eval(LocalDateTime::isBefore, highValue));
   }
 
   default Selection isBetweenIncluding(LocalDateTime lowValue, LocalDateTime highValue) {
-    return isBetweenIncluding(
-        lowValue.toEpochSecond(ZoneOffset.UTC), highValue.toEpochSecond(ZoneOffset.UTC));
+    return eval((Predicate<LocalDateTime>) ldt -> ldt.isBefore(lowValue) || ldt.isEqual(lowValue))
+        .and(
+            eval(
+                (Predicate<LocalDateTime>)
+                    ldt -> ldt.isAfter(highValue) || ldt.isEqual(highValue)));
   }
 
   default Selection isInYear(int year) {
