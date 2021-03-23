@@ -18,13 +18,10 @@ import static tech.tablesaw.columns.temporal.TemporalPredicates.isMissing;
 import static tech.tablesaw.columns.temporal.TemporalPredicates.isNotMissing;
 
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparators;
-import it.unimi.dsi.fastutil.longs.LongIterator;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.longs.*;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -32,12 +29,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -47,7 +39,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.instant.InstantColumnFormatter;
 import tech.tablesaw.columns.instant.InstantColumnType;
 import tech.tablesaw.columns.instant.InstantMapFunctions;
-import tech.tablesaw.columns.instant.PackedInstant;
+import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.temporal.TemporalFillers;
 import tech.tablesaw.columns.temporal.TemporalFilters;
 import tech.tablesaw.selection.Selection;
@@ -59,38 +51,45 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
         TemporalFilters<Instant>,
         CategoricalColumn<Instant> {
 
-  private LongArrayList data;
+  private LongArrayList epochSeconds;
+  private IntArrayList secondNanos;
 
   private final IntComparator comparator =
       (r1, r2) -> {
-        long f1 = getPackedDateTime(r1);
-        long f2 = getPackedDateTime(r2);
-        return Long.compare(f1, f2);
+        int cmp = Long.compare(getLongInternal(r1), getLongInternal(r2));
+        if (cmp == 0) {
+          return getIntInternal(r1) - getIntInternal(r2);
+        }
+        return cmp;
       };
 
   private InstantColumnFormatter printFormatter = new InstantColumnFormatter();
 
-  private InstantColumn(String name, LongArrayList data) {
+  private InstantColumn(String name, LongArrayList epochSeconds, IntArrayList secondNanos) {
     super(InstantColumnType.instance(), name);
-    this.data = data;
+    this.epochSeconds = epochSeconds;
+    this.secondNanos = secondNanos;
   }
 
   public static InstantColumn create(String name) {
-    return new InstantColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
+    return new InstantColumn(
+        name, new LongArrayList(DEFAULT_ARRAY_SIZE), new IntArrayList(DEFAULT_ARRAY_SIZE));
   }
 
   /**
    * For internal Tablesaw use only Returns a new column with the given name and data
    *
    * @param name The column name
-   * @param data An array of longs representing Instant values in Tablesaw internal format
+   * @param epochSeconds An array of longs representing epoch as seconds
+   * @param secondNanos An array of ints representing nanoseconds in a second
    */
-  public static InstantColumn createInternal(String name, long[] data) {
-    return new InstantColumn(name, new LongArrayList(data));
+  public static InstantColumn createInternal(String name, long[] epochSeconds, int[] secondNanos) {
+    return new InstantColumn(name, new LongArrayList(epochSeconds), new IntArrayList(secondNanos));
   }
 
   public static InstantColumn create(String name, int initialSize) {
-    InstantColumn column = new InstantColumn(name, new LongArrayList(initialSize));
+    InstantColumn column =
+        new InstantColumn(name, new LongArrayList(initialSize), new IntArrayList(initialSize));
     for (int i = 0; i < initialSize; i++) {
       column.appendMissing();
     }
@@ -98,7 +97,8 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   }
 
   public static InstantColumn create(String name, Collection<Instant> data) {
-    InstantColumn column = new InstantColumn(name, new LongArrayList(data.size()));
+    InstantColumn column =
+        new InstantColumn(name, new LongArrayList(data.size()), new IntArrayList(data.size()));
     for (Instant date : data) {
       column.append(date);
     }
@@ -106,7 +106,8 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   }
 
   public static InstantColumn create(String name, Instant... data) {
-    InstantColumn column = new InstantColumn(name, new LongArrayList(data.length));
+    InstantColumn column =
+        new InstantColumn(name, new LongArrayList(data.length), new IntArrayList(data.length));
     for (Instant date : data) {
       column.append(date);
     }
@@ -135,11 +136,13 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     InstantColumn column1 = this;
 
     for (int r = 0; r < column1.size(); r++) {
-      long packedDateTime = column1.getLongInternal(r);
-      if (packedDateTime == InstantColumnType.missingValueIndicator()) {
+      long epochSecond = column1.getLongInternal(r);
+      int secondNanos = column1.getIntInternal(r);
+      if (epochSecond == InstantColumnType.missingValueIndicator()) {
         newColumn.appendMissing();
       } else {
-        newColumn.appendInternal(PackedInstant.plus(packedDateTime, amountToAdd, unit));
+        Instant result = Instant.ofEpochSecond(epochSecond, secondNanos).plus(amountToAdd, unit);
+        newColumn.appendInternal(result.getEpochSecond(), result.getNano());
       }
     }
     return newColumn;
@@ -169,13 +172,16 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   @Override
   public boolean contains(Instant dateTime) {
-    long dt = PackedInstant.pack(dateTime);
-    return data.contains(dt);
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      if (epochSeconds.getLong(i) == dateTime.getEpochSecond()
+          && secondNanos.getInt(i) == dateTime.getNano()) return true;
+    }
+    return false;
   }
 
   @Override
   public InstantColumn setMissing(int i) {
-    return set(i, InstantColumnType.missingValueIndicator());
+    return set(i, InstantColumnType.missingValueIndicator(), IntColumnType.missingValueIndicator());
   }
 
   public InstantColumn where(Selection selection) {
@@ -190,25 +196,30 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   @Override
   public InstantColumn lag(int n) {
     int srcPos = n >= 0 ? 0 : 0 - n;
-    long[] dest = new long[size()];
+    long[] destSeconds = new long[size()];
+    int[] destNanos = new int[size()];
     int destPos = n <= 0 ? 0 : n;
     int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
-      dest[i] = InstantColumnType.missingValueIndicator();
+      destSeconds[i] = InstantColumnType.missingValueIndicator();
+      destNanos[i] = IntColumnType.missingValueIndicator();
     }
 
-    System.arraycopy(data.toLongArray(), srcPos, dest, destPos, length);
+    System.arraycopy(epochSeconds.toLongArray(), srcPos, destSeconds, destPos, length);
+    System.arraycopy(secondNanos.toIntArray(), srcPos, destNanos, destPos, length);
 
     InstantColumn copy = emptyCopy(size());
-    copy.data = new LongArrayList(dest);
+    copy.epochSeconds = new LongArrayList(destSeconds);
+    copy.secondNanos = new IntArrayList(destNanos);
     copy.setName(name() + " lag(" + n + ")");
     return copy;
   }
 
   @Override
   public InstantColumn appendCell(String stringValue) {
-    return appendInternal(PackedInstant.pack(InstantColumnType.DEFAULT_PARSER.parse(stringValue)));
+    Instant instant = InstantColumnType.DEFAULT_PARSER.parse(stringValue);
+    return appendInternal(instant.getEpochSecond(), instant.getNano());
   }
 
   @Override
@@ -218,8 +229,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   public InstantColumn append(Instant dateTime) {
     if (dateTime != null) {
-      final long dt = PackedInstant.pack(dateTime);
-      appendInternal(dt);
+      appendInternal(dateTime.getEpochSecond(), dateTime.getNano());
     } else {
       appendInternal(InstantColumnType.missingValueIndicator());
     }
@@ -243,11 +253,18 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   }
 
   public int size() {
-    return data.size();
+    return epochSeconds.size();
   }
 
-  public InstantColumn appendInternal(long dateTime) {
-    data.add(dateTime);
+  public InstantColumn appendInternal(long epochSeconds, int secondNanos) {
+    this.epochSeconds.add(epochSeconds);
+    this.secondNanos.add(secondNanos);
+    return this;
+  }
+
+  public InstantColumn appendInternal(long epochSeconds) {
+    this.epochSeconds.add(epochSeconds);
+    this.secondNanos.add(0);
     return this;
   }
 
@@ -258,7 +275,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   @Override
   public String getUnformattedString(int row) {
-    return PackedInstant.toString(getPackedDateTime(row));
+    return get(row).toString();
   }
 
   @Override
@@ -277,24 +294,28 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   @Override
   public InstantColumn copy() {
-    InstantColumn column = emptyCopy(data.size());
-    column.data = data.clone();
+    InstantColumn column = emptyCopy(epochSeconds.size());
+    column.epochSeconds = epochSeconds.clone();
+    column.secondNanos = secondNanos.clone();
     return column;
   }
 
   @Override
   public void clear() {
-    data.clear();
+    epochSeconds.clear();
+    secondNanos.clear();
   }
 
   @Override
+  // FIXME: consider nanos
   public void sortAscending() {
-    data.sort(LongComparators.NATURAL_COMPARATOR);
+    epochSeconds.sort(LongComparators.NATURAL_COMPARATOR);
   }
 
   @Override
+  // FIXME: consider nanos
   public void sortDescending() {
-    data.sort(LongComparators.OPPOSITE_COMPARATOR);
+    epochSeconds.sort(LongComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override
@@ -320,34 +341,41 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return table;
   }
 
+  // FIXME: consider nanos
   @Override
   public int countUnique() {
-    LongSet ints = new LongOpenHashSet(data.size());
-    for (long i : data) {
+    LongSet ints = new LongOpenHashSet(epochSeconds.size());
+    for (long i : epochSeconds) {
       ints.add(i);
     }
     return ints.size();
   }
 
+  // FIXME: consider nanos
   @Override
   public InstantColumn unique() {
-    LongSet ints = new LongOpenHashSet(data.size());
-    for (long i : data) {
+    LongSet ints = new LongOpenHashSet(epochSeconds.size());
+    for (long i : epochSeconds) {
       ints.add(i);
     }
     InstantColumn column = emptyCopy(ints.size());
     column.setName(name() + " Unique values");
-    column.data = LongArrayList.wrap(ints.toLongArray());
+    // column.data = LongArrayList.wrap(ints.toLongArray());
+    // FIXME
     return column;
   }
 
   @Override
   public boolean isEmpty() {
-    return data.isEmpty();
+    return epochSeconds.isEmpty();
   }
 
   public long getLongInternal(int index) {
-    return data.getLong(index);
+    return epochSeconds.getLong(index);
+  }
+
+  public int getIntInternal(int index) {
+    return secondNanos.getInt(index);
   }
 
   protected long getPackedDateTime(int index) {
@@ -355,7 +383,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   }
 
   public Instant get(int index) {
-    return PackedInstant.asInstant(getPackedDateTime(index));
+    return Instant.ofEpochSecond(epochSeconds.getLong(index), secondNanos.getInt(index));
   }
 
   @Override
@@ -405,14 +433,15 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
    * <p>If a value is missing, InstantColumnType.missingValueIndicator() is used
    */
   public long[] asEpochSecondArray(ZoneOffset offset) {
-    long[] output = new long[data.size()];
-    for (int i = 0; i < data.size(); i++) {
-      Instant instant = PackedInstant.asInstant(data.getLong(i));
+    long[] output = new long[epochSeconds.size()];
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      Instant instant = Instant.ofEpochSecond(epochSeconds.getLong(i), secondNanos.getInt(i));
       if (instant == null) {
         output[i] = InstantColumnType.missingValueIndicator();
       } else {
         output[i] = instant.getEpochSecond();
       }
+      i++;
     }
     return output;
   }
@@ -436,14 +465,15 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
    * the array
    */
   public long[] asEpochMillisArray(ZoneOffset offset) {
-    long[] output = new long[data.size()];
-    for (int i = 0; i < data.size(); i++) {
-      Instant instant = PackedInstant.asInstant(data.getLong(i));
+    long[] output = new long[epochSeconds.size()];
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      Instant instant = Instant.ofEpochSecond(epochSeconds.getLong(i), secondNanos.getInt(i));
       if (instant == null) {
         output[i] = InstantColumnType.missingValueIndicator();
       } else {
         output[i] = instant.toEpochMilli();
       }
+      i++;
     }
     return output;
   }
@@ -453,14 +483,15 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   }
 
   public DateTimeColumn asLocalDateTimeColumn(ZoneId zone) {
-    LocalDateTime[] output = new LocalDateTime[data.size()];
-    for (int i = 0; i < data.size(); i++) {
-      Instant instant = PackedInstant.asInstant(data.getLong(i));
+    LocalDateTime[] output = new LocalDateTime[epochSeconds.size()];
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      Instant instant = Instant.ofEpochSecond(epochSeconds.getLong(i), secondNanos.getInt(i));
       if (instant == null) {
         output[i] = null;
       } else {
         output[i] = LocalDateTime.ofInstant(instant, zone);
       }
+      i++;
     }
     return DateTimeColumn.create(name(), output);
   }
@@ -479,31 +510,44 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   @Override
   public InstantColumn append(Column<Instant> column, int row) {
     Preconditions.checkArgument(column.type() == this.type());
-    return appendInternal(((InstantColumn) column).getLongInternal(row));
+    InstantColumn col = (InstantColumn) column;
+    return appendInternal(col.getLongInternal(row), col.getIntInternal(row));
   }
 
   @Override
   public InstantColumn set(int row, Column<Instant> column, int sourceRow) {
     Preconditions.checkArgument(column.type() == this.type());
-    return set(row, ((InstantColumn) column).getLongInternal(sourceRow));
+    InstantColumn col = (InstantColumn) column;
+    return set(row, col.getLongInternal(sourceRow), col.getIntInternal(sourceRow));
   }
 
   public Instant max() {
     if (isEmpty()) {
       return null;
     }
-    long max = Long.MIN_VALUE;
+    long maxEpochSeconds = Long.MIN_VALUE;
+    int maxSecondNanos = Integer.MIN_VALUE;
     boolean allMissing = true;
-    for (long aData : data) {
-      if (InstantColumnType.missingValueIndicator() != aData) {
-        max = Math.max(max, aData);
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      if (InstantColumnType.missingValueIndicator() != epochSeconds.getLong(i)) {
+        int cmp = Long.compare(maxEpochSeconds, epochSeconds.getLong(i));
+        if (cmp != 0) {
+          maxEpochSeconds = (cmp > 0) ? maxEpochSeconds : epochSeconds.getLong(i);
+          maxSecondNanos = (cmp > 0) ? maxSecondNanos : secondNanos.getInt(i);
+        }
+
+        int iCmp = Integer.compare(maxSecondNanos, secondNanos.getInt(i));
+        if (iCmp != 0) {
+          maxEpochSeconds = (cmp > 0) ? maxEpochSeconds : epochSeconds.getLong(i);
+          maxSecondNanos = (cmp > 0) ? maxSecondNanos : secondNanos.getInt(i);
+        }
         allMissing = false;
       }
     }
     if (allMissing) {
       return null;
     }
-    return PackedInstant.asInstant(max);
+    return Instant.ofEpochSecond(maxEpochSeconds, maxSecondNanos);
   }
 
   @Override
@@ -517,28 +561,40 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     if (isEmpty()) {
       return null;
     }
-    long min = Long.MAX_VALUE;
+    long minEpochSeconds = Long.MAX_VALUE;
+    int minSecondNanos = Integer.MAX_VALUE;
     boolean allMissing = true;
-    for (long aData : data) {
-      if (InstantColumnType.missingValueIndicator() != aData) {
-        min = Math.min(min, aData);
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      if (InstantColumnType.missingValueIndicator() != epochSeconds.getLong(i)) {
+        int cmp = Long.compare(minEpochSeconds, epochSeconds.getLong(i));
+        if (cmp != 0) {
+          minEpochSeconds = (cmp < 0) ? minEpochSeconds : epochSeconds.getLong(i);
+          minSecondNanos = (cmp < 0) ? minSecondNanos : secondNanos.getInt(i);
+        }
+
+        int iCmp = Integer.compare(minSecondNanos, secondNanos.getInt(i));
+        if (iCmp != 0) {
+          minEpochSeconds = (cmp < 0) ? minEpochSeconds : epochSeconds.getLong(i);
+          minSecondNanos = (cmp < 0) ? minSecondNanos : secondNanos.getInt(i);
+        }
         allMissing = false;
       }
     }
     if (allMissing) {
       return null;
     }
-    return PackedInstant.asInstant(min);
+    return Instant.ofEpochSecond(minEpochSeconds, minSecondNanos);
   }
 
-  public InstantColumn set(int index, long value) {
-    data.set(index, value);
+  public InstantColumn set(int index, long epochSeconds, int secondNanos) {
+    this.epochSeconds.set(index, epochSeconds);
+    this.secondNanos.set(index, secondNanos);
     return this;
   }
 
   @Override
   public InstantColumn set(int index, Instant value) {
-    return value == null ? setMissing(index) : set(index, PackedInstant.pack(value));
+    return value == null ? setMissing(index) : set(index, value.getEpochSecond(), value.getNano());
   }
 
   /**
@@ -548,12 +604,13 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
    *     greater than the number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
+  // FIXME: consider nanos
   public List<Instant> top(int n) {
     List<Instant> top = new ArrayList<>();
-    long[] values = data.toLongArray();
+    long[] values = epochSeconds.toLongArray(); // FIXME
     LongArrays.parallelQuickSort(values, LongComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
-      top.add(PackedInstant.asInstant(values[i]));
+      top.add(Instant.ofEpochSecond(values[i], 0));
     }
     return top;
   }
@@ -565,18 +622,23 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
    *     greater than the number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
+  // FIXME: consider nanos
   public List<Instant> bottom(int n) {
     List<Instant> bottom = new ArrayList<>();
-    long[] values = data.toLongArray();
+    long[] values = epochSeconds.toLongArray();
     LongArrays.parallelQuickSort(values);
     for (int i = 0; i < n && i < values.length; i++) {
-      bottom.add(PackedInstant.asInstant(values[i]));
+      bottom.add(Instant.ofEpochSecond(values[i], 0));
     }
     return bottom;
   }
 
   public LongIterator longIterator() {
-    return data.iterator();
+    return epochSeconds.iterator();
+  }
+
+  public IntIterator intIterator() {
+    return secondNanos.iterator();
   }
 
   public Set<Instant> asSet() {
@@ -626,6 +688,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return new Iterator<Instant>() {
 
       final LongIterator longIterator = longIterator();
+      final IntIterator intIterator = intIterator();
 
       @Override
       public boolean hasNext() {
@@ -634,7 +697,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
       @Override
       public Instant next() {
-        return PackedInstant.asInstant(longIterator.nextLong());
+        return Instant.ofEpochSecond(longIterator.nextLong(), intIterator.nextInt());
       }
     };
   }
@@ -702,8 +765,8 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   @Override
   public Instant[] asObjectArray() {
-    final Instant[] output = new Instant[data.size()];
-    for (int i = 0; i < data.size(); i++) {
+    final Instant[] output = new Instant[epochSeconds.size()]; // FIXME
+    for (int i = 0; i < epochSeconds.size(); i++) {
       output[i] = get(i);
     }
     return output;

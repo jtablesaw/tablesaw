@@ -15,7 +15,9 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.longs.LongComparators;
@@ -46,7 +48,8 @@ import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeFilters;
 import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.instant.InstantColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.temporal.TemporalFillers;
 import tech.tablesaw.selection.Selection;
 
@@ -57,38 +60,45 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
         TemporalFillers<LocalDateTime, DateTimeColumn>,
         CategoricalColumn<LocalDateTime> {
 
-  private LongArrayList data;
+  private LongArrayList epochSeconds;
+  private IntArrayList secondNanos;
 
   private final IntComparator comparator =
       (r1, r2) -> {
-        long f1 = getPackedDateTime(r1);
-        long f2 = getPackedDateTime(r2);
-        return Long.compare(f1, f2);
+        int cmp = Long.compare(getLongInternal(r1), getLongInternal(r2));
+        if (cmp == 0) {
+          return getIntInternal(r1) - getIntInternal(r2);
+        }
+        return cmp;
       };
 
   private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
 
-  private DateTimeColumn(String name, LongArrayList data) {
+  private DateTimeColumn(String name, LongArrayList epochSeconds, IntArrayList secondNanos) {
     super(DateTimeColumnType.instance(), name);
-    this.data = data;
+    this.epochSeconds = epochSeconds;
+    this.secondNanos = secondNanos;
   }
 
   /**
    * For internal Tablesaw use only Returns a new column with the given name and data
    *
    * @param name The column name
-   * @param longs An array of longs representing datetime values in Tablesaw internal format
+   * @param epochSeconds An array of longs representing epoch-seconds
+   * @param secondNanos An array of ints representing nanosecond-of-second
    */
-  public static DateTimeColumn createInternal(String name, long[] longs) {
-    return new DateTimeColumn(name, new LongArrayList(longs));
+  public static DateTimeColumn createInternal(String name, long[] epochSeconds, int[] secondNanos) {
+    return new DateTimeColumn(name, new LongArrayList(epochSeconds), new IntArrayList(secondNanos));
   }
 
   public static DateTimeColumn create(String name) {
-    return new DateTimeColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
+    return new DateTimeColumn(
+        name, new LongArrayList(DEFAULT_ARRAY_SIZE), new IntArrayList(DEFAULT_ARRAY_SIZE));
   }
 
   public static DateTimeColumn create(String name, int initialSize) {
-    DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(initialSize));
+    DateTimeColumn column =
+        new DateTimeColumn(name, new LongArrayList(initialSize), new IntArrayList(initialSize));
     for (int i = 0; i < initialSize; i++) {
       column.appendMissing();
     }
@@ -96,7 +106,8 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   }
 
   public static DateTimeColumn create(String name, Collection<LocalDateTime> data) {
-    DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.size()));
+    DateTimeColumn column =
+        new DateTimeColumn(name, new LongArrayList(data.size()), new IntArrayList(data.size()));
     for (LocalDateTime date : data) {
       column.append(date);
     }
@@ -116,18 +127,21 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     DateTimeColumn column1 = this;
 
     for (int r = 0; r < column1.size(); r++) {
-      long packedDateTime = column1.getLongInternal(r);
-      if (packedDateTime == DateTimeColumnType.missingValueIndicator()) {
+      long epochSecond = column1.getLongInternal(r);
+      int secondNanos = column1.getIntInternal(r);
+      if (epochSecond == DateTimeColumnType.missingValueIndicator()) {
         newColumn.appendMissing();
       } else {
-        newColumn.appendInternal(PackedLocalDateTime.plus(packedDateTime, amountToAdd, unit));
+        Instant result = Instant.ofEpochSecond(epochSecond, secondNanos).plus(amountToAdd, unit);
+        newColumn.appendInternal(result.getEpochSecond(), result.getNano());
       }
     }
     return newColumn;
   }
 
   public static DateTimeColumn create(String name, LocalDateTime... data) {
-    DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.length));
+    DateTimeColumn column =
+        new DateTimeColumn(name, new LongArrayList(data.length), new IntArrayList(data.length));
     for (LocalDateTime date : data) {
       column.append(date);
     }
@@ -167,8 +181,11 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public boolean contains(LocalDateTime dateTime) {
-    long dt = PackedLocalDateTime.pack(dateTime);
-    return data.contains(dt);
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      if (epochSeconds.getLong(i) == dateTime.toEpochSecond(ZoneOffset.UTC)
+          && secondNanos.getInt(i) == dateTime.getNano()) return true;
+    }
+    return false;
   }
 
   @Override
@@ -199,26 +216,30 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   @Override
   public DateTimeColumn lag(int n) {
     int srcPos = n >= 0 ? 0 : 0 - n;
-    long[] dest = new long[size()];
+    long[] destSeconds = new long[size()];
+    int[] destNanos = new int[size()];
     int destPos = n <= 0 ? 0 : n;
     int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
-      dest[i] = DateTimeColumnType.missingValueIndicator();
+      destSeconds[i] = InstantColumnType.missingValueIndicator();
+      destNanos[i] = IntColumnType.missingValueIndicator();
     }
 
-    System.arraycopy(data.toLongArray(), srcPos, dest, destPos, length);
+    System.arraycopy(epochSeconds.toLongArray(), srcPos, destSeconds, destPos, length);
+    System.arraycopy(secondNanos.toIntArray(), srcPos, destNanos, destPos, length);
 
     DateTimeColumn copy = emptyCopy(size());
-    copy.data = new LongArrayList(dest);
+    copy.epochSeconds = new LongArrayList(destSeconds);
+    copy.secondNanos = new IntArrayList(destNanos);
     copy.setName(name() + " lag(" + n + ")");
     return copy;
   }
 
   @Override
   public DateTimeColumn appendCell(String stringValue) {
-    return appendInternal(
-        PackedLocalDateTime.pack(DateTimeColumnType.DEFAULT_PARSER.parse(stringValue)));
+    LocalDateTime ldt = DateTimeColumnType.DEFAULT_PARSER.parse(stringValue);
+    return appendInternal(ldt.toEpochSecond(ZoneOffset.UTC), ldt.getNano());
   }
 
   @Override
@@ -228,8 +249,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   public DateTimeColumn append(LocalDateTime dateTime) {
     if (dateTime != null) {
-      final long dt = PackedLocalDateTime.pack(dateTime);
-      appendInternal(dt);
+      appendInternal(dateTime.toEpochSecond(ZoneOffset.UTC), dateTime.getNano());
     } else {
       appendInternal(DateTimeColumnType.missingValueIndicator());
     }
@@ -253,22 +273,29 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   }
 
   public int size() {
-    return data.size();
+    return epochSeconds.size();
   }
 
-  public DateTimeColumn appendInternal(long dateTime) {
-    data.add(dateTime);
+  public DateTimeColumn appendInternal(long epochSeconds, int secondNanos) {
+    this.epochSeconds.add(epochSeconds);
+    this.secondNanos.add(secondNanos);
+    return this;
+  }
+
+  public DateTimeColumn appendInternal(long epochSeconds) {
+    this.epochSeconds.add(epochSeconds);
+    this.secondNanos.add(0);
     return this;
   }
 
   @Override
   public String getString(int row) {
-    return printFormatter.format(getPackedDateTime(row));
+    return get(row).toString();
   }
 
   @Override
   public String getUnformattedString(int row) {
-    return PackedLocalDateTime.toString(getPackedDateTime(row));
+    return get(row).toString();
   }
 
   @Override
@@ -287,24 +314,28 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public DateTimeColumn copy() {
-    DateTimeColumn column = emptyCopy(data.size());
-    column.data = data.clone();
+    DateTimeColumn column = emptyCopy(epochSeconds.size());
+    column.epochSeconds = epochSeconds.clone();
+    column.secondNanos = secondNanos.clone();
     return column;
   }
 
   @Override
   public void clear() {
-    data.clear();
+    epochSeconds.clear();
+    secondNanos.clear();
   }
 
   @Override
   public void sortAscending() {
-    data.sort(LongComparators.NATURAL_COMPARATOR);
+    // FIXME: consider nanos
+    epochSeconds.sort(LongComparators.NATURAL_COMPARATOR);
   }
 
   @Override
+  // FIXME: consider nanos
   public void sortDescending() {
-    data.sort(LongComparators.OPPOSITE_COMPARATOR);
+    epochSeconds.sort(LongComparators.OPPOSITE_COMPARATOR);
   }
 
   @Override
@@ -330,34 +361,40 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return table;
   }
 
+  // FIXME: consider nanos
   @Override
   public int countUnique() {
-    LongSet ints = new LongOpenHashSet(data.size());
-    for (long i : data) {
+    LongSet ints = new LongOpenHashSet(epochSeconds.size());
+    for (long i : epochSeconds) {
       ints.add(i);
     }
     return ints.size();
   }
 
+  // FIXME: consider nanos
   @Override
   public DateTimeColumn unique() {
-    LongSet ints = new LongOpenHashSet(data.size());
-    for (long i : data) {
+    LongSet ints = new LongOpenHashSet(epochSeconds.size());
+    for (long i : epochSeconds) {
       ints.add(i);
     }
     DateTimeColumn column = emptyCopy(ints.size());
     column.setName(name() + " Unique values");
-    column.data = LongArrayList.wrap(ints.toLongArray());
+    column.epochSeconds = LongArrayList.wrap(ints.toLongArray());
     return column;
   }
 
   @Override
   public boolean isEmpty() {
-    return data.isEmpty();
+    return epochSeconds.isEmpty();
   }
 
   public long getLongInternal(int index) {
-    return data.getLong(index);
+    return epochSeconds.getLong(index);
+  }
+
+  public int getIntInternal(int index) {
+    return secondNanos.getInt(index);
   }
 
   protected long getPackedDateTime(int index) {
@@ -365,7 +402,8 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   }
 
   public LocalDateTime get(int index) {
-    return PackedLocalDateTime.asLocalDateTime(getPackedDateTime(index));
+    return LocalDateTime.ofEpochSecond(
+        epochSeconds.getLong(index), secondNanos.getInt(index), ZoneOffset.UTC);
   }
 
   @Override
@@ -416,9 +454,10 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
    * <p>If a value is missing, DateTimeColumnType.missingValueIndicator() is used
    */
   public long[] asEpochSecondArray(ZoneOffset offset) {
-    long[] output = new long[data.size()];
-    for (int i = 0; i < data.size(); i++) {
-      LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
+    long[] output = new long[epochSeconds.size()];
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      LocalDateTime dateTime =
+          LocalDateTime.from(Instant.ofEpochSecond(epochSeconds.getLong(i), secondNanos.getInt(i)));
       if (dateTime == null) {
         output[i] = DateTimeColumnType.missingValueIndicator();
       } else {
@@ -447,9 +486,10 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
    * the array
    */
   public long[] asEpochMillisArray(ZoneOffset offset) {
-    long[] output = new long[data.size()];
-    for (int i = 0; i < data.size(); i++) {
-      LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
+    long[] output = new long[epochSeconds.size()];
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      LocalDateTime dateTime =
+          LocalDateTime.from(Instant.ofEpochSecond(epochSeconds.getLong(i), secondNanos.getInt(i)));
       if (dateTime == null) {
         output[i] = DateTimeColumnType.missingValueIndicator();
       } else {
@@ -464,9 +504,10 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   }
 
   public InstantColumn asInstantColumn(ZoneId zone) {
-    Instant[] output = new Instant[data.size()];
-    for (int i = 0; i < data.size(); i++) {
-      LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
+    Instant[] output = new Instant[epochSeconds.size()];
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      LocalDateTime dateTime =
+          LocalDateTime.from(Instant.ofEpochSecond(epochSeconds.getLong(i), secondNanos.getInt(i)));
       if (dateTime == null) {
         output[i] = null;
       } else {
@@ -490,32 +531,46 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   @Override
   public DateTimeColumn append(Column<LocalDateTime> column, int row) {
     Preconditions.checkArgument(column.type() == this.type());
-    return appendInternal(((DateTimeColumn) column).getLongInternal(row));
+    DateTimeColumn col = (DateTimeColumn) column;
+    return appendInternal(col.getLongInternal(row), col.getIntInternal(row));
   }
 
   @Override
   public DateTimeColumn set(int row, Column<LocalDateTime> column, int sourceRow) {
     Preconditions.checkArgument(column.type() == this.type());
-    return set(row, ((DateTimeColumn) column).getLongInternal(sourceRow));
+    DateTimeColumn col = (DateTimeColumn) column;
+    return set(row, col.getLongInternal(sourceRow), col.getIntInternal(sourceRow));
   }
 
   public LocalDateTime max() {
-    long max;
+    long maxEpochSeconds;
+    int maxSecondNanos;
     if (!isEmpty()) {
-      max = getPackedDateTime(0);
+      maxEpochSeconds = getPackedDateTime(0);
+      maxSecondNanos = getIntInternal(0);
     } else {
       return null;
     }
-    for (long aData : data) {
-      if (DateTimeColumnType.missingValueIndicator() != aData) {
-        max = (max > aData) ? max : aData;
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      if (DateTimeColumnType.missingValueIndicator() != epochSeconds.getLong(i)) {
+        int cmp = Long.compare(maxEpochSeconds, epochSeconds.getLong(i));
+        if (cmp != 0) {
+          maxEpochSeconds = (cmp > 0) ? maxEpochSeconds : epochSeconds.getLong(i);
+          maxSecondNanos = (cmp > 0) ? maxSecondNanos : secondNanos.getInt(i);
+        }
+
+        int iCmp = Integer.compare(maxSecondNanos, secondNanos.getInt(i));
+        if (iCmp != 0) {
+          maxEpochSeconds = (cmp > 0) ? maxEpochSeconds : epochSeconds.getLong(i);
+          maxSecondNanos = (cmp > 0) ? maxSecondNanos : secondNanos.getInt(i);
+        }
       }
     }
 
-    if (DateTimeColumnType.missingValueIndicator() == max) {
+    if (DateTimeColumnType.missingValueIndicator() == maxEpochSeconds) {
       return null;
     }
-    return PackedLocalDateTime.asLocalDateTime(max);
+    return LocalDateTime.ofEpochSecond(maxEpochSeconds, maxSecondNanos, ZoneOffset.UTC);
   }
 
   @Override
@@ -526,32 +581,52 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public LocalDateTime min() {
-    long min;
+    long minEpochSeconds;
+    int minSecondNanos;
 
     if (!isEmpty()) {
-      min = getPackedDateTime(0);
+      minEpochSeconds = getPackedDateTime(0);
+      minSecondNanos = getIntInternal(0);
     } else {
       return null;
     }
-    for (long aData : data) {
-      if (DateTimeColumnType.missingValueIndicator() != aData) {
-        min = (min < aData) ? min : aData;
+    for (int i = 0; i < epochSeconds.size(); i++) {
+      if (DateTimeColumnType.missingValueIndicator() != epochSeconds.getLong(i)) {
+        int cmp = Long.compare(minEpochSeconds, epochSeconds.getLong(i));
+        if (cmp != 0) {
+          minEpochSeconds = (cmp < 0) ? minEpochSeconds : epochSeconds.getLong(i);
+          minSecondNanos = (cmp < 0) ? minSecondNanos : secondNanos.getInt(i);
+        }
+
+        int iCmp = Integer.compare(minSecondNanos, secondNanos.getInt(i));
+        if (iCmp != 0) {
+          minEpochSeconds = (cmp < 0) ? minEpochSeconds : epochSeconds.getLong(i);
+          minSecondNanos = (cmp < 0) ? minSecondNanos : secondNanos.getInt(i);
+        }
       }
     }
-    if (Integer.MIN_VALUE == min) {
+    if (Integer.MIN_VALUE == minEpochSeconds) {
       return null;
     }
-    return PackedLocalDateTime.asLocalDateTime(min);
+    return LocalDateTime.ofEpochSecond(minEpochSeconds, minSecondNanos, ZoneOffset.UTC);
   }
 
   public DateTimeColumn set(int index, long value) {
-    data.set(index, value);
+    epochSeconds.set(index, value);
+    return this;
+  }
+
+  public DateTimeColumn set(int index, long epochSeconds, int secondNanos) {
+    this.epochSeconds.set(index, epochSeconds);
+    this.secondNanos.set(index, secondNanos);
     return this;
   }
 
   @Override
   public DateTimeColumn set(int index, LocalDateTime value) {
-    return value == null ? setMissing(index) : set(index, PackedLocalDateTime.pack(value));
+    return value == null
+        ? setMissing(index)
+        : set(index, value.toEpochSecond(ZoneOffset.UTC), value.getNano());
   }
 
   /**
@@ -561,12 +636,13 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
    *     greater than the number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
+  // FIXME: consider nanos
   public List<LocalDateTime> top(int n) {
     List<LocalDateTime> top = new ArrayList<>();
-    long[] values = data.toLongArray();
+    long[] values = epochSeconds.toLongArray();
     LongArrays.parallelQuickSort(values, LongComparators.OPPOSITE_COMPARATOR);
     for (int i = 0; i < n && i < values.length; i++) {
-      top.add(PackedLocalDateTime.asLocalDateTime(values[i]));
+      top.add(LocalDateTime.ofEpochSecond(values[i], 0, ZoneOffset.UTC));
     }
     return top;
   }
@@ -578,18 +654,23 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
    *     greater than the number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
+  // FIXME: consider nanos
   public List<LocalDateTime> bottom(int n) {
     List<LocalDateTime> bottom = new ArrayList<>();
-    long[] values = data.toLongArray();
+    long[] values = epochSeconds.toLongArray();
     LongArrays.parallelQuickSort(values);
     for (int i = 0; i < n && i < values.length; i++) {
-      bottom.add(PackedLocalDateTime.asLocalDateTime(values[i]));
+      bottom.add(LocalDateTime.ofEpochSecond(values[i], 0, ZoneOffset.UTC));
     }
     return bottom;
   }
 
   public LongIterator longIterator() {
-    return data.iterator();
+    return epochSeconds.iterator();
+  }
+
+  public IntIterator intIterator() {
+    return secondNanos.iterator();
   }
 
   public Set<LocalDateTime> asSet() {
@@ -639,6 +720,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return new Iterator<LocalDateTime>() {
 
       final LongIterator longIterator = longIterator();
+      final IntIterator intIterator = intIterator();
 
       @Override
       public boolean hasNext() {
@@ -647,7 +729,8 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
       @Override
       public LocalDateTime next() {
-        return PackedLocalDateTime.asLocalDateTime(longIterator.nextLong());
+        return LocalDateTime.ofEpochSecond(
+            longIterator.nextLong(), intIterator.nextInt(), ZoneOffset.UTC);
       }
     };
   }
@@ -715,8 +798,8 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public LocalDateTime[] asObjectArray() {
-    final LocalDateTime[] output = new LocalDateTime[data.size()];
-    for (int i = 0; i < data.size(); i++) {
+    final LocalDateTime[] output = new LocalDateTime[epochSeconds.size()];
+    for (int i = 0; i < epochSeconds.size(); i++) {
       output[i] = get(i);
     }
     return output;

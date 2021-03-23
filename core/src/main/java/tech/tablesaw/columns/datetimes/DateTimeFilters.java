@@ -5,6 +5,9 @@ import static tech.tablesaw.columns.temporal.TemporalPredicates.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.function.Predicate;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.temporal.TemporalFilters;
 import tech.tablesaw.filtering.DateTimeFilterSpec;
@@ -15,7 +18,7 @@ public interface DateTimeFilters
     extends TemporalFilters<LocalDateTime>, DateTimeFilterSpec<Selection> {
 
   default Selection isAfter(LocalDateTime value) {
-    return eval(isGreaterThan, PackedLocalDateTime.pack(value));
+    return eval(isGreaterThan, value.toEpochSecond(ZoneOffset.UTC));
   }
 
   default Selection isAfter(LocalDate value) {
@@ -27,11 +30,11 @@ public interface DateTimeFilters
   }
 
   default Selection isOnOrAfter(LocalDateTime value) {
-    return eval(isGreaterThanOrEqualTo, PackedLocalDateTime.pack(value));
+    return eval(isGreaterThanOrEqualTo, value.toEpochSecond(ZoneOffset.UTC));
   }
 
   default Selection isBefore(LocalDateTime value) {
-    return eval(isLessThan, PackedLocalDateTime.pack(value));
+    return eval(isLessThan, value.toEpochSecond(ZoneOffset.UTC));
   }
 
   default Selection isBefore(LocalDate value) {
@@ -43,7 +46,7 @@ public interface DateTimeFilters
   }
 
   default Selection isOnOrBefore(LocalDateTime value) {
-    return eval(isLessThanOrEqualTo, PackedLocalDateTime.pack(value));
+    return eval(isLessThanOrEqualTo, value.toEpochSecond(ZoneOffset.UTC));
   }
 
   default Selection isAfter(DateTimeColumn column) {
@@ -67,12 +70,12 @@ public interface DateTimeFilters
   }
 
   default Selection isEqualTo(LocalDateTime value) {
-    long packed = PackedLocalDateTime.pack(value);
+    long packed = value.toEpochSecond(ZoneOffset.UTC);
     return eval(isEqualTo, packed);
   }
 
   default Selection isNotEqualTo(LocalDateTime value) {
-    long packed = PackedLocalDateTime.pack(value);
+    long packed = value.toEpochSecond(ZoneOffset.UTC);
     return eval(isNotEqualTo, packed);
   }
 
@@ -102,129 +105,157 @@ public interface DateTimeFilters
   }
 
   default Selection isMonday() {
-    return eval(PackedLocalDateTime::isMonday);
+    return eval(
+        ((Predicate<LocalDateTime>) localDateTime -> localDateTime.getDayOfWeek().getValue() == 1));
   }
 
   default Selection isTuesday() {
-    return eval(PackedLocalDateTime::isTuesday);
+    return eval(
+        ((Predicate<LocalDateTime>) localDateTime -> localDateTime.getDayOfWeek().getValue() == 2));
   }
 
   default Selection isWednesday() {
-    return eval(PackedLocalDateTime::isWednesday);
+    return eval(
+        ((Predicate<LocalDateTime>) localDateTime -> localDateTime.getDayOfWeek().getValue() == 3));
   }
 
   default Selection isThursday() {
-    return eval(PackedLocalDateTime::isThursday);
+    return eval(
+        ((Predicate<LocalDateTime>) localDateTime -> localDateTime.getDayOfWeek().getValue() == 4));
   }
 
   default Selection isFriday() {
-    return eval(PackedLocalDateTime::isFriday);
+    return eval(
+        ((Predicate<LocalDateTime>) localDateTime -> localDateTime.getDayOfWeek().getValue() == 5));
   }
 
   default Selection isSaturday() {
-    return eval(PackedLocalDateTime::isSaturday);
+    return eval(
+        ((Predicate<LocalDateTime>) localDateTime -> localDateTime.getDayOfWeek().getValue() == 6));
   }
 
   default Selection isSunday() {
-    return eval(PackedLocalDateTime::isSunday);
+    return eval(
+        ((Predicate<LocalDateTime>) localDateTime -> localDateTime.getDayOfWeek().getValue() == 7));
   }
 
   default Selection isInJanuary() {
-    return eval(PackedLocalDateTime::isInJanuary);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 1));
   }
 
   default Selection isInFebruary() {
-    return eval(PackedLocalDateTime::isInFebruary);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 2));
   }
 
   default Selection isInMarch() {
-    return eval(PackedLocalDateTime::isInMarch);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 3));
   }
 
   default Selection isInApril() {
-    return eval(PackedLocalDateTime::isInApril);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 4));
   }
 
   default Selection isInMay() {
-    return eval(PackedLocalDateTime::isInMay);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 5));
   }
 
   default Selection isInJune() {
-    return eval(PackedLocalDateTime::isInJune);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 6));
   }
 
   default Selection isInJuly() {
-    return eval(PackedLocalDateTime::isInJuly);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 7));
   }
 
   default Selection isInAugust() {
-    return eval(PackedLocalDateTime::isInAugust);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 8));
   }
 
   default Selection isInSeptember() {
-    return eval(PackedLocalDateTime::isInSeptember);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 9));
   }
 
   default Selection isInOctober() {
-    return eval(PackedLocalDateTime::isInOctober);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 10));
   }
 
   default Selection isInNovember() {
-    return eval(PackedLocalDateTime::isInNovember);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 11));
   }
 
   default Selection isInDecember() {
-    return eval(PackedLocalDateTime::isInDecember);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonthValue() == 12));
   }
 
   default Selection isFirstDayOfMonth() {
-    return eval(PackedLocalDateTime::isFirstDayOfMonth);
+    return eval(((Predicate<LocalDateTime>) localDateTime -> localDateTime.getDayOfMonth() == 1));
   }
 
   default Selection isLastDayOfMonth() {
-    return eval(PackedLocalDateTime::isLastDayOfMonth);
+    return eval(
+        ((Predicate<LocalDateTime>)
+            localDateTime ->
+                localDateTime.getDayOfMonth() == localDateTime.getMonth().maxLength()));
   }
 
   default Selection isInQ1() {
-    return eval(PackedLocalDateTime::isInQ1);
+    return eval(
+        ((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonth().getValue() < 4));
   }
 
   default Selection isInQ2() {
-    return eval(PackedLocalDateTime::isInQ2);
+    return eval(
+        ((Predicate<LocalDateTime>)
+            localDateTime ->
+                localDateTime.getMonth().getValue() > 3
+                    && localDateTime.getMonth().getValue() < 7));
   }
 
   default Selection isInQ3() {
-    return eval(PackedLocalDateTime::isInQ3);
+    return eval(
+        ((Predicate<LocalDateTime>)
+            localDateTime ->
+                localDateTime.getMonth().getValue() > 6
+                    && localDateTime.getMonth().getValue() < 10));
   }
 
   default Selection isInQ4() {
-    return eval(PackedLocalDateTime::isInQ4);
+    return eval(
+        ((Predicate<LocalDateTime>) localDateTime -> localDateTime.getMonth().getValue() > 9));
   }
 
   default Selection isNoon() {
-    return eval(PackedLocalDateTime::isNoon);
+    return eval(
+        ((Predicate<LocalDateTime>)
+            localDateTime -> localDateTime.toLocalTime().equals(LocalTime.NOON)));
   }
 
   default Selection isMidnight() {
-    return eval(PackedLocalDateTime::isMidnight);
+    return eval(
+        ((Predicate<LocalDateTime>)
+            localDateTime -> localDateTime.toLocalTime().equals(LocalTime.MIDNIGHT)));
   }
 
   default Selection isBeforeNoon() {
-    return eval(PackedLocalDateTime::AM);
+    return eval(
+        ((Predicate<LocalDateTime>)
+            localDateTime -> localDateTime.toLocalTime().compareTo(LocalTime.NOON) < 0));
   }
 
   default Selection isAfterNoon() {
-    return eval(PackedLocalDateTime::PM);
+    return eval(
+        ((Predicate<LocalDateTime>)
+            localDateTime -> localDateTime.toLocalTime().compareTo(LocalTime.NOON) > 0));
   }
 
   default Selection isBetweenExcluding(LocalDateTime lowValue, LocalDateTime highValue) {
     return isBetweenExcluding(
-        PackedLocalDateTime.pack(lowValue), PackedLocalDateTime.pack(highValue));
+        lowValue.toEpochSecond(ZoneOffset.UTC), highValue.toEpochSecond(ZoneOffset.UTC));
   }
 
   default Selection isBetweenIncluding(LocalDateTime lowValue, LocalDateTime highValue) {
     return isBetweenIncluding(
-        PackedLocalDateTime.pack(lowValue), PackedLocalDateTime.pack(highValue));
+        lowValue.toEpochSecond(ZoneOffset.UTC), highValue.toEpochSecond(ZoneOffset.UTC));
   }
 
   default Selection isInYear(int year) {
