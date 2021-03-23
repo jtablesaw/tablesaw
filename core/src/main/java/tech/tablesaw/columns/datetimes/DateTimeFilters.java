@@ -1,6 +1,5 @@
 package tech.tablesaw.columns.datetimes;
 
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.isInYear;
 import static tech.tablesaw.columns.temporal.TemporalPredicates.*;
 
 import java.time.LocalDate;
@@ -253,15 +252,13 @@ public interface DateTimeFilters
   }
 
   default Selection isBetweenIncluding(LocalDateTime lowValue, LocalDateTime highValue) {
-    return eval((Predicate<LocalDateTime>) ldt -> ldt.isBefore(lowValue) || ldt.isEqual(lowValue))
+    return eval((Predicate<LocalDateTime>) ldt -> ldt.isBefore(highValue) || ldt.isEqual(highValue))
         .and(
-            eval(
-                (Predicate<LocalDateTime>)
-                    ldt -> ldt.isAfter(highValue) || ldt.isEqual(highValue)));
+            eval((Predicate<LocalDateTime>) ldt -> ldt.isAfter(lowValue) || ldt.isEqual(lowValue)));
   }
 
   default Selection isInYear(int year) {
-    return eval(isInYear, year);
+    return eval((Predicate<LocalDateTime>) ldt -> ldt.getYear() == year);
   }
 
   @Override
