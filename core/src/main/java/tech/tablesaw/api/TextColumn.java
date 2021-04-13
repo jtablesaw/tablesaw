@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.AbstractStringColumn;
+import tech.tablesaw.columns.strings.StringParser;
 import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -55,6 +56,8 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
 
+  private StringParser stringParser = TextColumnType.DEFAULT_PARSER;
+
   private TextColumn(String name, Collection<String> strings) {
     super(TextColumnType.instance(), name);
     values = new ArrayList<>(strings.size());
@@ -74,6 +77,14 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
     for (String string : strings) {
       append(string);
     }
+  }
+
+  public StringParser getStringParser() {
+    return stringParser;
+  }
+
+  public void setStringParser(StringParser stringParser) {
+    this.stringParser = stringParser;
   }
 
   public static boolean valueIsMissing(String string) {
@@ -286,7 +297,11 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   @Override
   public TextColumn appendCell(String object) {
-    values.add(TextColumnType.DEFAULT_PARSER.parse(object));
+    if (stringParser == null) {
+      values.add(object);
+    } else {
+      values.add(stringParser.parse(object));
+    }
     return this;
   }
 

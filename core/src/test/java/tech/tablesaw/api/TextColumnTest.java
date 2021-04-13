@@ -51,7 +51,21 @@ public class TextColumnTest {
     column.appendObj("Value 1");
     column.appendObj(null);
     column.appendObj("Value 2");
-    assertEquals(3, column.size());
+    column.appendObj("*");
+    assertEquals(4, column.size());
+    assertTrue(column.isMissing(3));
+  }
+
+  @Test
+  public void testAppendObjNullParser() {
+    TextColumn column = TextColumn.create("testing");
+    column.setStringParser(null);
+    column.appendObj("Value 1");
+    column.appendObj(null);
+    column.appendObj("Value 2");
+    column.appendObj("*");
+    assertEquals(4, column.size());
+    assertEquals("*", column.getString(3));
   }
 
   @Test
