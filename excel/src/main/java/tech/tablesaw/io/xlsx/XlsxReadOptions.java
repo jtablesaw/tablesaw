@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Locale;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.Source;
 
@@ -14,10 +16,12 @@ public class XlsxReadOptions extends ReadOptions {
 
   /** The sheet to read. Null means no specific index was set. First sheet has index 0. */
   protected Integer sheetIndex;
+  protected HashMap<String, ColumnType> preserveColumnType = new HashMap<>();
 
   protected XlsxReadOptions(Builder builder) {
     super(builder);
     sheetIndex = builder.sheetIndex;
+    preserveColumnType= builder.preserveColumnType;
   }
 
   public static Builder builder(Source source) {
@@ -51,6 +55,7 @@ public class XlsxReadOptions extends ReadOptions {
   public static class Builder extends ReadOptions.Builder {
 
     protected Integer sheetIndex;
+    protected HashMap<String, ColumnType> preserveColumnType = new HashMap<>();
 
     protected Builder(Source source) {
       super(source);
@@ -157,6 +162,10 @@ public class XlsxReadOptions extends ReadOptions {
     public Builder sheetIndex(int sheetIndex) {
       this.sheetIndex = sheetIndex;
       return this;
+    }
+
+    public void preserveEmptyColumnType(String columnName, ColumnType columnType) {
+      preserveColumnType.put(columnName, columnType);
     }
   }
 }

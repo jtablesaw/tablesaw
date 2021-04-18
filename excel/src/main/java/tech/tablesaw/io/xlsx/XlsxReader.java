@@ -270,6 +270,15 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
             column = altColumn;
             columns.set(colNum, column);
           }
+        } else {
+          if (column == null && rowNum == tableArea.endRow && options.preserveColumnType.containsKey(headerNames.get(colNum))) {
+            ColumnType type = options.preserveColumnType.get(headerNames.get(colNum));
+            column = createColumn(headerNames.get(colNum), type);
+            columns.set(colNum, column);
+            while (column.size() < rowNum - tableArea.startRow) {
+              column.appendMissing();
+            }
+          }
         }
         if (column != null) {
           while (column.size() <= rowNum - tableArea.startRow) {
@@ -355,6 +364,10 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     }
     column = columnType.create(name);
     return column;
+  }
+
+  private Column<?> createColumn(String name, ColumnType columnType) {
+    return columnType.create(name);
   }
 
   @Override

@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static tech.tablesaw.api.ColumnType.*;
 
 public class XlsxReaderTest {
 
@@ -111,11 +112,9 @@ public class XlsxReaderTest {
             "booleancol",
             "datecol",
             "formulacol");
-    //        stringcol    shortcol    intcol        longcol        doublecol    booleancol
-    // datecol
-    //        Hallvard                12345678    12345678900                TRUE        22/02/2019
-    // 20:54:09
-    //                    124            12345679                13,35
+//    stringcol shortcol  intcol   longcol    doublecol booleancol      datecol        formulacol
+//    Hallvard           12345678 12345678900              TRUE    22/02/2019 20:54:09
+//                124    12345679               13.35                                    137.35
     assertColumnValues(table.stringColumn("stringcol"), "Hallvard", null);
     assertColumnValues(table.intColumn("shortcol"), null, 124);
     assertColumnValues(table.intColumn("intcol"), 12345678, 12345679);
@@ -125,6 +124,76 @@ public class XlsxReaderTest {
     assertColumnValues(table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
     assertColumnValues(table.doubleColumn("formulacol"), null ,137.35);
 
+  }
+
+  @Test
+  public void testColumnsWithEmptyColumn() {
+    Table table =
+        read1(
+            "columns-with-empty-column",
+            2,
+            "stringcol",
+            "intcol",
+            "longcol",
+            "doublecol",
+            "booleancol",
+            "datecol",
+            "formulacol");
+//    stringcol shortcol  intcol   longcol    doublecol booleancol      datecol        formulacol
+//    Hallvard           12345678 12345678900              TRUE    22/02/2019 20:54:09
+//                       12345679               13.35                                    13.35
+    assertColumnValues(table.stringColumn("stringcol"), "Hallvard", null);
+    assertColumnValues(table.intColumn("intcol"), 12345678, 12345679);
+    assertColumnValues(table.longColumn("longcol"), 12345678900L, null);
+    assertColumnValues(table.doubleColumn("doublecol"), null, 13.35);
+    assertColumnValues(table.booleanColumn("booleancol"), true, null);
+    assertColumnValues(table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
+    assertColumnValues(table.doubleColumn("formulacol"), null, 13.35);
+  }
+
+  @Test
+  public void testColumnsWithEmptyColumnAndPreserve() {
+    String[] columnNames = new String[]{"stringcol",
+        "shortcol",
+        "intcol",
+        "longcol",
+        "doublecol",
+        "booleancol",
+        "datecol",
+        "formulacol"};
+//    stringcol shortcol  intcol   longcol    doublecol booleancol      datecol        formulacol
+//    Hallvard           12345678 12345678900              TRUE    22/02/2019 20:54:09
+//                       12345679               13.35                                    13.35
+
+    Table table = null;
+    try {
+      String fileName = "columns-with-empty-column.xlsx";
+      XlsxReadOptions.Builder builder = XlsxReadOptions.builder("../data/" + fileName);
+      builder.preserveEmptyColumnType("shortcol", SHORT);
+      List<Table> tables =
+          new XlsxReader().readMultiple(builder.build());
+      assertNotNull(tables, "No tables read from " + fileName);
+      assertEquals(1, tables.size(), "Wrong number of tables in " + fileName);
+      table = tables.get(0);
+    } catch (final IOException e) {
+      fail(e.getMessage());
+    }
+
+    int colNum = 0, size = 2;
+    for (final Column<?> column : table.columns()) {
+      assertEquals(columnNames[colNum], column.name(), "Wrong column name");
+      assertEquals(size, column.size(), "Wrong size for column " + columnNames[colNum]);
+      colNum++;
+    }
+
+    assertColumnValues(table.stringColumn("stringcol"), "Hallvard", null);
+    assertColumnValues(table.shortColumn("shortcol"), null, null);
+    assertColumnValues(table.intColumn("intcol"), 12345678, 12345679);
+    assertColumnValues(table.longColumn("longcol"), 12345678900L, null);
+    assertColumnValues(table.doubleColumn("doublecol"), null, 13.35);
+    assertColumnValues(table.booleanColumn("booleancol"), true, null);
+    assertColumnValues(table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
+    assertColumnValues(table.doubleColumn("formulacol"), null, 13.35);
   }
 
   @Test
