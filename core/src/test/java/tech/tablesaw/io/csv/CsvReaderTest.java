@@ -826,4 +826,23 @@ public class CsvReaderTest {
     Table out = Table.read().csv(new StringReader(string));
     assertEquals(table.get(0, 0), out.get(0, 0));
   }
+
+  @Test
+  public void testIgnoreInvalidRowsTrue() throws IOException {
+    Table table =
+        Table.read()
+            .csv(CsvReadOptions.builder("../data/short_row.csv").ignoreInvalidRows(true).build());
+    assertEquals(2, table.rowCount());
+  }
+
+  @Test
+  public void testIgnoreInvalidRowsFalse() throws IOException {
+    assertThrows(
+        AddCellToColumnException.class,
+        () -> {
+          Table.read()
+              .csv(
+                  CsvReadOptions.builder("../data/short_row.csv").ignoreInvalidRows(false).build());
+        });
+  }
 }

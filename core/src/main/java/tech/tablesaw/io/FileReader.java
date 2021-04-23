@@ -181,6 +181,9 @@ public abstract class FileReader {
         (nextLine = reader.parseNext()) != null;
         rowNumber++) {
       // validation
+      if (options.ignoreInvalidRows() && nextLine.length != types.length) {
+        continue;
+      }
       if (nextLine.length < types.length) {
         if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
           logger.error("Warning: Invalid file. Row " + rowNumber + " is empty. Continuing.");

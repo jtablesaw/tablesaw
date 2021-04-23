@@ -42,6 +42,7 @@ import tech.tablesaw.api.ColumnType;
 public class ReadOptions {
 
   public static final boolean DEFAULT_IGNORE_ZERO_DECIMAL = true;
+  public static final boolean DEFAULT_IGNORE_INVALID_ROWS = false;
 
   private static final List<ColumnType> DEFAULT_TYPES =
       Lists.newArrayList(
@@ -80,6 +81,7 @@ public class ReadOptions {
   protected final int maxCharsPerColumn;
   protected final boolean ignoreZeroDecimal;
   protected final boolean allowDuplicateColumnNames;
+  protected final boolean ignoreInvalidRows;
 
   protected final DateTimeFormatter dateFormatter;
   protected final DateTimeFormatter dateTimeFormatter;
@@ -100,6 +102,7 @@ public class ReadOptions {
     header = builder.header;
     maxCharsPerColumn = builder.maxCharsPerColumn;
     ignoreZeroDecimal = builder.ignoreZeroDecimal;
+    ignoreInvalidRows = builder.ignoreInvalidRows;
 
     dateFormatter = builder.dateFormatter;
     timeFormatter = builder.timeFormatter;
@@ -154,6 +157,10 @@ public class ReadOptions {
     return ignoreZeroDecimal;
   }
 
+  public boolean ignoreInvalidRows() {
+    return ignoreInvalidRows;
+  }
+
   public DateTimeFormatter dateTimeFormatter() {
     if (dateTimeFormatter != null) {
       return dateTimeFormatter;
@@ -203,6 +210,7 @@ public class ReadOptions {
     protected boolean header = true;
     protected int maxCharsPerColumn = 4096;
     protected boolean ignoreZeroDecimal = DEFAULT_IGNORE_ZERO_DECIMAL;
+    protected boolean ignoreInvalidRows = DEFAULT_IGNORE_INVALID_ROWS;
     private boolean allowDuplicateColumnNames = false;
 
     protected Builder() {
@@ -299,6 +307,11 @@ public class ReadOptions {
     /** Ignore zero value decimals in data values. Defaults to {@code true}. */
     public Builder ignoreZeroDecimal(boolean ignoreZeroDecimal) {
       this.ignoreZeroDecimal = ignoreZeroDecimal;
+      return this;
+    }
+
+    public Builder ignoreInvalidRows(boolean ignoreInvalidRows) {
+      this.ignoreInvalidRows = ignoreInvalidRows;
       return this;
     }
 
