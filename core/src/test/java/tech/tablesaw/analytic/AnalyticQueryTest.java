@@ -60,10 +60,14 @@ class AnalyticQueryTest {
             .build();
 
     String expectd =
-        "SELECT\n"
-            + "MAX(sales) OVER w1 AS salesSum\n"
-            + "FROM sales\n"
-            + "Window w1 AS (\n"
+        "SELECT"
+            + System.lineSeparator()
+            + "MAX(sales) OVER w1 AS salesSum"
+            + System.lineSeparator()
+            + "FROM sales"
+            + System.lineSeparator()
+            + "Window w1 AS ("
+            + System.lineSeparator()
             + "ROWS BETWEEN CURRENT_ROW AND 1 FOLLOWING);";
 
     assertEquals(expectd, query.toSqlLikeString());
@@ -81,10 +85,14 @@ class AnalyticQueryTest {
             .build();
 
     String expectd =
-        "SELECT\n"
-            + "RANK() OVER w1 AS myRank\n"
-            + "FROM myTable\n"
-            + "Window w1 AS (\n"
+        "SELECT"
+            + System.lineSeparator()
+            + "RANK() OVER w1 AS myRank"
+            + System.lineSeparator()
+            + "FROM myTable"
+            + System.lineSeparator()
+            + "Window w1 AS ("
+            + System.lineSeparator()
             + "ORDER BY date ASC, region ASC);";
 
     assertEquals(expectd, query.toSqlLikeString());

@@ -29,7 +29,7 @@ import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
 
 public class HtmlWriterTest {
 
-  private static final String LINE_END = System.lineSeparator();
+  private static final String LINE_END = "\n";
 
   private double[] v1 = {1, 2, NaN};
   private double[] v2 = {1, 2, NaN};

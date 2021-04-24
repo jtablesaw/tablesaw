@@ -55,58 +55,78 @@ public class LayoutTest {
     {
       Layout layout = Layout.builder().autosize(true).build();
       assertEquals(
-          "var layout = {\n"
+          "var layout = {"
+              + System.lineSeparator()
               + //
-              "    autosize: true,\n"
+              "    autosize: true,"
+              + System.lineSeparator()
               + //
-              "\n\n"
+              System.lineSeparator()
+              + System.lineSeparator()
               + //
-              "};\n",
+              "};"
+              + System.lineSeparator(),
           layout.asJavascript());
     }
     {
       Layout layout = Layout.builder().autosize(true).width(800).build();
       assertEquals(
-          "var layout = {\n"
+          "var layout = {"
+              + System.lineSeparator()
               + //
-              "    width: 800,\n"
+              "    width: 800,"
+              + System.lineSeparator()
               + //
-              "    autosize: true,\n"
+              "    autosize: true,"
+              + System.lineSeparator()
               + //
-              "\n\n"
+              System.lineSeparator()
+              + System.lineSeparator()
               + //
-              "};\n",
+              "};"
+              + System.lineSeparator(),
           layout.asJavascript());
     }
     {
       Layout layout = Layout.builder().autosize(true).height(600).width(800).build();
       assertEquals(
-          "var layout = {\n"
+          "var layout = {"
+              + System.lineSeparator()
               + //
-              "    height: 600,\n"
+              "    height: 600,"
+              + System.lineSeparator()
               + //
-              "    width: 800,\n"
+              "    width: 800,"
+              + System.lineSeparator()
               + //
-              "    autosize: true,\n"
+              "    autosize: true,"
+              + System.lineSeparator()
               + //
-              "\n\n"
+              System.lineSeparator()
+              + System.lineSeparator()
               + //
-              "};\n",
+              "};"
+              + System.lineSeparator(),
           layout.asJavascript());
     }
     {
       // see if 700x450
       Layout layout = Layout.builder().autosize(false).height(600).build();
       assertEquals(
-          "var layout = {\n"
+          "var layout = {"
+              + System.lineSeparator()
               + //
-              "    height: 600,\n"
+              "    height: 600,"
+              + System.lineSeparator()
               + //
-              "    width: 700,\n"
+              "    width: 700,"
+              + System.lineSeparator()
               + //
-              "\n\n"
+              System.lineSeparator()
+              + System.lineSeparator()
               + //
-              "};\n",
+              "};"
+              + System.lineSeparator(),
           layout.asJavascript());
     }
   }

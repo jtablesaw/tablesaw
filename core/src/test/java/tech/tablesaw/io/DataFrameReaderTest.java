@@ -40,7 +40,7 @@ class DataFrameReaderTest {
 
   @Test
   public void csv() throws IOException {
-    Path path = mockFileHelper("/data/file.csv", ImmutableList.of("region", "canada", "us"));
+    Path path = mockFileHelper("data/file.csv", ImmutableList.of("region", "canada", "us"));
     Table expected = Table.create(StringColumn.create("region", new String[] {"canada", "us"}));
     Table actual = Table.read().csv(Files.newInputStream(path));
     assertEquals(expected.columnNames(), actual.columnNames());
@@ -50,8 +50,7 @@ class DataFrameReaderTest {
   @Test
   public void readUrlWithExtension() throws Exception {
     URL url =
-        mockUrlHelper(
-            "http://something.other.com/file.csv", ImmutableList.of("region", "canada", "us"));
+        mockUrlHelper("something.other.com/file.csv", ImmutableList.of("region", "canada", "us"));
     Table expected = Table.create(StringColumn.create("region", new String[] {"canada", "us"}));
     Table actual = Table.read().url(url);
     assertEquals(expected.columnNames(), actual.columnNames());
@@ -60,9 +59,7 @@ class DataFrameReaderTest {
 
   @Test
   public void readCsvUrl() throws Exception {
-    URL url =
-        mockUrlHelper(
-            "http://something.other.com/file", ImmutableList.of("region", "canada", "us"));
+    URL url = mockUrlHelper("something.other.com/file", ImmutableList.of("region", "canada", "us"));
     Table expected = Table.create(StringColumn.create("region", new String[] {"canada", "us"}));
     Table actual = Table.read().csv(url);
     assertEquals(expected.columnNames(), actual.columnNames());
@@ -72,7 +69,7 @@ class DataFrameReaderTest {
   @Test
   public void readUrlUnknownMimeTypeNoExtension() throws Exception {
     // Mimetype should be text/plain, it depends on the installed FileTypeDetectors
-    URL url = mockUrlHelper("http://something.other.com/file", ImmutableList.of());
+    URL url = mockUrlHelper("something.other.com/file", ImmutableList.of());
     Throwable thrown = assertThrows(IllegalArgumentException.class, () -> Table.read().url(url));
 
     assertTrue(

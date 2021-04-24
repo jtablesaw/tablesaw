@@ -29,16 +29,26 @@ public class TableSummaryTest {
             DoubleColumn.create("value2", 2.0, 2.1, 2.2));
     Table result = testTable.summary();
     assertEquals(
-        "                            Data                             \n"
-            + " Summary   |         value1         |        value2         |\n"
-            + "-------------------------------------------------------------\n"
-            + "    Count  |                     3  |                    3  |\n"
-            + "      sum  |                   3.3  |                  6.3  |\n"
-            + "     Mean  |                   1.1  |                  2.1  |\n"
-            + "      Min  |                     1  |                    2  |\n"
-            + "      Max  |                   1.2  |                  2.2  |\n"
-            + "    Range  |   0.19999999999999996  |  0.20000000000000018  |\n"
-            + " Variance  |  0.009999999999999995  |  0.01000000000000004  |\n"
+        "                            Data                             "
+            + System.lineSeparator()
+            + " Summary   |         value1         |        value2         |"
+            + System.lineSeparator()
+            + "-------------------------------------------------------------"
+            + System.lineSeparator()
+            + "    Count  |                     3  |                    3  |"
+            + System.lineSeparator()
+            + "      sum  |                   3.3  |                  6.3  |"
+            + System.lineSeparator()
+            + "     Mean  |                   1.1  |                  2.1  |"
+            + System.lineSeparator()
+            + "      Min  |                     1  |                    2  |"
+            + System.lineSeparator()
+            + "      Max  |                   1.2  |                  2.2  |"
+            + System.lineSeparator()
+            + "    Range  |   0.19999999999999996  |  0.20000000000000018  |"
+            + System.lineSeparator()
+            + " Variance  |  0.009999999999999995  |  0.01000000000000004  |"
+            + System.lineSeparator()
             + " Std. Dev  |   0.09999999999999998  |   0.1000000000000002  |",
         result.print());
   }
@@ -58,24 +68,42 @@ public class TableSummaryTest {
                 }));
     Table result = testTable.summary();
     assertEquals(
-        "                                   Data                                    \n"
-            + "  Summary   |  label   |         value1         |  truthy  |    dates     |\n"
-            + "---------------------------------------------------------------------------\n"
-            + "     Count  |       3  |                     3  |          |           3  |\n"
-            + "    Unique  |       2  |                        |          |              |\n"
-            + "       Top  |  yellow  |                        |          |              |\n"
-            + " Top Freq.  |       2  |                        |          |              |\n"
-            + "       sum  |          |                   3.3  |          |              |\n"
-            + "      Mean  |          |                   1.1  |          |              |\n"
-            + "       Min  |          |                     1  |          |              |\n"
-            + "       Max  |          |                   1.2  |          |              |\n"
-            + "     Range  |          |   0.19999999999999996  |          |              |\n"
-            + "  Variance  |          |  0.009999999999999995  |          |              |\n"
-            + "  Std. Dev  |          |   0.09999999999999998  |          |              |\n"
-            + "     false  |          |                        |       1  |              |\n"
-            + "      true  |          |                        |       2  |              |\n"
-            + "   Missing  |          |                        |          |           0  |\n"
-            + "  Earliest  |          |                        |          |  2001-01-01  |\n"
+        "                                   Data                                    "
+            + System.lineSeparator()
+            + "  Summary   |  label   |         value1         |  truthy  |    dates     |"
+            + System.lineSeparator()
+            + "---------------------------------------------------------------------------"
+            + System.lineSeparator()
+            + "     Count  |       3  |                     3  |          |           3  |"
+            + System.lineSeparator()
+            + "    Unique  |       2  |                        |          |              |"
+            + System.lineSeparator()
+            + "       Top  |  yellow  |                        |          |              |"
+            + System.lineSeparator()
+            + " Top Freq.  |       2  |                        |          |              |"
+            + System.lineSeparator()
+            + "       sum  |          |                   3.3  |          |              |"
+            + System.lineSeparator()
+            + "      Mean  |          |                   1.1  |          |              |"
+            + System.lineSeparator()
+            + "       Min  |          |                     1  |          |              |"
+            + System.lineSeparator()
+            + "       Max  |          |                   1.2  |          |              |"
+            + System.lineSeparator()
+            + "     Range  |          |   0.19999999999999996  |          |              |"
+            + System.lineSeparator()
+            + "  Variance  |          |  0.009999999999999995  |          |              |"
+            + System.lineSeparator()
+            + "  Std. Dev  |          |   0.09999999999999998  |          |              |"
+            + System.lineSeparator()
+            + "     false  |          |                        |       1  |              |"
+            + System.lineSeparator()
+            + "      true  |          |                        |       2  |              |"
+            + System.lineSeparator()
+            + "   Missing  |          |                        |          |           0  |"
+            + System.lineSeparator()
+            + "  Earliest  |          |                        |          |  2001-01-01  |"
+            + System.lineSeparator()
             + "    Latest  |          |                        |          |  2002-01-01  |",
         result.print());
   }

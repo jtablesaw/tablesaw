@@ -20,22 +20,38 @@ class FigureTest {
     Figure figure = new Figure(trace);
 
     assertEquals(
-        "    <script>\n"
-            + "        var target_target = document.getElementById('target');\n"
-            + "        \n"
-            + "var trace0 =\n"
-            + "{\n"
-            + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],\n"
-            + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],\n"
-            + "mode: 'markers',\n"
-            + "xaxis: 'x',\n"
-            + "yaxis: 'y',\n"
-            + "type: 'scatter',\n"
-            + "name: '',\n"
-            + "};\n"
-            + "\n"
-            + "        var data = [ trace0];\n"
-            + "Plotly.newPlot(target_target, data);            </script>\n",
+        "    <script>"
+            + System.lineSeparator()
+            + "        var target_target = document.getElementById('target');"
+            + System.lineSeparator()
+            + "        "
+            + System.lineSeparator()
+            + "var trace0 ="
+            + System.lineSeparator()
+            + "{"
+            + System.lineSeparator()
+            + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],"
+            + System.lineSeparator()
+            + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],"
+            + System.lineSeparator()
+            + "mode: 'markers',"
+            + System.lineSeparator()
+            + "xaxis: 'x',"
+            + System.lineSeparator()
+            + "yaxis: 'y',"
+            + System.lineSeparator()
+            + "type: 'scatter',"
+            + System.lineSeparator()
+            + "name: '',"
+            + System.lineSeparator()
+            + "};"
+            + System.lineSeparator()
+            + ""
+            + System.lineSeparator()
+            + "        var data = [ trace0];"
+            + System.lineSeparator()
+            + "Plotly.newPlot(target_target, data);            </script>"
+            + System.lineSeparator(),
         figure.asJavascript(divName));
   }
 
@@ -62,46 +78,86 @@ class FigureTest {
     Figure figure = new Figure(layout, trace);
 
     assertEquals(
-        "    <script>\n"
-            + "        var target_target = document.getElementById('target');\n"
-            + "        var layout = {\n"
-            + "    title: 'A test title',\n"
-            + "    height: 450,\n"
-            + "    width: 700,\n"
-            + "    showlegend: true,\n"
-            + "    margin: {\n"
-            + "  \"autoexpand\" : true,\n"
-            + "  \"b\" : 80,\n"
-            + "  \"l\" : 200,\n"
-            + "  \"pad\" : 0,\n"
-            + "  \"r\" : 80,\n"
-            + "  \"t\" : 200\n"
-            + "},\n"
-            + "    xaxis: {\n"
-            + "    title: 'x Axis 1',\n"
-            + "        titlefont: {\n"
-            + "  \"color\" : \"red\",\n"
-            + "  \"family\" : \"arial\",\n"
-            + "  \"size\" : 8\n"
-            + "},\n"
-            + "    },\n"
-            + "\n"
-            + "\n"
-            + "};\n"
-            + "\n"
-            + "var trace0 =\n"
-            + "{\n"
-            + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],\n"
-            + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],\n"
-            + "mode: 'markers',\n"
-            + "xaxis: 'x',\n"
-            + "yaxis: 'y',\n"
-            + "type: 'scatter',\n"
-            + "name: '',\n"
-            + "};\n"
-            + "\n"
-            + "        var data = [ trace0];\n"
-            + "Plotly.newPlot(target_target, data, layout);            </script>\n",
+        "    <script>"
+            + System.lineSeparator()
+            + "        var target_target = document.getElementById('target');"
+            + System.lineSeparator()
+            + "        var layout = {"
+            + System.lineSeparator()
+            + "    title: 'A test title',"
+            + System.lineSeparator()
+            + "    height: 450,"
+            + System.lineSeparator()
+            + "    width: 700,"
+            + System.lineSeparator()
+            + "    showlegend: true,"
+            + System.lineSeparator()
+            + "    margin: {"
+            + System.lineSeparator()
+            + "  \"autoexpand\" : true,"
+            + System.lineSeparator()
+            + "  \"b\" : 80,"
+            + System.lineSeparator()
+            + "  \"l\" : 200,"
+            + System.lineSeparator()
+            + "  \"pad\" : 0,"
+            + System.lineSeparator()
+            + "  \"r\" : 80,"
+            + System.lineSeparator()
+            + "  \"t\" : 200"
+            + System.lineSeparator()
+            + "},"
+            + System.lineSeparator()
+            + "    xaxis: {"
+            + System.lineSeparator()
+            + "    title: 'x Axis 1',"
+            + System.lineSeparator()
+            + "        titlefont: {"
+            + System.lineSeparator()
+            + "  \"color\" : \"red\","
+            + System.lineSeparator()
+            + "  \"family\" : \"arial\","
+            + System.lineSeparator()
+            + "  \"size\" : 8"
+            + System.lineSeparator()
+            + "},"
+            + System.lineSeparator()
+            + "    },"
+            + System.lineSeparator()
+            + ""
+            + System.lineSeparator()
+            + ""
+            + System.lineSeparator()
+            + "};"
+            + System.lineSeparator()
+            + ""
+            + System.lineSeparator()
+            + "var trace0 ="
+            + System.lineSeparator()
+            + "{"
+            + System.lineSeparator()
+            + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],"
+            + System.lineSeparator()
+            + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],"
+            + System.lineSeparator()
+            + "mode: 'markers',"
+            + System.lineSeparator()
+            + "xaxis: 'x',"
+            + System.lineSeparator()
+            + "yaxis: 'y',"
+            + System.lineSeparator()
+            + "type: 'scatter',"
+            + System.lineSeparator()
+            + "name: '',"
+            + System.lineSeparator()
+            + "};"
+            + System.lineSeparator()
+            + ""
+            + System.lineSeparator()
+            + "        var data = [ trace0];"
+            + System.lineSeparator()
+            + "Plotly.newPlot(target_target, data, layout);            </script>"
+            + System.lineSeparator(),
         figure.asJavascript(divName));
   }
 
