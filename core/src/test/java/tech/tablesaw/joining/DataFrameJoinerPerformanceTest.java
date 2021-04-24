@@ -63,6 +63,26 @@ public class DataFrameJoinerPerformanceTest {
   }
 
   @Test
+  public void innerJoinCustomersFirstTimeMeasure() {
+    int numberOrders = 1_000_0;
+    int numberCustomers = 1_000_000_0;
+    Table customers = createCustomersTable(numberCustomers);
+    addFillerColumn(customers, 2, "customer");
+    Table orders = createOrdersTable(numberOrders, numberCustomers);
+    addFillerColumn(orders, 2, "order");
+    long begin = System.currentTimeMillis();
+    orders.joinOn("customerId").inner(customers);
+    long end = System.currentTimeMillis();
+    System.out.println("small table on the left cost time:");
+    System.out.println(end - begin);
+    begin = System.currentTimeMillis();
+    customers.joinOn("customerId").inner(orders);
+    end = System.currentTimeMillis();
+    System.out.println("small table on the right cost time:");
+    System.out.println(end - begin);
+  }
+
+  @Test
   public void leftOuterOrdersFirst() {
     int numberOrders = 10_000;
     Table customers = createCustomersTable(1_000);

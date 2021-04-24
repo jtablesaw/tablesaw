@@ -94,7 +94,12 @@ public class DataFrameJoiner {
 
     for (Table currT : tables) {
       joined =
-          joinInternal(joined, currT, JoinType.INNER, allowDuplicateColumnNames, joinColumnNames);
+          joinInternal(
+              joined,
+              currT,
+              tech.tablesaw.joining.DataFrameJoiner.JoinType.INNER,
+              allowDuplicateColumnNames,
+              joinColumnNames);
     }
     return joined;
   }
@@ -155,7 +160,13 @@ public class DataFrameJoiner {
    */
   public Table inner(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
     Table joinedTable;
-    joinedTable = joinInternal(table, table2, JoinType.INNER, allowDuplicateColumnNames, col2Names);
+    joinedTable =
+        joinInternal(
+            table,
+            table2,
+            tech.tablesaw.joining.DataFrameJoiner.JoinType.INNER,
+            allowDuplicateColumnNames,
+            col2Names);
     return joinedTable;
   }
 
@@ -173,10 +184,13 @@ public class DataFrameJoiner {
   private Table joinInternal(
       Table table1,
       Table table2,
-      JoinType joinType,
+      tech.tablesaw.joining.DataFrameJoiner.JoinType joinType,
       boolean allowDuplicates,
       String... table2JoinColumnNames) {
+
     List<Integer> table2JoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
+    List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
+    List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
 
     Table result = Table.create(table1.name());
     // A set of column indexes in the result table that can be ignored. They are duplicate join
@@ -185,11 +199,10 @@ public class DataFrameJoiner {
         emptyTableFromColumns(
             result, table1, table2, joinType, allowDuplicates, table2JoinColumnIndexes);
 
-    List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
-    List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
     validateIndexes(table1Indexes, table2Indexes);
-
-    if (table1.rowCount() == 0 && (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
+    if (table1.rowCount() == 0
+        && (joinType == tech.tablesaw.joining.DataFrameJoiner.JoinType.LEFT_OUTER
+            || joinType == tech.tablesaw.joining.DataFrameJoiner.JoinType.INNER)) {
       // Handle special case of empty table here so it doesn't fall through to the behavior
       // that adds rows for full outer and right outer joins
       result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
@@ -198,31 +211,61 @@ public class DataFrameJoiner {
 
     Selection table1DoneRows = Selection.with();
     Selection table2DoneRows = Selection.with();
-    for (Row row : table1) {
-      int ri = row.getRowNumber();
-      if (table1DoneRows.contains(ri)) {
-        // Already processed a selection of table1 that contained this row.
-        continue;
-      }
+    if (table1.rowCount() >= table2.rowCount()
+        && joinType == tech.tablesaw.joining.DataFrameJoiner.JoinType.INNER) {
+      for (Row row : table2) {
+        int ri = row.getRowNumber();
+        if (table2DoneRows.contains(ri)) {
+          // Already processed a selection of table1 that contained this row.
+          continue;
+        }
+        Selection table1Rows =
+            createMultiColSelection(
+                table2, ri, table1Indexes, table1.rowCount(), table2JoinColumnIndexes);
+        Selection table2Rows =
+            createMultiColSelection(
+                table2, ri, table2Indexes, table2.rowCount(), table2JoinColumnIndexes);
 
-      Selection table1Rows = createMultiColSelection(table1, ri, table1Indexes, table1.rowCount());
-      Selection table2Rows = createMultiColSelection(table1, ri, table2Indexes, table2.rowCount());
-
-      if ((joinType == JoinType.LEFT_OUTER || joinType == JoinType.FULL_OUTER)
-          && table2Rows.isEmpty()) {
-        withMissingLeftJoin(result, table1, table1Rows, resultIgnoreColIndexes);
-      } else {
         crossProduct(result, table1, table2, table1Rows, table2Rows, resultIgnoreColIndexes);
-      }
 
-      table1DoneRows = table1DoneRows.or(table1Rows);
-      if (joinType == JoinType.FULL_OUTER || joinType == JoinType.RIGHT_OUTER) {
-        // Update done rows in table2 for full Outer.
         table2DoneRows = table2DoneRows.or(table2Rows);
-      } else if (table1DoneRows.size() == table1.rowCount()) {
-        // Processed all the rows in table1 exit early.
-        result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
-        return result;
+        if (table2DoneRows.size() == table2.rowCount()) {
+          // Processed all the rows in table1 exit early.
+          result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          return result;
+        }
+      }
+    } else {
+      for (Row row : table1) {
+        int ri = row.getRowNumber();
+        if (table1DoneRows.contains(ri)) {
+          // Already processed a selection of table1 that contained this row.
+          continue;
+        }
+        Selection table1Rows =
+            createMultiColSelection(
+                table1, ri, table1Indexes, table1.rowCount(), joinColumnIndexes);
+        Selection table2Rows =
+            createMultiColSelection(
+                table1, ri, table2Indexes, table2.rowCount(), joinColumnIndexes);
+        if ((joinType == tech.tablesaw.joining.DataFrameJoiner.JoinType.LEFT_OUTER
+                || joinType == tech.tablesaw.joining.DataFrameJoiner.JoinType.FULL_OUTER)
+            && table2Rows.isEmpty()) {
+          withMissingLeftJoin(result, table1, table1Rows, resultIgnoreColIndexes);
+        } else {
+          crossProduct(result, table1, table2, table1Rows, table2Rows, resultIgnoreColIndexes);
+        }
+
+        table1DoneRows = table1DoneRows.or(table1Rows);
+        if (joinType == tech.tablesaw.joining.DataFrameJoiner.JoinType.FULL_OUTER
+            || joinType == tech.tablesaw.joining.DataFrameJoiner.JoinType.RIGHT_OUTER) {
+          // Update done rows in table2 for full Outer.
+          table2DoneRows = table2DoneRows.or(table2Rows);
+        } else if (table1DoneRows.size() == table1.rowCount()) {
+          // Processed all the rows in table1 exit early.
+          result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          return result;
+        }
       }
     }
 
@@ -358,7 +401,11 @@ public class DataFrameJoiner {
 
   /** Create a big multicolumn selection for all join columns in the given table. */
   private Selection createMultiColSelection(
-      Table table1, int ri, List<Index> indexes, int selectionSize) {
+      Table table1,
+      int ri,
+      List<Index> indexes,
+      int selectionSize,
+      List<Integer> joinColumnIndexes) {
     Selection multiColSelection = Selection.withRange(0, selectionSize);
     int i = 0;
     for (Integer joinColumnIndex : joinColumnIndexes) {
@@ -402,7 +449,11 @@ public class DataFrameJoiner {
     for (Table currT : tables) {
       joined =
           joinInternal(
-              joined, currT, JoinType.FULL_OUTER, allowDuplicateColumnNames, joinColumnNames);
+              joined,
+              currT,
+              tech.tablesaw.joining.DataFrameJoiner.JoinType.FULL_OUTER,
+              allowDuplicateColumnNames,
+              joinColumnNames);
     }
     return joined;
   }
@@ -417,7 +468,8 @@ public class DataFrameJoiner {
    * @return The resulting table
    */
   public Table fullOuter(Table table2, String col2Name) {
-    return joinInternal(table, table2, JoinType.FULL_OUTER, false, col2Name);
+    return joinInternal(
+        table, table2, tech.tablesaw.joining.DataFrameJoiner.JoinType.FULL_OUTER, false, col2Name);
   }
 
   /**
@@ -486,7 +538,12 @@ public class DataFrameJoiner {
    * @return The resulting table
    */
   public Table leftOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    return joinInternal(table, table2, JoinType.LEFT_OUTER, allowDuplicateColumnNames, col2Names);
+    return joinInternal(
+        table,
+        table2,
+        tech.tablesaw.joining.DataFrameJoiner.JoinType.LEFT_OUTER,
+        allowDuplicateColumnNames,
+        col2Names);
   }
 
   /**
@@ -555,7 +612,12 @@ public class DataFrameJoiner {
    * @return The resulting table
    */
   public Table rightOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    return joinInternal(table, table2, JoinType.RIGHT_OUTER, allowDuplicateColumnNames, col2Names);
+    return joinInternal(
+        table,
+        table2,
+        tech.tablesaw.joining.DataFrameJoiner.JoinType.RIGHT_OUTER,
+        allowDuplicateColumnNames,
+        col2Names);
   }
 
   /**
@@ -579,7 +641,7 @@ public class DataFrameJoiner {
       Table destination,
       Table table1,
       Table table2,
-      JoinType joinType,
+      tech.tablesaw.joining.DataFrameJoiner.JoinType joinType,
       boolean allowDuplicates,
       List<Integer> table2JoinColumnIndexes) {
 
@@ -594,7 +656,7 @@ public class DataFrameJoiner {
     // Keep track of which join columns are placeholders so they can be ignored.
     Set<Integer> ignoreColumns = new HashSet<>();
     for (int c = 0; c < cols.length; c++) {
-      if (joinType == JoinType.RIGHT_OUTER) {
+      if (joinType == tech.tablesaw.joining.DataFrameJoiner.JoinType.RIGHT_OUTER) {
         if (c < table1.columnCount() && joinColumnIndexes.contains(c)) {
           cols[c].setName("Placeholder_" + ignoreColumns.size());
           ignoreColumns.add(c);
@@ -701,12 +763,12 @@ public class DataFrameJoiner {
       int table1ColCount,
       Table table2,
       Selection table2Rows,
-      JoinType joinType,
+      tech.tablesaw.joining.DataFrameJoiner.JoinType joinType,
       List<Integer> col2Indexes,
       Set<Integer> ignoreColumns) {
 
     // Add index data from table2 into join column positions in table one.
-    if (joinType == JoinType.FULL_OUTER) {
+    if (joinType == tech.tablesaw.joining.DataFrameJoiner.JoinType.FULL_OUTER) {
       for (int i = 0; i < col2Indexes.size(); i++) {
         Column t2Col = table2.column(col2Indexes.get(i));
         for (int index : table2Rows) {
