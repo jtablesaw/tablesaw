@@ -9,8 +9,11 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.plotly.Utils;
 import tech.tablesaw.plotly.components.Marker;
 
 public class BarTrace extends AbstractTrace {
@@ -29,11 +32,25 @@ public class BarTrace extends AbstractTrace {
   }
 
   public static BarBuilder builder(Object[] x, double[] y) {
-    return new BarBuilder(x, y);
+    AtomicInteger counter = new AtomicInteger(0);
+    boolean[] keep = Utils.filterMissing(counter, x);
+    Object[] xWithoutMissingValue = new Object[counter.get()];
+    double[] yWithoutMissingValue = new double[counter.get()];
+    int i = 0;
+    for (int j = 0; j < keep.length; j++) {
+      if (keep[j]) {
+        xWithoutMissingValue[i] = x[j];
+        yWithoutMissingValue[i] = y[j];
+        i++;
+      }
+    }
+    return new BarBuilder(xWithoutMissingValue, yWithoutMissingValue);
   }
 
   public static BarBuilder builder(CategoricalColumn<?> x, NumericColumn<? extends Number> y) {
-    return new BarBuilder(x, y);
+    Column<?>[] results = Utils.filterMissing(x, y);
+    return new BarBuilder(
+        (CategoricalColumn<?>) results[0], (NumericColumn<? extends Number>) results[1]);
   }
 
   @Override
@@ -53,7 +70,6 @@ public class BarTrace extends AbstractTrace {
   }
 
   private Map<String, Object> getContext(int i) {
-
     Map<String, Object> context = super.getContext();
     context.put("variableName", "trace" + i);
     if (orientation == Orientation.HORIZONTAL) {

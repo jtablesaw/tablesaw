@@ -68,7 +68,8 @@ public class HistogramTrace extends AbstractTrace {
   }
 
   public static HistogramBuilder builder(NumericColumn<? extends Number> values) {
-    return new HistogramBuilder(values.asDoubleArray());
+    Column<?>[] results = Utils.filterMissing(values);
+    return new HistogramBuilder(((NumericColumn<? extends Number>) results[0]).asDoubleArray());
   }
 
   public static HistogramBuilder builder(

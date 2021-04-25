@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import tech.tablesaw.plotly.Utils;
 
 public class HeatmapTrace extends AbstractTrace {
 
@@ -54,7 +57,33 @@ public class HeatmapTrace extends AbstractTrace {
   }
 
   public static HeatmapBuilder builder(Object[] x, Object[] y, double[][] z) {
-    return new HeatmapBuilder(x, y, z);
+    AtomicInteger counterX = new AtomicInteger(0);
+    AtomicInteger counterY = new AtomicInteger(0);
+    boolean[] keepX = Utils.filterMissing(counterX, x);
+    boolean[] keepY = Utils.filterMissing(counterY, y);
+
+    Object[] xWithoutMissingValue = new Object[counterX.get()];
+    Object[] yWithoutMissingValue = new Object[counterY.get()];
+    double[][] zWithoutMissingValue = new double[counterY.get()][counterX.get()];
+
+    int xPos = 0;
+    for (int xOriginalIdx = 0; xOriginalIdx < keepX.length; xOriginalIdx++) {
+      if (!keepX[xOriginalIdx]) {
+        continue;
+      }
+      int yPos = 0;
+      for (int yOriginalIdx = 0; yOriginalIdx < keepY.length; yOriginalIdx++) {
+        if (keepY[yOriginalIdx]) {
+          yWithoutMissingValue[yPos] = y[yOriginalIdx];
+          zWithoutMissingValue[yPos][xPos] = z[yOriginalIdx][xOriginalIdx];
+          yPos++;
+        }
+      }
+      xWithoutMissingValue[xPos] = x[xOriginalIdx];
+      xPos++;
+    }
+    System.out.println(Arrays.toString(xWithoutMissingValue));
+    return new HeatmapBuilder(xWithoutMissingValue, yWithoutMissingValue, zWithoutMissingValue);
   }
 
   public static class HeatmapBuilder extends TraceBuilder {

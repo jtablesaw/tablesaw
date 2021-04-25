@@ -12,6 +12,7 @@ import java.io.Writer;
 import java.util.Map;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.plotly.Utils;
 import tech.tablesaw.plotly.components.HoverLabel;
 import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.components.Marker;
@@ -86,7 +87,8 @@ public class ScatterTrace extends AbstractTrace {
   }
 
   public static ScatterBuilder builder(Column<?> x, Column<?> y) {
-    return new ScatterBuilder(x, y);
+    Column<?>[] results = Utils.filterMissing(x, y);
+    return new ScatterBuilder(results[0], results[1]);
   }
 
   public static ScatterBuilder builder(
@@ -95,7 +97,13 @@ public class ScatterTrace extends AbstractTrace {
       NumericColumn<? extends Number> high,
       NumericColumn<? extends Number> low,
       NumericColumn<? extends Number> close) {
-    return new ScatterBuilder(x, open, high, low, close);
+    Column<?>[] results = Utils.filterMissing(x, open, high, low, close);
+    return new ScatterBuilder(
+        results[0],
+        (NumericColumn<? extends Number>) results[1],
+        (NumericColumn<? extends Number>) results[2],
+        (NumericColumn<? extends Number>) results[3],
+        (NumericColumn<? extends Number>) results[4]);
   }
 
   private ScatterTrace(ScatterBuilder builder) {

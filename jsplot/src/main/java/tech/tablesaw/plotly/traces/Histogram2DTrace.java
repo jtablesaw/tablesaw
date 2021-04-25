@@ -8,6 +8,7 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.Utils;
 
 public class Histogram2DTrace extends AbstractTrace {
@@ -21,7 +22,10 @@ public class Histogram2DTrace extends AbstractTrace {
 
   public static Histogram2DBuilder builder(
       NumericColumn<? extends Number> x, NumericColumn<? extends Number> y) {
-    return new Histogram2DBuilder(x.asDoubleArray(), y.asDoubleArray());
+    Column<?>[] results = Utils.filterMissing(x, y);
+    return new Histogram2DBuilder(
+        ((NumericColumn<? extends Number>) results[0]).asDoubleArray(),
+        ((NumericColumn<? extends Number>) results[1]).asDoubleArray());
   }
 
   private Histogram2DTrace(Histogram2DBuilder builder) {

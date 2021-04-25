@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.Utils;
@@ -56,7 +57,19 @@ public class PieTrace extends AbstractTrace {
   }
 
   public static PieBuilder builder(Object[] labels, double[] values) {
-    return new PieBuilder(labels, values);
+    AtomicInteger counter = new AtomicInteger(0);
+    boolean[] keep = Utils.filterMissing(counter, labels);
+    Object[] labelsWithoutMissingValue = new Object[counter.get()];
+    double[] valuesWithoutMissingValue = new double[counter.get()];
+    int i = 0;
+    for (int j = 0; j < keep.length; j++) {
+      if (keep[j]) {
+        labelsWithoutMissingValue[i] = labels[j];
+        valuesWithoutMissingValue[i] = values[j];
+        i++;
+      }
+    }
+    return new PieBuilder(labelsWithoutMissingValue, valuesWithoutMissingValue);
   }
 
   public static PieBuilder builder(Column<?> labels, NumericColumn<? extends Number> values) {
@@ -64,7 +77,6 @@ public class PieTrace extends AbstractTrace {
   }
 
   public static class PieBuilder extends TraceBuilder {
-
     private final String type = "pie";
     private final double[] values;
     private final Object[] labels;

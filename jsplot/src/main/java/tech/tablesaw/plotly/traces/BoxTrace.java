@@ -9,8 +9,11 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.plotly.Utils;
 
 public class BoxTrace extends AbstractTrace {
 
@@ -24,11 +27,25 @@ public class BoxTrace extends AbstractTrace {
   }
 
   public static BoxBuilder builder(Object[] x, double[] y) {
-    return new BoxBuilder(x, y);
+    AtomicInteger counter = new AtomicInteger(0);
+    boolean[] keep = Utils.filterMissing(counter, x);
+    Object[] xWithoutMissingValue = new Object[counter.get()];
+    double[] yWithoutMissingValue = new double[counter.get()];
+    int i = 0;
+    for (int j = 0; j < keep.length; j++) {
+      if (keep[j]) {
+        xWithoutMissingValue[i] = x[j];
+        yWithoutMissingValue[i] = y[j];
+        i++;
+      }
+    }
+    return new BoxBuilder(xWithoutMissingValue, yWithoutMissingValue);
   }
 
   public static BoxBuilder builder(CategoricalColumn<?> x, NumericColumn<? extends Number> y) {
-    return new BoxBuilder(x, y);
+    Column<?>[] results = Utils.filterMissing(x, y);
+    return new BoxBuilder(
+        (CategoricalColumn<?>) results[0], (NumericColumn<? extends Number>) results[1]);
   }
 
   public static BoxBuilder builder(double[] x, double[] y) {
