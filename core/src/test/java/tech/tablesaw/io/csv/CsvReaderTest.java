@@ -50,6 +50,8 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.io.AddCellToColumnException;
 
 /** Tests for CSV Reading */
@@ -825,5 +827,24 @@ public class CsvReaderTest {
     // test CSV reads quote back again
     Table out = Table.read().csv(new StringReader(string));
     assertEquals(table.get(0, 0), out.get(0, 0));
+  }
+
+  public void testReadCsvWithPercentage1() throws IOException {
+    Table table = Table.read().csv(CsvReadOptions.builder("../data/currency_percent.csv"));
+    assertEquals(DoubleColumnType.instance(), table.columnTypes()[1]);
+    assertEquals(DoubleColumnType.instance(), table.columnTypes()[2]);
+  }
+
+  @Test
+  public void testReadCsvWithPercentage2() throws IOException {
+    Table table = Table.read().csv(CsvReadOptions.builder("../data/currency_percent.csv"));
+    Column<?> column = table.column(1);
+    assertEquals("0.0132", column.getString(0));
+    assertEquals("0.32768", column.getString(1));
+    assertEquals("1", column.getString(2));
+    Column<?> column2 = table.column(2);
+    assertEquals("13.14", column2.getString(0));
+    assertEquals("35", column2.getString(1));
+    assertEquals("93.131", column2.getString(2));
   }
 }
