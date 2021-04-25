@@ -46,12 +46,13 @@ import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.io.AddCellToColumnException;
 
 /** Tests for CSV Reading */
@@ -829,6 +830,7 @@ public class CsvReaderTest {
     assertEquals(table.get(0, 0), out.get(0, 0));
   }
 
+  @Test
   public void testReadCsvWithPercentage1() throws IOException {
     Table table = Table.read().csv(CsvReadOptions.builder("../data/currency_percent.csv"));
     assertEquals(DoubleColumnType.instance(), table.columnTypes()[1]);
@@ -838,13 +840,13 @@ public class CsvReaderTest {
   @Test
   public void testReadCsvWithPercentage2() throws IOException {
     Table table = Table.read().csv(CsvReadOptions.builder("../data/currency_percent.csv"));
-    Column<?> column = table.column(1);
+    DoubleColumn column = (DoubleColumn) table.column(1);
     assertEquals("0.0132", column.getString(0));
     assertEquals("0.32768", column.getString(1));
     assertEquals("1", column.getString(2));
-    Column<?> column2 = table.column(2);
-    assertEquals("13.14", column2.getString(0));
-    assertEquals("35", column2.getString(1));
-    assertEquals("93.131", column2.getString(2));
+    column.setPrintFormatter(NumberColumnFormatter.percent(2));
+    assertEquals("1.32%", column.getString(0));
+    assertEquals("32.77%", column.getString(1));
+    assertEquals("100.00%", column.getString(2));
   }
 }
