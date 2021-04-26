@@ -16,17 +16,21 @@ package tech.tablesaw.io.fixed;
 
 import com.google.common.io.CharStreams;
 import com.univocity.parsers.common.AbstractParser;
+import com.univocity.parsers.common.NormalizedString;
 import com.univocity.parsers.fixed.FixedWidthFormat;
 import com.univocity.parsers.fixed.FixedWidthParser;
 import com.univocity.parsers.fixed.FixedWidthParserSettings;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.Optional;
 import javax.annotation.concurrent.Immutable;
 import org.apache.commons.math3.util.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.FileReader;
+import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
 
@@ -52,22 +56,29 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
    * Determines column types if not provided by the user Reads all input into memory unless File was
    * provided
    */
-  private Pair<Reader, ColumnType[]> getReaderAndColumnTypes(FixedWidthReadOptions options)
-      throws IOException {
-    ColumnType[] types = options.columnTypes();
+  private Pair<Reader, ReadOptions.ColumnTypeReadOptions> getReaderAndColumnTypes(
+      FixedWidthReadOptions options) throws IOException {
+    ReadOptions.ColumnTypeReadOptions columnTypeReadOptions = options.columnTypeReadOptions();
     byte[] bytesCache = null;
 
-    if (types == null) {
+    boolean hasColumnNames =
+        options.columnSpecs() != null
+            && options.columnSpecs().getFieldNames() != null
+            && options.columnSpecs().getFieldNames().length > 0;
+    if (!options.columnTypeReadOptions().hasColumnTypeForAllColumns()
+        && (!options.columnTypeReadOptions().canCalculateColumnTypeForAllColumns()
+            || !hasColumnNames)) {
       Reader reader = options.source().createReader(bytesCache);
       if (options.source().file() == null) {
         bytesCache = CharStreams.toString(reader).getBytes();
         // create a new reader since we just exhausted the existing one
         reader = options.source().createReader(bytesCache);
       }
-      types = detectColumnTypes(reader, options);
+      columnTypeReadOptions =
+          ReadOptions.ColumnTypeReadOptions.of(detectColumnTypes(reader, options));
     }
 
-    return Pair.create(options.source().createReader(bytesCache), types);
+    return Pair.create(options.source().createReader(bytesCache), columnTypeReadOptions);
   }
 
   public Table read(FixedWidthReadOptions options) throws IOException {
@@ -75,14 +86,14 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
   }
 
   private Table read(FixedWidthReadOptions options, boolean headerOnly) throws IOException {
-    Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
+    Pair<Reader, ReadOptions.ColumnTypeReadOptions> pair = getReaderAndColumnTypes(options);
     Reader reader = pair.getKey();
-    ColumnType[] types = pair.getValue();
+    ReadOptions.ColumnTypeReadOptions columnTypeReadOptions = pair.getValue();
 
     FixedWidthParser parser = fixedWidthParser(options);
 
     try {
-      return parseRows(options, headerOnly, reader, types, parser);
+      return parseRows(options, headerOnly, reader, columnTypeReadOptions, parser);
     } finally {
       if (options.source().reader() == null) {
         // if we get a reader back from options it means the client opened it, so let the client
@@ -138,7 +149,16 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
     AbstractParser<?> parser = fixedWidthParser(options);
 
     try {
-      return getColumnTypes(reader, options, linesToSkip, parser);
+      String[] columnNames =
+          Optional.ofNullable(options.columnSpecs())
+              .flatMap(specs -> Optional.ofNullable(specs.getFieldNames()))
+              .map(
+                  fieldNames ->
+                      Arrays.stream(fieldNames)
+                          .map(NormalizedString::toString)
+                          .toArray(String[]::new))
+              .orElse(null);
+      return getColumnTypes(reader, options, linesToSkip, parser, columnNames);
     } finally {
       parser.stopParsing();
       // we don't close the reader since we didn't create it

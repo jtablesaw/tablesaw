@@ -14,15 +14,28 @@
 
 package tech.tablesaw.io.xlsx;
 
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static tech.tablesaw.api.ColumnType.BOOLEAN;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.LONG;
+import static tech.tablesaw.api.ColumnType.STRING;
 
+import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 
 public class XlsxReaderTest {
 
@@ -84,7 +97,8 @@ public class XlsxReaderTest {
             "booleancol",
             "datecol",
             "formulacol");
-    //        stringcol   shortcol    intcol  longcol doublecol   booleancol  datecol       formulacol  
+    //        stringcol   shortcol    intcol  longcol doublecol   booleancol  datecol
+    // formulacol
     //        Hallvard    123 12345678    12345678900 12,34   TRUE    22/02/2019 20:54:09   135.34
     //        Marit       124 12345679    12345678901 13,35   FALSE   23/03/2020 21:55:10   137.35
     assertColumnValues(table.stringColumn("stringcol"), "Hallvard", "Marit");
@@ -93,8 +107,11 @@ public class XlsxReaderTest {
     assertColumnValues(table.longColumn("longcol"), 12345678900L, 12345678901L);
     assertColumnValues(table.doubleColumn("doublecol"), 12.34, 13.35);
     assertColumnValues(table.booleanColumn("booleancol"), true, false);
-    assertColumnValues(table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), LocalDateTime.of(2020, 3, 23, 21, 55, 10));
-    assertColumnValues(table.doubleColumn("formulacol"), 135.34 , 137.35);
+    assertColumnValues(
+        table.dateTimeColumn("datecol"),
+        LocalDateTime.of(2019, 2, 22, 20, 54, 9),
+        LocalDateTime.of(2020, 3, 23, 21, 55, 10));
+    assertColumnValues(table.doubleColumn("formulacol"), 135.34, 137.35);
   }
 
   @Test
@@ -122,9 +139,9 @@ public class XlsxReaderTest {
     assertColumnValues(table.longColumn("longcol"), 12345678900L, null);
     assertColumnValues(table.doubleColumn("doublecol"), null, 13.35);
     assertColumnValues(table.booleanColumn("booleancol"), true, null);
-    assertColumnValues(table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
-    assertColumnValues(table.doubleColumn("formulacol"), null ,137.35);
-
+    assertColumnValues(
+        table.dateTimeColumn("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
+    assertColumnValues(table.doubleColumn("formulacol"), null, 137.35);
   }
 
   @Test
@@ -156,5 +173,81 @@ public class XlsxReaderTest {
     } catch (IndexOutOfBoundsException iobe) {
       // expected
     }
+  }
+
+  @Test
+  public void testCustomizedColumnTypesMixedWithDetection() throws IOException {
+    Table table =
+        new XlsxReader()
+            .read(
+                XlsxReadOptions.builder("../data/columns.xlsx")
+                    .columnType("shortcol", DOUBLE)
+                    .columnType("intcol", LONG)
+                    .columnTypeByNameFunction(
+                        columnName ->
+                            "formulacol".equals(columnName) ? Optional.of(FLOAT) : Optional.empty())
+                    .build());
+
+    ColumnType[] columnTypes = table.columnTypes();
+
+    assertArrayEquals(
+        columnTypes,
+        new ColumnType[] {STRING, DOUBLE, LONG, LONG, DOUBLE, BOOLEAN, LOCAL_DATE_TIME, FLOAT});
+  }
+
+  @Test
+  public void testCustomizedColumnTypeAllCustomized() throws IOException {
+    Table table =
+        new XlsxReader()
+            .read(
+                XlsxReadOptions.builder("../data/columns.xlsx")
+                    .completeColumnTypeByNameFunction(columName -> STRING)
+                    .build());
+
+    ColumnType[] columnTypes = table.columnTypes();
+
+    assertTrue(Arrays.stream(columnTypes).allMatch(columnType -> columnType.equals(STRING)));
+  }
+
+  @Test
+  public void testCustomizedEmptyColumnsArePreserved() throws IOException {
+    Table table =
+        new XlsxReader()
+            .read(
+                XlsxReadOptions.builder("../data/columns.xlsx")
+                    .completeColumnTypeByNameFunction(columName -> STRING)
+                    .build());
+
+    assertEquals(
+        table.column("empty").type(),
+        STRING,
+        "Empty column must be preserved as it's type is specified");
+  }
+
+  @Test
+  public void testCustomizedColumnStringShouldTryToPreserveValuesFromOtherExcelTypes()
+      throws IOException {
+    Table table =
+        new XlsxReader()
+            .read(
+                XlsxReadOptions.builder("../data/columns.xlsx")
+                    .completeColumnTypeByNameFunction(columName -> STRING)
+                    .build());
+
+    System.out.println(table.print());
+
+    assertEquals(table.column("stringcol").asList(), Lists.newArrayList("Hallvard", "Marit"));
+    assertEquals(table.column("intcol").asList(), Lists.newArrayList("12345678", "12345679"));
+    // Not ideal, format viewed in excel is without E+10 notation
+    assertEquals(
+        table.column("longcol").asList(), Lists.newArrayList("1.23457E+10", "1.23457E+10"));
+    assertEquals(table.column("doublecol").asList(), Lists.newArrayList("12.34", "13.35"));
+    assertEquals(table.column("booleancol").asList(), Lists.newArrayList("TRUE", "FALSE"));
+    assertEquals(table.column("booleancol").asList(), Lists.newArrayList("TRUE", "FALSE"));
+    assertEquals(
+        table.column("datecol").asList(),
+        Lists.newArrayList("22/02/2019 20:54:09", "23/03/2020 21:55:10"));
+    assertEquals(table.column("formulacol").asList(), Lists.newArrayList("135.34", "137.35"));
+    assertEquals(table.column("empty").asList(), Lists.newArrayList("", ""));
   }
 }

@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.api.ColumnType.*;
 
 import com.univocity.parsers.common.TextParsingException;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
@@ -825,5 +827,104 @@ public class CsvReaderTest {
     // test CSV reads quote back again
     Table out = Table.read().csv(new StringReader(string));
     assertEquals(table.get(0, 0), out.get(0, 0));
+  }
+
+  @Test
+  public void testCustomizedColumnTypesMixedWithDetection() throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnType("stop_id", STRING)
+            .columnType("stop_name", STRING)
+            .columnTypeByNameFunction(
+                columnName ->
+                    "stop_lon".equals(columnName) ? Optional.of(DOUBLE) : Optional.empty())
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    ColumnType[] expectedTypes = Arrays.copyOf(bus_types, bus_types.length);
+    expectedTypes[0] = STRING; // stop_id
+    expectedTypes[1] = STRING; // stop_name
+    expectedTypes[4] = DOUBLE; // stop_lon
+    assertArrayEquals(expectedTypes, columnTypes);
+  }
+
+  @Test
+  public void testCustomizedColumnTypeAllCustomized() throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .completeColumnTypeByNameFunction(columnName -> STRING)
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    assertTrue(Arrays.stream(columnTypes).allMatch(columnType -> columnType.equals(STRING)));
+  }
+
+  @Test
+  public void testColumnsArePreservedWithNoDataIfCustomizedTypesAreProvided() throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test_no_data.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnType("stop_id", SHORT)
+            .columnType("stop_name", STRING)
+            .columnType("stop_desc", STRING)
+            .columnType("stop_lat", FLOAT)
+            .columnType("stop_lon", FLOAT)
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    assertArrayEquals(bus_types, columnTypes);
+  }
+
+  @Test
+  public void testColumnsArePreservedWithNoDataIfCustomizedTypesAreProvided2() throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test_no_data.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnTypes(new ColumnType[] {SHORT, STRING, STRING, FLOAT, FLOAT})
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    assertArrayEquals(bus_types, columnTypes);
+  }
+
+  @Test
+  public void testColumnsArePreservedWithNoDataIfCustomizedTypesAreProvidedPartially()
+      throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test_no_data.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnType("stop_id", SHORT)
+            .columnType("stop_name", STRING)
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    assertArrayEquals(new ColumnType[] {SHORT, STRING}, columnTypes);
   }
 }

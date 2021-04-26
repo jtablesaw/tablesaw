@@ -22,16 +22,16 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.Source;
 
 public class CsvReadOptions extends ReadOptions {
-
-  private final ColumnType[] columnTypes;
   private final Character separator;
   private final Character quoteChar;
   private final Character escapeChar;
@@ -43,7 +43,6 @@ public class CsvReadOptions extends ReadOptions {
 
   private CsvReadOptions(CsvReadOptions.Builder builder) {
     super(builder);
-    columnTypes = builder.columnTypes;
     separator = builder.separator;
     quoteChar = builder.quoteChar;
     escapeChar = builder.escapeChar;
@@ -115,8 +114,10 @@ public class CsvReadOptions extends ReadOptions {
     return new Builder(reader);
   }
 
+  /** @deprecated Use {@link #columnTypeReadOptions()} */
+  @Deprecated
   public ColumnType[] columnTypes() {
-    return columnTypes;
+    return columnTypeReadOptions.columnTypes();
   }
 
   public Character separator() {
@@ -161,7 +162,6 @@ public class CsvReadOptions extends ReadOptions {
     private Character quoteChar;
     private Character escapeChar;
     private String lineEnding;
-    private ColumnType[] columnTypes;
     private Integer maxNumberOfColumns = 10_000;
     private Character commentPrefix;
     private boolean lineSeparatorDetectionEnabled = true;
@@ -191,8 +191,9 @@ public class CsvReadOptions extends ReadOptions {
       super(stream);
     }
 
+    @Override
     public Builder columnTypes(ColumnType[] columnTypes) {
-      this.columnTypes = columnTypes;
+      super.columnTypes(columnTypes);
       return this;
     }
 
@@ -272,15 +273,7 @@ public class CsvReadOptions extends ReadOptions {
 
     @Override
     public Builder columnTypesToDetect(List<ColumnType> columnTypesToDetect) {
-      // Types need to be in certain order as more general types like string come last
-      // Otherwise everything will be parsed as a string
-      List<ColumnType> orderedTypes = new ArrayList<>();
-      for (ColumnType t : EXTENDED_TYPES) {
-        if (columnTypesToDetect.contains(t)) {
-          orderedTypes.add(t);
-        }
-      }
-      this.columnTypesToDetect = orderedTypes;
+      super.columnTypesToDetect(columnTypesToDetect);
       return this;
     }
 
@@ -362,6 +355,32 @@ public class CsvReadOptions extends ReadOptions {
     @Override
     public Builder ignoreZeroDecimal(boolean ignoreZeroDecimal) {
       super.ignoreZeroDecimal(ignoreZeroDecimal);
+      return this;
+    }
+
+    @Override
+    public Builder columnType(String columnName, ColumnType columnType) {
+      super.columnType(columnName, columnType);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypeByNameFunction(
+        Function<String, Optional<ColumnType>> columnTypeFunction) {
+      super.columnTypeByNameFunction(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder completeColumnTypeByNameFunction(
+        Function<String, ColumnType> columnTypeFunction) {
+      super.completeColumnTypeByNameFunction(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypes(Map<String, ColumnType> columnTypeByName) {
+      super.columnTypes(columnTypeByName);
       return this;
     }
   }

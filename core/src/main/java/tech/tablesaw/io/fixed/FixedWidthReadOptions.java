@@ -22,6 +22,9 @@ import java.io.Reader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.Source;
@@ -199,7 +202,7 @@ public class FixedWidthReadOptions extends ReadOptions {
     }
 
     public Builder columnTypes(ColumnType[] columnTypes) {
-      this.columnTypes = columnTypes;
+      super.columnTypes(columnTypes);
       return this;
     }
 
@@ -298,6 +301,32 @@ public class FixedWidthReadOptions extends ReadOptions {
     @Override
     public Builder ignoreZeroDecimal(boolean ignoreZeroDecimal) {
       super.ignoreZeroDecimal(ignoreZeroDecimal);
+      return this;
+    }
+
+    @Override
+    public Builder columnType(String columnName, ColumnType columnType) {
+      super.columnType(columnName, columnType);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypeByNameFunction(
+        Function<String, Optional<ColumnType>> columnTypeFunction) {
+      super.columnTypeByNameFunction(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder completeColumnTypeByNameFunction(
+        Function<String, ColumnType> columnTypeFunction) {
+      super.completeColumnTypeByNameFunction(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypes(Map<String, ColumnType> columnTypeByName) {
+      super.columnTypes(columnTypeByName);
       return this;
     }
   }

@@ -8,6 +8,10 @@ import java.io.StringReader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.Source;
 
@@ -183,6 +187,32 @@ public class JsonReadOptions extends ReadOptions {
     /** @param path the JSON Pointer path used to select a sub-tree in the main document */
     public Builder path(String path) {
       this.path = path;
+      return this;
+    }
+
+    @Override
+    public Builder columnType(String columnName, ColumnType columnType) {
+      super.columnType(columnName, columnType);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypeByNameFunction(
+        Function<String, Optional<ColumnType>> columnTypeFunction) {
+      super.columnTypeByNameFunction(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder completeColumnTypeByNameFunction(
+        Function<String, ColumnType> columnTypeFunction) {
+      super.completeColumnTypeByNameFunction(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypes(Map<String, ColumnType> columnTypeByName) {
+      super.columnTypes(columnTypeByName);
       return this;
     }
   }
