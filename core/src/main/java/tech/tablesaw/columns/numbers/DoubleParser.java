@@ -28,8 +28,7 @@ public class DoubleParser extends AbstractColumnParser<Double> {
     try {
       if (isPercent(AbstractColumnParser.remove(s, ','))) {
         s = AbstractColumnParser.remove(s, ',');
-        NumberFormat numberFormat = NumberFormat.getPercentInstance();
-        double d = numberFormat.parse(s).doubleValue();
+        Number number = NumberFormat.getPercentInstance().parse(s);
       } else {
         Double.parseDouble(AbstractColumnParser.remove(s, ','));
       }
