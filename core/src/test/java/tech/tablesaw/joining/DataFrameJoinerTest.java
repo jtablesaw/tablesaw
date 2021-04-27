@@ -1,6 +1,7 @@
 package tech.tablesaw.joining;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.base.Joiner;
 import java.util.Arrays;
@@ -244,6 +245,37 @@ public class DataFrameJoinerTest {
                     "9,Bob,Riley,Prof,Milton,NH,19,99933,2020",
                     "10,Earhardt,Gabral,Prof,Easterly,WA,21,13333,2019"),
             "Instructor");
+  }
+
+  private static Table createGOODS1() {
+    return Table.read()
+        .csv(
+            Joiner.on(System.lineSeparator())
+                .join(
+                    "ID,Name,Price",
+                    "1,Chips,10",
+                    "2,Coca-cola,20",
+                    "3,Bread,30",
+                    "4,Toothbrush,10",
+                    "5,Soap,20",
+                    "6,Towel,30"),
+            "Goods1");
+  }
+
+  private static Table createGOODS2() {
+    return Table.read()
+        .csv(
+            Joiner.on(System.lineSeparator())
+                .join("ID,Name,Price", "1,Chips,11", "2,Bread,29", "3,Soap,21", "4,Towel,33"),
+            "Goods2");
+  }
+
+  private static Table createGOODS3() {
+    return Table.read()
+        .csv(
+            Joiner.on(System.lineSeparator())
+                .join("ID,Name,Price", "1,Chips,9", "2,Coca-cola,22", "3,Bread,29"),
+            "Goods3");
   }
 
   private static Table createDEPTHEAD() {
@@ -570,9 +602,16 @@ public class DataFrameJoinerTest {
   public void leftOuterJoinWithDoubles4() {
     Table joined =
         DOUBLE_INDEXED_DOGS.joinOn("ID").leftOuter(DOUBLE_INDEXED_PEOPLE, DOUBLE_INDEXED_CATS);
-    assertEquals(3, joined.columnCount());
-    assertEquals(4, joined.rowCount());
+    assertTrue(
+        joined.columnNames().containsAll(Arrays.asList("ID", "Dog Name", "Name", "Cat Name")));
     assertEquals(4, joined.column("ID").size());
+    assertEquals(4, joined.column("Dog Name").size());
+    assertEquals(0, joined.column("Dog Name").countMissing());
+    assertEquals(4, joined.column("Name").size());
+    assertEquals(1, joined.column("Name").countMissing());
+    assertEquals(4, joined.column("Cat Name").size());
+    assertEquals(3, joined.column("Cat Name").countMissing());
+    assertEquals(4, joined.rowCount());
   }
 
   @Test
@@ -841,6 +880,26 @@ public class DataFrameJoinerTest {
     assertEquals(10, joined.rowCount());
     assertEquals(10, joined.column("State").size());
     assertEquals(10, joined.column("Age").size());
+  }
+
+  @Test
+  public void leftJoinStoreWithMultiTables() {
+    Table table1 = createGOODS1();
+    Table table2 = createGOODS2();
+    Table table3 = createGOODS3();
+    Table joined = table1.joinOn("Name").leftOuter(true, table2, table3);
+    assertEquals(7, joined.columnCount());
+    assertTrue(
+        joined
+            .columnNames()
+            .containsAll(
+                Arrays.asList("ID", "Name", "Price", "T2.ID", "T2.Price", "T3.ID", "T3.Price")));
+    assertEquals(6, joined.rowCount());
+    assertEquals(6, joined.column("Price").size());
+    assertEquals(6, joined.column("T2.ID").size());
+    assertEquals(2, joined.column("T2.ID").countMissing());
+    assertEquals(6, joined.column("T3.ID").size());
+    assertEquals(3, joined.column("T3.ID").countMissing());
   }
 
   @Test

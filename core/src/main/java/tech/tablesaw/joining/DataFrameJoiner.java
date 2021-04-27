@@ -14,22 +14,11 @@ import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.instant.InstantColumnType;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.FloatColumnType;
-import tech.tablesaw.columns.numbers.IntColumnType;
-import tech.tablesaw.columns.numbers.LongColumnType;
-import tech.tablesaw.columns.numbers.ShortColumnType;
+import tech.tablesaw.columns.numbers.*;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
-import tech.tablesaw.index.ByteIndex;
-import tech.tablesaw.index.DoubleIndex;
-import tech.tablesaw.index.FloatIndex;
-import tech.tablesaw.index.Index;
-import tech.tablesaw.index.IntIndex;
-import tech.tablesaw.index.LongIndex;
-import tech.tablesaw.index.ShortIndex;
-import tech.tablesaw.index.StringIndex;
+import tech.tablesaw.index.*;
 import tech.tablesaw.selection.Selection;
 
 public class DataFrameJoiner {
@@ -442,7 +431,9 @@ public class DataFrameJoiner {
   public Table leftOuter(boolean allowDuplicateColumnNames, Table... tables) {
     Table joined = table;
     for (Table table2 : tables) {
-      joined = leftOuter(table2, allowDuplicateColumnNames, joinColumnNames);
+      joined =
+          joinInternal(
+              joined, table2, JoinType.LEFT_OUTER, allowDuplicateColumnNames, joinColumnNames);
     }
     return joined;
   }
