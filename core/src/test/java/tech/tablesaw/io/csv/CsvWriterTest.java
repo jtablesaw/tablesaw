@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.*;
+import tech.tablesaw.columns.booleans.BooleanFormatter;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 public class CsvWriterTest {
@@ -116,6 +117,18 @@ public class CsvWriterTest {
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
         "dates\n" + "\"Jan 1, 2011 - 04:30\"\n", writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter6() throws IOException {
+    Table table = Table.create("", BooleanColumn.create("bools"));
+    BooleanFormatter formatter = new BooleanFormatter("Yes", "No", "IDK");
+    table.booleanColumn("bools").setPrintFormatter(formatter);
+    table.booleanColumn("bools").append(true).append(false).appendMissing();
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "bools\n" + "Yes\n" + "No\n" + "IDK\n", writer.toString().replaceAll("\\r\\n", "\n"));
   }
 
   @Test

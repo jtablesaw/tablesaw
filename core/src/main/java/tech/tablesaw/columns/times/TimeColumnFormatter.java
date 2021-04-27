@@ -11,6 +11,18 @@ import tech.tablesaw.columns.TemporalColumnFormatter;
 @Immutable
 public class TimeColumnFormatter extends TemporalColumnFormatter {
 
+  public TimeColumnFormatter(DateTimeFormatter format) {
+    super(format);
+  }
+
+  public TimeColumnFormatter() {
+    super();
+  }
+
+  public TimeColumnFormatter(DateTimeFormatter format, String missingValueString) {
+    super(format, missingValueString);
+  }
+
   public String format(int value) {
     DateTimeFormatter format = getFormat();
     if (value == TimeColumnType.missingValueIndicator()) {
