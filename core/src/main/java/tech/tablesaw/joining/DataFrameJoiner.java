@@ -384,8 +384,14 @@ public class DataFrameJoiner {
               + valueColumn.type());
     }
   }
-
-  /** Create a big multicolumn selection for all join columns in the given table. */
+  /**
+   * Create a big multicolumn selection for all join columns in the given table. Joins two tables.
+   *
+   * @param table1 the table which used to generate Selection.
+   * @param ri row number of row in table 1.
+   * @param selectionSize max size in table 1.
+   * @param joinColumnIndexes the column index of table1
+   */
   private Selection createMultiColSelection(
       Table table1,
       int ri,
