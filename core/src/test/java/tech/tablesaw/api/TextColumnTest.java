@@ -16,6 +16,7 @@ package tech.tablesaw.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
@@ -66,6 +68,33 @@ public class TextColumnTest {
     column.appendObj("*");
     assertEquals(4, column.size());
     assertEquals("*", column.getString(3));
+  }
+
+  @Test
+  public void testAppendObjCustomParser() {
+    class LowerCasingStringParser extends StringParser {
+      public LowerCasingStringParser(ColumnType columnType) {
+        super(columnType);
+      }
+
+      @Override
+      public String parse(String s) {
+        if (isMissing(s)) {
+          return StringColumnType.missingValueIndicator();
+        }
+        return s.toLowerCase();
+      }
+    };
+
+    final TextColumn column = TextColumn.create("testing");
+    final StringParser parser = new LowerCasingStringParser(ColumnType.TEXT);
+    column.setStringParser(parser);
+    column.appendObj("Value 1");
+    column.appendObj(null);
+    column.appendObj("Value 2");
+    assertSame(parser, column.getStringParser());
+    assertEquals(3, column.size());
+    assertEquals("value 1", column.getString(0));
   }
 
   @Test
