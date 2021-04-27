@@ -169,6 +169,7 @@ public class DataFrameJoiner {
    *     column have the same name if {@code true} the join will succeed and duplicate columns are
    *     renamed
    * @param table2JoinColumnNames The names of the columns in table2 to join on.
+   * @return the joined table
    */
   private Table joinInternal(
       Table table1,
@@ -391,6 +392,7 @@ public class DataFrameJoiner {
    * @param ri row number of row in table 1.
    * @param selectionSize max size in table 1.
    * @param joinColumnIndexes the column index of table1
+   * @return selection created
    */
   private Selection createMultiColSelection(
       Table table1,
