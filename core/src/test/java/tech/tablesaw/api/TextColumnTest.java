@@ -21,6 +21,7 @@ import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCa
 
 import com.google.common.base.Joiner;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.columns.strings.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
 
@@ -107,6 +109,15 @@ public class TextColumnTest {
 
     Table joined = t1.joinOn("TIME").fullOuter(t2);
     assertEquals(3, joined.columnCount());
+  }
+
+  @Test
+  void appendAsterisk() {
+    final TextColumn sc = TextColumn.create("sc");
+    StringParser parser = new StringParser(ColumnType.TEXT);
+    parser.setMissingValueStrings(new ArrayList<>());
+    sc.appendCell("*", parser);
+    assertEquals(0, sc.countMissing());
   }
 
   @Test

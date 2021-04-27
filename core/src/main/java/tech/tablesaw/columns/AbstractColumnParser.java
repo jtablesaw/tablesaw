@@ -83,4 +83,8 @@ public abstract class AbstractColumnParser<T> {
     }
     return new String(chars, 0, pos);
   }
+
+  public void setMissingValueStrings(List<String> missingValueStrings) {
+    this.missingValueStrings = missingValueStrings;
+  }
 }
