@@ -6,14 +6,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 public class CsvWriterTest {
@@ -64,6 +62,35 @@ public class CsvWriterTest {
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatter(true).build());
     assertEquals(
         "percents\n" + "32.30%\n" + "11.92%\n" + "100.00%\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter3() throws IOException {
+    Table table = Table.create("", IntColumn.create("ints"));
+    table.intColumn("ints").setPrintFormatter(NumberColumnFormatter.intsWithGrouping());
+    table.intColumn("ints").append(102_123).append(2).append(-1_232_132);
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatter(true).build());
+    assertEquals(
+        "ints\n" + "\"102,123\"\n" + "2\n" + "\"-1,232,132\"\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter2() throws IOException {
+    Table table = Table.create("", DateColumn.create("dates"));
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MMM");
+    table.dateColumn("dates").setPrintFormatter(formatter, "WHAT?");
+    table
+        .dateColumn("dates")
+        .append(LocalDate.of(2021, 11, 3))
+        .appendObj(null)
+        .append(LocalDate.of(2021, 3, 11));
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatter(true).build());
+    assertEquals(
+        "dates\n" + "2021-03-Nov\n" + "WHAT?\n" + "2021-11-Mar\n",
         writer.toString().replaceAll("\\r\\n", "\n"));
   }
 
