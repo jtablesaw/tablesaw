@@ -72,7 +72,11 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
             DateTimeColumn dc = (DateTimeColumn) table.column(c);
             entries[c] = options.dateTimeFormatter().format(dc.get(r));
           } else {
-            entries[c] = table.getUnformatted(r, c);
+            if (options.usePrintFormatter()) {
+              entries[c] = table.getString(r, c);
+            } else {
+              entries[c] = table.getUnformatted(r, c);
+            }
           }
         }
         csvWriter.writeRow(entries);

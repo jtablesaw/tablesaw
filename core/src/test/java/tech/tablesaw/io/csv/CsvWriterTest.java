@@ -11,8 +11,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 public class CsvWriterTest {
 
@@ -50,6 +52,18 @@ public class CsvWriterTest {
                 .build());
     assertEquals(
         "date,approval,who\n" + "\"Jan 21, 2004\",53,fox\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter1() throws IOException {
+    Table table = Table.create("", DoubleColumn.create("percents"));
+    table.doubleColumn("percents").setPrintFormatter(NumberColumnFormatter.percent(2));
+    table.doubleColumn("percents").append(0.323).append(0.1192).append(1.0);
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatter(true).build());
+    assertEquals(
+        "percents\n" + "32.30%\n" + "11.92%\n" + "100.00%\n",
         writer.toString().replaceAll("\\r\\n", "\n"));
   }
 

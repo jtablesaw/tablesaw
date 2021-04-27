@@ -16,6 +16,7 @@ public class CsvWriteOptions extends WriteOptions {
   private final boolean header;
   private final boolean ignoreLeadingWhitespaces;
   private final boolean ignoreTrailingWhitespaces;
+  private final boolean usePrintFormatter;
   private final Character separator;
   private final Character quoteChar;
   private final Character escapeChar;
@@ -38,6 +39,7 @@ public class CsvWriteOptions extends WriteOptions {
     this.dateFormatter = builder.dateFormatter;
     this.dateTimeFormatter = builder.dateTimeFormatter;
     this.columnNameMap = builder.columnNameMap;
+    this.usePrintFormatter = builder.usePrintFormatter;
   }
 
   public boolean header() {
@@ -62,6 +64,10 @@ public class CsvWriteOptions extends WriteOptions {
 
   public boolean quoteAllFields() {
     return quoteAllFields;
+  }
+
+  public boolean usePrintFormatter() {
+    return usePrintFormatter;
   }
 
   public Map<String, String> columnNameMap() {
@@ -110,6 +116,7 @@ public class CsvWriteOptions extends WriteOptions {
     private boolean ignoreLeadingWhitespaces = true;
     private boolean ignoreTrailingWhitespaces = true;
     private boolean quoteAllFields = false;
+    private boolean usePrintFormatter = false;
     private Character separator;
     private String lineEnd = System.lineSeparator();
     private Character escapeChar;
@@ -166,6 +173,11 @@ public class CsvWriteOptions extends WriteOptions {
 
     public CsvWriteOptions.Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
       this.dateTimeFormatter = dateTimeFormatter;
+      return this;
+    }
+
+    public CsvWriteOptions.Builder usePrintFormatter(boolean useFormatter) {
+      this.usePrintFormatter = useFormatter;
       return this;
     }
 
