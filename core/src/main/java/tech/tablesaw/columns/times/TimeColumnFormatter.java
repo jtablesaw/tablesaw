@@ -6,29 +6,15 @@ import static tech.tablesaw.columns.times.PackedLocalTime.toShortTimeString;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import javax.annotation.concurrent.Immutable;
+import tech.tablesaw.columns.TemporalColumnFormatter;
 
 @Immutable
-public class TimeColumnFormatter {
-
-  private final DateTimeFormatter format;
-  private String missingString = "";
-
-  public TimeColumnFormatter() {
-    this.format = null;
-  }
-
-  public TimeColumnFormatter(DateTimeFormatter format) {
-    this.format = format;
-  }
-
-  public TimeColumnFormatter(DateTimeFormatter format, String missingString) {
-    this.format = format;
-    this.missingString = missingString;
-  }
+public class TimeColumnFormatter extends TemporalColumnFormatter {
 
   public String format(int value) {
+    DateTimeFormatter format = getFormat();
     if (value == TimeColumnType.missingValueIndicator()) {
-      return missingString;
+      return getMissingString();
     }
     if (format == null) {
       return toShortTimeString(value);
@@ -44,9 +30,9 @@ public class TimeColumnFormatter {
   public String toString() {
     return "TimeColumnFormatter{"
         + "format="
-        + format
+        + getFormat()
         + ", missingString='"
-        + missingString
+        + getMissingString()
         + '\''
         + '}';
   }

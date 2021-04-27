@@ -4,49 +4,33 @@ import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
 import static tech.tablesaw.columns.dates.PackedLocalDate.toDateString;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import javax.annotation.concurrent.Immutable;
+import tech.tablesaw.columns.TemporalColumnFormatter;
 
 @Immutable
-public class DateColumnFormatter {
-
-  private final DateTimeFormatter format;
-  private String missingString = "";
-
-  public DateColumnFormatter() {
-    this.format = null;
-  }
-
-  public DateColumnFormatter(DateTimeFormatter format) {
-    this.format = format;
-  }
-
-  public DateColumnFormatter(DateTimeFormatter format, String missingString) {
-    this.format = format;
-    this.missingString = missingString;
-  }
+public class DateColumnFormatter extends TemporalColumnFormatter {
 
   public String format(int value) {
     if (value == DateColumnType.missingValueIndicator()) {
-      return missingString;
+      return getMissingString();
     }
-    if (format == null) {
+    if (getFormat() == null) {
       return toDateString(value);
     }
     LocalDate date = asLocalDate(value);
     if (date == null) {
       return "";
     }
-    return format.format(date);
+    return getFormat().format(date);
   }
 
   @Override
   public String toString() {
     return "DateColumnFormatter{"
         + "format="
-        + format
+        + getFormat()
         + ", missingString='"
-        + missingString
+        + getMissingString()
         + '\''
         + '}';
   }

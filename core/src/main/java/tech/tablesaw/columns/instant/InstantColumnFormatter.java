@@ -5,69 +5,67 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.annotation.concurrent.Immutable;
+import tech.tablesaw.columns.TemporalColumnFormatter;
 import tech.tablesaw.columns.times.TimeColumnType;
 
 @Immutable
-public class InstantColumnFormatter {
+public class InstantColumnFormatter extends TemporalColumnFormatter {
 
-  private final DateTimeFormatter format;
   private final ZoneId zoneId;
-  private String missingValueString = "";
 
   public InstantColumnFormatter() {
-    this.format = null;
+    super(null);
     this.zoneId = ZoneOffset.UTC;
   }
 
   public InstantColumnFormatter(ZoneId zoneId) {
-    this.format = null;
+    super(null);
     this.zoneId = zoneId;
   }
 
   public InstantColumnFormatter(DateTimeFormatter format) {
-    this.format = format;
+    super(format);
     this.zoneId = ZoneOffset.UTC;
   }
 
   public InstantColumnFormatter(DateTimeFormatter format, ZoneId zoneId) {
-    this.format = format;
+    super(format);
     this.zoneId = zoneId;
   }
 
   public InstantColumnFormatter(DateTimeFormatter format, String missingValueString) {
-    this.format = format;
-    this.missingValueString = missingValueString;
+    super(format, missingValueString);
     this.zoneId = ZoneOffset.UTC;
   }
 
   public InstantColumnFormatter(
       DateTimeFormatter format, ZoneId zoneId, String missingValueString) {
-    this.format = format;
-    this.missingValueString = missingValueString;
+    super(format, missingValueString);
     this.zoneId = zoneId;
   }
 
+  // TODO: Add a missing value test, looks like NPE
   public String format(long value) {
     if (value == TimeColumnType.missingValueIndicator()) {
-      return missingValueString;
+      return getMissingString();
     }
-    if (format == null) {
+    if (getFormat() == null) {
       return PackedInstant.toString(value);
     }
     ZonedDateTime time = PackedInstant.asInstant(value).atZone(zoneId);
     if (time == null) {
       return "";
     }
-    return format.format(time);
+    return getFormat().format(time);
   }
 
   @Override
   public String toString() {
     return "InstantColumnFormatter{"
         + "format="
-        + format
+        + getFormat()
         + ", missingValueString='"
-        + missingValueString
+        + getMissingString()
         + '\''
         + '}';
   }

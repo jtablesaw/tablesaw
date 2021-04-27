@@ -39,7 +39,7 @@ public class CsvWriteOptions extends WriteOptions {
     this.dateFormatter = builder.dateFormatter;
     this.dateTimeFormatter = builder.dateTimeFormatter;
     this.columnNameMap = builder.columnNameMap;
-    this.usePrintFormatter = builder.usePrintFormatter;
+    this.usePrintFormatter = builder.usePrintFormatters;
   }
 
   public boolean header() {
@@ -66,7 +66,7 @@ public class CsvWriteOptions extends WriteOptions {
     return quoteAllFields;
   }
 
-  public boolean usePrintFormatter() {
+  public boolean usePrintFormatters() {
     return usePrintFormatter;
   }
 
@@ -116,7 +116,7 @@ public class CsvWriteOptions extends WriteOptions {
     private boolean ignoreLeadingWhitespaces = true;
     private boolean ignoreTrailingWhitespaces = true;
     private boolean quoteAllFields = false;
-    private boolean usePrintFormatter = false;
+    private boolean usePrintFormatters = false;
     private Character separator;
     private String lineEnd = System.lineSeparator();
     private Character escapeChar;
@@ -166,18 +166,24 @@ public class CsvWriteOptions extends WriteOptions {
       return this;
     }
 
+    @Deprecated
     public CsvWriteOptions.Builder dateFormatter(DateTimeFormatter dateFormatter) {
       this.dateFormatter = dateFormatter;
       return this;
     }
 
+    @Deprecated
     public CsvWriteOptions.Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
       this.dateTimeFormatter = dateTimeFormatter;
       return this;
     }
 
-    public CsvWriteOptions.Builder usePrintFormatter(boolean useFormatter) {
-      this.usePrintFormatter = useFormatter;
+    /**
+     * Sets the usePrintFormatters option @see{ColumnPrintFormatter} When true, printFormatters will
+     * be used in writing the output text for any column that has one.
+     */
+    public CsvWriteOptions.Builder usePrintFormatters(boolean useFormatter) {
+      this.usePrintFormatters = useFormatter;
       return this;
     }
 

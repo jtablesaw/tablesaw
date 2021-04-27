@@ -59,21 +59,9 @@ public class CsvWriterTest {
     table.doubleColumn("percents").setPrintFormatter(NumberColumnFormatter.percent(2));
     table.doubleColumn("percents").append(0.323).append(0.1192).append(1.0);
     StringWriter writer = new StringWriter();
-    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatter(true).build());
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
         "percents\n" + "32.30%\n" + "11.92%\n" + "100.00%\n",
-        writer.toString().replaceAll("\\r\\n", "\n"));
-  }
-
-  @Test
-  public void printFormatter3() throws IOException {
-    Table table = Table.create("", IntColumn.create("ints"));
-    table.intColumn("ints").setPrintFormatter(NumberColumnFormatter.intsWithGrouping());
-    table.intColumn("ints").append(102_123).append(2).append(-1_232_132);
-    StringWriter writer = new StringWriter();
-    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatter(true).build());
-    assertEquals(
-        "ints\n" + "\"102,123\"\n" + "2\n" + "\"-1,232,132\"\n",
         writer.toString().replaceAll("\\r\\n", "\n"));
   }
 
@@ -88,10 +76,46 @@ public class CsvWriterTest {
         .appendObj(null)
         .append(LocalDate.of(2021, 3, 11));
     StringWriter writer = new StringWriter();
-    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatter(true).build());
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
         "dates\n" + "2021-03-Nov\n" + "WHAT?\n" + "2021-11-Mar\n",
         writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter3() throws IOException {
+    Table table = Table.create("", IntColumn.create("ints"));
+    table.intColumn("ints").setPrintFormatter(NumberColumnFormatter.intsWithGrouping());
+    table.intColumn("ints").append(102_123).append(2).append(-1_232_132);
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "ints\n" + "\"102,123\"\n" + "2\n" + "\"-1,232,132\"\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter4() throws IOException {
+    Table table = Table.create("", FloatColumn.create("floats"));
+    table.floatColumn("floats").setPrintFormatter(NumberColumnFormatter.fixedWithGrouping(2));
+    table.floatColumn("floats").append(032.3f).append(0.1192f).appendObj(null).append(1001.0f);
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "floats\n" + "32.30\n" + "0.12\n" + "\n" + "\"1,001.00\"\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter5() throws IOException {
+    Table table = Table.create("", DateTimeColumn.create("dates"));
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy - hh:mm");
+    table.dateTimeColumn("dates").setPrintFormatter(formatter, "WHAT?");
+    table.dateTimeColumn("dates").append(LocalDateTime.of(2011, 1, 1, 4, 30));
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "dates\n" + "\"Jan 1, 2011 - 04:30\"\n", writer.toString().replaceAll("\\r\\n", "\n"));
   }
 
   @Test
