@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -182,6 +183,27 @@ public class CsvWriterTest {
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
         "dates\n" + "\"Dec 3, 2007 - 10:15\"\n" + "WHAT?\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  /** Test preventing scientific notation */
+  @Test
+  void printFormatter11() throws IOException {
+    Table table = Table.create("", DoubleColumn.create("doubles"));
+    DecimalFormat df = new DecimalFormat("0.#");
+    df.setMaximumFractionDigits(11);
+    NumberColumnFormatter formatter = new NumberColumnFormatter(df);
+    table.doubleColumn("doubles").setPrintFormatter(formatter);
+    table
+        .doubleColumn("doubles")
+        .append(32.32342489123)
+        .append(0.1192342224)
+        .appendObj(null)
+        .append(1001.0);
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "doubles\n" + "32.32342489123\n" + "0.1192342224\n" + "\n" + "1001\n",
         writer.toString().replaceAll("\\r\\n", "\n"));
   }
 
