@@ -189,8 +189,8 @@ public class CsvWriteOptions extends WriteOptions {
     }
 
     /**
-     * Sets the usePrintFormatters option @see{ColumnPrintFormatter} When true, printFormatters will
-     * be used in writing the output text for any column that has one.
+     * Sets the usePrintFormatters option @link{tech.tablesaw.columns.ColumnFormatter} When true,
+     * printFormatters will be used in writing the output text for any column that has one.
      */
     public CsvWriteOptions.Builder usePrintFormatters(boolean useFormatter) {
       this.usePrintFormatters = useFormatter;

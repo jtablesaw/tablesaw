@@ -59,7 +59,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter1() throws IOException {
+  void printFormatter_double() throws IOException {
     Table table = Table.create("", DoubleColumn.create("percents"));
     table.doubleColumn("percents").setPrintFormatter(NumberColumnFormatter.percent(2));
     table.doubleColumn("percents").append(0.323).append(0.1192).append(1.0);
@@ -71,7 +71,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter2() throws IOException {
+  void printFormatter_date() throws IOException {
     Table table = Table.create("", DateColumn.create("dates"));
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MMM");
     table.dateColumn("dates").setPrintFormatter(formatter, "WHAT?");
@@ -88,7 +88,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter3() throws IOException {
+  void printFormatter_int() throws IOException {
     Table table = Table.create("", IntColumn.create("ints"));
     table.intColumn("ints").setPrintFormatter(NumberColumnFormatter.intsWithGrouping());
     table.intColumn("ints").append(102_123).append(2).append(-1_232_132);
@@ -100,7 +100,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter4() throws IOException {
+  void printFormatter_float() throws IOException {
     Table table = Table.create("", FloatColumn.create("floats"));
     table.floatColumn("floats").setPrintFormatter(NumberColumnFormatter.fixedWithGrouping(2));
     table.floatColumn("floats").append(032.3f).append(0.1192f).appendObj(null).append(1001.0f);
@@ -112,7 +112,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter5() throws IOException {
+  void printFormatter_datetime() throws IOException {
     Table table = Table.create("", DateTimeColumn.create("dates"));
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy - hh:mm");
     table.dateTimeColumn("dates").setPrintFormatter(formatter, "WHAT?");
@@ -124,7 +124,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter6() throws IOException {
+  void printFormatter_boolean() throws IOException {
     Table table = Table.create("", BooleanColumn.create("bools"));
     BooleanFormatter formatter = new BooleanFormatter("Yes", "No", "IDK");
     table.booleanColumn("bools").setPrintFormatter(formatter);
@@ -136,7 +136,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter7() throws IOException {
+  void printFormatter_string() throws IOException {
     Table table = Table.create("", StringColumn.create("strings"));
     StringColumnFormatter formatter = new StringColumnFormatter(s -> "[" + s + "]", "N/A");
     table.stringColumn("strings").setPrintFormatter(formatter);
@@ -149,7 +149,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter8() throws IOException {
+  void printFormatter_text() throws IOException {
     Table table = Table.create("", TextColumn.create("strings"));
     StringColumnFormatter formatter = new StringColumnFormatter(s -> "[" + s + "]", "N/A");
     table.textColumn("strings").setPrintFormatter(formatter);
@@ -162,7 +162,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter9() throws IOException {
+  void printFormatter_short() throws IOException {
     Table table = Table.create("", ShortColumn.create("ints"));
     table.shortColumn("ints").setPrintFormatter(NumberColumnFormatter.intsWithGrouping());
     table.shortColumn("ints").append((short) 102).append((short) 12_132).append((short) -1_234);
@@ -174,7 +174,7 @@ public class CsvWriterTest {
   }
 
   @Test
-  void printFormatter10() throws IOException {
+  void printFormatter_instant() throws IOException {
     Table table = Table.create("", InstantColumn.create("dates"));
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy - hh:mm");
     table.instantColumn("dates").setPrintFormatter(new InstantColumnFormatter(formatter, "WHAT?"));
@@ -188,7 +188,7 @@ public class CsvWriterTest {
 
   /** Test preventing scientific notation */
   @Test
-  void printFormatter11() throws IOException {
+  void printFormatter_scientific_notation() throws IOException {
     Table table = Table.create("", DoubleColumn.create("doubles"));
     DecimalFormat df = new DecimalFormat("0.#");
     df.setMaximumFractionDigits(11);
