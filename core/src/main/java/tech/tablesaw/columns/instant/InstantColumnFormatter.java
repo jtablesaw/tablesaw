@@ -1,12 +1,12 @@
 package tech.tablesaw.columns.instant;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.annotation.concurrent.Immutable;
 import tech.tablesaw.columns.TemporalColumnFormatter;
-import tech.tablesaw.columns.times.TimeColumnType;
 
 @Immutable
 public class InstantColumnFormatter extends TemporalColumnFormatter {
@@ -44,18 +44,18 @@ public class InstantColumnFormatter extends TemporalColumnFormatter {
     this.zoneId = zoneId;
   }
 
-  // TODO: Add a missing value test, looks like NPE
   public String format(long value) {
-    if (value == TimeColumnType.missingValueIndicator()) {
+    if (value == InstantColumnType.missingValueIndicator()) {
       return getMissingString();
     }
     if (getFormat() == null) {
       return PackedInstant.toString(value);
     }
-    ZonedDateTime time = PackedInstant.asInstant(value).atZone(zoneId);
-    if (time == null) {
+    Instant instant = PackedInstant.asInstant(value);
+    if (instant == null) {
       return "";
     }
+    ZonedDateTime time = instant.atZone(zoneId);
     return getFormat().format(time);
   }
 

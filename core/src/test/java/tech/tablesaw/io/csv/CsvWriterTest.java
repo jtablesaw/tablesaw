@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +14,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
+import tech.tablesaw.columns.instant.InstantColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 
@@ -167,6 +169,19 @@ public class CsvWriterTest {
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
         "ints\n" + "102\n" + "\"12,132\"\n" + "\"-1,234\"\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  void printFormatter10() throws IOException {
+    Table table = Table.create("", InstantColumn.create("dates"));
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy - hh:mm");
+    table.instantColumn("dates").setPrintFormatter(new InstantColumnFormatter(formatter, "WHAT?"));
+    table.instantColumn("dates").append(Instant.parse("2007-12-03T10:15:30.00Z")).appendMissing();
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "dates\n" + "\"Dec 3, 2007 - 10:15\"\n" + "WHAT?\n",
         writer.toString().replaceAll("\\r\\n", "\n"));
   }
 
