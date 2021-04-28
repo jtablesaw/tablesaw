@@ -54,22 +54,7 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
       for (int r = 0; r < table.rowCount(); r++) {
         String[] entries = new String[table.columnCount()];
         for (int c = 0; c < table.columnCount(); c++) {
-          DateTimeFormatter dateFormatter = options.dateFormatter();
-          DateTimeFormatter dateTimeFormatter = options.dateTimeFormatter();
-          ColumnType columnType = table.column(c).type();
-          if (dateFormatter != null && columnType.equals(ColumnType.LOCAL_DATE)) {
-            DateColumn dc = (DateColumn) table.column(c);
-            entries[c] = options.dateFormatter().format(dc.get(r));
-          } else if (dateTimeFormatter != null && columnType.equals(ColumnType.LOCAL_DATE_TIME)) {
-            DateTimeColumn dc = (DateTimeColumn) table.column(c);
-            entries[c] = options.dateTimeFormatter().format(dc.get(r));
-          } else {
-            if (options.usePrintFormatters()) {
-              entries[c] = table.getString(r, c);
-            } else {
-              entries[c] = table.getUnformatted(r, c);
-            }
-          }
+          writeValues(table, options, r, entries, c);
         }
         csvWriter.writeRow(entries);
       }
@@ -77,6 +62,25 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
       if (csvWriter != null) {
         csvWriter.flush();
         csvWriter.close();
+      }
+    }
+  }
+
+  private void writeValues(Table table, CsvWriteOptions options, int r, String[] entries, int c) {
+    DateTimeFormatter dateFormatter = options.dateFormatter();
+    DateTimeFormatter dateTimeFormatter = options.dateTimeFormatter();
+    ColumnType columnType = table.column(c).type();
+    if (dateFormatter != null && columnType.equals(ColumnType.LOCAL_DATE)) {
+      DateColumn dc = (DateColumn) table.column(c);
+      entries[c] = options.dateFormatter().format(dc.get(r));
+    } else if (dateTimeFormatter != null && columnType.equals(ColumnType.LOCAL_DATE_TIME)) {
+      DateTimeColumn dc = (DateTimeColumn) table.column(c);
+      entries[c] = options.dateTimeFormatter().format(dc.get(r));
+    } else {
+      if (options.usePrintFormatters()) {
+        entries[c] = table.getString(r, c);
+      } else {
+        entries[c] = table.getUnformatted(r, c);
       }
     }
   }
