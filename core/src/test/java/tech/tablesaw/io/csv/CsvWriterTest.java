@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.columns.strings.StringColumnFormatter;
 
 public class CsvWriterTest {
 
@@ -129,6 +130,44 @@ public class CsvWriterTest {
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
         "bools\n" + "Yes\n" + "No\n" + "IDK\n", writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter7() throws IOException {
+    Table table = Table.create("", StringColumn.create("strings"));
+    StringColumnFormatter formatter = new StringColumnFormatter(s -> "[" + s + "]", "N/A");
+    table.stringColumn("strings").setPrintFormatter(formatter);
+    table.stringColumn("strings").append("hey").append("you").appendMissing();
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "strings\n" + "[hey]\n" + "[you]\n" + "N/A\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter8() throws IOException {
+    Table table = Table.create("", TextColumn.create("strings"));
+    StringColumnFormatter formatter = new StringColumnFormatter(s -> "[" + s + "]", "N/A");
+    table.textColumn("strings").setPrintFormatter(formatter);
+    table.textColumn("strings").append("hey").append("you").appendMissing();
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "strings\n" + "[hey]\n" + "[you]\n" + "N/A\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  public void printFormatter9() throws IOException {
+    Table table = Table.create("", ShortColumn.create("ints"));
+    table.shortColumn("ints").setPrintFormatter(NumberColumnFormatter.intsWithGrouping());
+    table.shortColumn("ints").append((short) 102).append((short) 12_132).append((short) -1_234);
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "ints\n" + "102\n" + "\"12,132\"\n" + "\"-1,234\"\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
   }
 
   @Test
