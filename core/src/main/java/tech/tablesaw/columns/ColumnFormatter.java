@@ -11,7 +11,7 @@ public abstract class ColumnFormatter {
   private final String missingString;
 
   /** Constructs a new Formatter with the given missing value string. */
-  public ColumnFormatter(String missingString) {
+  protected ColumnFormatter(String missingString) {
     this.missingString = missingString;
   }
 

@@ -13,19 +13,19 @@ public abstract class TemporalColumnFormatter extends ColumnFormatter {
   private final DateTimeFormatter format;
 
   /** Constructs a new Formatter with the given formatter and an empty missing value string. */
-  public TemporalColumnFormatter(DateTimeFormatter format) {
+  protected TemporalColumnFormatter(DateTimeFormatter format) {
     super("");
     this.format = format;
   }
 
   /** Constructs a new Formatter with the given formatter and missing value string. */
-  public TemporalColumnFormatter(DateTimeFormatter format, String missingValueString) {
+  protected TemporalColumnFormatter(DateTimeFormatter format, String missingValueString) {
     super(missingValueString);
     this.format = format;
   }
 
   /** Constructs a new default Formatter. This produces unformatted output. */
-  public TemporalColumnFormatter() {
+  protected TemporalColumnFormatter() {
     super("");
     this.format = null;
   }
