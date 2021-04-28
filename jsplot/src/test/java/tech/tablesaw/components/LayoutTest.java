@@ -11,6 +11,8 @@ import tech.tablesaw.plotly.components.Margin;
 
 public class LayoutTest {
 
+  private static final String LINE_END = System.lineSeparator();
+
   // @Test
   public void asJavascript() {
 
@@ -56,57 +58,45 @@ public class LayoutTest {
       Layout layout = Layout.builder().autosize(true).build();
       assertEquals(
           "var layout = {"
-              + System.lineSeparator()
-              + //
-              "    autosize: true,"
-              + System.lineSeparator()
-              + //
-              System.lineSeparator()
-              + System.lineSeparator()
-              + //
-              "};"
-              + System.lineSeparator(),
+              + LINE_END
+              + "    autosize: true,"
+              + LINE_END
+              + LINE_END
+              + LINE_END
+              + "};"
+              + LINE_END,
           layout.asJavascript());
     }
     {
       Layout layout = Layout.builder().autosize(true).width(800).build();
       assertEquals(
           "var layout = {"
-              + System.lineSeparator()
-              + //
-              "    width: 800,"
-              + System.lineSeparator()
-              + //
-              "    autosize: true,"
-              + System.lineSeparator()
-              + //
-              System.lineSeparator()
-              + System.lineSeparator()
-              + //
-              "};"
-              + System.lineSeparator(),
+              + LINE_END
+              + "    width: 800,"
+              + LINE_END
+              + "    autosize: true,"
+              + LINE_END
+              + LINE_END
+              + LINE_END
+              + "};"
+              + LINE_END,
           layout.asJavascript());
     }
     {
       Layout layout = Layout.builder().autosize(true).height(600).width(800).build();
       assertEquals(
           "var layout = {"
-              + System.lineSeparator()
-              + //
-              "    height: 600,"
-              + System.lineSeparator()
-              + //
-              "    width: 800,"
-              + System.lineSeparator()
-              + //
-              "    autosize: true,"
-              + System.lineSeparator()
-              + //
-              System.lineSeparator()
-              + System.lineSeparator()
-              + //
-              "};"
-              + System.lineSeparator(),
+              + LINE_END
+              + "    height: 600,"
+              + LINE_END
+              + "    width: 800,"
+              + LINE_END
+              + "    autosize: true,"
+              + LINE_END
+              + LINE_END
+              + LINE_END
+              + "};"
+              + LINE_END,
           layout.asJavascript());
     }
     {
@@ -114,19 +104,15 @@ public class LayoutTest {
       Layout layout = Layout.builder().autosize(false).height(600).build();
       assertEquals(
           "var layout = {"
-              + System.lineSeparator()
-              + //
-              "    height: 600,"
-              + System.lineSeparator()
-              + //
-              "    width: 700,"
-              + System.lineSeparator()
-              + //
-              System.lineSeparator()
-              + System.lineSeparator()
-              + //
-              "};"
-              + System.lineSeparator(),
+              + LINE_END
+              + "    height: 600,"
+              + LINE_END
+              + "    width: 700,"
+              + LINE_END
+              + LINE_END
+              + LINE_END
+              + "};"
+              + LINE_END,
           layout.asJavascript());
     }
   }

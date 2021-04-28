@@ -13,6 +13,8 @@ import tech.tablesaw.api.Table;
 
 class AnalyticQueryTest {
 
+  private static final String LINE_END = System.lineSeparator();
+
   @Test
   public void testToSqlString() {
     Table table = Table.create("table1", IntColumn.create("sales"));
@@ -31,17 +33,17 @@ class AnalyticQueryTest {
 
     String expected =
         "SELECT"
-            + System.lineSeparator()
+            + LINE_END
             + "SUM(sales) OVER w1 AS sumSales"
-            + System.lineSeparator()
+            + LINE_END
             + "FROM table1"
-            + System.lineSeparator()
+            + LINE_END
             + "Window w1 AS ("
-            + System.lineSeparator()
+            + LINE_END
             + "PARTITION BY product, region"
-            + System.lineSeparator()
+            + LINE_END
             + "ORDER BY sales ASC"
-            + System.lineSeparator()
+            + LINE_END
             + "ROWS BETWEEN UNBOUNDED_PRECEDING AND UNBOUNDED_FOLLOWING);";
 
     assertEquals(expected, query.toSqlLikeString());
@@ -61,13 +63,13 @@ class AnalyticQueryTest {
 
     String expectd =
         "SELECT"
-            + System.lineSeparator()
+            + LINE_END
             + "MAX(sales) OVER w1 AS salesSum"
-            + System.lineSeparator()
+            + LINE_END
             + "FROM sales"
-            + System.lineSeparator()
+            + LINE_END
             + "Window w1 AS ("
-            + System.lineSeparator()
+            + LINE_END
             + "ROWS BETWEEN CURRENT_ROW AND 1 FOLLOWING);";
 
     assertEquals(expectd, query.toSqlLikeString());
@@ -86,13 +88,13 @@ class AnalyticQueryTest {
 
     String expectd =
         "SELECT"
-            + System.lineSeparator()
+            + LINE_END
             + "RANK() OVER w1 AS myRank"
-            + System.lineSeparator()
+            + LINE_END
             + "FROM myTable"
-            + System.lineSeparator()
+            + LINE_END
             + "Window w1 AS ("
-            + System.lineSeparator()
+            + LINE_END
             + "ORDER BY date ASC, region ASC);";
 
     assertEquals(expectd, query.toSqlLikeString());

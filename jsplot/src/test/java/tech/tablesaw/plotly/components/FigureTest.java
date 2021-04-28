@@ -8,6 +8,7 @@ import tech.tablesaw.plotly.traces.Trace;
 
 class FigureTest {
 
+  private static final String LINE_END = System.lineSeparator();
   private String divName = "target";
 
   private double[] x = {1, 2, 3, 4, 5};
@@ -21,37 +22,37 @@ class FigureTest {
 
     assertEquals(
         "    <script>"
-            + System.lineSeparator()
+            + LINE_END
             + "        var target_target = document.getElementById('target');"
-            + System.lineSeparator()
+            + LINE_END
             + "        "
-            + System.lineSeparator()
+            + LINE_END
             + "var trace0 ="
-            + System.lineSeparator()
+            + LINE_END
             + "{"
-            + System.lineSeparator()
+            + LINE_END
             + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],"
-            + System.lineSeparator()
+            + LINE_END
             + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],"
-            + System.lineSeparator()
+            + LINE_END
             + "mode: 'markers',"
-            + System.lineSeparator()
+            + LINE_END
             + "xaxis: 'x',"
-            + System.lineSeparator()
+            + LINE_END
             + "yaxis: 'y',"
-            + System.lineSeparator()
+            + LINE_END
             + "type: 'scatter',"
-            + System.lineSeparator()
+            + LINE_END
             + "name: '',"
-            + System.lineSeparator()
+            + LINE_END
             + "};"
-            + System.lineSeparator()
+            + LINE_END
             + ""
-            + System.lineSeparator()
+            + LINE_END
             + "        var data = [ trace0];"
-            + System.lineSeparator()
+            + LINE_END
             + "Plotly.newPlot(target_target, data);            </script>"
-            + System.lineSeparator(),
+            + LINE_END,
         figure.asJavascript(divName));
   }
 
@@ -79,85 +80,85 @@ class FigureTest {
 
     assertEquals(
         "    <script>"
-            + System.lineSeparator()
+            + LINE_END
             + "        var target_target = document.getElementById('target');"
-            + System.lineSeparator()
+            + LINE_END
             + "        var layout = {"
-            + System.lineSeparator()
+            + LINE_END
             + "    title: 'A test title',"
-            + System.lineSeparator()
+            + LINE_END
             + "    height: 450,"
-            + System.lineSeparator()
+            + LINE_END
             + "    width: 700,"
-            + System.lineSeparator()
+            + LINE_END
             + "    showlegend: true,"
-            + System.lineSeparator()
+            + LINE_END
             + "    margin: {"
-            + System.lineSeparator()
+            + LINE_END
             + "  \"autoexpand\" : true,"
-            + System.lineSeparator()
+            + LINE_END
             + "  \"b\" : 80,"
-            + System.lineSeparator()
+            + LINE_END
             + "  \"l\" : 200,"
-            + System.lineSeparator()
+            + LINE_END
             + "  \"pad\" : 0,"
-            + System.lineSeparator()
+            + LINE_END
             + "  \"r\" : 80,"
-            + System.lineSeparator()
+            + LINE_END
             + "  \"t\" : 200"
-            + System.lineSeparator()
+            + LINE_END
             + "},"
-            + System.lineSeparator()
+            + LINE_END
             + "    xaxis: {"
-            + System.lineSeparator()
+            + LINE_END
             + "    title: 'x Axis 1',"
-            + System.lineSeparator()
+            + LINE_END
             + "        titlefont: {"
-            + System.lineSeparator()
+            + LINE_END
             + "  \"color\" : \"red\","
-            + System.lineSeparator()
+            + LINE_END
             + "  \"family\" : \"arial\","
-            + System.lineSeparator()
+            + LINE_END
             + "  \"size\" : 8"
-            + System.lineSeparator()
+            + LINE_END
             + "},"
-            + System.lineSeparator()
+            + LINE_END
             + "    },"
-            + System.lineSeparator()
+            + LINE_END
             + ""
-            + System.lineSeparator()
+            + LINE_END
             + ""
-            + System.lineSeparator()
+            + LINE_END
             + "};"
-            + System.lineSeparator()
+            + LINE_END
             + ""
-            + System.lineSeparator()
+            + LINE_END
             + "var trace0 ="
-            + System.lineSeparator()
+            + LINE_END
             + "{"
-            + System.lineSeparator()
+            + LINE_END
             + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],"
-            + System.lineSeparator()
+            + LINE_END
             + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],"
-            + System.lineSeparator()
+            + LINE_END
             + "mode: 'markers',"
-            + System.lineSeparator()
+            + LINE_END
             + "xaxis: 'x',"
-            + System.lineSeparator()
+            + LINE_END
             + "yaxis: 'y',"
-            + System.lineSeparator()
+            + LINE_END
             + "type: 'scatter',"
-            + System.lineSeparator()
+            + LINE_END
             + "name: '',"
-            + System.lineSeparator()
+            + LINE_END
             + "};"
-            + System.lineSeparator()
+            + LINE_END
             + ""
-            + System.lineSeparator()
+            + LINE_END
             + "        var data = [ trace0];"
-            + System.lineSeparator()
+            + LINE_END
             + "Plotly.newPlot(target_target, data, layout);            </script>"
-            + System.lineSeparator(),
+            + LINE_END,
         figure.asJavascript(divName));
   }
 

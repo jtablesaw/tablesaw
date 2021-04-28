@@ -26,7 +26,8 @@ class DataFrameReaderTest {
   }
 
   private URL mockUrlHelper(String url, List<String> content) throws Exception {
-    Path path = mockFileHelper(url, content);
+    // Remove http:// part to be able to save to a local filesystem file
+    Path path = mockFileHelper(url.replace("http://", ""), content);
     return path.toUri().toURL();
   }
 
@@ -50,7 +51,8 @@ class DataFrameReaderTest {
   @Test
   public void readUrlWithExtension() throws Exception {
     URL url =
-        mockUrlHelper("something.other.com/file.csv", ImmutableList.of("region", "canada", "us"));
+        mockUrlHelper(
+            "http://something.other.com/file.csv", ImmutableList.of("region", "canada", "us"));
     Table expected = Table.create(StringColumn.create("region", new String[] {"canada", "us"}));
     Table actual = Table.read().url(url);
     assertEquals(expected.columnNames(), actual.columnNames());
@@ -59,7 +61,9 @@ class DataFrameReaderTest {
 
   @Test
   public void readCsvUrl() throws Exception {
-    URL url = mockUrlHelper("something.other.com/file", ImmutableList.of("region", "canada", "us"));
+    URL url =
+        mockUrlHelper(
+            "http://something.other.com/file", ImmutableList.of("region", "canada", "us"));
     Table expected = Table.create(StringColumn.create("region", new String[] {"canada", "us"}));
     Table actual = Table.read().csv(url);
     assertEquals(expected.columnNames(), actual.columnNames());
@@ -69,7 +73,7 @@ class DataFrameReaderTest {
   @Test
   public void readUrlUnknownMimeTypeNoExtension() throws Exception {
     // Mimetype should be text/plain, it depends on the installed FileTypeDetectors
-    URL url = mockUrlHelper("something.other.com/file", ImmutableList.of());
+    URL url = mockUrlHelper("http://something.other.com/file", ImmutableList.of());
     Throwable thrown = assertThrows(IllegalArgumentException.class, () -> Table.read().url(url));
 
     assertTrue(
