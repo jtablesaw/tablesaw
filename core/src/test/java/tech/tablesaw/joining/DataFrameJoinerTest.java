@@ -227,6 +227,35 @@ public class DataFrameJoinerTest {
             "Student");
   }
 
+  private static Table createSTUDENTLarger() {
+    return Table.read()
+        .csv(
+            Joiner.on(System.lineSeparator())
+                .join(
+                    "ID,FirstName,LastName,City,State,Age,USID,GradYear",
+                    "1,Bob,Barney,Burke,VA,20,11122,2019",
+                    "2,Chris,Cabello,Canyonville,OR,20,22224,2019",
+                    "3,Dan,Dirble,Denver,CO,21,33335,2020",
+                    "4,Edward,Earhardt,Easterly,WA,21,44339,2021",
+                    "5,Frank,Farnsworth,Fredriksburg,VA,22,55338,2019",
+                    "6,George,Gabral,Garrisburg,MD,22,66337,2020",
+                    "7,Michael,Marbury,Milton,NH,23,77330,2020",
+                    "8,Robert,Riley,Roseburg,OR,23,88836,2020",
+                    "9,Bob,Earhardt,Milton,NH,24,93333,2019",
+                    "10,Dan,Gabral,Easterly,WA,24,13333,2020",
+                    "11,Bob,Barney,Burke,VA,20,11122,2019",
+                    "12,Chris,Cabello,Canyonville,OR,20,22224,2019",
+                    "13,Dan,Dirble,Denver,CO,21,33335,2020",
+                    "14,Edward,Earhardt,Easterly,WA,21,44339,2021",
+                    "15,Frank,Farnsworth,Fredriksburg,VA,22,55338,2019",
+                    "16,George,Gabral,Garrisburg,MD,22,66337,2020",
+                    "17,Michael,Marbury,Milton,NH,23,77330,2020",
+                    "18,Robert,Riley,Roseburg,OR,23,88836,2020",
+                    "19,Bob,Earhardt,Milton,NH,24,93333,2019",
+                    "20,Dan,Gabral,Easterly,WA,24,13333,2020"),
+            "Student");
+  }
+
   private static Table createINSTRUCTOR() {
     return Table.read()
         .csv(
@@ -722,6 +751,7 @@ public class DataFrameJoinerTest {
     assert (joined
         .columnNames()
         .containsAll(Arrays.asList("T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear")));
+    System.out.println(joined.printAll());
     assertEquals(16, joined.columnCount());
     assertEquals(14, joined.rowCount());
   }
@@ -791,6 +821,50 @@ public class DataFrameJoinerTest {
     assertEquals(30, joined.columnCount());
     assertEquals(14, joined.rowCount());
   }
+  // Tests for left table is larger than right table, single cols
+  @Test
+  public void innerJoinStudentInstructorClassDeptHeadOnAgeLargerLeftTable() {
+    Table table1 = createSTUDENTLarger();
+    Table table2 = createINSTRUCTOR();
+    Table table3 = createCLASS();
+    Table table4 = createDEPTHEAD();
+    Table joined = table1.joinOn("Age").inner(true, table2, table3, table4);
+    List<String> expectedCol =
+        Arrays.asList(
+            "ID",
+            "FirstName",
+            "LastName",
+            "City",
+            "State",
+            "Age",
+            "USID",
+            "GradYear",
+            "T2.ID",
+            "First",
+            "Last",
+            "Title",
+            "T2.City",
+            "T2.State",
+            "T2.USID",
+            "T2.GradYear",
+            "T3.ID",
+            "ClassType",
+            "Name",
+            "Level",
+            "Description",
+            "StartDate",
+            "EndDate",
+            "Completed",
+            "T4.ID",
+            "T4.First",
+            "T4.Last",
+            "Dept",
+            "T4.City",
+            "T4.State");
+    assert (String.join("", joined.columnNames()).equals(String.join("", expectedCol)));
+    assertEquals(30, joined.columnCount());
+    assertEquals(28, joined.rowCount());
+  }
 
   @Test
   public void innerJoinStudentInstructorDeptHeadOnStateAge() {
@@ -812,6 +886,42 @@ public class DataFrameJoinerTest {
                 "T3.City")));
     assertEquals(20, joined.columnCount());
     assertEquals(1, joined.rowCount());
+  }
+  // Tests for left table is larger than right table, multiple cols
+  @Test
+  public void innerJoinStudentInstructorDeptHeadOnStateAgeWithLargerLeftTable() {
+    Table table1 = createSTUDENTLarger();
+    Table table2 = createINSTRUCTOR();
+    Table table3 = createDEPTHEAD();
+    // table1 join table 2 will have 6 rows, so drop last 5 rows of table3 for test
+    table3 = table3.dropRows(5, 6, 7, 8, 9);
+    Table joined = table1.joinOn("State", "Age").inner(true, table2, table3);
+    List<String> expectedCol =
+        Arrays.asList(
+            "ID",
+            "FirstName",
+            "LastName",
+            "City",
+            "State",
+            "Age",
+            "USID",
+            "GradYear",
+            "T2.ID",
+            "First",
+            "Last",
+            "Title",
+            "T2.City",
+            "T2.USID",
+            "T2.GradYear",
+            "T3.ID",
+            "T3.First",
+            "T3.Last",
+            "Dept",
+            "T3.City");
+    // test for col order
+    assert (String.join("", joined.columnNames()).equals(String.join("", expectedCol)));
+    assertEquals(20, joined.columnCount());
+    assertEquals(2, joined.rowCount());
   }
 
   @Test

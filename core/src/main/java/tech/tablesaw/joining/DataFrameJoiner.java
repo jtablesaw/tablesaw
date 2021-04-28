@@ -199,7 +199,6 @@ public class DataFrameJoiner {
 
     Selection table1DoneRows = Selection.with();
     Selection table2DoneRows = Selection.with();
-    // 2021/04/24 @Daniel Modified: If size of table1 is larger than table2,
     // use table 2 for row iteration, which can significantly increase performance
     if (table1.rowCount() > table2.rowCount() && joinType == JoinType.INNER) {
       for (Row row : table2) {
@@ -388,14 +387,15 @@ public class DataFrameJoiner {
   /**
    * Create a big multicolumn selection for all join columns in the given table. Joins two tables.
    *
-   * @param table1 the table which used to generate Selection.
-   * @param ri row number of row in table 1.
-   * @param selectionSize max size in table 1.
-   * @param joinColumnIndexes the column index of table1
+   * @param table the table that used to generate Selection.
+   * @param ri row number of row in table.
+   * @param indexes a reverse index for every join column in the table.
+   * @param selectionSize max size in table .
+   * @param joinColumnIndexes the column index of join key in tables
    * @return selection created
    */
   private Selection createMultiColSelection(
-      Table table1,
+      Table table,
       int ri,
       List<Index> indexes,
       int selectionSize,
@@ -403,7 +403,7 @@ public class DataFrameJoiner {
     Selection multiColSelection = Selection.withRange(0, selectionSize);
     int i = 0;
     for (Integer joinColumnIndex : joinColumnIndexes) {
-      Column<?> col = table1.column(joinColumnIndex);
+      Column<?> col = table.column(joinColumnIndex);
       Selection oneColSelection = selectionForColumn(col, ri, indexes.get(i));
       // and the selections.
       multiColSelection = multiColSelection.and(oneColSelection);
