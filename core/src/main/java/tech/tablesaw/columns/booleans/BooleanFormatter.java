@@ -1,30 +1,30 @@
 package tech.tablesaw.columns.booleans;
 
-public class BooleanFormatter {
+import tech.tablesaw.columns.ColumnFormatter;
+
+public class BooleanFormatter extends ColumnFormatter {
   private String trueString = "true";
   private String falseString = "false";
 
-  private String missingString = "";
-
   public BooleanFormatter(String trueString, String falseString, String missingString) {
+    super(missingString);
     this.trueString = trueString;
     this.falseString = falseString;
-    this.missingString = missingString;
   }
 
   public BooleanFormatter(String trueString, String falseString) {
+    super("");
     this.trueString = trueString;
     this.falseString = falseString;
-    this.missingString = "";
   }
 
   public BooleanFormatter(String missingString) {
-    this.missingString = missingString;
+    super(missingString);
   }
 
   public String format(Boolean value) {
     if (value == null) {
-      return missingString;
+      return getMissingString();
     }
     if (value) {
       return trueString;
@@ -34,7 +34,7 @@ public class BooleanFormatter {
 
   public String format(byte value) {
     if (value == BooleanColumnType.MISSING_VALUE) {
-      return missingString;
+      return getMissingString();
     }
     if (value == (byte) 1) {
       return trueString;
@@ -52,7 +52,7 @@ public class BooleanFormatter {
         + falseString
         + '\''
         + ", missingString='"
-        + missingString
+        + getMissingString()
         + '\''
         + '}';
   }

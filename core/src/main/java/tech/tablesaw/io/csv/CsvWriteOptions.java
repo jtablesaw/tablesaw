@@ -16,6 +16,7 @@ public class CsvWriteOptions extends WriteOptions {
   private final boolean header;
   private final boolean ignoreLeadingWhitespaces;
   private final boolean ignoreTrailingWhitespaces;
+  private final boolean usePrintFormatter;
   private final Character separator;
   private final Character quoteChar;
   private final Character escapeChar;
@@ -38,6 +39,7 @@ public class CsvWriteOptions extends WriteOptions {
     this.dateFormatter = builder.dateFormatter;
     this.dateTimeFormatter = builder.dateTimeFormatter;
     this.columnNameMap = builder.columnNameMap;
+    this.usePrintFormatter = builder.usePrintFormatters;
   }
 
   public boolean header() {
@@ -62,6 +64,10 @@ public class CsvWriteOptions extends WriteOptions {
 
   public boolean quoteAllFields() {
     return quoteAllFields;
+  }
+
+  public boolean usePrintFormatters() {
+    return usePrintFormatter;
   }
 
   public Map<String, String> columnNameMap() {
@@ -110,6 +116,7 @@ public class CsvWriteOptions extends WriteOptions {
     private boolean ignoreLeadingWhitespaces = true;
     private boolean ignoreTrailingWhitespaces = true;
     private boolean quoteAllFields = false;
+    private boolean usePrintFormatters = false;
     private Character separator;
     private String lineEnd = System.lineSeparator();
     private Character escapeChar;
@@ -159,13 +166,34 @@ public class CsvWriteOptions extends WriteOptions {
       return this;
     }
 
+    /**
+     * Writes date column output using the given DateFormatter
+     *
+     * @deprecated
+     */
+    @Deprecated
     public CsvWriteOptions.Builder dateFormatter(DateTimeFormatter dateFormatter) {
       this.dateFormatter = dateFormatter;
       return this;
     }
 
+    /**
+     * Writes DateTime column output using the given DateFormatter
+     *
+     * @deprecated
+     */
+    @Deprecated
     public CsvWriteOptions.Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
       this.dateTimeFormatter = dateTimeFormatter;
+      return this;
+    }
+
+    /**
+     * Sets the usePrintFormatters option @link{tech.tablesaw.columns.ColumnFormatter} When true,
+     * printFormatters will be used in writing the output text for any column that has one.
+     */
+    public CsvWriteOptions.Builder usePrintFormatters(boolean useFormatter) {
+      this.usePrintFormatters = useFormatter;
       return this;
     }
 

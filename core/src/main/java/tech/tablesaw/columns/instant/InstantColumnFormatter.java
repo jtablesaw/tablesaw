@@ -1,73 +1,71 @@
 package tech.tablesaw.columns.instant;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.annotation.concurrent.Immutable;
-import tech.tablesaw.columns.times.TimeColumnType;
+import tech.tablesaw.columns.TemporalColumnFormatter;
 
 @Immutable
-public class InstantColumnFormatter {
+public class InstantColumnFormatter extends TemporalColumnFormatter {
 
-  private final DateTimeFormatter format;
   private final ZoneId zoneId;
-  private String missingValueString = "";
 
   public InstantColumnFormatter() {
-    this.format = null;
+    super(null);
     this.zoneId = ZoneOffset.UTC;
   }
 
   public InstantColumnFormatter(ZoneId zoneId) {
-    this.format = null;
+    super(null);
     this.zoneId = zoneId;
   }
 
   public InstantColumnFormatter(DateTimeFormatter format) {
-    this.format = format;
+    super(format);
     this.zoneId = ZoneOffset.UTC;
   }
 
   public InstantColumnFormatter(DateTimeFormatter format, ZoneId zoneId) {
-    this.format = format;
+    super(format);
     this.zoneId = zoneId;
   }
 
   public InstantColumnFormatter(DateTimeFormatter format, String missingValueString) {
-    this.format = format;
-    this.missingValueString = missingValueString;
+    super(format, missingValueString);
     this.zoneId = ZoneOffset.UTC;
   }
 
   public InstantColumnFormatter(
       DateTimeFormatter format, ZoneId zoneId, String missingValueString) {
-    this.format = format;
-    this.missingValueString = missingValueString;
+    super(format, missingValueString);
     this.zoneId = zoneId;
   }
 
   public String format(long value) {
-    if (value == TimeColumnType.missingValueIndicator()) {
-      return missingValueString;
+    if (value == InstantColumnType.missingValueIndicator()) {
+      return getMissingString();
     }
-    if (format == null) {
+    if (getFormat() == null) {
       return PackedInstant.toString(value);
     }
-    ZonedDateTime time = PackedInstant.asInstant(value).atZone(zoneId);
-    if (time == null) {
+    Instant instant = PackedInstant.asInstant(value);
+    if (instant == null) {
       return "";
     }
-    return format.format(time);
+    ZonedDateTime time = instant.atZone(zoneId);
+    return getFormat().format(time);
   }
 
   @Override
   public String toString() {
     return "InstantColumnFormatter{"
         + "format="
-        + format
+        + getFormat()
         + ", missingValueString='"
-        + missingValueString
+        + getMissingString()
         + '\''
         + '}';
   }
