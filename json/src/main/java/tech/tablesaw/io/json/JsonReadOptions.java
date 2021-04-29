@@ -169,8 +169,8 @@ public class JsonReadOptions extends ReadOptions {
     }
 
     @Override
-    public Builder missingValueIndicator(String missingValueIndicator) {
-      super.missingValueIndicator(missingValueIndicator);
+    public Builder missingValueIndicator(String... missingValueIndicators) {
+      super.missingValueIndicator(missingValueIndicators);
       return this;
     }
 
