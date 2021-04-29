@@ -22,14 +22,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.*;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import smile.util.Strings;
 import tech.tablesaw.TestDataUtil;
+import tech.tablesaw.columns.numbers.*;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringParser;
 import tech.tablesaw.selection.Selection;
@@ -762,5 +764,129 @@ class StringColumnTest {
     assertEquals("Value 4", summary.getUnformatted(2, 1));
     assertEquals("Top Freq.", summary.getUnformatted(3, 0));
     assertEquals("1", summary.getUnformatted(3, 1));
+  }
+
+  @Test
+  void testParseCurrencyToDouble() {
+    String[] values = {"428.231,42 €", "23.231,98 €"};
+    StringColumn currency = StringColumn.create("currency", values);
+    final NumberFormat format = DecimalFormat.getCurrencyInstance(Locale.FRANCE);
+    DoubleColumn doubles =
+        currency.parseDouble(
+            s -> {
+              if (Strings.isNullOrEmpty(s)) {
+                return DoubleColumnType.missingValueIndicator();
+              }
+              try { // French currency instance doesn't deal with . as a grouping character, go
+                    // figure
+                return (Double) format.parse(s.replace(".", ""));
+              } catch (ParseException e) {
+                throw new RuntimeException(e);
+              }
+            });
+    assertEquals(428231.42, doubles.get(0));
+  }
+
+  @Test
+  void testParsePercentToDouble() {
+    String[] values = {"28.24%", "23.9%"};
+    StringColumn percents = StringColumn.create("percents", values);
+    final NumberFormat format = DecimalFormat.getPercentInstance();
+    DoubleColumn doubles =
+        percents.parseDouble(
+            s -> {
+              if (Strings.isNullOrEmpty(s)) {
+                return DoubleColumnType.missingValueIndicator();
+              }
+              try {
+                return (Double) format.parse(s);
+              } catch (ParseException e) {
+                throw new RuntimeException(e);
+              }
+            });
+    assertEquals(0.2824, doubles.get(0));
+  }
+
+  @Test
+  void testParseFloatWithFunction() {
+    String[] values = {"28.24%", "23.9%"};
+    StringColumn vals = StringColumn.create("vals", values);
+    final NumberFormat format = DecimalFormat.getPercentInstance();
+    FloatColumn converted =
+        vals.parseFloat(
+            s -> {
+              if (Strings.isNullOrEmpty(s)) {
+                return FloatColumnType.missingValueIndicator();
+              }
+              try {
+                return format.parse(s).floatValue();
+              } catch (ParseException e) {
+                throw new RuntimeException(e);
+              }
+            });
+    assertEquals(0.2824f, converted.get(0));
+  }
+
+  @Test
+  void testParseIntWithFunction() {
+    String[] values = {"28,234", "23,921"};
+    StringColumn vals = StringColumn.create("vals", values);
+    final NumberFormat format = NumberFormat.getIntegerInstance();
+    format.setGroupingUsed(true);
+    IntColumn converted =
+        vals.parseInt(
+            s -> {
+              if (Strings.isNullOrEmpty(s)) {
+                return IntColumnType.missingValueIndicator();
+              }
+              try {
+                return format.parse(s).intValue();
+              } catch (ParseException e) {
+                throw new RuntimeException(e);
+              }
+            });
+    assertEquals(28234, converted.get(0));
+  }
+
+  @Test
+  void testParseLongWithFunction() {
+    String[] values = {"28,234,234,234", "23,921"};
+    StringColumn vals = StringColumn.create("vals", values);
+    final NumberFormat format = NumberFormat.getIntegerInstance();
+    format.setGroupingUsed(true);
+    LongColumn converted =
+        vals.parseLong(
+            s -> {
+              if (Strings.isNullOrEmpty(s)) {
+                return LongColumnType.missingValueIndicator();
+              }
+              try {
+                return format.parse(s).longValue();
+              } catch (ParseException e) {
+                throw new RuntimeException(e);
+              }
+            });
+    assertEquals(28234234234L, converted.get(0));
+  }
+
+  @Test
+  void testParseShortWithFunction() {
+    String[] values = {"11,282", "20,921"};
+    StringColumn vals = StringColumn.create("vals", values);
+    final NumberFormat format = NumberFormat.getIntegerInstance();
+    format.setGroupingUsed(true);
+    ShortColumn converted =
+        vals.parseShort(
+            s -> {
+              if (Strings.isNullOrEmpty(s)) {
+                return ShortColumnType.missingValueIndicator();
+              }
+              try {
+                return format.parse(s).shortValue();
+              } catch (ParseException e) {
+                throw new RuntimeException(e);
+              }
+            });
+    assertEquals((short) 11282, converted.get(0));
   }
 }

@@ -20,11 +20,9 @@ import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.util.LevenshteinDistance;
 import tech.tablesaw.util.StringUtils;
@@ -224,6 +222,66 @@ public interface StringMapFunctions extends Column<String> {
         newColumn.appendMissing();
       } else {
         newColumn.append(Double.parseDouble(s));
+      }
+    }
+    return newColumn;
+  }
+
+  default DoubleColumn parseDouble(Function<String, Double> parseFunction) {
+    DoubleColumn newColumn = DoubleColumn.create(name() + "[parsed]");
+    for (String s : this) {
+      if (StringColumn.valueIsMissing(s)) {
+        newColumn.appendMissing();
+      } else {
+        newColumn.append(parseFunction.apply(s));
+      }
+    }
+    return newColumn;
+  }
+
+  default FloatColumn parseFloat(Function<String, Float> parseFunction) {
+    FloatColumn newColumn = FloatColumn.create(name() + "[parsed]");
+    for (String s : this) {
+      if (StringColumn.valueIsMissing(s)) {
+        newColumn.appendMissing();
+      } else {
+        newColumn.append(parseFunction.apply(s));
+      }
+    }
+    return newColumn;
+  }
+
+  default IntColumn parseInt(Function<String, Integer> parseFunction) {
+    IntColumn newColumn = IntColumn.create(name() + "[parsed]");
+    for (String s : this) {
+      if (StringColumn.valueIsMissing(s)) {
+        newColumn.appendMissing();
+      } else {
+        newColumn.append(parseFunction.apply(s));
+      }
+    }
+    return newColumn;
+  }
+
+  default LongColumn parseLong(Function<String, Long> parseFunction) {
+    LongColumn newColumn = LongColumn.create(name() + "[parsed]");
+    for (String s : this) {
+      if (StringColumn.valueIsMissing(s)) {
+        newColumn.appendMissing();
+      } else {
+        newColumn.append(parseFunction.apply(s));
+      }
+    }
+    return newColumn;
+  }
+
+  default ShortColumn parseShort(Function<String, Short> parseFunction) {
+    ShortColumn newColumn = ShortColumn.create(name() + "[parsed]");
+    for (String s : this) {
+      if (StringColumn.valueIsMissing(s)) {
+        newColumn.appendMissing();
+      } else {
+        newColumn.append(parseFunction.apply(s));
       }
     }
     return newColumn;
