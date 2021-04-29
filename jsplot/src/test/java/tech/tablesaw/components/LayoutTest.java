@@ -11,6 +11,8 @@ import tech.tablesaw.plotly.components.Margin;
 
 public class LayoutTest {
 
+  private static final String LINE_END = System.lineSeparator();
+
   // @Test
   public void asJavascript() {
 
@@ -55,58 +57,62 @@ public class LayoutTest {
     {
       Layout layout = Layout.builder().autosize(true).build();
       assertEquals(
-          "var layout = {\n"
-              + //
-              "    autosize: true,\n"
-              + //
-              "\n\n"
-              + //
-              "};\n",
+          "var layout = {"
+              + LINE_END
+              + "    autosize: true,"
+              + LINE_END
+              + LINE_END
+              + LINE_END
+              + "};"
+              + LINE_END,
           layout.asJavascript());
     }
     {
       Layout layout = Layout.builder().autosize(true).width(800).build();
       assertEquals(
-          "var layout = {\n"
-              + //
-              "    width: 800,\n"
-              + //
-              "    autosize: true,\n"
-              + //
-              "\n\n"
-              + //
-              "};\n",
+          "var layout = {"
+              + LINE_END
+              + "    width: 800,"
+              + LINE_END
+              + "    autosize: true,"
+              + LINE_END
+              + LINE_END
+              + LINE_END
+              + "};"
+              + LINE_END,
           layout.asJavascript());
     }
     {
       Layout layout = Layout.builder().autosize(true).height(600).width(800).build();
       assertEquals(
-          "var layout = {\n"
-              + //
-              "    height: 600,\n"
-              + //
-              "    width: 800,\n"
-              + //
-              "    autosize: true,\n"
-              + //
-              "\n\n"
-              + //
-              "};\n",
+          "var layout = {"
+              + LINE_END
+              + "    height: 600,"
+              + LINE_END
+              + "    width: 800,"
+              + LINE_END
+              + "    autosize: true,"
+              + LINE_END
+              + LINE_END
+              + LINE_END
+              + "};"
+              + LINE_END,
           layout.asJavascript());
     }
     {
       // see if 700x450
       Layout layout = Layout.builder().autosize(false).height(600).build();
       assertEquals(
-          "var layout = {\n"
-              + //
-              "    height: 600,\n"
-              + //
-              "    width: 700,\n"
-              + //
-              "\n\n"
-              + //
-              "};\n",
+          "var layout = {"
+              + LINE_END
+              + "    height: 600,"
+              + LINE_END
+              + "    width: 700,"
+              + LINE_END
+              + LINE_END
+              + LINE_END
+              + "};"
+              + LINE_END,
           layout.asJavascript());
     }
   }
