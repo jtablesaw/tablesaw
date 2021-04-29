@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
@@ -227,13 +230,13 @@ public interface StringMapFunctions extends Column<String> {
     return newColumn;
   }
 
-  default DoubleColumn parseDouble(Function<String, Double> parseFunction) {
+  default DoubleColumn parseDouble(ToDoubleFunction<String> parseFunction) {
     DoubleColumn newColumn = DoubleColumn.create(name() + "[parsed]");
     for (String s : this) {
       if (StringColumn.valueIsMissing(s)) {
         newColumn.appendMissing();
       } else {
-        newColumn.append(parseFunction.apply(s));
+        newColumn.append(parseFunction.applyAsDouble(s));
       }
     }
     return newColumn;
@@ -251,25 +254,25 @@ public interface StringMapFunctions extends Column<String> {
     return newColumn;
   }
 
-  default IntColumn parseInt(Function<String, Integer> parseFunction) {
+  default IntColumn parseInt(ToIntFunction<String> parseFunction) {
     IntColumn newColumn = IntColumn.create(name() + "[parsed]");
     for (String s : this) {
       if (StringColumn.valueIsMissing(s)) {
         newColumn.appendMissing();
       } else {
-        newColumn.append(parseFunction.apply(s));
+        newColumn.append(parseFunction.applyAsInt(s));
       }
     }
     return newColumn;
   }
 
-  default LongColumn parseLong(Function<String, Long> parseFunction) {
+  default LongColumn parseLong(ToLongFunction<String> parseFunction) {
     LongColumn newColumn = LongColumn.create(name() + "[parsed]");
     for (String s : this) {
       if (StringColumn.valueIsMissing(s)) {
         newColumn.appendMissing();
       } else {
-        newColumn.append(parseFunction.apply(s));
+        newColumn.append(parseFunction.applyAsLong(s));
       }
     }
     return newColumn;
