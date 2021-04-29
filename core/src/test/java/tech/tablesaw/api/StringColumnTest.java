@@ -770,16 +770,15 @@ class StringColumnTest {
   void testParseCurrencyToDouble() {
     String[] values = {"428.231,42 €", "23.231,98 €"};
     StringColumn currency = StringColumn.create("currency", values);
-    final NumberFormat format = DecimalFormat.getCurrencyInstance(Locale.FRANCE);
+    final NumberFormat format = DecimalFormat.getNumberInstance();
     DoubleColumn doubles =
         currency.parseDouble(
             s -> {
               if (Strings.isNullOrEmpty(s)) {
                 return DoubleColumnType.missingValueIndicator();
               }
-              try { // French currency instance doesn't deal with . as a grouping character, go
-                    // figure
-                return (Double) format.parse(s.replace(".", ""));
+              try {
+                return (Double) format.parse(s.replaceAll("[^\\d,]", "").replace(",", "."));
               } catch (ParseException e) {
                 throw new RuntimeException(e);
               }
