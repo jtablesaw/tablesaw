@@ -75,7 +75,7 @@ public class ReadOptions {
   protected final String dateTimeFormat;
   protected final String timeFormat;
   protected final Locale locale;
-  protected final String missingValueIndicator;
+  protected final String[] missingValueIndicators;
   protected final boolean minimizeColumnSizes;
   protected final int maxCharsPerColumn;
   protected final boolean ignoreZeroDecimal;
@@ -95,7 +95,7 @@ public class ReadOptions {
     dateFormat = builder.dateFormat;
     timeFormat = builder.timeFormat;
     dateTimeFormat = builder.dateTimeFormat;
-    missingValueIndicator = builder.missingValueIndicator;
+    missingValueIndicators = builder.missingValueIndicators;
     minimizeColumnSizes = builder.minimizeColumnSizes;
     header = builder.header;
     maxCharsPerColumn = builder.maxCharsPerColumn;
@@ -138,8 +138,8 @@ public class ReadOptions {
     return minimizeColumnSizes;
   }
 
-  public String missingValueIndicator() {
-    return missingValueIndicator;
+  public String[] missingValueIndicators() {
+    return missingValueIndicators;
   }
 
   public Locale locale() {
@@ -198,7 +198,7 @@ public class ReadOptions {
     protected String dateTimeFormat;
     protected DateTimeFormatter dateTimeFormatter;
     protected Locale locale;
-    protected String missingValueIndicator;
+    protected String[] missingValueIndicators = new String[0];
     protected boolean minimizeColumnSizes = false;
     protected boolean header = true;
     protected int maxCharsPerColumn = 4096;
@@ -286,8 +286,8 @@ public class ReadOptions {
       return this;
     }
 
-    public Builder missingValueIndicator(String missingValueIndicator) {
-      this.missingValueIndicator = missingValueIndicator;
+    public Builder missingValueIndicator(String... missingValueIndicators) {
+      this.missingValueIndicators = missingValueIndicators;
       return this;
     }
 

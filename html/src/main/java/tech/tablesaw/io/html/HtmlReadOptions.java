@@ -170,8 +170,8 @@ public class HtmlReadOptions extends ReadOptions {
     }
 
     @Override
-    public Builder missingValueIndicator(String missingValueIndicator) {
-      super.missingValueIndicator(missingValueIndicator);
+    public Builder missingValueIndicator(String... missingValueIndicators) {
+      super.missingValueIndicator(missingValueIndicators);
       return this;
     }
 

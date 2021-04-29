@@ -35,8 +35,8 @@ public class BooleanParser extends AbstractColumnParser<Boolean> {
 
   public BooleanParser(BooleanColumnType booleanColumnType, ReadOptions readOptions) {
     super(booleanColumnType);
-    if (readOptions.missingValueIndicator() != null) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
+    if (readOptions.missingValueIndicators().length > 0) {
+      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
     }
   }
 
