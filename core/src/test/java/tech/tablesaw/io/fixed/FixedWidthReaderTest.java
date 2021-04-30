@@ -22,6 +22,7 @@ import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.SKIP;
 import static tech.tablesaw.api.ColumnType.STRING;
 
+import com.google.common.collect.ImmutableMap;
 import com.univocity.parsers.fixed.FixedWidthFields;
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,7 +83,7 @@ public class FixedWidthReaderTest {
 
     assertEquals(4, table.columnCount());
 
-    String[] expected = new String[] {"Year", "Make", "Model", "Price"};
+    String[] expected = {"Year", "Make", "Model", "Price"};
     assertArrayEquals(expected, table.columnNames().toArray());
   }
 
@@ -187,7 +188,7 @@ public class FixedWidthReaderTest {
             .sample(false)
             .locale(Locale.getDefault())
             .minimizeColumnSizes()
-            .columnType("Year", STRING)
+            .columnTypesPartial(ImmutableMap.of("Year", STRING))
             .build();
 
     ColumnType[] columnTypes = new FixedWidthReader().read(options).columnTypes();
@@ -199,7 +200,7 @@ public class FixedWidthReaderTest {
 
   @Test
   public void testCustomizedColumnTypeAllCustomized() throws IOException {
-    InputStream stream = new FileInputStream(new File("../data/fixed_width_cars_test.txt"));
+    InputStream stream = new FileInputStream("../data/fixed_width_cars_test.txt");
     FixedWidthReadOptions options =
         FixedWidthReadOptions.builder(stream)
             .header(true)
@@ -209,7 +210,7 @@ public class FixedWidthReaderTest {
             .sample(false)
             .locale(Locale.getDefault())
             .minimizeColumnSizes()
-            .completeColumnTypeByNameFunction(columnName -> STRING)
+            .columnTypes(columnName -> STRING)
             .build();
 
     ColumnType[] columnTypes = new FixedWidthReader().read(options).columnTypes();

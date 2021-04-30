@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.api.ColumnType.*;
 
+import com.google.common.collect.ImmutableMap;
 import com.univocity.parsers.common.TextParsingException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -743,6 +744,7 @@ public class CsvReaderTest {
     assertEquals("0 rows X 0 cols", table1.shape());
   }
 
+  @Test
   public void testReadMaxColumnsExceeded() {
     assertThrows(
         TextParsingException.class,
@@ -838,11 +840,11 @@ public class CsvReaderTest {
             .separator(',')
             .locale(Locale.getDefault())
             .minimizeColumnSizes()
-            .columnType("stop_id", STRING)
-            .columnType("stop_name", STRING)
-            .columnTypeByNameFunction(
+            .columnTypesPartial(
                 columnName ->
-                    "stop_lon".equals(columnName) ? Optional.of(DOUBLE) : Optional.empty())
+                    Optional.ofNullable(
+                        ImmutableMap.of("stop_id", STRING, "stop_name", STRING, "stop_lon", DOUBLE)
+                            .get(columnName)))
             .build();
 
     ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
@@ -863,7 +865,7 @@ public class CsvReaderTest {
             .separator(',')
             .locale(Locale.getDefault())
             .minimizeColumnSizes()
-            .completeColumnTypeByNameFunction(columnName -> STRING)
+            .columnTypes(columnName -> STRING)
             .build();
 
     ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
@@ -880,11 +882,18 @@ public class CsvReaderTest {
             .separator(',')
             .locale(Locale.getDefault())
             .minimizeColumnSizes()
-            .columnType("stop_id", SHORT)
-            .columnType("stop_name", STRING)
-            .columnType("stop_desc", STRING)
-            .columnType("stop_lat", FLOAT)
-            .columnType("stop_lon", FLOAT)
+            .columnTypesPartial(
+                ImmutableMap.of(
+                    "stop_id",
+                    SHORT,
+                    "stop_name",
+                    STRING,
+                    "stop_desc",
+                    STRING,
+                    "stop_lat",
+                    FLOAT,
+                    "stop_lon",
+                    FLOAT))
             .build();
 
     ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
@@ -919,8 +928,7 @@ public class CsvReaderTest {
             .separator(',')
             .locale(Locale.getDefault())
             .minimizeColumnSizes()
-            .columnType("stop_id", SHORT)
-            .columnType("stop_name", STRING)
+            .columnTypesPartial(ImmutableMap.of("stop_id", SHORT, "stop_name", STRING))
             .build();
 
     ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();

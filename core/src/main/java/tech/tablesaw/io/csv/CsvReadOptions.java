@@ -197,6 +197,24 @@ public class CsvReadOptions extends ReadOptions {
       return this;
     }
 
+    @Override
+    public Builder columnTypes(Function<String, ColumnType> columnTypeFunction) {
+      super.columnTypes(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypesPartial(Function<String, Optional<ColumnType>> columnTypeFunction) {
+      super.columnTypesPartial(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypesPartial(Map<String, ColumnType> columnTypeByName) {
+      super.columnTypesPartial(columnTypeByName);
+      return this;
+    }
+
     public Builder separator(Character separator) {
       this.separator = separator;
       return this;
@@ -355,32 +373,6 @@ public class CsvReadOptions extends ReadOptions {
     @Override
     public Builder ignoreZeroDecimal(boolean ignoreZeroDecimal) {
       super.ignoreZeroDecimal(ignoreZeroDecimal);
-      return this;
-    }
-
-    @Override
-    public Builder columnType(String columnName, ColumnType columnType) {
-      super.columnType(columnName, columnType);
-      return this;
-    }
-
-    @Override
-    public Builder columnTypeByNameFunction(
-        Function<String, Optional<ColumnType>> columnTypeFunction) {
-      super.columnTypeByNameFunction(columnTypeFunction);
-      return this;
-    }
-
-    @Override
-    public Builder completeColumnTypeByNameFunction(
-        Function<String, ColumnType> columnTypeFunction) {
-      super.completeColumnTypeByNameFunction(columnTypeFunction);
-      return this;
-    }
-
-    @Override
-    public Builder columnTypes(Map<String, ColumnType> columnTypeByName) {
-      super.columnTypes(columnTypeByName);
       return this;
     }
   }

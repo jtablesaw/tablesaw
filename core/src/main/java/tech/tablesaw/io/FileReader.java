@@ -82,7 +82,9 @@ public abstract class FileReader {
       boolean hasColumnName = columnNames != null && i < columnNames.length;
       Optional<ColumnType> configuredColumnType =
           options.columnTypeReadOptions().columnType(i, hasColumnName ? columnNames[i] : null);
-      if (configuredColumnType.isPresent()) columnTypes[i] = configuredColumnType.get();
+      if (configuredColumnType.isPresent()) {
+        columnTypes[i] = configuredColumnType.get();
+      }
     }
 
     return columnTypes;

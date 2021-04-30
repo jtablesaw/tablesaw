@@ -26,12 +26,12 @@ import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 import static tech.tablesaw.api.ColumnType.LONG;
 import static tech.tablesaw.api.ColumnType.STRING;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
@@ -181,11 +181,8 @@ public class XlsxReaderTest {
         new XlsxReader()
             .read(
                 XlsxReadOptions.builder("../data/columns.xlsx")
-                    .columnType("shortcol", DOUBLE)
-                    .columnType("intcol", LONG)
-                    .columnTypeByNameFunction(
-                        columnName ->
-                            "formulacol".equals(columnName) ? Optional.of(FLOAT) : Optional.empty())
+                    .columnTypesPartial(
+                        ImmutableMap.of("shortcol", DOUBLE, "intcol", LONG, "formulacol", FLOAT))
                     .build());
 
     ColumnType[] columnTypes = table.columnTypes();
@@ -201,7 +198,7 @@ public class XlsxReaderTest {
         new XlsxReader()
             .read(
                 XlsxReadOptions.builder("../data/columns.xlsx")
-                    .completeColumnTypeByNameFunction(columName -> STRING)
+                    .columnTypes(columName -> STRING)
                     .build());
 
     ColumnType[] columnTypes = table.columnTypes();
@@ -215,7 +212,7 @@ public class XlsxReaderTest {
         new XlsxReader()
             .read(
                 XlsxReadOptions.builder("../data/columns.xlsx")
-                    .completeColumnTypeByNameFunction(columName -> STRING)
+                    .columnTypes(columName -> STRING)
                     .build());
 
     assertEquals(
@@ -231,7 +228,7 @@ public class XlsxReaderTest {
         new XlsxReader()
             .read(
                 XlsxReadOptions.builder("../data/columns.xlsx")
-                    .completeColumnTypeByNameFunction(columName -> STRING)
+                    .columnTypes(columName -> STRING)
                     .build());
 
     System.out.println(table.print());

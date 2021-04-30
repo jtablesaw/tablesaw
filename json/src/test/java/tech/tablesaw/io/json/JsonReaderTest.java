@@ -20,6 +20,7 @@ import static tech.tablesaw.api.ColumnType.DOUBLE;
 import static tech.tablesaw.api.ColumnType.INSTANT;
 import static tech.tablesaw.api.ColumnType.STRING;
 
+import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
@@ -88,7 +89,10 @@ public class JsonReaderTest {
 
     ColumnType[] columnTypes =
         new JsonReader()
-            .read(JsonReadOptions.builderFromString(json).columnType("Date", INSTANT).build())
+            .read(
+                JsonReadOptions.builderFromString(json)
+                    .columnTypesPartial(ImmutableMap.of("Date", INSTANT))
+                    .build())
             .columnTypes();
 
     assertArrayEquals(columnTypes, new ColumnType[] {INSTANT, DOUBLE});
@@ -101,10 +105,7 @@ public class JsonReaderTest {
 
     ColumnType[] columnTypes =
         new JsonReader()
-            .read(
-                JsonReadOptions.builderFromString(json)
-                    .completeColumnTypeByNameFunction(columnName -> STRING)
-                    .build())
+            .read(JsonReadOptions.builderFromString(json).columnTypes(columnName -> STRING).build())
             .columnTypes();
 
     assertArrayEquals(columnTypes, new ColumnType[] {STRING, STRING});

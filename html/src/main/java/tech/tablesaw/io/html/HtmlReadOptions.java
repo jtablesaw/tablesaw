@@ -191,28 +191,26 @@ public class HtmlReadOptions extends ReadOptions {
     }
 
     @Override
-    public Builder columnType(String columnName, ColumnType columnType) {
-      super.columnType(columnName, columnType);
+    public Builder columnTypes(ColumnType[] columnTypes) {
+      super.columnTypes(columnTypes);
       return this;
     }
 
     @Override
-    public Builder columnTypeByNameFunction(
-        Function<String, Optional<ColumnType>> columnTypeFunction) {
-      super.columnTypeByNameFunction(columnTypeFunction);
+    public Builder columnTypes(Function<String, ColumnType> columnTypeFunction) {
+      super.columnTypes(columnTypeFunction);
       return this;
     }
 
     @Override
-    public Builder completeColumnTypeByNameFunction(
-        Function<String, ColumnType> columnTypeFunction) {
-      super.completeColumnTypeByNameFunction(columnTypeFunction);
+    public Builder columnTypesPartial(Function<String, Optional<ColumnType>> columnTypeFunction) {
+      super.columnTypesPartial(columnTypeFunction);
       return this;
     }
 
     @Override
-    public Builder columnTypes(Map<String, ColumnType> columnTypeByName) {
-      super.columnTypes(columnTypeByName);
+    public Builder columnTypesPartial(Map<String, ColumnType> columnTypeByName) {
+      super.columnTypesPartial(columnTypeByName);
       return this;
     }
   }

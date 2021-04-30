@@ -66,7 +66,7 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
             && options.columnSpecs().getFieldNames() != null
             && options.columnSpecs().getFieldNames().length > 0;
     if (!options.columnTypeReadOptions().hasColumnTypeForAllColumns()
-        && (!options.columnTypeReadOptions().canCalculateColumnTypeForAllColumns()
+        && (!options.columnTypeReadOptions().hasColumnTypeForAllColumnsIfHavingColumnNames()
             || !hasColumnNames)) {
       Reader reader = options.source().createReader(bytesCache);
       if (options.source().file() == null) {

@@ -62,7 +62,8 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
 
     boolean need2ParseFile =
         !columnTypeReadOptions.hasColumnTypeForAllColumns()
-            && (!options.header() || !columnTypeReadOptions.canCalculateColumnTypeForAllColumns());
+            && (!options.header()
+                || !columnTypeReadOptions.hasColumnTypeForAllColumnsIfHavingColumnNames());
     if (need2ParseFile) {
       Reader reader = source.createReader(null);
       if (source.file() == null) {
