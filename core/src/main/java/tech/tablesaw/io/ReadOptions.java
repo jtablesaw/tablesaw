@@ -100,18 +100,11 @@ public class ReadOptions {
     header = builder.header;
     maxCharsPerColumn = builder.maxCharsPerColumn;
     ignoreZeroDecimal = builder.ignoreZeroDecimal;
-
     dateFormatter = builder.dateFormatter;
     timeFormatter = builder.timeFormatter;
     dateTimeFormatter = builder.dateTimeFormatter;
-
     allowDuplicateColumnNames = builder.allowDuplicateColumnNames;
-
-    if (builder.locale == null) {
-      locale = Locale.getDefault();
-    } else {
-      locale = builder.locale;
-    }
+    locale = builder.locale;
   }
 
   public Source source() {
@@ -197,7 +190,7 @@ public class ReadOptions {
     protected DateTimeFormatter timeFormatter;
     protected String dateTimeFormat;
     protected DateTimeFormatter dateTimeFormatter;
-    protected Locale locale;
+    protected Locale locale = Locale.getDefault();
     protected String[] missingValueIndicators = new String[0];
     protected boolean minimizeColumnSizes = false;
     protected boolean header = true;
