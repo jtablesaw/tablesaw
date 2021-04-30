@@ -474,14 +474,10 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void testWithMissingValue() throws IOException {
+  void testWithMissingValue() throws IOException {
 
     CsvReadOptions options =
-        CsvReadOptions.builder("../data/missing_values.csv")
-            .dateFormat(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-            .header(true)
-            .missingValueIndicator("-")
-            .build();
+        CsvReadOptions.builder("../data/missing_values.csv").missingValueIndicator("-").build();
 
     Table t = Table.read().csv(options);
     assertEquals(1, t.stringColumn(0).countMissing());
@@ -489,17 +485,36 @@ public class CsvReaderTest {
     assertEquals(1, t.numberColumn(2).countMissing());
   }
 
-  /** Tests the auto-detection of missing values, using multiple missing value indicators */
+  /**
+   * Tests using multiple, non-standard missing value indicators, some columns also contains NA or
+   * N/A, which are treated as regular string values rather than missing values. This has the
+   * side-effect of treating those otherwise numeric columns as StringColumns
+   */
   @Test
-  public void testWithMissingValue2() throws IOException {
+  void testWithMissingValues() throws IOException {
 
+    Reader reader =
+        new StringReader(
+            "Products,Sales,Market_Share\n"
+                + "a,?,-\n"
+                + "b,12200,NA\n"
+                + "c,60000,33\n"
+                + "d,N/A,10\n"
+                + ",32000,42");
     CsvReadOptions options =
-        CsvReadOptions.builder("../data/missing_values2.csv")
-            .dateFormat(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-            .header(true)
-            .build();
+        CsvReadOptions.builder(reader).sample(false).missingValueIndicator("-", "?", "").build();
 
     Table t = Table.read().csv(options);
+    assertEquals(1, t.stringColumn(0).countMissing());
+    assertEquals(1, t.stringColumn(1).countMissing());
+    assertEquals(1, t.stringColumn(2).countMissing());
+  }
+
+  /** Tests the auto-detection of missing values, using multiple missing value indicators */
+  @Test
+  void testWithMissingValue2() throws IOException {
+
+    Table t = Table.read().csv("../data/missing_values2.csv");
     assertEquals(1, t.stringColumn(0).countMissing());
     assertEquals(1, t.numberColumn(1).countMissing());
     assertEquals(1, t.numberColumn(2).countMissing());
