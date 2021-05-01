@@ -112,11 +112,18 @@ public class TextColumnTest {
   }
 
   @Test
-  void appendAsterisk() {
+  void appendCellAsterisk() {
     final TextColumn sc = TextColumn.create("sc");
     StringParser parser = new StringParser(ColumnType.TEXT);
     parser.setMissingValueStrings(new ArrayList<>());
     sc.appendCell("*", parser);
+    assertEquals(0, sc.countMissing());
+  }
+
+  @Test
+  void appendAsterisk() {
+    final TextColumn sc = TextColumn.create("sc");
+    sc.append("*");
     assertEquals(0, sc.countMissing());
   }
 

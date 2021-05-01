@@ -234,11 +234,11 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
         if (i + n >= size()) {
           break;
         }
-        copy.appendCell(get(i));
+        copy.append(get(i));
       }
     } else {
       for (int i = -n; i < size(); i++) {
-        copy.appendCell(get(i));
+        copy.append(get(i));
       }
       for (int m = 0; m > n; m--) {
         copy.appendMissing();
