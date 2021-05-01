@@ -286,13 +286,13 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   @Override
   public TextColumn appendCell(String object) {
-    values.add(TextColumnType.DEFAULT_PARSER.parse(object));
+    append(TextColumnType.DEFAULT_PARSER.parse(object));
     return this;
   }
 
   @Override
   public TextColumn appendCell(String object, AbstractColumnParser<?> parser) {
-    values.add(String.valueOf(parser.parse(object)));
+    append(String.valueOf(parser.parse(object)));
     return this;
   }
 
