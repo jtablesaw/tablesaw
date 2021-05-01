@@ -20,7 +20,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   private final LongArrayList data;
 
   private LongColumn(String name, LongArrayList data) {
-    super(LongColumnType.instance(), name);
+    super(LongColumnType.instance(), name, LongColumnType.DEFAULT_PARSER);
     setPrintFormatter(NumberColumnFormatter.ints());
     this.data = data;
   }
@@ -199,6 +199,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
     return this;
   }
 
+  @Override
   public LongColumn append(Long val) {
     if (val == null) {
       appendMissing();
@@ -398,7 +399,7 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   @Override
   public LongColumn appendCell(final String value) {
     try {
-      return append(LongColumnType.DEFAULT_PARSER.parseLong(value));
+      return append(parser().parseLong(value));
     } catch (final NumberFormatException e) {
       throw new NumberFormatException(
           "Error adding value to column " + name() + ": " + e.getMessage());

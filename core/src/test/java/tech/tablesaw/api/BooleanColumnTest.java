@@ -19,9 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
+import tech.tablesaw.columns.booleans.BooleanParser;
 
 /** Tests for BooleanColumn */
 public class BooleanColumnTest {
@@ -152,6 +154,19 @@ public class BooleanColumnTest {
     assertFalse(lastEntry());
     column.appendCell("");
     assertNull(column.get(column.size() - 1));
+  }
+
+  @Test
+  public void testCustomParser() {
+    // Just do enough to ensure the parser is wired up correctly
+    BooleanParser customParser = new BooleanParser(ColumnType.LOCAL_DATE);
+    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    column.setParser(customParser);
+
+    column.appendCell("not here");
+    assertTrue(column.isMissing(column.size() - 1));
+    column.appendCell("true");
+    assertFalse(column.isMissing(column.size() - 1));
   }
 
   @Test

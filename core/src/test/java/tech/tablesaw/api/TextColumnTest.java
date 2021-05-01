@@ -128,6 +128,20 @@ public class TextColumnTest {
   }
 
   @Test
+  public void testCustomParser() {
+    // Just do enough to ensure the parser is wired up correctly
+    final TextColumn sc = TextColumn.create("sc");
+    StringParser customParser = new StringParser(ColumnType.TEXT);
+    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    sc.setParser(customParser);
+
+    sc.appendCell("not here");
+    assertTrue(sc.isMissing(sc.size() - 1));
+    sc.appendCell("*");
+    assertFalse(sc.isMissing(sc.size() - 1));
+  }
+
+  @Test
   public void lead() {
     TextColumn c1 = column.lead(1);
     Table t = Table.create("Test");
