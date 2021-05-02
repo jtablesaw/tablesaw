@@ -784,6 +784,84 @@ public class DataFrameJoinerTest {
   }
 
   @Test
+  public void fullOuterJoinMultiTable1() {
+    Table table1 = createGOODS1();
+    Table table2 = createGOODS2();
+    Table table3 = createGOODS3();
+    Table joined = table1.joinOn("Name").fullOuter(true, table2, table3);
+    assertEquals(7, joined.columnCount());
+    assertTrue(
+        joined
+            .columnNames()
+            .containsAll(
+                Arrays.asList("ID", "Name", "Price", "T2.ID", "T2.Price", "T3.ID", "T3.Price")));
+    assertEquals(6, joined.rowCount());
+    assertEquals(0, joined.column("ID").countMissing());
+    assertEquals(0, joined.column("Name").countMissing());
+    assertEquals(0, joined.column("Price").countMissing());
+    assertEquals(6, joined.column("T2.ID").size());
+    assertEquals(2, joined.column("T2.ID").countMissing());
+    assertEquals(6, joined.column("T2.Price").size());
+    assertEquals(2, joined.column("T2.Price").countMissing());
+    assertEquals(6, joined.column("T3.ID").size());
+    assertEquals(3, joined.column("T3.ID").countMissing());
+    assertEquals(6, joined.column("T3.Price").size());
+    assertEquals(3, joined.column("T3.Price").countMissing());
+  }
+
+  @Test
+  public void fullOuterJoinMultiTable2() {
+    Table table3 = createGOODS3();
+    Table table2 = createGOODS2();
+    Table table1 = createGOODS1();
+    Table joined = table3.joinOn("Name").fullOuter(true, table2, table1);
+    assertEquals(7, joined.columnCount());
+    assertTrue(
+        joined
+            .columnNames()
+            .containsAll(
+                Arrays.asList("ID", "Name", "Price", "T2.ID", "T2.Price", "T3.ID", "T3.Price")));
+    assertEquals(6, joined.rowCount());
+    assertEquals(3, joined.column("ID").countMissing());
+    assertEquals(0, joined.column("Name").countMissing());
+    assertEquals(3, joined.column("Price").countMissing());
+    assertEquals(6, joined.column("T2.ID").size());
+    assertEquals(2, joined.column("T2.ID").countMissing());
+    assertEquals(6, joined.column("T2.Price").size());
+    assertEquals(2, joined.column("T2.Price").countMissing());
+    assertEquals(6, joined.column("T3.ID").size());
+    assertEquals(0, joined.column("T3.ID").countMissing());
+    assertEquals(6, joined.column("T3.Price").size());
+    assertEquals(0, joined.column("T3.Price").countMissing());
+  }
+
+  @Test
+  public void fullOuterJoinMultiTable3() {
+    Table table2 = createGOODS2();
+    Table table3 = createGOODS3();
+    Table table1 = createGOODS1();
+    Table joined = table2.joinOn("Name").fullOuter(true, table3, table1);
+    assertEquals(7, joined.columnCount());
+    assertTrue(
+        joined
+            .columnNames()
+            .containsAll(
+                Arrays.asList("ID", "Name", "Price", "T2.ID", "T2.Price", "T3.ID", "T3.Price")));
+    assertEquals(6, joined.rowCount());
+    assertEquals(2, joined.column("ID").countMissing());
+    assertEquals(0, joined.column("Name").countMissing());
+    assertEquals(2, joined.column("Price").countMissing());
+    assertEquals(6, joined.column("T2.ID").size());
+    assertEquals(3, joined.column("T2.ID").countMissing());
+    assertEquals(6, joined.column("T2.Price").size());
+    assertEquals(3, joined.column("T2.Price").countMissing());
+    assertEquals(6, joined.column("T3.ID").size());
+    assertEquals(0, joined.column("T3.ID").countMissing());
+    assertEquals(6, joined.column("T3.Price").size());
+    assertEquals(0, joined.column("T3.Price").countMissing());
+  }
+
+  @Test
   public void innerJoinStudentInstructorOnAge() {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
