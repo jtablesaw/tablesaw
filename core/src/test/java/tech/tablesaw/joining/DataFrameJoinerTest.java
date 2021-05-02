@@ -575,11 +575,41 @@ public class DataFrameJoinerTest {
   }
 
   @Test
+  public void rightOuterJoinWithDoubles2Reverse() {
+    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").rightOuter(DOUBLE_INDEXED_DOGS_REVERSE);
+    assertEquals(3, joined.columnCount());
+    assertEquals(4, joined.rowCount());
+    assertEquals(4, joined.column("ID").size());
+  }
+
+  @Test
   public void rightOuterJoinWithDoubles3() {
     Table joined =
         DOUBLE_INDEXED_PEOPLE.joinOn("ID").rightOuter(DOUBLE_INDEXED_DOGS, DOUBLE_INDEXED_CATS);
-    assertEquals(3, joined.columnCount());
+    assertTrue(
+        joined.columnNames().containsAll(Arrays.asList("ID", "Name", "Dog Name", "Cat Name")));
     assertEquals(4, joined.rowCount());
+    assertEquals(4, joined.column("ID").size());
+    assertEquals(0, joined.column("ID").countMissing());
+    assertEquals(4, joined.column("Name").size());
+    assertEquals(3, joined.column("Name").countMissing());
+    assertEquals(4, joined.column("Dog Name").size());
+    assertEquals(3, joined.column("Dog Name").countMissing());
+    assertEquals(4, joined.column("Cat Name").size());
+    assertEquals(0, joined.column("Cat Name").countMissing());
+  }
+
+  @Test
+  public void rightOuterJoinWithDoubles4() {
+    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").rightOuter(DOUBLE_INDEXED_DOGS);
+    assertTrue(joined.columnNames().containsAll(Arrays.asList("ID", "Name", "Dog Name")));
+    assertEquals(4, joined.rowCount());
+    assertEquals(4, joined.column("ID").size());
+    assertEquals(0, joined.column("ID").countMissing());
+    assertEquals(4, joined.column("Dog Name").size());
+    assertEquals(0, joined.column("Dog Name").countMissing());
+    assertEquals(4, joined.column("Name").size());
+    assertEquals(1, joined.column("Name").countMissing());
   }
 
   @Test
