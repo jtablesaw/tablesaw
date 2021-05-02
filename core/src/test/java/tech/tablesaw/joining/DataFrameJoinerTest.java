@@ -93,6 +93,13 @@ public class DataFrameJoinerTest {
                   .join("ID,Dog Name", "1.1,Spot", "3.0,Fido", "4.0,Sasha", "5.0,King"),
               "Dogs");
 
+  private static final Table DOUBLE_INDEXED_DOGS_REVERSE =
+      Table.read()
+          .csv(
+              Joiner.on(System.lineSeparator())
+                  .join("Dog Name,ID", "Spot,1.1", "Fido,3.0", "Sasha,4.0", "King,5.0"),
+              "DogsReverse");
+
   private static final Table DOUBLE_INDEXED_CATS =
       Table.read()
           .csv(
