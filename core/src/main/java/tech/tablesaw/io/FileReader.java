@@ -181,7 +181,9 @@ public abstract class FileReader {
         (nextLine = reader.parseNext()) != null;
         rowNumber++) {
       // validation
-      if (options.ignoreInvalidRows() && nextLine.length != types.length) {
+      if (options.skipRowsWithInvalidColumnCount()
+          && options.header()
+          && nextLine.length != types.length) {
         continue;
       }
       if (nextLine.length < types.length) {

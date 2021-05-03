@@ -366,8 +366,8 @@ public class CsvReadOptions extends ReadOptions {
     }
 
     @Override
-    public Builder ignoreInvalidRows(boolean ignoreInvalidRows) {
-      super.ignoreInvalidRows(ignoreInvalidRows);
+    public Builder skipRowsWithInvalidColumnCount(boolean skipRowsWithInvalidColumnCount) {
+      super.skipRowsWithInvalidColumnCount(skipRowsWithInvalidColumnCount);
       return this;
     }
   }
