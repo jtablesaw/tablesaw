@@ -364,5 +364,11 @@ public class CsvReadOptions extends ReadOptions {
       super.ignoreZeroDecimal(ignoreZeroDecimal);
       return this;
     }
+
+    @Override
+    public Builder skipRowsWithInvalidColumnCount(boolean skipRowsWithInvalidColumnCount) {
+      super.skipRowsWithInvalidColumnCount(skipRowsWithInvalidColumnCount);
+      return this;
+    }
   }
 }

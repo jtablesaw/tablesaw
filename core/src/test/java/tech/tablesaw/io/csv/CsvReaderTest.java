@@ -826,4 +826,29 @@ public class CsvReaderTest {
     Table out = Table.read().csv(new StringReader(string));
     assertEquals(table.get(0, 0), out.get(0, 0));
   }
+
+  @Test
+  public void testSkipRowsWithInvalidColumnCount() throws IOException {
+    Table table =
+        Table.read()
+            .csv(
+                CsvReadOptions.builder("../data/short_row.csv")
+                    .skipRowsWithInvalidColumnCount(true)
+                    .build());
+    assertEquals(2, table.rowCount());
+  }
+
+  @Test
+  public void skipRowsWithInvalidColumnCountWithoutHeader() throws IOException {
+    assertThrows(
+        AddCellToColumnException.class,
+        () -> {
+          Table.read()
+              .csv(
+                  CsvReadOptions.builder("../data/short_row.csv")
+                      .header(false)
+                      .skipRowsWithInvalidColumnCount(true)
+                      .build());
+        });
+  }
 }
