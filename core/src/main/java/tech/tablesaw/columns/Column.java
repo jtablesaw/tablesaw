@@ -620,9 +620,9 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   Column<T> setName(String name);
 
   /**
-   * Sets the parser used by
+   * Sets the parser used by {@link #appendCell()}
    *
-   * @param name The new name MUST be unique for any table containing this column
+   * @param parser a column parser that converts text input to the column data type
    * @return this Column to allow method chaining
    */
   Column<T> setParser(AbstractColumnParser<T> parser);
