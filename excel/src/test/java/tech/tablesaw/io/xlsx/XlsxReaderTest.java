@@ -17,6 +17,7 @@ package tech.tablesaw.io.xlsx;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static tech.tablesaw.api.ColumnType.BOOLEAN;
@@ -173,6 +174,15 @@ public class XlsxReaderTest {
     } catch (IndexOutOfBoundsException iobe) {
       // expected
     }
+  }
+
+  @Test
+  public void testEmptyFileThrowsIllegalArgumentNoTableFound() throws IOException {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new XlsxReader().read(XlsxReadOptions.builder("../data/empty.xlsx").build());
+        });
   }
 
   @Test
