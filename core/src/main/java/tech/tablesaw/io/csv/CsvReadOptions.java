@@ -114,8 +114,6 @@ public class CsvReadOptions extends ReadOptions {
     return new Builder(reader);
   }
 
-  /** @deprecated Use {@link #columnTypeReadOptions()} */
-  @Deprecated
   public ColumnType[] columnTypes() {
     return columnTypeReadOptions.columnTypes();
   }

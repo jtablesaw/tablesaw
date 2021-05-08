@@ -36,7 +36,6 @@ import java.io.Reader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +43,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.ReadOptions.ColumnTypeReadOptions;
 
 public class ReadOptions {
 
@@ -118,12 +118,16 @@ public class ReadOptions {
 
     allowDuplicateColumnNames = builder.allowDuplicateColumnNames;
 
-    columnTypeReadOptions =
-        new ColumnTypeReadOptions(
-            builder.columnTypes,
-            builder.columnTypeMap,
-            builder.completeColumnTypeFunction,
-            builder.columnTypeFunction);
+    if (builder.columnTypes != null)
+      columnTypeReadOptions = new ByIdxColumnTypeReadOptions(builder.columnTypes);
+    else if (!builder.columnTypeMap.isEmpty())
+      columnTypeReadOptions = new ByNameMapColumnTypeReadOptions(builder.columnTypeMap);
+    else if (builder.completeColumnTypeFunction != null)
+      columnTypeReadOptions =
+          new CompleteFunctionColumnTypeReadOptions(builder.completeColumnTypeFunction);
+    else if (builder.columnTypeFunction != null)
+      columnTypeReadOptions = new PartialFunctionColumnTypeReadOptions(builder.columnTypeFunction);
+    else columnTypeReadOptions = ColumnTypeReadOptions.EMPTY;
 
     if (builder.locale == null) {
       locale = Locale.getDefault();
@@ -454,51 +458,97 @@ public class ReadOptions {
    *       provided columnTypes are used and the others are autodetected
    * </ul>
    */
-  public static class ColumnTypeReadOptions {
-    final ColumnType[] columnTypesByIdx;
-    final Map<String, ColumnType> columnTypesByNameMap;
-    final Function<String, Optional<ColumnType>> columnTypesByNameFunction;
-    final Function<String, ColumnType> completeColumnTypesByNameFunction;
+  public interface ColumnTypeReadOptions {
+    Optional<ColumnType> columnType(int columnNumber, String columnName);
 
-    public static ColumnTypeReadOptions of(ColumnType[] allColumnTypes) {
-      return new ColumnTypeReadOptions(allColumnTypes, Collections.emptyMap(), null, null);
+    default boolean hasColumnTypeForAllColumnsIfHavingColumnNames() {
+      return false;
     }
 
-    ColumnTypeReadOptions(
-        ColumnType[] columnTypesByIdx,
-        Map<String, ColumnType> columnTypesByNameMap,
-        Function<String, ColumnType> completeColumnTypesByNameFunction,
-        Function<String, Optional<ColumnType>> columnTypesByNameFunction) {
-      this.columnTypesByIdx = columnTypesByIdx;
-      this.columnTypesByNameMap = columnTypesByNameMap;
-      this.columnTypesByNameFunction = columnTypesByNameFunction;
-      this.completeColumnTypesByNameFunction = completeColumnTypesByNameFunction;
+    default boolean hasColumnTypeForAllColumns() {
+      return false;
     }
 
-    public Optional<ColumnType> columnType(int columnNumber, String columnName) {
-      if (columnTypesByIdx != null && columnNumber < columnTypesByIdx.length) {
-        return Optional.ofNullable(columnTypesByIdx[columnNumber]);
-      } else if (!columnTypesByNameMap.isEmpty()) {
-        return Optional.ofNullable(columnTypesByNameMap.get(columnName));
-      } else if (completeColumnTypesByNameFunction != null) {
-        return Optional.of(completeColumnTypesByNameFunction.apply(columnName));
-      } else if (columnTypesByNameFunction != null) {
-        return columnTypesByNameFunction.apply(columnName);
-      } else {
-        return Optional.empty();
-      }
+    default ColumnType[] columnTypes() {
+      return null;
     }
 
-    public ColumnType[] columnTypes() {
-      return columnTypesByIdx;
-    }
+    ColumnTypeReadOptions EMPTY = (columnNumber, columnName) -> Optional.empty();
 
-    public boolean hasColumnTypeForAllColumnsIfHavingColumnNames() {
-      return hasColumnTypeForAllColumns() || completeColumnTypesByNameFunction != null;
+    static ColumnTypeReadOptions of(ColumnType[] allColumnTypes) {
+      return new ByIdxColumnTypeReadOptions(allColumnTypes);
     }
+  }
+}
 
-    public boolean hasColumnTypeForAllColumns() {
-      return columnTypesByIdx != null && columnTypesByIdx.length > 0;
-    }
+class ByIdxColumnTypeReadOptions implements ColumnTypeReadOptions {
+  final ColumnType[] columnTypesByIdx;
+
+  public ByIdxColumnTypeReadOptions(ColumnType[] columnTypesByIdx) {
+    this.columnTypesByIdx = columnTypesByIdx;
+  }
+
+  @Override
+  public Optional<ColumnType> columnType(int columnNumber, String columnName) {
+    return Optional.of(columnTypesByIdx[columnNumber]);
+  }
+
+  @Override
+  public ColumnType[] columnTypes() {
+    return columnTypesByIdx;
+  }
+
+  @Override
+  public boolean hasColumnTypeForAllColumnsIfHavingColumnNames() {
+    return true;
+  }
+
+  @Override
+  public boolean hasColumnTypeForAllColumns() {
+    return true;
+  }
+}
+
+class ByNameMapColumnTypeReadOptions implements ColumnTypeReadOptions {
+  private final Map<String, ColumnType> columnTypesByNameMap;
+
+  public ByNameMapColumnTypeReadOptions(Map<String, ColumnType> columnTypesByNameMap) {
+    this.columnTypesByNameMap = columnTypesByNameMap;
+  }
+
+  @Override
+  public Optional<ColumnType> columnType(int columnNumber, String columnName) {
+    return Optional.ofNullable(columnTypesByNameMap.get(columnName));
+  }
+}
+
+class CompleteFunctionColumnTypeReadOptions implements ColumnTypeReadOptions {
+  private final Function<String, ColumnType> function;
+
+  public CompleteFunctionColumnTypeReadOptions(Function<String, ColumnType> function) {
+    this.function = function;
+  }
+
+  @Override
+  public Optional<ColumnType> columnType(int columnNumber, String columnName) {
+    return Optional.of(function.apply(columnName));
+  }
+
+  @Override
+  public boolean hasColumnTypeForAllColumnsIfHavingColumnNames() {
+    return true;
+  }
+}
+
+class PartialFunctionColumnTypeReadOptions implements ColumnTypeReadOptions {
+  final Function<String, Optional<ColumnType>> function;
+
+  public PartialFunctionColumnTypeReadOptions(Function<String, Optional<ColumnType>> function) {
+    this.function = function;
+  }
+
+  @Override
+  public Optional<ColumnType> columnType(int columnNumber, String columnName) {
+    return function.apply(columnName);
   }
 }

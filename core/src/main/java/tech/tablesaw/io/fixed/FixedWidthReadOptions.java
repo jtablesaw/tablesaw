@@ -30,8 +30,6 @@ import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.Source;
 
 public class FixedWidthReadOptions extends ReadOptions {
-
-  private final ColumnType[] columnTypes;
   private final FixedWidthFields columnSpecs;
   private final String lineEnding;
   private final char padding;
@@ -43,8 +41,6 @@ public class FixedWidthReadOptions extends ReadOptions {
 
   private FixedWidthReadOptions(FixedWidthReadOptions.Builder builder) {
     super(builder);
-
-    columnTypes = builder.columnTypes;
     columnSpecs = builder.columnSpecs;
     padding = builder.padding;
     lookupWildcard = builder.lookupWildcard;
@@ -89,7 +85,7 @@ public class FixedWidthReadOptions extends ReadOptions {
   }
 
   public ColumnType[] columnTypes() {
-    return columnTypes;
+    return columnTypeReadOptions.columnTypes();
   }
 
   public FixedWidthFields columnSpecs() {
@@ -133,7 +129,6 @@ public class FixedWidthReadOptions extends ReadOptions {
     protected boolean skipTrailingCharsUntilNewline = false;
     protected boolean recordEndsOnNewline = false;
     protected boolean skipInvalidRows = false;
-    protected ColumnType[] columnTypes;
     protected Integer maxNumberOfColumns = 10_000;
 
     protected Builder(Source source) {
