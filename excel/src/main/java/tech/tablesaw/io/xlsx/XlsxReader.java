@@ -14,6 +14,20 @@
 
 package tech.tablesaw.io.xlsx;
 
+import static org.apache.poi.ss.usermodel.CellType.FORMULA;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
+
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import javax.annotation.concurrent.Immutable;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -25,17 +39,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
-
-import javax.annotation.concurrent.Immutable;
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import static org.apache.poi.ss.usermodel.CellType.FORMULA;
 
 @Immutable
 public class XlsxReader implements DataReader<XlsxReadOptions> {
@@ -141,7 +144,8 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   private ColumnType getColumnType(Cell cell) {
-    CellType cellType = cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
+    CellType cellType =
+        cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
     switch (cellType) {
       case STRING:
         return ColumnType.STRING;
@@ -163,6 +167,10 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
       this.endRow = endRow;
       this.startColumn = startColumn;
       this.endColumn = endColumn;
+    }
+
+    public int getColumnCount() {
+      return endColumn - startColumn + 1;
     }
   }
 
@@ -231,28 +239,14 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   private Table createTable(Sheet sheet, TableRange tableArea, XlsxReadOptions options) {
-    // assume header row if all cells are of type String
-    Row row = sheet.getRow(tableArea.startRow);
-    List<String> headerNames = new ArrayList<>();
-    for (Cell cell : row) {
-      if (cell.getCellType() == CellType.STRING) {
-        headerNames.add(cell.getRichStringCellValue().getString());
-      } else {
-        break;
-      }
-    }
-    if (headerNames.size() == tableArea.endColumn - tableArea.startColumn + 1) {
-      tableArea.startRow++;
-    } else {
-      headerNames.clear();
-      for (int col = tableArea.startColumn; col <= tableArea.endColumn; col++) {
-        headerNames.add("col" + col);
-      }
-    }
+    Optional<List<String>> optHeaderNames = getHeaderNames(sheet, tableArea);
+    optHeaderNames.ifPresent(h -> tableArea.startRow++);
+    List<String> headerNames = optHeaderNames.orElse(calculateDefaultColumnNames(tableArea));
+
     Table table = Table.create(options.tableName() + "#" + sheet.getSheetName());
     List<Column<?>> columns = new ArrayList<>(Collections.nCopies(headerNames.size(), null));
     for (int rowNum = tableArea.startRow; rowNum <= tableArea.endRow; rowNum++) {
-      row = sheet.getRow(rowNum);
+      Row row = sheet.getRow(rowNum);
       for (int colNum = 0; colNum < headerNames.size(); colNum++) {
         Cell cell =
             row.getCell(colNum + tableArea.startColumn, MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -283,9 +277,30 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     return table;
   }
 
+  private Optional<List<String>> getHeaderNames(Sheet sheet, TableRange tableArea) {
+    // assume header row if all cells are of type String
+    Row row = sheet.getRow(tableArea.startRow);
+    List<String> headerNames =
+        IntStream.range(tableArea.startColumn, tableArea.endColumn + 1)
+            .mapToObj(row::getCell)
+            .filter(cell -> cell.getCellType() == STRING)
+            .map(cell -> cell.getRichStringCellValue().getString())
+            .collect(Collectors.toList());
+    return headerNames.size() == tableArea.getColumnCount()
+        ? Optional.of(headerNames)
+        : Optional.empty();
+  }
+
+  private List<String> calculateDefaultColumnNames(TableRange tableArea) {
+    return IntStream.range(tableArea.startColumn, tableArea.endColumn + 1)
+        .mapToObj(i -> "col" + i)
+        .collect(Collectors.toList());
+  }
+
   @SuppressWarnings("unchecked")
   private Column<?> appendValue(Column<?> column, Cell cell) {
-    CellType cellType = cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
+    CellType cellType =
+        cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
     switch (cellType) {
       case STRING:
         column.appendCell(cell.getRichStringCellValue().getString());
