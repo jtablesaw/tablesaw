@@ -241,8 +241,6 @@ public class XlsxReaderTest {
                     .columnTypes(columName -> STRING)
                     .build());
 
-    System.out.println(table.print());
-
     assertEquals(table.column("stringcol").asList(), Lists.newArrayList("Hallvard", "Marit"));
     assertEquals(table.column("intcol").asList(), Lists.newArrayList("12345678", "12345679"));
     // Not ideal, format viewed in excel is without E+10 notation
