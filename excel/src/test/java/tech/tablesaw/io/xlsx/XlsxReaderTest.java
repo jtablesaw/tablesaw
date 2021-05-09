@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static tech.tablesaw.api.ColumnType.BOOLEAN;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
 import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
 import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 import static tech.tablesaw.api.ColumnType.LONG;
 import static tech.tablesaw.api.ColumnType.STRING;
@@ -89,7 +90,7 @@ public class XlsxReaderTest {
     Table table =
         read1(
             "columns",
-            2,
+            3,
             "stringcol",
             "shortcol",
             "intcol",
@@ -97,22 +98,29 @@ public class XlsxReaderTest {
             "doublecol",
             "booleancol",
             "datecol",
-            "formulacol");
+            "formulacol",
+            "mixed",
+            "mixed2",
+            "intcol2");
     //        stringcol   shortcol    intcol  longcol doublecol   booleancol  datecol
     // formulacol
     //        Hallvard    123 12345678    12345678900 12,34   TRUE    22/02/2019 20:54:09   135.34
     //        Marit       124 12345679    12345678901 13,35   FALSE   23/03/2020 21:55:10   137.35
-    assertColumnValues(table.stringColumn("stringcol"), "Hallvard", "Marit");
-    assertColumnValues(table.intColumn("shortcol"), 123, 124);
-    assertColumnValues(table.intColumn("intcol"), 12345678, 12345679);
-    assertColumnValues(table.longColumn("longcol"), 12345678900L, 12345678901L);
-    assertColumnValues(table.doubleColumn("doublecol"), 12.34, 13.35);
-    assertColumnValues(table.booleanColumn("booleancol"), true, false);
+    assertColumnValues(table.stringColumn("stringcol"), "Hallvard", "Marit", "Quentin");
+    assertColumnValues(table.intColumn("shortcol"), 123, 124, 125);
+    assertColumnValues(table.intColumn("intcol"), 12345678, 12345679, 12345679);
+    assertColumnValues(table.longColumn("longcol"), 12345678900L, 12345678901L, 12345678901L);
+    assertColumnValues(table.doubleColumn("doublecol"), 12.34, 13.35, 13.35);
+    assertColumnValues(table.booleanColumn("booleancol"), true, false, false);
     assertColumnValues(
         table.dateTimeColumn("datecol"),
         LocalDateTime.of(2019, 2, 22, 20, 54, 9),
+        LocalDateTime.of(2020, 3, 23, 21, 55, 10),
         LocalDateTime.of(2020, 3, 23, 21, 55, 10));
-    assertColumnValues(table.doubleColumn("formulacol"), 135.34, 137.35);
+    assertColumnValues(table.doubleColumn("formulacol"), 135.34, 137.35, 138.35);
+    assertEquals(table.column("mixed").asList(), Lists.newArrayList("123.00", "abc", ""));
+    assertEquals(table.column("mixed2").asList(), Lists.newArrayList("abc", "123", ""));
+    assertEquals(table.column("intcol2").asList(), Lists.newArrayList(null, 1234, 1234));
   }
 
   @Test
@@ -199,7 +207,23 @@ public class XlsxReaderTest {
 
     assertArrayEquals(
         columnTypes,
-        new ColumnType[] {STRING, DOUBLE, LONG, LONG, DOUBLE, BOOLEAN, LOCAL_DATE_TIME, FLOAT});
+        new ColumnType[] {
+          STRING,
+          DOUBLE,
+          LONG,
+          LONG,
+          DOUBLE,
+          BOOLEAN,
+          LOCAL_DATE_TIME,
+          FLOAT,
+          STRING,
+          STRING,
+          INTEGER
+        });
+
+    assertEquals(table.column("mixed").asList(), Lists.newArrayList("123.00", "abc", ""));
+    assertEquals(table.column("mixed2").asList(), Lists.newArrayList("abc", "123", ""));
+    assertEquals(table.column("intcol2").asList(), Lists.newArrayList(null, 1234, 1234));
   }
 
   @Test
@@ -241,20 +265,24 @@ public class XlsxReaderTest {
                     .columnTypes(columName -> STRING)
                     .build());
 
-    System.out.println(table.print());
-
-    assertEquals(table.column("stringcol").asList(), Lists.newArrayList("Hallvard", "Marit"));
-    assertEquals(table.column("intcol").asList(), Lists.newArrayList("12345678", "12345679"));
+    assertEquals(
+        table.column("stringcol").asList(), Lists.newArrayList("Hallvard", "Marit", "Quentin"));
+    assertEquals(
+        table.column("intcol").asList(), Lists.newArrayList("12345678", "12345679", "12345679"));
     // Not ideal, format viewed in excel is without E+10 notation
     assertEquals(
-        table.column("longcol").asList(), Lists.newArrayList("1.23457E+10", "1.23457E+10"));
-    assertEquals(table.column("doublecol").asList(), Lists.newArrayList("12.34", "13.35"));
-    assertEquals(table.column("booleancol").asList(), Lists.newArrayList("TRUE", "FALSE"));
-    assertEquals(table.column("booleancol").asList(), Lists.newArrayList("TRUE", "FALSE"));
+        table.column("longcol").asList(),
+        Lists.newArrayList("1.23457E+10", "1.23457E+10", "1.23457E+10"));
+    assertEquals(table.column("doublecol").asList(), Lists.newArrayList("12.34", "13.35", "13.35"));
+    assertEquals(table.column("booleancol").asList(), Lists.newArrayList("TRUE", "FALSE", "FALSE"));
     assertEquals(
         table.column("datecol").asList(),
-        Lists.newArrayList("22/02/2019 20:54:09", "23/03/2020 21:55:10"));
-    assertEquals(table.column("formulacol").asList(), Lists.newArrayList("135.34", "137.35"));
-    assertEquals(table.column("empty").asList(), Lists.newArrayList("", ""));
+        Lists.newArrayList("22/02/2019 20:54:09", "23/03/2020 21:55:10", "23/03/2020 21:55:10"));
+    assertEquals(
+        table.column("formulacol").asList(), Lists.newArrayList("135.34", "137.35", "138.35"));
+    assertEquals(table.column("empty").asList(), Lists.newArrayList("", "", ""));
+    assertEquals(table.column("mixed").asList(), Lists.newArrayList("123.00", "abc", ""));
+    assertEquals(table.column("mixed2").asList(), Lists.newArrayList("abc", "123", ""));
+    assertEquals(table.column("intcol2").asList(), Lists.newArrayList("", "1234", "1234"));
   }
 }
