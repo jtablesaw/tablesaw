@@ -20,8 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.api.ColumnType.*;
 
+import com.google.common.collect.ImmutableMap;
 import com.univocity.parsers.common.TextParsingException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
@@ -741,6 +744,7 @@ public class CsvReaderTest {
     assertEquals("0 rows X 0 cols", table1.shape());
   }
 
+  @Test
   public void testReadMaxColumnsExceeded() {
     assertThrows(
         TextParsingException.class,
@@ -850,5 +854,110 @@ public class CsvReaderTest {
                       .skipRowsWithInvalidColumnCount(true)
                       .build());
         });
+  }
+
+  @Test
+  public void testCustomizedColumnTypesMixedWithDetection() throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnTypesPartial(
+                columnName ->
+                    Optional.ofNullable(
+                        ImmutableMap.of("stop_id", STRING, "stop_name", STRING, "stop_lon", DOUBLE)
+                            .get(columnName)))
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    ColumnType[] expectedTypes = Arrays.copyOf(bus_types, bus_types.length);
+    expectedTypes[0] = STRING; // stop_id
+    expectedTypes[1] = STRING; // stop_name
+    expectedTypes[4] = DOUBLE; // stop_lon
+    assertArrayEquals(expectedTypes, columnTypes);
+  }
+
+  @Test
+  public void testCustomizedColumnTypeAllCustomized() throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnTypes(columnName -> STRING)
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    assertTrue(Arrays.stream(columnTypes).allMatch(columnType -> columnType.equals(STRING)));
+  }
+
+  @Test
+  public void testColumnsArePreservedWithNoDataIfCustomizedTypesAreProvided() throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test_no_data.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnTypesPartial(
+                ImmutableMap.of(
+                    "stop_id",
+                    SHORT,
+                    "stop_name",
+                    STRING,
+                    "stop_desc",
+                    STRING,
+                    "stop_lat",
+                    FLOAT,
+                    "stop_lon",
+                    FLOAT))
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    assertArrayEquals(bus_types, columnTypes);
+  }
+
+  @Test
+  public void testColumnsArePreservedWithNoDataIfCustomizedTypesAreProvided2() throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test_no_data.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnTypes(new ColumnType[] {SHORT, STRING, STRING, FLOAT, FLOAT})
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    assertArrayEquals(bus_types, columnTypes);
+  }
+
+  @Test
+  public void testColumnsArePreservedWithNoDataIfCustomizedTypesAreProvidedPartially()
+      throws IOException {
+    Reader reader = new FileReader("../data/bus_stop_test_no_data.csv");
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(true)
+            .separator(',')
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnTypesPartial(ImmutableMap.of("stop_id", SHORT, "stop_name", STRING))
+            .build();
+
+    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+
+    assertArrayEquals(new ColumnType[] {SHORT, STRING}, columnTypes);
   }
 }

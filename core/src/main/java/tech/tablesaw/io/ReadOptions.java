@@ -35,9 +35,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.ReadOptions.ColumnTypeReadOptions;
 
 public class ReadOptions {
 
@@ -87,6 +93,8 @@ public class ReadOptions {
   protected final DateTimeFormatter dateTimeFormatter;
   protected final DateTimeFormatter timeFormatter;
 
+  protected final ColumnTypeReadOptions columnTypeReadOptions;
+
   protected final boolean header;
 
   protected ReadOptions(ReadOptions.Builder builder) {
@@ -109,6 +117,17 @@ public class ReadOptions {
     dateTimeFormatter = builder.dateTimeFormatter;
 
     allowDuplicateColumnNames = builder.allowDuplicateColumnNames;
+
+    if (builder.columnTypes != null)
+      columnTypeReadOptions = new ByIdxColumnTypeReadOptions(builder.columnTypes);
+    else if (!builder.columnTypeMap.isEmpty())
+      columnTypeReadOptions = new ByNameMapColumnTypeReadOptions(builder.columnTypeMap);
+    else if (builder.completeColumnTypeFunction != null)
+      columnTypeReadOptions =
+          new CompleteFunctionColumnTypeReadOptions(builder.completeColumnTypeFunction);
+    else if (builder.columnTypeFunction != null)
+      columnTypeReadOptions = new PartialFunctionColumnTypeReadOptions(builder.columnTypeFunction);
+    else columnTypeReadOptions = ColumnTypeReadOptions.EMPTY;
 
     if (builder.locale == null) {
       locale = Locale.getDefault();
@@ -192,6 +211,10 @@ public class ReadOptions {
     return DateTimeFormatter.ofPattern(dateFormat, locale);
   }
 
+  public ColumnTypeReadOptions columnTypeReadOptions() {
+    return columnTypeReadOptions;
+  }
+
   protected static class Builder {
 
     protected final Source source;
@@ -212,6 +235,10 @@ public class ReadOptions {
     protected boolean ignoreZeroDecimal = DEFAULT_IGNORE_ZERO_DECIMAL;
     protected boolean skipRowsWithInvalidColumnCount = DEFAULT_SKIP_ROWS_WITH_INVALID_COLUMN_COUNT;
     private boolean allowDuplicateColumnNames = false;
+    protected ColumnType[] columnTypes;
+    protected Map<String, ColumnType> columnTypeMap = new HashMap<>();
+    protected Function<String, Optional<ColumnType>> columnTypeFunction;
+    protected Function<String, ColumnType> completeColumnTypeFunction;
 
     protected Builder() {
       source = null;
@@ -328,7 +355,15 @@ public class ReadOptions {
 
     /** @see ColumnTypeDetector */
     public Builder columnTypesToDetect(List<ColumnType> columnTypesToDetect) {
-      this.columnTypesToDetect = columnTypesToDetect;
+      // Types need to be in certain order as more general types like string come last
+      // Otherwise everything will be parsed as a string
+      List<ColumnType> orderedTypes = new ArrayList<>();
+      for (ColumnType t : EXTENDED_TYPES) {
+        if (columnTypesToDetect.contains(t)) {
+          orderedTypes.add(t);
+        }
+      }
+      this.columnTypesToDetect = orderedTypes;
       return this;
     }
 
@@ -341,8 +376,179 @@ public class ReadOptions {
       return this;
     }
 
+    /**
+     * Provide column types for all columns skipping autodetect column type logic. The array must
+     * contain a ColumnType for each column in the table. An error will be thrown if they don't
+     * match up
+     */
+    public Builder columnTypes(ColumnType[] columnTypes) {
+      if (columnTypeOptionsAlreadySet()) {
+        throw new IllegalStateException("columnTypes already set");
+      }
+      this.columnTypes = columnTypes;
+      return this;
+    }
+
+    /**
+     * Provide a function that determines ColumnType for all column names. To provide only for some
+     * use {@link #columnTypesPartial(Function)}
+     *
+     * <p>This method is generally more efficient because it skips column type detection
+     */
+    public Builder columnTypes(Function<String, ColumnType> columnTypeFunction) {
+      if (columnTypeOptionsAlreadySet()) {
+        throw new IllegalStateException("columnTypes already set");
+      }
+      this.completeColumnTypeFunction = columnTypeFunction;
+      return this;
+    }
+
+    /**
+     * Provide a function that determines ColumnType for some column names. To provide for all
+     * column names use {@link #columnTypes(Function)} that generally is more efficient because it
+     * skips column type detection
+     */
+    public Builder columnTypesPartial(Function<String, Optional<ColumnType>> columnTypeFunction) {
+      if (columnTypeOptionsAlreadySet()) {
+        throw new IllegalStateException("columnTypes already set");
+      }
+      this.columnTypeFunction = columnTypeFunction;
+      return this;
+    }
+
+    /**
+     * Provide a map that determines ColumnType for given column names. Types for not present column
+     * names will be autodetected. To provide type for all column names use {@link
+     * #columnTypes(Function)} that generally is more efficient because it skips column type
+     * detection
+     */
+    public Builder columnTypesPartial(Map<String, ColumnType> columnTypeByName) {
+      if (columnTypeOptionsAlreadySet()) {
+        throw new IllegalStateException("columnTypes already set");
+      }
+      if (columnTypeByName != null) {
+        this.columnTypeMap = columnTypeByName;
+      }
+      return this;
+    }
+
+    private boolean columnTypeOptionsAlreadySet() {
+      return columnTypes != null
+          || columnTypeFunction != null
+          || completeColumnTypeFunction != null
+          || !columnTypeMap.isEmpty();
+    }
+
     public ReadOptions build() {
       return new ReadOptions(this);
     }
+  }
+
+  /**
+   * Allows user to set column types. It can work in three ways:
+   *
+   * <ul>
+   *   <li>If no information is provided column types are autodetected
+   *   <li>A complete list of columns can be provided using {@link
+   *       ReadOptions.Builder#columnTypes(ColumnType[])} or {@link
+   *       ReadOptions.Builder#columnTypes(Function)}. This skips column type detection.
+   *   <li>Provide values for some column names using {@link
+   *       ReadOptions.Builder#columnTypesPartial(Map)} or {@link
+   *       ReadOptions.Builder#columnTypesPartial(Function)} (String, ColumnType)}. In this case
+   *       provided columnTypes are used and the others are autodetected
+   * </ul>
+   */
+  public interface ColumnTypeReadOptions {
+    Optional<ColumnType> columnType(int columnNumber, String columnName);
+
+    default boolean hasColumnTypeForAllColumnsIfHavingColumnNames() {
+      return false;
+    }
+
+    default boolean hasColumnTypeForAllColumns() {
+      return false;
+    }
+
+    default ColumnType[] columnTypes() {
+      return null;
+    }
+
+    ColumnTypeReadOptions EMPTY = (columnNumber, columnName) -> Optional.empty();
+
+    static ColumnTypeReadOptions of(ColumnType[] allColumnTypes) {
+      return new ByIdxColumnTypeReadOptions(allColumnTypes);
+    }
+  }
+}
+
+class ByIdxColumnTypeReadOptions implements ColumnTypeReadOptions {
+  final ColumnType[] columnTypesByIdx;
+
+  public ByIdxColumnTypeReadOptions(ColumnType[] columnTypesByIdx) {
+    this.columnTypesByIdx = columnTypesByIdx;
+  }
+
+  @Override
+  public Optional<ColumnType> columnType(int columnNumber, String columnName) {
+    return Optional.of(columnTypesByIdx[columnNumber]);
+  }
+
+  @Override
+  public ColumnType[] columnTypes() {
+    return columnTypesByIdx;
+  }
+
+  @Override
+  public boolean hasColumnTypeForAllColumnsIfHavingColumnNames() {
+    return true;
+  }
+
+  @Override
+  public boolean hasColumnTypeForAllColumns() {
+    return true;
+  }
+}
+
+class ByNameMapColumnTypeReadOptions implements ColumnTypeReadOptions {
+  private final Map<String, ColumnType> columnTypesByNameMap;
+
+  public ByNameMapColumnTypeReadOptions(Map<String, ColumnType> columnTypesByNameMap) {
+    this.columnTypesByNameMap = columnTypesByNameMap;
+  }
+
+  @Override
+  public Optional<ColumnType> columnType(int columnNumber, String columnName) {
+    return Optional.ofNullable(columnTypesByNameMap.get(columnName));
+  }
+}
+
+class CompleteFunctionColumnTypeReadOptions implements ColumnTypeReadOptions {
+  private final Function<String, ColumnType> function;
+
+  public CompleteFunctionColumnTypeReadOptions(Function<String, ColumnType> function) {
+    this.function = function;
+  }
+
+  @Override
+  public Optional<ColumnType> columnType(int columnNumber, String columnName) {
+    return Optional.of(function.apply(columnName));
+  }
+
+  @Override
+  public boolean hasColumnTypeForAllColumnsIfHavingColumnNames() {
+    return true;
+  }
+}
+
+class PartialFunctionColumnTypeReadOptions implements ColumnTypeReadOptions {
+  final Function<String, Optional<ColumnType>> function;
+
+  public PartialFunctionColumnTypeReadOptions(Function<String, Optional<ColumnType>> function) {
+    this.function = function;
+  }
+
+  @Override
+  public Optional<ColumnType> columnType(int columnNumber, String columnName) {
+    return function.apply(columnName);
   }
 }
