@@ -207,20 +207,20 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
     if (n >= 0) {
       for (int m = 0; m < n; m++) {
-        copy.appendCell(TextColumnType.missingValueIndicator());
+        copy.appendMissing();
       }
       for (int i = 0; i < size(); i++) {
         if (i + n >= size()) {
           break;
         }
-        copy.appendCell(get(i));
+        copy.append(get(i));
       }
     } else {
       for (int i = -n; i < size(); i++) {
-        copy.appendCell(get(i));
+        copy.append(get(i));
       }
       for (int m = 0; m > n; m--) {
-        copy.appendCell(TextColumnType.missingValueIndicator());
+        copy.appendMissing();
       }
     }
 
@@ -286,13 +286,13 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   @Override
   public TextColumn appendCell(String object) {
-    values.add(TextColumnType.DEFAULT_PARSER.parse(object));
+    append(TextColumnType.DEFAULT_PARSER.parse(object));
     return this;
   }
 
   @Override
   public TextColumn appendCell(String object, AbstractColumnParser<?> parser) {
-    values.add(String.valueOf(parser.parse(object)));
+    append(String.valueOf(parser.parse(object)));
     return this;
   }
 
@@ -386,7 +386,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   /** Added for naming consistency with all other columns */
   public TextColumn append(String value) {
-    appendCell(value);
+    values.add(value);
     return this;
   }
 

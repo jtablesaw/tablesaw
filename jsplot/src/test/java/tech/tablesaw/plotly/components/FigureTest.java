@@ -8,6 +8,7 @@ import tech.tablesaw.plotly.traces.Trace;
 
 class FigureTest {
 
+  private static final String LINE_END = System.lineSeparator();
   private String divName = "target";
 
   private double[] x = {1, 2, 3, 4, 5};
@@ -20,22 +21,38 @@ class FigureTest {
     Figure figure = new Figure(trace);
 
     assertEquals(
-        "    <script>\n"
-            + "        var target_target = document.getElementById('target');\n"
-            + "        \n"
-            + "var trace0 =\n"
-            + "{\n"
-            + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],\n"
-            + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],\n"
-            + "mode: 'markers',\n"
-            + "xaxis: 'x',\n"
-            + "yaxis: 'y',\n"
-            + "type: 'scatter',\n"
-            + "name: '',\n"
-            + "};\n"
-            + "\n"
-            + "        var data = [ trace0];\n"
-            + "Plotly.newPlot(target_target, data);            </script>\n",
+        "    <script>"
+            + LINE_END
+            + "        var target_target = document.getElementById('target');"
+            + LINE_END
+            + "        "
+            + LINE_END
+            + "var trace0 ="
+            + LINE_END
+            + "{"
+            + LINE_END
+            + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],"
+            + LINE_END
+            + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],"
+            + LINE_END
+            + "mode: 'markers',"
+            + LINE_END
+            + "xaxis: 'x',"
+            + LINE_END
+            + "yaxis: 'y',"
+            + LINE_END
+            + "type: 'scatter',"
+            + LINE_END
+            + "name: '',"
+            + LINE_END
+            + "};"
+            + LINE_END
+            + ""
+            + LINE_END
+            + "        var data = [ trace0];"
+            + LINE_END
+            + "Plotly.newPlot(target_target, data);            </script>"
+            + LINE_END,
         figure.asJavascript(divName));
   }
 
@@ -62,46 +79,86 @@ class FigureTest {
     Figure figure = new Figure(layout, trace);
 
     assertEquals(
-        "    <script>\n"
-            + "        var target_target = document.getElementById('target');\n"
-            + "        var layout = {\n"
-            + "    title: 'A test title',\n"
-            + "    height: 450,\n"
-            + "    width: 700,\n"
-            + "    showlegend: true,\n"
-            + "    margin: {\n"
-            + "  \"autoexpand\" : true,\n"
-            + "  \"b\" : 80,\n"
-            + "  \"l\" : 200,\n"
-            + "  \"pad\" : 0,\n"
-            + "  \"r\" : 80,\n"
-            + "  \"t\" : 200\n"
-            + "},\n"
-            + "    xaxis: {\n"
-            + "    title: 'x Axis 1',\n"
-            + "        titlefont: {\n"
-            + "  \"color\" : \"red\",\n"
-            + "  \"family\" : \"arial\",\n"
-            + "  \"size\" : 8\n"
-            + "},\n"
-            + "    },\n"
-            + "\n"
-            + "\n"
-            + "};\n"
-            + "\n"
-            + "var trace0 =\n"
-            + "{\n"
-            + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],\n"
-            + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],\n"
-            + "mode: 'markers',\n"
-            + "xaxis: 'x',\n"
-            + "yaxis: 'y',\n"
-            + "type: 'scatter',\n"
-            + "name: '',\n"
-            + "};\n"
-            + "\n"
-            + "        var data = [ trace0];\n"
-            + "Plotly.newPlot(target_target, data, layout);            </script>\n",
+        "    <script>"
+            + LINE_END
+            + "        var target_target = document.getElementById('target');"
+            + LINE_END
+            + "        var layout = {"
+            + LINE_END
+            + "    title: 'A test title',"
+            + LINE_END
+            + "    height: 450,"
+            + LINE_END
+            + "    width: 700,"
+            + LINE_END
+            + "    showlegend: true,"
+            + LINE_END
+            + "    margin: {"
+            + LINE_END
+            + "  \"autoexpand\" : true,"
+            + LINE_END
+            + "  \"b\" : 80,"
+            + LINE_END
+            + "  \"l\" : 200,"
+            + LINE_END
+            + "  \"pad\" : 0,"
+            + LINE_END
+            + "  \"r\" : 80,"
+            + LINE_END
+            + "  \"t\" : 200"
+            + LINE_END
+            + "},"
+            + LINE_END
+            + "    xaxis: {"
+            + LINE_END
+            + "    title: 'x Axis 1',"
+            + LINE_END
+            + "        titlefont: {"
+            + LINE_END
+            + "  \"color\" : \"red\","
+            + LINE_END
+            + "  \"family\" : \"arial\","
+            + LINE_END
+            + "  \"size\" : 8"
+            + LINE_END
+            + "},"
+            + LINE_END
+            + "    },"
+            + LINE_END
+            + ""
+            + LINE_END
+            + ""
+            + LINE_END
+            + "};"
+            + LINE_END
+            + ""
+            + LINE_END
+            + "var trace0 ="
+            + LINE_END
+            + "{"
+            + LINE_END
+            + "x: [\"1.0\",\"2.0\",\"3.0\",\"4.0\",\"5.0\"],"
+            + LINE_END
+            + "y: [\"1.0\",\"4.0\",\"9.0\",\"16.0\",\"25.0\"],"
+            + LINE_END
+            + "mode: 'markers',"
+            + LINE_END
+            + "xaxis: 'x',"
+            + LINE_END
+            + "yaxis: 'y',"
+            + LINE_END
+            + "type: 'scatter',"
+            + LINE_END
+            + "name: '',"
+            + LINE_END
+            + "};"
+            + LINE_END
+            + ""
+            + LINE_END
+            + "        var data = [ trace0];"
+            + LINE_END
+            + "Plotly.newPlot(target_target, data, layout);            </script>"
+            + LINE_END,
         figure.asJavascript(divName));
   }
 

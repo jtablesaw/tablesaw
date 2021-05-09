@@ -158,6 +158,7 @@ public class DataFrameJoiner {
    *     column have the same name if {@code true} the join will succeed and duplicate columns are
    *     renamed
    * @param table2JoinColumnNames The names of the columns in table2 to join on.
+   * @return the joined table
    */
   private Table joinInternal(
       Table table1,
@@ -165,7 +166,10 @@ public class DataFrameJoiner {
       JoinType joinType,
       boolean allowDuplicates,
       String... table2JoinColumnNames) {
+
     List<Integer> table2JoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
+    List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
+    List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
 
     Table result = Table.create(table1.name());
     // A set of column indexes in the result table that can be ignored. They are duplicate join
@@ -174,10 +178,7 @@ public class DataFrameJoiner {
         emptyTableFromColumns(
             result, table1, table2, joinType, allowDuplicates, table2JoinColumnIndexes);
 
-    List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
-    List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
     validateIndexes(table1Indexes, table2Indexes);
-
     if (table1.rowCount() == 0 && (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
       // Handle special case of empty table here so it doesn't fall through to the behavior
       // that adds rows for full outer and right outer joins
@@ -187,31 +188,59 @@ public class DataFrameJoiner {
 
     Selection table1DoneRows = Selection.with();
     Selection table2DoneRows = Selection.with();
-    for (Row row : table1) {
-      int ri = row.getRowNumber();
-      if (table1DoneRows.contains(ri)) {
-        // Already processed a selection of table1 that contained this row.
-        continue;
-      }
+    // use table 2 for row iteration, which can significantly increase performance
+    if (table1.rowCount() > table2.rowCount() && joinType == JoinType.INNER) {
+      for (Row row : table2) {
+        int ri = row.getRowNumber();
+        if (table2DoneRows.contains(ri)) {
+          // Already processed a selection of table1 that contained this row.
+          continue;
+        }
+        Selection table1Rows =
+            createMultiColSelection(
+                table2, ri, table1Indexes, table1.rowCount(), table2JoinColumnIndexes);
+        Selection table2Rows =
+            createMultiColSelection(
+                table2, ri, table2Indexes, table2.rowCount(), table2JoinColumnIndexes);
 
-      Selection table1Rows = createMultiColSelection(table1, ri, table1Indexes, table1.rowCount());
-      Selection table2Rows = createMultiColSelection(table1, ri, table2Indexes, table2.rowCount());
-
-      if ((joinType == JoinType.LEFT_OUTER || joinType == JoinType.FULL_OUTER)
-          && table2Rows.isEmpty()) {
-        withMissingLeftJoin(result, table1, table1Rows, resultIgnoreColIndexes);
-      } else {
         crossProduct(result, table1, table2, table1Rows, table2Rows, resultIgnoreColIndexes);
-      }
 
-      table1DoneRows = table1DoneRows.or(table1Rows);
-      if (joinType == JoinType.FULL_OUTER || joinType == JoinType.RIGHT_OUTER) {
-        // Update done rows in table2 for full Outer.
         table2DoneRows = table2DoneRows.or(table2Rows);
-      } else if (table1DoneRows.size() == table1.rowCount()) {
-        // Processed all the rows in table1 exit early.
-        result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
-        return result;
+        if (table2DoneRows.size() == table2.rowCount()) {
+          // Processed all the rows in table1 exit early.
+          result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          return result;
+        }
+      }
+    } else {
+      for (Row row : table1) {
+        int ri = row.getRowNumber();
+        if (table1DoneRows.contains(ri)) {
+          // Already processed a selection of table1 that contained this row.
+          continue;
+        }
+        Selection table1Rows =
+            createMultiColSelection(
+                table1, ri, table1Indexes, table1.rowCount(), joinColumnIndexes);
+        Selection table2Rows =
+            createMultiColSelection(
+                table1, ri, table2Indexes, table2.rowCount(), joinColumnIndexes);
+        if ((joinType == JoinType.LEFT_OUTER || joinType == JoinType.FULL_OUTER)
+            && table2Rows.isEmpty()) {
+          withMissingLeftJoin(result, table1, table1Rows, resultIgnoreColIndexes);
+        } else {
+          crossProduct(result, table1, table2, table1Rows, table2Rows, resultIgnoreColIndexes);
+        }
+
+        table1DoneRows = table1DoneRows.or(table1Rows);
+        if (joinType == JoinType.FULL_OUTER || joinType == JoinType.RIGHT_OUTER) {
+          // Update done rows in table2 for full Outer.
+          table2DoneRows = table2DoneRows.or(table2Rows);
+        } else if (table1DoneRows.size() == table1.rowCount()) {
+          // Processed all the rows in table1 exit early.
+          result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          return result;
+        }
       }
     }
 
@@ -344,14 +373,26 @@ public class DataFrameJoiner {
               + valueColumn.type());
     }
   }
-
-  /** Create a big multicolumn selection for all join columns in the given table. */
+  /**
+   * Create a big multicolumn selection for all join columns in the given table. Joins two tables.
+   *
+   * @param table the table that used to generate Selection.
+   * @param ri row number of row in table.
+   * @param indexes a reverse index for every join column in the table.
+   * @param selectionSize max size in table .
+   * @param joinColumnIndexes the column index of join key in tables
+   * @return selection created
+   */
   private Selection createMultiColSelection(
-      Table table1, int ri, List<Index> indexes, int selectionSize) {
+      Table table,
+      int ri,
+      List<Index> indexes,
+      int selectionSize,
+      List<Integer> joinColumnIndexes) {
     Selection multiColSelection = Selection.withRange(0, selectionSize);
     int i = 0;
     for (Integer joinColumnIndex : joinColumnIndexes) {
-      Column<?> col = table1.column(joinColumnIndex);
+      Column<?> col = table.column(joinColumnIndex);
       Selection oneColSelection = selectionForColumn(col, ri, indexes.get(i));
       // and the selections.
       multiColSelection = multiColSelection.and(oneColSelection);
@@ -502,7 +543,11 @@ public class DataFrameJoiner {
   public Table rightOuter(boolean allowDuplicateColumnNames, Table... tables) {
     Table joined = table;
     for (Table table2 : tables) {
-      joined = rightOuter(table2, allowDuplicateColumnNames, joinColumnNames);
+      joined =
+          joinInternal(
+              joined, table2, JoinType.RIGHT_OUTER, allowDuplicateColumnNames, joinColumnNames);
+      joinColumnIndexes.clear();
+      joinColumnIndexes.addAll(getJoinIndexes(joined, joinColumnNames));
     }
     return joined;
   }

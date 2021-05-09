@@ -14,8 +14,33 @@
 
 package tech.tablesaw.io.xlsx;
 
-import org.apache.poi.ss.usermodel.*;
+import static org.apache.poi.ss.usermodel.CellType.FORMULA;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import javax.annotation.concurrent.Immutable;
+import org.apache.poi.ss.format.CellDateFormatter;
+import org.apache.poi.ss.format.CellGeneralFormatter;
+import org.apache.poi.ss.format.CellNumberFormatter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
@@ -25,17 +50,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
-
-import javax.annotation.concurrent.Immutable;
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import static org.apache.poi.ss.usermodel.CellType.FORMULA;
 
 @Immutable
 public class XlsxReader implements DataReader<XlsxReadOptions> {
@@ -140,8 +154,9 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     return null;
   }
 
-  private ColumnType getColumnType(Cell cell) {
-    CellType cellType = cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
+  private ColumnType calculateColumnTypeFromCell(Cell cell) {
+    CellType cellType =
+        cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
     switch (cellType) {
       case STRING:
         return ColumnType.STRING;
@@ -163,6 +178,10 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
       this.endRow = endRow;
       this.startColumn = startColumn;
       this.endColumn = endColumn;
+    }
+
+    public int getColumnCount() {
+      return endColumn - startColumn + 1;
     }
   }
 
@@ -231,35 +250,22 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   private Table createTable(Sheet sheet, TableRange tableArea, XlsxReadOptions options) {
-    // assume header row if all cells are of type String
-    Row row = sheet.getRow(tableArea.startRow);
-    List<String> headerNames = new ArrayList<>();
-    for (Cell cell : row) {
-      if (cell.getCellType() == CellType.STRING) {
-        headerNames.add(cell.getRichStringCellValue().getString());
-      } else {
-        break;
-      }
-    }
-    if (headerNames.size() == tableArea.endColumn - tableArea.startColumn + 1) {
-      tableArea.startRow++;
-    } else {
-      headerNames.clear();
-      for (int col = tableArea.startColumn; col <= tableArea.endColumn; col++) {
-        headerNames.add("col" + col);
-      }
-    }
+    Optional<List<String>> optHeaderNames = getHeaderNames(sheet, tableArea);
+    optHeaderNames.ifPresent(h -> tableArea.startRow++);
+    List<String> headerNames = optHeaderNames.orElse(calculateDefaultColumnNames(tableArea));
+
     Table table = Table.create(options.tableName() + "#" + sheet.getSheetName());
     List<Column<?>> columns = new ArrayList<>(Collections.nCopies(headerNames.size(), null));
     for (int rowNum = tableArea.startRow; rowNum <= tableArea.endRow; rowNum++) {
-      row = sheet.getRow(rowNum);
+      Row row = sheet.getRow(rowNum);
       for (int colNum = 0; colNum < headerNames.size(); colNum++) {
         Cell cell =
             row.getCell(colNum + tableArea.startColumn, MissingCellPolicy.RETURN_BLANK_AS_NULL);
         Column<?> column = columns.get(colNum);
+        String columnName = headerNames.get(colNum);
         if (cell != null) {
           if (column == null) {
-            column = createColumn(headerNames.get(colNum), cell);
+            column = createColumn(colNum, columnName, cell, options);
             columns.set(colNum, column);
             while (column.size() < rowNum - tableArea.startRow) {
               column.appendMissing();
@@ -269,6 +275,17 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
           if (altColumn != null && altColumn != column) {
             column = altColumn;
             columns.set(colNum, column);
+          }
+        } else {
+          boolean hasCustomizedType =
+              options.columnTypeReadOptions().columnType(colNum, columnName).isPresent();
+          if (column == null && hasCustomizedType) {
+            ColumnType columnType =
+                options.columnTypeReadOptions().columnType(colNum, columnName).get();
+            column = columnType.create(columnName).appendMissing();
+            columns.set(colNum, column);
+          } else if (hasCustomizedType) {
+            column.appendMissing();
           }
         }
         if (column != null) {
@@ -283,9 +300,30 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     return table;
   }
 
+  private Optional<List<String>> getHeaderNames(Sheet sheet, TableRange tableArea) {
+    // assume header row if all cells are of type String
+    Row row = sheet.getRow(tableArea.startRow);
+    List<String> headerNames =
+        IntStream.range(tableArea.startColumn, tableArea.endColumn + 1)
+            .mapToObj(row::getCell)
+            .filter(cell -> cell.getCellType() == STRING)
+            .map(cell -> cell.getRichStringCellValue().getString())
+            .collect(Collectors.toList());
+    return headerNames.size() == tableArea.getColumnCount()
+        ? Optional.of(headerNames)
+        : Optional.empty();
+  }
+
+  private List<String> calculateDefaultColumnNames(TableRange tableArea) {
+    return IntStream.range(tableArea.startColumn, tableArea.endColumn + 1)
+        .mapToObj(i -> "col" + i)
+        .collect(Collectors.toList());
+  }
+
   @SuppressWarnings("unchecked")
   private Column<?> appendValue(Column<?> column, Cell cell) {
-    CellType cellType = cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
+    CellType cellType =
+        cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
     switch (cellType) {
       case STRING:
         column.appendCell(cell.getRichStringCellValue().getString());
@@ -297,7 +335,20 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
           // behavior
           LocalDateTime localDate =
               date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-          column.appendCell(localDate.toString());
+          if (column.type() == ColumnType.STRING) {
+            // If column has String type try to honor it and leave the value as an string as similar
+            // as posible as seen in Excel
+            String dataFormatStyle = cell.getCellStyle().getDataFormatString();
+            String val;
+            if ("general".equalsIgnoreCase(dataFormatStyle)) {
+              val = new CellGeneralFormatter().format(cell.getNumericCellValue());
+            } else {
+              val = new CellDateFormatter(dataFormatStyle).format(cell.getDateCellValue());
+            }
+            column.appendCell(val);
+          } else {
+            column.appendCell(localDate.toString());
+          }
           return null;
         } else {
           double num = cell.getNumericCellValue();
@@ -332,6 +383,18 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
             Column<Double> doubleColumn = (Column<Double>) column;
             doubleColumn.append(num);
             return null;
+          } else if (column.type() == ColumnType.STRING) {
+            // If column has String type try to honor it and leave the value as an string as similar
+            // as posible as seen in Excel
+            Column<String> stringColumn = (Column<String>) column;
+            String dataFormatStyle = cell.getCellStyle().getDataFormatString();
+            String val;
+            if ("general".equalsIgnoreCase(dataFormatStyle)) {
+              val = new CellGeneralFormatter().format(cell.getNumericCellValue());
+            } else {
+              val = new CellNumberFormatter(dataFormatStyle).format(cell.getNumericCellValue());
+            }
+            stringColumn.append(val);
           }
         }
         break;
@@ -340,6 +403,12 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
           Column<Boolean> booleanColumn = (Column<Boolean>) column;
           booleanColumn.append(cell.getBooleanCellValue());
           return null;
+        } else if (column.type() == ColumnType.STRING) {
+          // If column has String type try to honor it and leave the value as an string as similar
+          // as posible as seen in Excel
+          Column<String> stringColumn = (Column<String>) column;
+          String val = new CellGeneralFormatter().format(cell.getBooleanCellValue());
+          stringColumn.append(val);
         }
       default:
         break;
@@ -347,9 +416,14 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     return null;
   }
 
-  private Column<?> createColumn(String name, Cell cell) {
+  private Column<?> createColumn(int colNum, String name, Cell cell, XlsxReadOptions options) {
     Column<?> column;
-    ColumnType columnType = getColumnType(cell);
+
+    ColumnType columnType =
+        options
+            .columnTypeReadOptions()
+            .columnType(colNum, name)
+            .orElse(calculateColumnTypeFromCell(cell));
     if (columnType == null) {
       columnType = ColumnType.STRING;
     }
