@@ -17,8 +17,8 @@ public class IntParser extends AbstractColumnParser<Integer> {
 
   public IntParser(IntColumnType columnType, ReadOptions readOptions) {
     super(columnType);
-    if (readOptions.missingValueIndicator() != null) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
+    if (readOptions.missingValueIndicators().length > 0) {
+      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
     }
     ignoreZeroDecimal = readOptions.ignoreZeroDecimal();
   }

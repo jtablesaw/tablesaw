@@ -13,8 +13,8 @@ public class StringParser extends AbstractColumnParser<String> {
 
   public StringParser(ColumnType columnType, ReadOptions readOptions) {
     super(columnType);
-    if (readOptions.missingValueIndicator() != null) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
+    if (readOptions.missingValueIndicators().length > 0) {
+      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
     }
   }
 

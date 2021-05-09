@@ -301,7 +301,7 @@ public class FixedWidthReadOptions extends ReadOptions {
     }
 
     @Override
-    public Builder missingValueIndicator(String missingValueIndicator) {
+    public Builder missingValueIndicator(String... missingValueIndicator) {
       super.missingValueIndicator(missingValueIndicator);
       return this;
     }
