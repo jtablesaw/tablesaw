@@ -71,7 +71,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   private InstantColumnFormatter printFormatter = new InstantColumnFormatter();
 
   private InstantColumn(String name, LongArrayList data) {
-    super(InstantColumnType.instance(), name);
+    super(InstantColumnType.instance(), name, InstantColumnType.DEFAULT_PARSER);
     this.data = data;
   }
 
@@ -178,6 +178,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return set(i, InstantColumnType.missingValueIndicator());
   }
 
+  @Override
   public InstantColumn where(Selection selection) {
     return subset(selection.toArray());
   }
@@ -208,7 +209,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   @Override
   public InstantColumn appendCell(String stringValue) {
-    return appendInternal(PackedInstant.pack(InstantColumnType.DEFAULT_PARSER.parse(stringValue)));
+    return appendInternal(PackedInstant.pack(parser().parse(stringValue)));
   }
 
   @Override
@@ -216,6 +217,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return appendObj(parser.parse(stringValue));
   }
 
+  @Override
   public InstantColumn append(Instant dateTime) {
     if (dateTime != null) {
       final long dt = PackedInstant.pack(dateTime);
@@ -242,10 +244,12 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
         "Cannot append " + obj.getClass().getName() + " to DateTimeColumn");
   }
 
+  @Override
   public int size() {
     return data.size();
   }
 
+  @Override
   public InstantColumn appendInternal(long dateTime) {
     data.add(dateTime);
     return this;
@@ -346,6 +350,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return data.isEmpty();
   }
 
+  @Override
   public long getLongInternal(int index) {
     return data.getLong(index);
   }
@@ -354,6 +359,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return getLongInternal(index);
   }
 
+  @Override
   public Instant get(int index) {
     return PackedInstant.asInstant(getPackedDateTime(index));
   }
@@ -588,6 +594,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return times;
   }
 
+  @Override
   public int byteSize() {
     return type().byteSize();
   }

@@ -15,13 +15,17 @@
 package tech.tablesaw.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.columns.datetimes.DateTimeParser;
 import tech.tablesaw.columns.strings.StringColumnType;
 
 public class DateTimeColumnTest {
@@ -53,6 +57,19 @@ public class DateTimeColumnTest {
     column1.appendCell("10/2/2016 8:18:03 AM");
     column1.appendCell("10/12/2016 12:18:03 AM");
     assertEquals(3, column1.size());
+  }
+
+  @Test
+  public void testCustomParser() {
+    // Just do enough to ensure the parser is wired up correctly
+    DateTimeParser customParser = new DateTimeParser(ColumnType.LOCAL_DATE_TIME);
+    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    column1.setParser(customParser);
+
+    column1.appendCell("not here");
+    assertTrue(column1.isMissing(column1.size() - 1));
+    column1.appendCell("1923-10-20T10:15:30");
+    assertFalse(column1.isMissing(column1.size() - 1));
   }
 
   @Test

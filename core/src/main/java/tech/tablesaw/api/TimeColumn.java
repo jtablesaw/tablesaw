@@ -66,12 +66,12 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
       };
 
   private TimeColumn(String name, IntArrayList times) {
-    super(TimeColumnType.instance(), name);
+    super(TimeColumnType.instance(), name, TimeColumnType.DEFAULT_PARSER);
     data = times;
   }
 
   private TimeColumn(String name) {
-    super(TimeColumnType.instance(), name);
+    super(TimeColumnType.instance(), name, TimeColumnType.DEFAULT_PARSER);
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
@@ -85,6 +85,12 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
 
   public static TimeColumn create(String name) {
     return new TimeColumn(name);
+  }
+
+  public static TimeColumn create(String name, AbstractColumnParser<LocalTime> parser) {
+    TimeColumn column = new TimeColumn(name);
+    column.setParser(parser);
+    return column;
   }
 
   public static TimeColumn create(String name, Collection<LocalTime> data) {
@@ -156,6 +162,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return valueIsMissing(getIntInternal(rowNumber));
   }
 
+  @Override
   public int size() {
     return data.size();
   }
@@ -165,6 +172,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return this;
   }
 
+  @Override
   public TimeColumn append(LocalTime time) {
     int value;
     if (time == null) {
@@ -289,6 +297,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return PackedLocalTime.asLocalTime(max);
   }
 
+  @Override
   public LocalTime min() {
 
     if (isEmpty()) {
@@ -366,7 +375,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
 
   @Override
   public TimeColumn appendCell(String object) {
-    appendInternal(PackedLocalTime.pack(TimeColumnType.DEFAULT_PARSER.parse(object)));
+    appendInternal(PackedLocalTime.pack(parser().parse(object)));
     return this;
   }
 
@@ -384,6 +393,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return getIntInternal(index);
   }
 
+  @Override
   public LocalTime get(int index) {
     return PackedLocalTime.asLocalTime(getIntInternal(index));
   }
@@ -484,6 +494,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return this;
   }
 
+  @Override
   public TimeColumn set(int index, LocalTime value) {
     return value == null ? setMissing(index) : set(index, PackedLocalTime.pack(value));
   }
