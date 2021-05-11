@@ -78,6 +78,13 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   ColumnType type();
 
   /**
+   * Returns the parser used by {@link #appendCell()}.
+   *
+   * @return {@link AbstractColumnParser}
+   */
+  AbstractColumnParser<T> parser();
+
+  /**
    * Returns a string representation of the value at the given row.
    *
    * @param row The index of the row.
@@ -611,6 +618,14 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    * @return this Column to allow method chaining
    */
   Column<T> setName(String name);
+
+  /**
+   * Sets the parser used by {@link #appendCell()}
+   *
+   * @param parser a column parser that converts text input to the column data type
+   * @return this Column to allow method chaining
+   */
+  Column<T> setParser(AbstractColumnParser<T> parser);
 
   /**
    * Returns a column containing the rows in this column beginning with start inclusive, and ending

@@ -69,7 +69,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
 
   private DateTimeColumn(String name, LongArrayList data) {
-    super(DateTimeColumnType.instance(), name);
+    super(DateTimeColumnType.instance(), name, DateTimeColumnType.DEFAULT_PARSER);
     this.data = data;
   }
 
@@ -176,6 +176,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return set(i, DateTimeColumnType.missingValueIndicator());
   }
 
+  @Override
   public DateTimeColumn where(Selection selection) {
     return subset(selection.toArray());
   }
@@ -217,8 +218,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public DateTimeColumn appendCell(String stringValue) {
-    return appendInternal(
-        PackedLocalDateTime.pack(DateTimeColumnType.DEFAULT_PARSER.parse(stringValue)));
+    return appendInternal(PackedLocalDateTime.pack(parser().parse(stringValue)));
   }
 
   @Override
@@ -226,6 +226,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return appendObj(parser.parse(stringValue));
   }
 
+  @Override
   public DateTimeColumn append(LocalDateTime dateTime) {
     if (dateTime != null) {
       final long dt = PackedLocalDateTime.pack(dateTime);
@@ -252,10 +253,12 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
         "Cannot append " + obj.getClass().getName() + " to DateTimeColumn");
   }
 
+  @Override
   public int size() {
     return data.size();
   }
 
+  @Override
   public DateTimeColumn appendInternal(long dateTime) {
     data.add(dateTime);
     return this;
@@ -356,6 +359,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return data.isEmpty();
   }
 
+  @Override
   public long getLongInternal(int index) {
     return data.getLong(index);
   }
@@ -364,6 +368,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return getLongInternal(index);
   }
 
+  @Override
   public LocalDateTime get(int index) {
     return PackedLocalDateTime.asLocalDateTime(getPackedDateTime(index));
   }
@@ -601,6 +606,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return times;
   }
 
+  @Override
   public int byteSize() {
     return type().byteSize();
   }

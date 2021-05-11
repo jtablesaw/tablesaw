@@ -103,7 +103,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
   }
 
   private DateColumn(String name, IntArrayList data) {
-    super(DateColumnType.instance(), name);
+    super(DateColumnType.instance(), name, DateColumnType.DEFAULT_PARSER);
     this.data = data;
   }
 
@@ -381,7 +381,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   @Override
   public DateColumn appendCell(String string) {
-    return appendInternal(PackedLocalDate.pack(DateColumnType.DEFAULT_PARSER.parse(string)));
+    return appendInternal(PackedLocalDate.pack(parser().parse(string)));
   }
 
   @Override
@@ -477,6 +477,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return bottom;
   }
 
+  @Override
   public IntIterator intIterator() {
     return data.iterator();
   }

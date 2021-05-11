@@ -905,7 +905,6 @@ public class DataFrameJoinerTest {
     assert (joined
         .columnNames()
         .containsAll(Arrays.asList("T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear")));
-    System.out.println(joined.printAll());
     assertEquals(16, joined.columnCount());
     assertEquals(14, joined.rowCount());
   }

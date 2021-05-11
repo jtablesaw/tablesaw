@@ -82,6 +82,20 @@ class StringColumnTest {
   }
 
   @Test
+  public void testCustomParser() {
+    // Just do enough to ensure the parser is wired up correctly
+    final StringColumn sc = StringColumn.create("sc");
+    StringParser customParser = new StringParser(ColumnType.STRING);
+    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    sc.setParser(customParser);
+
+    sc.appendCell("not here");
+    assertTrue(sc.isMissing(sc.size() - 1));
+    sc.appendCell("*");
+    assertFalse(sc.isMissing(sc.size() - 1));
+  }
+
+  @Test
   void testForNulls() {
     String[] array1 = {"1", "2", "3", "4", null};
     Table table1 = Table.create("table1", StringColumn.create("id", array1));

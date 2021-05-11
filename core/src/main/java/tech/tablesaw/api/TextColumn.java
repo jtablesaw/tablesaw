@@ -56,7 +56,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
 
   private TextColumn(String name, Collection<String> strings) {
-    super(TextColumnType.instance(), name);
+    super(TextColumnType.instance(), name, TextColumnType.DEFAULT_PARSER);
     values = new ArrayList<>(strings.size());
     for (String string : strings) {
       append(string);
@@ -64,12 +64,12 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   private TextColumn(String name) {
-    super(TextColumnType.instance(), name);
+    super(TextColumnType.instance(), name, TextColumnType.DEFAULT_PARSER);
     values = new ArrayList<>(DEFAULT_ARRAY_SIZE);
   }
 
   private TextColumn(String name, String[] strings) {
-    super(TextColumnType.instance(), name);
+    super(TextColumnType.instance(), name, TextColumnType.DEFAULT_PARSER);
     values = new ArrayList<>(strings.length);
     for (String string : strings) {
       append(string);
@@ -154,6 +154,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    * @return value as String
    * @throws IndexOutOfBoundsException if the given rowIndex is not in the column
    */
+  @Override
   public String get(int rowIndex) {
     return values.get(rowIndex);
   }
@@ -286,7 +287,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   @Override
   public TextColumn appendCell(String object) {
-    append(TextColumnType.DEFAULT_PARSER.parse(object));
+    append(parser().parse(object));
     return this;
   }
 
@@ -317,8 +318,9 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
     return TextColumn.create(name() + " Unique values", strings);
   }
 
+  @Override
   public TextColumn where(Selection selection) {
-    return (TextColumn) subset(selection.toArray());
+    return subset(selection.toArray());
   }
 
   // TODO (lwhite): This could avoid the append and do a list copy
@@ -385,6 +387,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** Added for naming consistency with all other columns */
+  @Override
   public TextColumn append(String value) {
     values.add(value);
     return this;

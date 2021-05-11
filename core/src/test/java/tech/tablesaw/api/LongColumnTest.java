@@ -2,7 +2,9 @@ package tech.tablesaw.api;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.columns.numbers.LongParser;
 import tech.tablesaw.selection.Selection;
 
 class LongColumnTest {
@@ -22,5 +24,18 @@ class LongColumnTest {
     Selection result = longColumn.isNotIn(4, 40);
     assertEquals(5, result.size());
     assertTrue(longColumn.where(result).contains(5L));
+  }
+
+  @Test
+  public void testCustomParser() {
+    // Just do enough to ensure the parser is wired up correctly
+    LongParser customParser = new LongParser(ColumnType.LONG);
+    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    longColumn.setParser(customParser);
+
+    longColumn.appendCell("not here");
+    assertTrue(longColumn.isMissing(longColumn.size() - 1));
+    longColumn.appendCell("5");
+    assertFalse(longColumn.isMissing(longColumn.size() - 1));
   }
 }

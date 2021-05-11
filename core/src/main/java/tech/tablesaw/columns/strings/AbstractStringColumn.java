@@ -6,6 +6,7 @@ import java.util.List;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 
 /** Abstract super class for Text like columns. */
@@ -14,8 +15,8 @@ public abstract class AbstractStringColumn<C extends AbstractColumn<C, String>>
     implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
   private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
-  public AbstractStringColumn(ColumnType type, String name) {
-    super(type, name);
+  public AbstractStringColumn(ColumnType type, String name, AbstractColumnParser<String> parser) {
+    super(type, name, parser);
   }
 
   public void setPrintFormatter(StringColumnFormatter formatter) {
