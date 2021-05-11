@@ -15,8 +15,10 @@
 package tech.tablesaw.io.xlsx;
 
 import static org.apache.poi.ss.usermodel.CellType.FORMULA;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 
+import com.google.common.collect.Iterables;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,7 +30,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.concurrent.Immutable;
@@ -154,22 +158,6 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     return null;
   }
 
-  private ColumnType calculateColumnTypeFromCell(Cell cell) {
-    CellType cellType =
-        cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
-    switch (cellType) {
-      case STRING:
-        return ColumnType.STRING;
-      case NUMERIC:
-        return DateUtil.isCellDateFormatted(cell) ? ColumnType.LOCAL_DATE_TIME : ColumnType.INTEGER;
-      case BOOLEAN:
-        return ColumnType.BOOLEAN;
-      default:
-        break;
-    }
-    return null;
-  }
-
   private static class TableRange {
     private int startRow, endRow, startColumn, endColumn;
 
@@ -259,13 +247,13 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     for (int rowNum = tableArea.startRow; rowNum <= tableArea.endRow; rowNum++) {
       Row row = sheet.getRow(rowNum);
       for (int colNum = 0; colNum < headerNames.size(); colNum++) {
-        Cell cell =
-            row.getCell(colNum + tableArea.startColumn, MissingCellPolicy.RETURN_BLANK_AS_NULL);
+        int excelColNum = colNum + tableArea.startColumn;
+        Cell cell = row.getCell(excelColNum, MissingCellPolicy.RETURN_BLANK_AS_NULL);
         Column<?> column = columns.get(colNum);
         String columnName = headerNames.get(colNum);
         if (cell != null) {
           if (column == null) {
-            column = createColumn(colNum, columnName, cell, options);
+            column = createColumn(colNum, columnName, sheet, excelColNum, tableArea, options);
             columns.set(colNum, column);
             while (column.size() < rowNum - tableArea.startRow) {
               column.appendMissing();
@@ -416,17 +404,23 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
     return null;
   }
 
-  private Column<?> createColumn(int colNum, String name, Cell cell, XlsxReadOptions options) {
+  private Column<?> createColumn(
+      int colNum,
+      String name,
+      Sheet sheet,
+      int excelColNum,
+      TableRange tableRange,
+      XlsxReadOptions options) {
     Column<?> column;
 
     ColumnType columnType =
         options
             .columnTypeReadOptions()
             .columnType(colNum, name)
-            .orElse(calculateColumnTypeFromCell(cell));
-    if (columnType == null) {
-      columnType = ColumnType.STRING;
-    }
+            .orElse(
+                calculateColumnTypeForColumn(sheet, excelColNum, tableRange)
+                    .orElse(ColumnType.STRING));
+
     column = columnType.create(name);
     return column;
   }
@@ -434,5 +428,57 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   @Override
   public Table read(Source source) throws IOException {
     return read(XlsxReadOptions.builder(source).build());
+  }
+
+  private Optional<ColumnType> calculateColumnTypeForColumn(
+      Sheet sheet, int col, TableRange tableRange) {
+    Set<CellType> cellTypes = getCellTypes(sheet, col, tableRange);
+
+    if (cellTypes.size() != 1) {
+      return Optional.empty();
+    }
+
+    CellType cellType = Iterables.get(cellTypes, 0);
+    switch (cellType) {
+      case STRING:
+        return Optional.of(ColumnType.STRING);
+      case NUMERIC:
+        return allNumericFieldsDateFormatted(sheet, col, tableRange)
+            ? Optional.of(ColumnType.LOCAL_DATE_TIME)
+            : Optional.of(ColumnType.INTEGER);
+      case BOOLEAN:
+        return Optional.of(ColumnType.BOOLEAN);
+      default:
+        return Optional.empty();
+    }
+  }
+
+  private Set<CellType> getCellTypes(Sheet sheet, int col, TableRange tableRange) {
+    return IntStream.range(tableRange.startRow, tableRange.endRow + 1)
+        .mapToObj(sheet::getRow)
+        .filter(Objects::nonNull)
+        .map(row -> row.getCell(col))
+        .filter(Objects::nonNull)
+        .filter(cell -> !Optional.ofNullable(isBlank(cell)).orElse(false))
+        .map(
+            cell ->
+                cell.getCellType() == FORMULA
+                    ? cell.getCachedFormulaResultType()
+                    : cell.getCellType())
+        .collect(Collectors.toSet());
+  }
+
+  private boolean allNumericFieldsDateFormatted(Sheet sheet, int col, TableRange tableRange) {
+    return IntStream.range(tableRange.startRow, tableRange.endRow + 1)
+        .mapToObj(sheet::getRow)
+        .filter(Objects::nonNull)
+        .map(row -> row.getCell(col))
+        .filter(Objects::nonNull)
+        .filter(
+            cell ->
+                cell.getCellType() == NUMERIC
+                    || (cell.getCellType() == FORMULA
+                        && cell.getCachedFormulaResultType() == NUMERIC))
+        .allMatch(DateUtil::isCellDateFormatted);
   }
 }
