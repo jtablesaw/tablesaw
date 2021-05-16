@@ -351,8 +351,10 @@ public class TableTest {
   void melt() throws Exception {
     boolean dropMissing = false;
     String df =
-        "subject, time, age, weight, height\n"
-            + "John Smith,    1,  33,     90,   1.87\n"
+        "subject, time, age, weight, height"
+            + LINE_END
+            + "John Smith,    1,  33,     90,   1.87"
+            + LINE_END
             + "Mary Smith,    1,  NA,     NA,   1.54";
     StringReader reader = new StringReader(df);
     Table t = Table.read().csv(reader);
@@ -362,14 +364,22 @@ public class TableTest {
 
     Table melted = t.melt(ids, measures, dropMissing);
     assertEquals(
-        "                                              \n"
-            + "  subject    |  time  |  variable  |  value  |\n"
-            + "----------------------------------------------\n"
-            + " John Smith  |     1  |       age  |     33  |\n"
-            + " John Smith  |     1  |    weight  |     90  |\n"
-            + " John Smith  |     1  |    height  |   1.87  |\n"
-            + " Mary Smith  |     1  |       age  |         |\n"
-            + " Mary Smith  |     1  |    weight  |         |\n"
+        "                                              "
+            + LINE_END
+            + "  subject    |  time  |  variable  |  value  |"
+            + LINE_END
+            + "----------------------------------------------"
+            + LINE_END
+            + " John Smith  |     1  |       age  |     33  |"
+            + LINE_END
+            + " John Smith  |     1  |    weight  |     90  |"
+            + LINE_END
+            + " John Smith  |     1  |    height  |   1.87  |"
+            + LINE_END
+            + " Mary Smith  |     1  |       age  |         |"
+            + LINE_END
+            + " Mary Smith  |     1  |    weight  |         |"
+            + LINE_END
             + " Mary Smith  |     1  |    height  |   1.54  |",
         melted.toString());
   }
@@ -378,8 +388,10 @@ public class TableTest {
   void meltAndDropMissing() throws Exception {
     boolean dropMissing = true;
     String df =
-        "subject, time, age, weight, height\n"
-            + "John Smith,    1,  33,     90,   1.87\n"
+        "subject, time, age, weight, height"
+            + LINE_END
+            + "John Smith,    1,  33,     90,   1.87"
+            + LINE_END
             + "Mary Smith,    1,  NA,     NA,   1.54";
     StringReader reader = new StringReader(df);
     Table t = Table.read().csv(reader);
@@ -390,12 +402,18 @@ public class TableTest {
     Table melted = t.melt(ids, measures, dropMissing);
     melted.write().csv("../data/molten_smiths_drop_missing.csv");
     assertEquals(
-        "                                              \n"
-            + "  subject    |  time  |  variable  |  value  |\n"
-            + "----------------------------------------------\n"
-            + " John Smith  |     1  |       age  |     33  |\n"
-            + " John Smith  |     1  |    weight  |     90  |\n"
-            + " John Smith  |     1  |    height  |   1.87  |\n"
+        "                                              "
+            + LINE_END
+            + "  subject    |  time  |  variable  |  value  |"
+            + LINE_END
+            + "----------------------------------------------"
+            + LINE_END
+            + " John Smith  |     1  |       age  |     33  |"
+            + LINE_END
+            + " John Smith  |     1  |    weight  |     90  |"
+            + LINE_END
+            + " John Smith  |     1  |    height  |   1.87  |"
+            + LINE_END
             + " Mary Smith  |     1  |    height  |   1.54  |",
         melted.toString());
   }
@@ -408,9 +426,12 @@ public class TableTest {
     cast.write().csv(writer);
     String writeString = writer.toString();
     assertEquals(
-        "subject,time,weight,age,height\n"
-            + "John Smith,1,90.0,33.0,1.87\n"
-            + "Mary Smith,1,,,1.54\n",
+        "subject,time,weight,age,height"
+            + LINE_END
+            + "John Smith,1,90.0,33.0,1.87"
+            + LINE_END
+            + "Mary Smith,1,,,1.54"
+            + LINE_END,
         writeString);
   }
 
@@ -422,9 +443,12 @@ public class TableTest {
     cast.write().csv(writer);
     String writeString = writer.toString();
     assertEquals(
-        "subject,time,weight,age,height\n"
-            + "John Smith,1,90.0,33.0,1.87\n"
-            + "Mary Smith,1,,,1.54\n",
+        "subject,time,weight,age,height"
+            + LINE_END
+            + "John Smith,1,90.0,33.0,1.87"
+            + LINE_END
+            + "Mary Smith,1,,,1.54"
+            + LINE_END,
         writeString);
   }
 

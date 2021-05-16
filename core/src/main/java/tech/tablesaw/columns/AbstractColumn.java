@@ -14,6 +14,7 @@
 
 package tech.tablesaw.columns;
 
+import com.google.common.base.Preconditions;
 import java.util.Comparator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -31,8 +32,11 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
 
   private final ColumnType type;
 
-  public AbstractColumn(ColumnType type, final String name) {
+  private AbstractColumnParser<T> parser;
+
+  public AbstractColumn(ColumnType type, final String name, final AbstractColumnParser<T> parser) {
     this.type = type;
+    setParser(parser);
     setName(name);
   }
 
@@ -45,6 +49,19 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C setName(final String name) {
     this.name = name.trim();
+    return (C) this;
+  }
+
+  @Override
+  public AbstractColumnParser<T> parser() {
+    return parser;
+  }
+
+  @Override
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public C setParser(final AbstractColumnParser<T> parser) {
+    Preconditions.checkNotNull(parser);
+    this.parser = parser;
     return (C) this;
   }
 

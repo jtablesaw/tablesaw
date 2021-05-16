@@ -1,29 +1,31 @@
 package tech.tablesaw.columns.strings;
 
 import java.util.function.Function;
+import tech.tablesaw.columns.ColumnFormatter;
 
-public class StringColumnFormatter {
+public class StringColumnFormatter extends ColumnFormatter {
 
   private final Function<String, String> formatter;
-  private String missingString = "";
 
   public StringColumnFormatter() {
+    super("");
     this.formatter = null;
   }
 
   public StringColumnFormatter(Function<String, String> formatFunction) {
+    super("");
     this.formatter = formatFunction;
   }
 
   public StringColumnFormatter(Function<String, String> formatFunction, String missingString) {
+    super(missingString);
     this.formatter = formatFunction;
-    this.missingString = missingString;
   }
 
   public String format(String value) {
 
     if (StringColumnType.missingValueIndicator().equals(value)) {
-      return missingString;
+      return getMissingString();
     }
     if (formatter == null) {
       return value;
@@ -37,7 +39,7 @@ public class StringColumnFormatter {
         + "format="
         + formatter
         + ", missingString='"
-        + missingString
+        + getMissingString()
         + '\''
         + '}';
   }

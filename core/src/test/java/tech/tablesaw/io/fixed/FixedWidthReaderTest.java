@@ -16,17 +16,21 @@ package tech.tablesaw.io.fixed;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.api.ColumnType.FLOAT;
 import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.SKIP;
 import static tech.tablesaw.api.ColumnType.STRING;
 
+import com.google.common.collect.ImmutableMap;
 import com.univocity.parsers.fixed.FixedWidthFields;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
@@ -53,13 +57,13 @@ public class FixedWidthReaderTest {
                     .systemLineEnding()
                     .build());
 
-    String[] expected = new String[]{"Year", "Make", "Model", "Description", "Price"};
+    String[] expected = new String[] {"Year", "Make", "Model", "Description", "Price"};
     assertArrayEquals(expected, table.columnNames().toArray());
 
     table = table.sortDescendingOn("Year");
     table.removeColumns("Description");
 
-    expected = new String[]{"Year", "Make", "Model", "Price"};
+    expected = new String[] {"Year", "Make", "Model", "Price"};
     assertArrayEquals(expected, table.columnNames().toArray());
   }
 
@@ -79,7 +83,7 @@ public class FixedWidthReaderTest {
 
     assertEquals(4, table.columnCount());
 
-    String[] expected = new String[]{"Year", "Make", "Model", "Price"};
+    String[] expected = {"Year", "Make", "Model", "Price"};
     assertArrayEquals(expected, table.columnNames().toArray());
   }
 
@@ -100,7 +104,7 @@ public class FixedWidthReaderTest {
 
     assertEquals(4, table.columnCount());
 
-    String[] expected = new String[]{"C0", "C1", "C2", "C4"};
+    String[] expected = new String[] {"C0", "C1", "C2", "C4"};
     assertArrayEquals(expected, table.columnNames().toArray());
   }
 
@@ -162,13 +166,55 @@ public class FixedWidthReaderTest {
                     .skipTrailingCharsUntilNewline(true)
                     .build());
 
-    String[] expected = new String[]{"Year", "Make", "Model", "Description", "Price"};
+    String[] expected = new String[] {"Year", "Make", "Model", "Description", "Price"};
     assertArrayEquals(expected, table.columnNames().toArray());
 
     table = table.sortDescendingOn("Year");
     table.removeColumns("Price");
 
-    expected = new String[]{"Year", "Make", "Model", "Description"};
+    expected = new String[] {"Year", "Make", "Model", "Description"};
     assertArrayEquals(expected, table.columnNames().toArray());
+  }
+
+  @Test
+  public void testCustomizedColumnTypesMixedWithDetection() throws Exception {
+    InputStream stream = new FileInputStream(new File("../data/fixed_width_cars_test.txt"));
+    FixedWidthReadOptions options =
+        FixedWidthReadOptions.builder(stream)
+            .header(true)
+            .columnSpecs(car_fields_specs)
+            .padding('_')
+            .systemLineEnding()
+            .sample(false)
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnTypesPartial(ImmutableMap.of("Year", STRING))
+            .build();
+
+    ColumnType[] columnTypes = new FixedWidthReader().read(options).columnTypes();
+
+    ColumnType[] expectedTypes = Arrays.copyOf(car_types, car_types.length);
+    car_types[0] = STRING; // Year
+    assertArrayEquals(expectedTypes, columnTypes);
+  }
+
+  @Test
+  public void testCustomizedColumnTypeAllCustomized() throws IOException {
+    InputStream stream = new FileInputStream("../data/fixed_width_cars_test.txt");
+    FixedWidthReadOptions options =
+        FixedWidthReadOptions.builder(stream)
+            .header(true)
+            .columnSpecs(car_fields_specs)
+            .padding('_')
+            .systemLineEnding()
+            .sample(false)
+            .locale(Locale.getDefault())
+            .minimizeColumnSizes()
+            .columnTypes(columnName -> STRING)
+            .build();
+
+    ColumnType[] columnTypes = new FixedWidthReader().read(options).columnTypes();
+
+    assertTrue(Arrays.stream(columnTypes).allMatch(columnType -> columnType.equals(STRING)));
   }
 }

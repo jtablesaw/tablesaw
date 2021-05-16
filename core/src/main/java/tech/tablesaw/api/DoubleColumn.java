@@ -26,7 +26,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
   private final DoubleArrayList data;
 
   protected DoubleColumn(String name, DoubleArrayList data) {
-    super(DoubleColumnType.instance(), name);
+    super(DoubleColumnType.instance(), name, DoubleColumnType.DEFAULT_PARSER);
     setPrintFormatter(NumberColumnFormatter.floatingPointDefault());
     this.data = data;
   }
@@ -54,13 +54,14 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     data.clear();
   }
 
+  @Override
   public DoubleColumn setMissing(int index) {
     set(index, DoubleColumnType.missingValueIndicator());
     return this;
   }
 
   protected DoubleColumn(String name) {
-    super(DoubleColumnType.instance(), name);
+    super(DoubleColumnType.instance(), name, DoubleColumnType.DEFAULT_PARSER);
     setPrintFormatter(NumberColumnFormatter.floatingPointDefault());
     this.data = new DoubleArrayList(DEFAULT_ARRAY_SIZE);
   }
@@ -282,7 +283,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   @Override
   public Iterator<Double> iterator() {
-    return (Iterator<Double>) data.iterator();
+    return data.iterator();
   }
 
   @Override
@@ -435,7 +436,7 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
   @Override
   public DoubleColumn appendCell(final String value) {
     try {
-      return append(DoubleColumnType.DEFAULT_PARSER.parseDouble(value));
+      return append(parser().parseDouble(value));
     } catch (final NumberFormatException e) {
       throw new NumberFormatException(
           "Error adding value to column " + name() + ": " + e.getMessage());

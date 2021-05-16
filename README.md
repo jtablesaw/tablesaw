@@ -59,11 +59,15 @@ You may also add supporting projects:
 
 * Start here:  https://jtablesaw.github.io/tablesaw/gettingstarted
 * Then see our documentation page: https://jtablesaw.github.io/tablesaw/ and the [Tablesaw User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc).
-
-And *always* feel free to ask questions or make suggestions here on the [issues tab](https://github.com/jtablesaw/tablesaw/issues).
+* Ask questions, make suggestions, or tell us how you're using Tablesaw in the new GitHub [discussions forum](https://github.com/jtablesaw/tablesaw/discussions). 
+* Feature requests and bug reports can be made on the [issues tab](https://github.com/jtablesaw/tablesaw/issues).
 
 ### Integrations
 
 * We recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
+
+* Eclipse uses may find [etablesaw](https://github.com/hallvard/etablesaw) useful. It provides Eclipse integration aimed at turning Eclipse into a data workbench.   
+
 * You may utilize Tablesaw with many machine learning libraries. To see an example of using Tablesaw with [Smile](https://haifengl.github.io) check out [the sample Tablesaw Jupyter notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
+
 * You may use [quandl4j-tablesaw](http://quandl4j.org) if you'd like to load financial and economic data from [Quandl](https://www.quandl.com) into Tablesaw. This is demonstrated in [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb) as well

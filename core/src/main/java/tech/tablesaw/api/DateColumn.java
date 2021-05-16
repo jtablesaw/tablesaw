@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -102,7 +103,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
   }
 
   private DateColumn(String name, IntArrayList data) {
-    super(DateColumnType.instance(), name);
+    super(DateColumnType.instance(), name, DateColumnType.DEFAULT_PARSER);
     this.data = data;
   }
 
@@ -135,15 +136,30 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return value == null ? setMissing(index) : set(index, PackedLocalDate.pack(value));
   }
 
+  /**
+   * Creates and sets a printFormatter based-on the given DateTimeFormatter. Missing values will be
+   * printed as the given missingValueString. Non missing values will be handled by the
+   * dateTimeFormatter
+   */
   public void setPrintFormatter(DateTimeFormatter dateTimeFormatter, String missingValueString) {
     Preconditions.checkNotNull(dateTimeFormatter);
     Preconditions.checkNotNull(missingValueString);
     this.printFormatter = new DateColumnFormatter(dateTimeFormatter, missingValueString);
   }
 
+  /**
+   * Creates and sets a printFormatter based-on the given DateTimeFormatter. Missing values will be
+   * printed as empty strings. Non missing values will be handled by the dateTimeFormatter
+   */
   public void setPrintFormatter(DateTimeFormatter dateTimeFormatter) {
     Preconditions.checkNotNull(dateTimeFormatter);
     this.printFormatter = new DateColumnFormatter(dateTimeFormatter);
+  }
+
+  /** Sets the print formatter to the argument */
+  public void setPrintFormatter(@Nonnull DateColumnFormatter dateColumnFormatter) {
+    Preconditions.checkNotNull(dateColumnFormatter);
+    this.printFormatter = dateColumnFormatter;
   }
 
   @Override
@@ -365,7 +381,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   @Override
   public DateColumn appendCell(String string) {
-    return appendInternal(PackedLocalDate.pack(DateColumnType.DEFAULT_PARSER.parse(string)));
+    return appendInternal(PackedLocalDate.pack(parser().parse(string)));
   }
 
   @Override
@@ -461,6 +477,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return bottom;
   }
 
+  @Override
   public IntIterator intIterator() {
     return data.iterator();
   }

@@ -69,8 +69,8 @@ public class DateParser extends AbstractColumnParser<LocalDate> {
     if (readOptions.locale() != null) {
       locale = readOptions.locale();
     }
-    if (readOptions.missingValueIndicator() != null) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
+    if (readOptions.missingValueIndicators().length > 0) {
+      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
     }
   }
 

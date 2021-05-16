@@ -27,6 +27,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.FileReader;
+import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.ReaderRegistry;
 import tech.tablesaw.io.Source;
 
@@ -54,23 +55,32 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
    * Determines column types if not provided by the user Reads all input into memory unless File was
    * provided
    */
-  private Pair<Reader, ColumnType[]> getReaderAndColumnTypes(Source source, CsvReadOptions options)
-      throws IOException {
-    ColumnType[] types = options.columnTypes();
+  private Pair<Reader, ReadOptions.ColumnTypeReadOptions> getReaderAndColumnTypes(
+      Source source, CsvReadOptions options) throws IOException {
+    ReadOptions.ColumnTypeReadOptions columnTypeReadOptions = options.columnTypeReadOptions();
     byte[] bytesCache = null;
 
-    if (types == null) {
-      Reader reader = source.createReader(bytesCache);
+    boolean need2ParseFile =
+        !columnTypeReadOptions.hasColumnTypeForAllColumns()
+            && (!options.header()
+                || !columnTypeReadOptions.hasColumnTypeForAllColumnsIfHavingColumnNames());
+    if (need2ParseFile) {
+      Reader reader = source.createReader(null);
       if (source.file() == null) {
         String s = CharStreams.toString(reader);
         bytesCache = source.getCharset() != null ? s.getBytes(source.getCharset()) : s.getBytes();
         // create a new reader since we just exhausted the existing one
         reader = source.createReader(bytesCache);
       }
-      types = detectColumnTypes(reader, options);
+      ColumnType[] detectedColumnTypes = detectColumnTypes(reader, options);
+      // If no columns where returned from detectColumnTypes leave initial options (that's the case
+      // for only header present)
+      if (detectedColumnTypes.length > 0) {
+        columnTypeReadOptions = ReadOptions.ColumnTypeReadOptions.of(detectedColumnTypes);
+      }
     }
 
-    return Pair.create(source.createReader(bytesCache), types);
+    return Pair.create(source.createReader(bytesCache), columnTypeReadOptions);
   }
 
   public Table read(CsvReadOptions options) throws IOException {
@@ -78,14 +88,16 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
   }
 
   private Table read(CsvReadOptions options, boolean headerOnly) throws IOException {
-    Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options.source(), options);
+    Pair<Reader, ReadOptions.ColumnTypeReadOptions> pair =
+        getReaderAndColumnTypes(options.source(), options);
     Reader reader = pair.getKey();
-    ColumnType[] types = pair.getValue();
+    ReadOptions.ColumnTypeReadOptions columnTypeReadOptions = pair.getValue();
 
     AbstractParser<?> parser = csvParser(options);
 
     try {
-      return parseRows(options, headerOnly, reader, types, parser, options.sampleSize());
+      return parseRows(
+          options, headerOnly, reader, columnTypeReadOptions, parser, options.sampleSize());
     } finally {
       if (options.source().reader() == null) {
         // if we get a reader back from options it means the client opened it, so let the client
@@ -133,12 +145,15 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
    */
   protected ColumnType[] detectColumnTypes(Reader reader, CsvReadOptions options) {
     boolean header = options.header();
-    int linesToSkip = header ? 1 : 0;
-
     CsvParser parser = csvParser(options);
 
     try {
-      return getColumnTypes(reader, options, linesToSkip, parser);
+      String[] columnNames = null;
+      if (header) {
+        parser.beginParsing(reader);
+        columnNames = getColumnNames(options, options.columnTypeReadOptions(), parser);
+      }
+      return getColumnTypes(reader, options, 0, parser, columnNames);
     } finally {
       parser.stopParsing();
       // we don't close the reader since we didn't create it

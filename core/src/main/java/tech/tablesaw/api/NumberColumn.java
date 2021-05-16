@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.function.DoublePredicate;
 import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
@@ -22,8 +23,8 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
         return Double.compare(f1, f2);
       };
 
-  protected NumberColumn(final ColumnType type, final String name) {
-    super(type, name);
+  protected NumberColumn(final ColumnType type, final String name, AbstractColumnParser<T> parser) {
+    super(type, name, parser);
   }
 
   protected abstract C createCol(final String name, int size);
@@ -52,10 +53,12 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     return this;
   }
 
+  @Override
   public void setPrintFormatter(final NumberFormat format, final String missingValueString) {
     this.printFormatter = new NumberColumnFormatter(format, missingValueString);
   }
 
+  @Override
   public void setPrintFormatter(final NumberColumnFormatter formatter) {
     this.printFormatter = formatter;
   }
@@ -109,6 +112,7 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     return column;
   }
 
+  @Override
   public abstract C copy();
 
   /**

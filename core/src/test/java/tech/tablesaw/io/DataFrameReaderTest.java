@@ -26,7 +26,8 @@ class DataFrameReaderTest {
   }
 
   private URL mockUrlHelper(String url, List<String> content) throws Exception {
-    Path path = mockFileHelper(url, content);
+    // Remove http:// part to be able to save to a local filesystem file
+    Path path = mockFileHelper(url.replace("http://", ""), content);
     return path.toUri().toURL();
   }
 
@@ -40,7 +41,7 @@ class DataFrameReaderTest {
 
   @Test
   public void csv() throws IOException {
-    Path path = mockFileHelper("/data/file.csv", ImmutableList.of("region", "canada", "us"));
+    Path path = mockFileHelper("data/file.csv", ImmutableList.of("region", "canada", "us"));
     Table expected = Table.create(StringColumn.create("region", new String[] {"canada", "us"}));
     Table actual = Table.read().csv(Files.newInputStream(path));
     assertEquals(expected.columnNames(), actual.columnNames());
