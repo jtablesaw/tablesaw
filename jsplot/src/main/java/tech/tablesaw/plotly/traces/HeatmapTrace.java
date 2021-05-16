@@ -82,7 +82,6 @@ public class HeatmapTrace extends AbstractTrace {
       xWithoutMissingValue[xPos] = x[xOriginalIdx];
       xPos++;
     }
-    System.out.println(Arrays.toString(xWithoutMissingValue));
     return new HeatmapBuilder(xWithoutMissingValue, yWithoutMissingValue, zWithoutMissingValue);
   }
 

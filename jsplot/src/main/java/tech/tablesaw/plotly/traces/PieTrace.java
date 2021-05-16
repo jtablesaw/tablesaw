@@ -59,16 +59,8 @@ public class PieTrace extends AbstractTrace {
   public static PieBuilder builder(Object[] labels, double[] values) {
     AtomicInteger counter = new AtomicInteger(0);
     boolean[] keep = Utils.filterMissing(counter, labels);
-    Object[] labelsWithoutMissingValue = new Object[counter.get()];
-    double[] valuesWithoutMissingValue = new double[counter.get()];
-    int i = 0;
-    for (int j = 0; j < keep.length; j++) {
-      if (keep[j]) {
-        labelsWithoutMissingValue[i] = labels[j];
-        valuesWithoutMissingValue[i] = values[j];
-        i++;
-      }
-    }
+    Object[] labelsWithoutMissingValue = Utils.filterArray(labels, counter, keep);
+    double[] valuesWithoutMissingValue = Utils.filterArray(values, counter, keep);
     return new PieBuilder(labelsWithoutMissingValue, valuesWithoutMissingValue);
   }
 

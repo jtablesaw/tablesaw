@@ -1,10 +1,14 @@
 package tech.tablesaw.plotly;
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.plotly.traces.BarTrace;
+import tech.tablesaw.plotly.traces.TraceBuilder;
 
 public class Utils {
 
@@ -58,9 +62,9 @@ public class Utils {
   }
 
   /**
-   * Returns a list of column without missing value
+   * Returns a array of column without missing value
    *
-   * @param columns a list of columns that may contain missing value
+   * @param columns a array of columns that may contain missing value
    */
   public static Column<?>[] filterMissing(Column<?>... columns) {
     int n = columns[0].size();
@@ -84,11 +88,11 @@ public class Utils {
   }
 
   /**
-   * Returns a boolean list indicating whether the corresponding place should be kept after missing
+   * Returns a boolean array indicating whether the corresponding place should be kept after missing
    * value removal
    *
    * @param counter a AtomicInteger initialized with 0, to record the number of non-missing value
-   * @param args a list of Object that may contains missing value
+   * @param args a array of Object that may contains missing value
    */
   public static boolean[] filterMissing(AtomicInteger counter, Object[]... args) {
     int n = args[0].length;
@@ -104,5 +108,45 @@ public class Utils {
       if (keep[i]) counter.incrementAndGet();
     }
     return keep;
+  }
+
+  /**
+   * Returns an Object array after missing value removal
+   *
+   * @param x an Object array contains missing value
+   * @param counter a AtomicInteger that record the number of non-missing value
+   * @param keep a boolean array indicating whether the corresponding place should be kept after missing
+   *             value removal
+   */
+  public static Object[] filterArray(Object[] x, AtomicInteger counter, boolean[] keep) {
+    Object[] xWithoutMissingValue = new Object[counter.get()];
+    int i = 0;
+    for (int j = 0; j < keep.length; j++) {
+      if (keep[j]) {
+        xWithoutMissingValue[i] = x[j];
+        i++;
+      }
+    }
+    return xWithoutMissingValue;
+  }
+
+  /**
+   * Returns a double array after missing value removal
+   *
+   * @param y a double array before missing value removal
+   * @param counter a AtomicInteger that record the number of non-missing value
+   * @param keep a boolean array indicating whether the corresponding place should be kept after missing
+   *             value removal
+   */
+  public static double[] filterArray(double[] y, AtomicInteger counter, boolean[] keep) {
+    double[] yWithoutMissingValue = new double[counter.get()];
+    int i = 0;
+    for (int j = 0; j < keep.length; j++) {
+      if (keep[j]) {
+        yWithoutMissingValue[i] = y[j];
+        i++;
+      }
+    }
+    return yWithoutMissingValue;
   }
 }

@@ -34,16 +34,8 @@ public class BarTrace extends AbstractTrace {
   public static BarBuilder builder(Object[] x, double[] y) {
     AtomicInteger counter = new AtomicInteger(0);
     boolean[] keep = Utils.filterMissing(counter, x);
-    Object[] xWithoutMissingValue = new Object[counter.get()];
-    double[] yWithoutMissingValue = new double[counter.get()];
-    int i = 0;
-    for (int j = 0; j < keep.length; j++) {
-      if (keep[j]) {
-        xWithoutMissingValue[i] = x[j];
-        yWithoutMissingValue[i] = y[j];
-        i++;
-      }
-    }
+    Object[] xWithoutMissingValue = Utils.filterArray(x, counter, keep);
+    double[] yWithoutMissingValue = Utils.filterArray(y, counter, keep);
     return new BarBuilder(xWithoutMissingValue, yWithoutMissingValue);
   }
 
