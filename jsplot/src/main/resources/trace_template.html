@@ -86,4 +86,10 @@ fillcolor: '{{fillColor}}',
 {% endif %}
 type: '{{type}}',
 name: '{{name}}',
+{% if box is not null %}
+box: {{box}},
+{% endif %}
+{% if meanLine is not null %}
+meanline: {{meanLine}},
+{% endif %}
 };
