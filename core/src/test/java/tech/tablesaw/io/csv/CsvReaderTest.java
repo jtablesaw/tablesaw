@@ -858,7 +858,7 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void skipRowsWithInvalidColumnCountWithoutHeader() throws IOException {
+  public void skipRowsWithInvalidColumnCountWithoutHeader() {
     assertThrows(
         AddCellToColumnException.class,
         () -> {
@@ -869,6 +869,28 @@ public class CsvReaderTest {
                       .skipRowsWithInvalidColumnCount(true)
                       .build());
         });
+  }
+
+  @Test
+  public void testAutoFillMissingColumn() throws IOException {
+    Table table =
+        Table.read()
+            .csv(
+                CsvReadOptions.builder("../data/short_row.csv")
+                    .autoFillMissingColumn(true)
+                    .build());
+    assertEquals(3, table.rowCount());
+  }
+
+  @Test
+  public void testAutoFillMissingColumn2() throws IOException {
+    Table table =
+        Table.read()
+            .csv(
+                CsvReadOptions.builder("../data/short_row2.csv")
+                    .autoFillMissingColumn(true)
+                    .build());
+    assertEquals(4, table.rowCount());
   }
 
   @Test

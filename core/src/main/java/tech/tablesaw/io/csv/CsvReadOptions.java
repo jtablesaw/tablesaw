@@ -379,5 +379,11 @@ public class CsvReadOptions extends ReadOptions {
       super.skipRowsWithInvalidColumnCount(skipRowsWithInvalidColumnCount);
       return this;
     }
+
+    @Override
+    public Builder autoFillMissingColumn(boolean autoFillMissingColumn) {
+      super.autoFillMissingColumn(autoFillMissingColumn);
+      return this;
+    }
   }
 }

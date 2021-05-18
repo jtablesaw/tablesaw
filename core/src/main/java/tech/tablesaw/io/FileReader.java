@@ -7,14 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 import com.univocity.parsers.common.AbstractParser;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.tablesaw.api.ColumnType;
@@ -231,7 +224,9 @@ public abstract class FileReader {
         continue;
       }
       if (nextLine.length < types.length) {
-        if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
+        if (options.autoFillMissingColumn()) {
+          nextLine = Arrays.copyOf(nextLine, types.length);
+        } else if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
           logger.error("Warning: Invalid file. Row " + rowNumber + " is empty. Continuing.");
           continue;
         } else {

@@ -49,6 +49,7 @@ public class ReadOptions {
 
   public static final boolean DEFAULT_IGNORE_ZERO_DECIMAL = true;
   public static final boolean DEFAULT_SKIP_ROWS_WITH_INVALID_COLUMN_COUNT = false;
+  public static final boolean DEFAULT_AUTO_FILL_MISSING_COLUMN = false;
 
   private static final List<ColumnType> DEFAULT_TYPES =
       Lists.newArrayList(
@@ -88,6 +89,7 @@ public class ReadOptions {
   protected final boolean ignoreZeroDecimal;
   protected final boolean allowDuplicateColumnNames;
   protected final boolean skipRowsWithInvalidColumnCount;
+  protected final boolean autoFillMissingColumn;
 
   protected final DateTimeFormatter dateFormatter;
   protected final DateTimeFormatter dateTimeFormatter;
@@ -111,6 +113,7 @@ public class ReadOptions {
     maxCharsPerColumn = builder.maxCharsPerColumn;
     ignoreZeroDecimal = builder.ignoreZeroDecimal;
     skipRowsWithInvalidColumnCount = builder.skipRowsWithInvalidColumnCount;
+    autoFillMissingColumn = builder.autoFillMissingColumn;
 
     dateFormatter = builder.dateFormatter;
     timeFormatter = builder.timeFormatter;
@@ -174,6 +177,10 @@ public class ReadOptions {
     return skipRowsWithInvalidColumnCount;
   }
 
+  public boolean autoFillMissingColumn() {
+    return autoFillMissingColumn;
+  }
+
   public DateTimeFormatter dateTimeFormatter() {
     if (dateTimeFormatter != null) {
       return dateTimeFormatter;
@@ -228,6 +235,7 @@ public class ReadOptions {
     protected int maxCharsPerColumn = 4096;
     protected boolean ignoreZeroDecimal = DEFAULT_IGNORE_ZERO_DECIMAL;
     protected boolean skipRowsWithInvalidColumnCount = DEFAULT_SKIP_ROWS_WITH_INVALID_COLUMN_COUNT;
+    protected boolean autoFillMissingColumn = DEFAULT_AUTO_FILL_MISSING_COLUMN;
     private boolean allowDuplicateColumnNames = false;
     protected ColumnType[] columnTypes;
     protected Map<String, ColumnType> columnTypeMap = new HashMap<>();
@@ -331,9 +339,18 @@ public class ReadOptions {
       return this;
     }
 
-    /** Skip the rows with invalid column count in data values. Defaluts to {@code false}. */
+    /** Skip the rows with invalid column count in data values. Defaults to {@code false}. */
     public Builder skipRowsWithInvalidColumnCount(boolean skipRowsWithInvalidColumnCount) {
       this.skipRowsWithInvalidColumnCount = skipRowsWithInvalidColumnCount;
+      return this;
+    }
+
+    /**
+     * Auto fill the missing column when import file with columns of different sizes. Defaults to
+     * {@code false}.
+     */
+    public Builder autoFillMissingColumn(boolean autoFillMissingColumn) {
+      this.autoFillMissingColumn = autoFillMissingColumn;
       return this;
     }
 
