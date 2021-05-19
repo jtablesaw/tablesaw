@@ -8,9 +8,11 @@ import java.io.Writer;
 public class WriteOptions {
 
   protected final Destination dest;
+  protected final boolean autoClose;
 
   protected WriteOptions(Builder builder) {
     this.dest = builder.dest;
+    this.autoClose = builder.autoClose;
   }
 
   public Destination destination() {
@@ -20,6 +22,7 @@ public class WriteOptions {
   public static class Builder {
 
     protected Destination dest;
+    protected boolean autoClose = true;
 
     protected Builder(Destination dest) {
       this.dest = dest;
@@ -27,10 +30,12 @@ public class WriteOptions {
 
     protected Builder(OutputStream dest) {
       this.dest = new Destination(dest);
+      this.autoClose = false;
     }
 
     protected Builder(Writer dest) {
       this.dest = new Destination(dest);
+      this.autoClose = false;
     }
 
     protected Builder(File dest) throws IOException {
