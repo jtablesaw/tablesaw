@@ -1266,6 +1266,46 @@ public class DataFrameJoinerTest {
   }
 
   @Test
+  public void leftOuterJoinOnAgeMoveInDateKeepAllJoinKeyColumns() {
+    Table table1 = createANIMALHOMES();
+    Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    Table joined =
+        table1.joinOn("Age", "MoveInDate").leftOuter(table2, true, true, "Age", "MoveInDate");
+    assertEquals(10, joined.columnCount());
+    assertEquals(9, joined.rowCount());
+  }
+
+  @Test
+  public void rightOuterJoinOnAgeMoveInDateKeepAllJoinKeyColumns() {
+    Table table1 = createANIMALHOMES();
+    Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    Table joined =
+        table1.joinOn("Age", "MoveInDate").rightOuter(table2, true, true, "Age", "MoveInDate");
+    assertEquals(10, joined.columnCount());
+    assertEquals(6, joined.rowCount());
+  }
+
+  @Test
+  public void fullOuterJoinOnAgeMoveInDateKeepAllJoinKeyColumns() {
+    Table table1 = createANIMALHOMES();
+    Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    Table joined =
+        table1.joinOn("Age", "MoveInDate").fullOuter(table2, true, true, "Age", "MoveInDate");
+    assertEquals(10, joined.columnCount());
+    assertEquals(12, joined.rowCount());
+  }
+
+  @Test
+  public void innerJoinOnNameHomeAgeKeepAllJoinKeyColumns() {
+    Table table1 = createANIMALHOMES();
+    Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    Table joined =
+        table1.joinOn("Name", "Home", "Age").inner(table2, true, true, "Name", "Home", "Age");
+    assertEquals(10, joined.columnCount());
+    assertEquals(1, joined.rowCount());
+  }
+
+  @Test
   public void rightOuterJoinOnAgeMoveInDate() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
