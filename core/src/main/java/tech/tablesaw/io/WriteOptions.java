@@ -22,7 +22,7 @@ public class WriteOptions {
   public static class Builder {
 
     protected Destination dest;
-    protected boolean autoClose = true;
+    protected boolean autoClose = false;
 
     protected Builder(Destination dest) {
       this.dest = dest;
@@ -30,16 +30,15 @@ public class WriteOptions {
 
     protected Builder(OutputStream dest) {
       this.dest = new Destination(dest);
-      this.autoClose = false;
     }
 
     protected Builder(Writer dest) {
       this.dest = new Destination(dest);
-      this.autoClose = false;
     }
 
     protected Builder(File dest) throws IOException {
       this.dest = new Destination(dest);
+      this.autoClose = true;
     }
   }
 }
