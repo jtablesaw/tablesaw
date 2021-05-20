@@ -565,7 +565,12 @@ public class DataFrameJoiner {
     for (Table table2 : tables) {
       joined =
           joinInternal(
-              joined, table2, JoinType.LEFT_OUTER, allowDuplicateColumnNames, joinColumnNames);
+              joined,
+              table2,
+              JoinType.LEFT_OUTER,
+              allowDuplicateColumnNames,
+              false,
+              joinColumnNames);
     }
     return joined;
   }
@@ -666,7 +671,12 @@ public class DataFrameJoiner {
     for (Table table2 : tables) {
       joined =
           joinInternal(
-              joined, table2, JoinType.RIGHT_OUTER, allowDuplicateColumnNames, joinColumnNames);
+              joined,
+              table2,
+              JoinType.RIGHT_OUTER,
+              allowDuplicateColumnNames,
+              false,
+              joinColumnNames);
       joinColumnIndexes.clear();
       joinColumnIndexes.addAll(getJoinIndexes(joined, joinColumnNames));
     }
