@@ -83,10 +83,11 @@ public class DataFrameWriterTest {
     // cannot access the status of osw directly, so write again to test whether it close
     try {
       table.write().csv(osw);
+      output = baos.toString();
       assertEquals(
           "v,v2" + LINE_END + "1.0,1.0" + LINE_END + "2.0,2.0" + LINE_END + "," + LINE_END + "v,v2"
               + LINE_END + "1.0,1.0" + LINE_END + "2.0,2.0" + LINE_END + "," + LINE_END + "",
-          baos.toString());
+          output);
     } catch (Exception e) {
       fail(e);
     }
