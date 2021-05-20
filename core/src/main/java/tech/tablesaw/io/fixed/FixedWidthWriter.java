@@ -65,7 +65,7 @@ public final class FixedWidthWriter implements DataWriter<FixedWidthWriteOptions
     } finally {
       if (fixedWidthWriter != null) {
         fixedWidthWriter.flush();
-        fixedWidthWriter.close();
+        if (options.autoClose()) fixedWidthWriter.close();
       }
     }
   }
