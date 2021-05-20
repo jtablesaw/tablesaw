@@ -905,6 +905,7 @@ public class DataFrameJoinerTest {
     assert (joined
         .columnNames()
         .containsAll(Arrays.asList("T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear")));
+    System.out.println(joined.printAll());
     assertEquals(16, joined.columnCount());
     assertEquals(14, joined.rowCount());
   }
@@ -1436,6 +1437,46 @@ public class DataFrameJoinerTest {
     Table joined = table1.joinOn("Age", "MoveInDate").leftOuter(true, table2);
     assertEquals(8, joined.columnCount());
     assertEquals(9, joined.rowCount());
+  }
+
+  @Test
+  public void leftOuterJoinOnAgeMoveInDateKeepAllJoinKeyColumns() {
+    Table table1 = createANIMALHOMES();
+    Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    Table joined =
+        table1.joinOn("Age", "MoveInDate").leftOuter(table2, true, true, "Age", "MoveInDate");
+    assertEquals(10, joined.columnCount());
+    assertEquals(9, joined.rowCount());
+  }
+
+  @Test
+  public void rightOuterJoinOnAgeMoveInDateKeepAllJoinKeyColumns() {
+    Table table1 = createANIMALHOMES();
+    Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    Table joined =
+        table1.joinOn("Age", "MoveInDate").rightOuter(table2, true, true, "Age", "MoveInDate");
+    assertEquals(10, joined.columnCount());
+    assertEquals(6, joined.rowCount());
+  }
+
+  @Test
+  public void fullOuterJoinOnAgeMoveInDateKeepAllJoinKeyColumns() {
+    Table table1 = createANIMALHOMES();
+    Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    Table joined =
+        table1.joinOn("Age", "MoveInDate").fullOuter(table2, true, true, "Age", "MoveInDate");
+    assertEquals(10, joined.columnCount());
+    assertEquals(12, joined.rowCount());
+  }
+
+  @Test
+  public void innerJoinOnNameHomeAgeKeepAllJoinKeyColumns() {
+    Table table1 = createANIMALHOMES();
+    Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    Table joined =
+        table1.joinOn("Name", "Home", "Age").inner(table2, true, true, "Name", "Home", "Age");
+    assertEquals(10, joined.columnCount());
+    assertEquals(1, joined.rowCount());
   }
 
   @Test
