@@ -97,6 +97,9 @@ public final class FixedWidthWriter implements DataWriter<FixedWidthWriteOptions
 
   protected FixedWidthWriterSettings fixedWidthWriterSettings(FixedWidthWriteOptions options) {
     FixedWidthWriterSettings settings = new FixedWidthWriterSettings();
+    if (options.columnSpecs() != null) {
+      settings = new FixedWidthWriterSettings(options.columnSpecs());
+    }
 
     if (options.autoConfigurationEnabled()) {
       settings.setAutoConfigurationEnabled(options.autoConfigurationEnabled());
