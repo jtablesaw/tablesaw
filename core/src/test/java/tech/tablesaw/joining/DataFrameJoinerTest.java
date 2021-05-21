@@ -1440,7 +1440,7 @@ public class DataFrameJoinerTest {
   }
 
   @Test
-  public void leftOuterJoinOnAgeMoveInDateKeepAllJoinKeyColumns() {
+  public void leftOuterJoin_keepAllJoinKeyColumns() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table joined =
@@ -1450,7 +1450,7 @@ public class DataFrameJoinerTest {
   }
 
   @Test
-  public void rightOuterJoinOnAgeMoveInDateKeepAllJoinKeyColumns() {
+  public void rightOuterJoin_keepAllJoinKeyColumns() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table joined =
@@ -1460,7 +1460,7 @@ public class DataFrameJoinerTest {
   }
 
   @Test
-  public void fullOuterJoinOnAgeMoveInDateKeepAllJoinKeyColumns() {
+  public void fullOuter_keepAllJoinKeyColumns() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table joined =
@@ -1470,7 +1470,7 @@ public class DataFrameJoinerTest {
   }
 
   @Test
-  public void innerJoinOnNameHomeAgeKeepAllJoinKeyColumns() {
+  public void innerJoin_keepAllJoinKeyColumns() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table joined =
