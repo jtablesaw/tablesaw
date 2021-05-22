@@ -1,6 +1,8 @@
 package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
@@ -24,9 +26,14 @@ public class DoubleParser extends AbstractColumnParser<Double> {
       return true;
     }
     try {
-      Double.parseDouble(AbstractColumnParser.remove(s, ','));
+      if (isPercent(AbstractColumnParser.remove(s, ','))) {
+        s = AbstractColumnParser.remove(s, ',');
+        Number number = NumberFormat.getPercentInstance().parse(s);
+      } else {
+        Double.parseDouble(AbstractColumnParser.remove(s, ','));
+      }
       return true;
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException | ParseException e) {
       // it's all part of the plan
       return false;
     }
@@ -42,6 +49,14 @@ public class DoubleParser extends AbstractColumnParser<Double> {
     if (isMissing(s)) {
       return DoubleColumnType.missingValueIndicator();
     }
+    if (isPercent(AbstractColumnParser.remove(s, ','))) {
+      s = AbstractColumnParser.remove(s, ',').substring(0, s.length() - 1);
+      return Double.parseDouble(s) / 100.0;
+    }
     return Double.parseDouble(AbstractColumnParser.remove(s, ','));
+  }
+
+  private boolean isPercent(String s) {
+    return s.charAt(s.length() - 1) == '%';
   }
 }
