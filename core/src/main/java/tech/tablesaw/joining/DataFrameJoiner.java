@@ -852,10 +852,8 @@ public class DataFrameJoiner {
       Set<Integer> ignoreColumns,
       boolean keepTable2JoinKeyColumns) {
     for (int c = 0; c < table1.columnCount() + table2.columnCount(); c++) {
-      if (!keepTable2JoinKeyColumns) {
-        if (ignoreColumns.contains(c)) {
-          continue;
-        }
+      if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
+        continue;
       }
       int table2Index = c - table1.columnCount();
       for (int r1 : table1Rows) {
@@ -884,10 +882,8 @@ public class DataFrameJoiner {
       Set<Integer> ignoreColumns,
       boolean keepTable2JoinKeyColumns) {
     for (int c = 0; c < destination.columnCount(); c++) {
-      if (!keepTable2JoinKeyColumns) {
-        if (ignoreColumns.contains(c)) {
-          continue;
-        }
+      if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
+        continue;
       }
       if (c < table1.columnCount()) {
         Column t1Col = table1.column(c);
