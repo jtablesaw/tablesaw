@@ -80,10 +80,10 @@ public class DataFrameJoiner {
    */
   public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
     Table joined = table;
-
     for (Table currT : tables) {
       joined =
-          joinInternal(joined, currT, JoinType.INNER, allowDuplicateColumnNames, joinColumnNames);
+          joinInternal(
+              joined, currT, JoinType.INNER, allowDuplicateColumnNames, false, joinColumnNames);
     }
     return joined;
   }
@@ -144,8 +144,33 @@ public class DataFrameJoiner {
    */
   public Table inner(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
     Table joinedTable;
-    joinedTable = joinInternal(table, table2, JoinType.INNER, allowDuplicateColumnNames, col2Names);
+    joinedTable =
+        joinInternal(table, table2, JoinType.INNER, allowDuplicateColumnNames, false, col2Names);
     return joinedTable;
+  }
+
+  /**
+   * Joins the joiner to the table2, using the given columns for the second table and returns the
+   * resulting table
+   *
+   * @param table2 The table to join with
+   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
+   *     the join column have the same name if {@code true} the join will succeed and duplicate
+   *     columns are renamed*
+   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
+   *     table1 if {@code true} the join will return all join key columns in both table, which may
+   *     have difference when there are null values
+   * @param col2Names The columns to join on. If a name refers to a double column, the join is
+   *     performed after rounding to integers.
+   * @return The resulting table
+   */
+  public Table inner(
+      Table table2,
+      boolean allowDuplicateColumnNames,
+      boolean keepAllJoinKeyColumns,
+      String... col2Names) {
+    return joinInternal(
+        table, table2, JoinType.INNER, allowDuplicateColumnNames, keepAllJoinKeyColumns, col2Names);
   }
 
   /**
@@ -157,6 +182,9 @@ public class DataFrameJoiner {
    * @param allowDuplicates if {@code false} the join will fail if any columns other than the join
    *     column have the same name if {@code true} the join will succeed and duplicate columns are
    *     renamed
+   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
+   *     table1 if {@code true} the join will return all join key columns in both table, which may
+   *     have difference when there are null values
    * @param table2JoinColumnNames The names of the columns in table2 to join on.
    * @return the joined table
    */
@@ -165,6 +193,7 @@ public class DataFrameJoiner {
       Table table2,
       JoinType joinType,
       boolean allowDuplicates,
+      boolean keepAllJoinKeyColumns,
       String... table2JoinColumnNames) {
 
     List<Integer> table2JoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
@@ -176,13 +205,21 @@ public class DataFrameJoiner {
     // keys.
     Set<Integer> resultIgnoreColIndexes =
         emptyTableFromColumns(
-            result, table1, table2, joinType, allowDuplicates, table2JoinColumnIndexes);
+            result,
+            table1,
+            table2,
+            joinType,
+            allowDuplicates,
+            table2JoinColumnIndexes,
+            keepAllJoinKeyColumns);
 
     validateIndexes(table1Indexes, table2Indexes);
     if (table1.rowCount() == 0 && (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
       // Handle special case of empty table here so it doesn't fall through to the behavior
       // that adds rows for full outer and right outer joins
-      result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+      if (!keepAllJoinKeyColumns) {
+        result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+      }
       return result;
     }
 
@@ -202,13 +239,21 @@ public class DataFrameJoiner {
         Selection table2Rows =
             createMultiColSelection(
                 table2, ri, table2Indexes, table2.rowCount(), table2JoinColumnIndexes);
-
-        crossProduct(result, table1, table2, table1Rows, table2Rows, resultIgnoreColIndexes);
+        crossProduct(
+            result,
+            table1,
+            table2,
+            table1Rows,
+            table2Rows,
+            resultIgnoreColIndexes,
+            keepAllJoinKeyColumns);
 
         table2DoneRows = table2DoneRows.or(table2Rows);
         if (table2DoneRows.size() == table2.rowCount()) {
           // Processed all the rows in table1 exit early.
-          result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          if (!keepAllJoinKeyColumns) {
+            result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          }
           return result;
         }
       }
@@ -227,18 +272,27 @@ public class DataFrameJoiner {
                 table1, ri, table2Indexes, table2.rowCount(), joinColumnIndexes);
         if ((joinType == JoinType.LEFT_OUTER || joinType == JoinType.FULL_OUTER)
             && table2Rows.isEmpty()) {
-          withMissingLeftJoin(result, table1, table1Rows, resultIgnoreColIndexes);
+          withMissingLeftJoin(
+              result, table1, table1Rows, resultIgnoreColIndexes, keepAllJoinKeyColumns);
         } else {
-          crossProduct(result, table1, table2, table1Rows, table2Rows, resultIgnoreColIndexes);
+          crossProduct(
+              result,
+              table1,
+              table2,
+              table1Rows,
+              table2Rows,
+              resultIgnoreColIndexes,
+              keepAllJoinKeyColumns);
         }
-
         table1DoneRows = table1DoneRows.or(table1Rows);
         if (joinType == JoinType.FULL_OUTER || joinType == JoinType.RIGHT_OUTER) {
           // Update done rows in table2 for full Outer.
           table2DoneRows = table2DoneRows.or(table2Rows);
         } else if (table1DoneRows.size() == table1.rowCount()) {
           // Processed all the rows in table1 exit early.
-          result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          if (!keepAllJoinKeyColumns) {
+            result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          }
           return result;
         }
       }
@@ -253,8 +307,11 @@ public class DataFrameJoiner {
         table2Rows,
         joinType,
         table2JoinColumnIndexes,
-        resultIgnoreColIndexes);
-    result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+        resultIgnoreColIndexes,
+        keepAllJoinKeyColumns);
+    if (!keepAllJoinKeyColumns) {
+      result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+    }
     return result;
   }
 
@@ -432,9 +489,43 @@ public class DataFrameJoiner {
     for (Table currT : tables) {
       joined =
           joinInternal(
-              joined, currT, JoinType.FULL_OUTER, allowDuplicateColumnNames, joinColumnNames);
+              joined,
+              currT,
+              JoinType.FULL_OUTER,
+              allowDuplicateColumnNames,
+              false,
+              joinColumnNames);
     }
     return joined;
+  }
+
+  /**
+   * Joins the joiner to the table2, using the given columns for the second table and returns the
+   * resulting table
+   *
+   * @param table2 The table to join with
+   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
+   *     the join column have the same name if {@code true} the join will succeed and duplicate
+   *     columns are renamed
+   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
+   *     table1 if {@code true} the join will return all join key columns in both table, which may
+   *     have difference when there are null values
+   * @param col2Names The columns to join on. If a name refers to a double column, the join is
+   *     performed after rounding to integers.
+   * @return The resulting table
+   */
+  public Table fullOuter(
+      Table table2,
+      boolean allowDuplicateColumnNames,
+      boolean keepAllJoinKeyColumns,
+      String... col2Names) {
+    return joinInternal(
+        table,
+        table2,
+        JoinType.FULL_OUTER,
+        allowDuplicateColumnNames,
+        keepAllJoinKeyColumns,
+        col2Names);
   }
 
   /**
@@ -447,7 +538,7 @@ public class DataFrameJoiner {
    * @return The resulting table
    */
   public Table fullOuter(Table table2, String col2Name) {
-    return joinInternal(table, table2, JoinType.FULL_OUTER, false, col2Name);
+    return joinInternal(table, table2, JoinType.FULL_OUTER, false, false, col2Name);
   }
 
   /**
@@ -474,7 +565,12 @@ public class DataFrameJoiner {
     for (Table table2 : tables) {
       joined =
           joinInternal(
-              joined, table2, JoinType.LEFT_OUTER, allowDuplicateColumnNames, joinColumnNames);
+              joined,
+              table2,
+              JoinType.LEFT_OUTER,
+              allowDuplicateColumnNames,
+              false,
+              joinColumnNames);
     }
     return joined;
   }
@@ -518,7 +614,37 @@ public class DataFrameJoiner {
    * @return The resulting table
    */
   public Table leftOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    return joinInternal(table, table2, JoinType.LEFT_OUTER, allowDuplicateColumnNames, col2Names);
+    return joinInternal(
+        table, table2, JoinType.LEFT_OUTER, allowDuplicateColumnNames, false, col2Names);
+  }
+
+  /**
+   * Joins the joiner to the table2, using the given columns for the second table and returns the
+   * resulting table
+   *
+   * @param table2 The table to join with
+   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
+   *     the join column have the same name if {@code true} the join will succeed and duplicate
+   *     columns are renamed
+   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
+   *     table1 if {@code true} the join will return all join key columns in both table, which may
+   *     have difference when there are null values
+   * @param col2Names The columns to join on. If a name refers to a double column, the join is
+   *     performed after rounding to integers.
+   * @return The resulting table
+   */
+  public Table leftOuter(
+      Table table2,
+      boolean allowDuplicateColumnNames,
+      boolean keepAllJoinKeyColumns,
+      String... col2Names) {
+    return joinInternal(
+        table,
+        table2,
+        JoinType.LEFT_OUTER,
+        allowDuplicateColumnNames,
+        keepAllJoinKeyColumns,
+        col2Names);
   }
 
   /**
@@ -545,7 +671,12 @@ public class DataFrameJoiner {
     for (Table table2 : tables) {
       joined =
           joinInternal(
-              joined, table2, JoinType.RIGHT_OUTER, allowDuplicateColumnNames, joinColumnNames);
+              joined,
+              table2,
+              JoinType.RIGHT_OUTER,
+              allowDuplicateColumnNames,
+              false,
+              joinColumnNames);
       joinColumnIndexes.clear();
       joinColumnIndexes.addAll(getJoinIndexes(joined, joinColumnNames));
     }
@@ -591,7 +722,37 @@ public class DataFrameJoiner {
    * @return The resulting table
    */
   public Table rightOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    return joinInternal(table, table2, JoinType.RIGHT_OUTER, allowDuplicateColumnNames, col2Names);
+    return joinInternal(
+        table, table2, JoinType.RIGHT_OUTER, allowDuplicateColumnNames, false, col2Names);
+  }
+
+  /**
+   * Joins the joiner to the table2, using the given columns for the second table and returns the
+   * resulting table
+   *
+   * @param table2 The table to join with
+   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
+   *     the join column have the same name if {@code true} the join will succeed and duplicate
+   *     columns are renamed
+   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
+   *     table1 if {@code true} the join will return all join key columns in both table, which may
+   *     have difference when there are null values
+   * @param col2Names The columns to join on. If a name refers to a double column, the join is
+   *     performed after rounding to integers.
+   * @return The resulting table
+   */
+  public Table rightOuter(
+      Table table2,
+      boolean allowDuplicateColumnNames,
+      boolean keepAllJoinKeyColumns,
+      String... col2Names) {
+    return joinInternal(
+        table,
+        table2,
+        JoinType.RIGHT_OUTER,
+        allowDuplicateColumnNames,
+        keepAllJoinKeyColumns,
+        col2Names);
   }
 
   /**
@@ -617,7 +778,8 @@ public class DataFrameJoiner {
       Table table2,
       JoinType joinType,
       boolean allowDuplicates,
-      List<Integer> table2JoinColumnIndexes) {
+      List<Integer> table2JoinColumnIndexes,
+      boolean keepTable2JoinKeyColumns) {
 
     Column<?>[] cols =
         Streams.concat(table1.columns().stream(), table2.columns().stream())
@@ -632,13 +794,17 @@ public class DataFrameJoiner {
     for (int c = 0; c < cols.length; c++) {
       if (joinType == JoinType.RIGHT_OUTER) {
         if (c < table1.columnCount() && joinColumnIndexes.contains(c)) {
-          cols[c].setName("Placeholder_" + ignoreColumns.size());
+          if (!keepTable2JoinKeyColumns) {
+            cols[c].setName("Placeholder_" + ignoreColumns.size());
+          }
           ignoreColumns.add(c);
         }
       } else {
         int table2Index = c - table1.columnCount();
         if (c >= table1.columnCount() && table2JoinColumnIndexes.contains(table2Index)) {
-          cols[c].setName("Placeholder_" + ignoreColumns.size());
+          if (!keepTable2JoinKeyColumns) {
+            cols[c].setName("Placeholder_" + ignoreColumns.size());
+          }
           ignoreColumns.add(c);
         }
       }
@@ -683,9 +849,10 @@ public class DataFrameJoiner {
       Table table2,
       Selection table1Rows,
       Selection table2Rows,
-      Set<Integer> ignoreColumns) {
+      Set<Integer> ignoreColumns,
+      boolean keepTable2JoinKeyColumns) {
     for (int c = 0; c < table1.columnCount() + table2.columnCount(); c++) {
-      if (ignoreColumns.contains(c)) {
+      if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
         continue;
       }
       int table2Index = c - table1.columnCount();
@@ -709,9 +876,13 @@ public class DataFrameJoiner {
    */
   @SuppressWarnings({"rawtypes", "unchecked"})
   private void withMissingLeftJoin(
-      Table destination, Table table1, Selection table1Rows, Set<Integer> ignoreColumns) {
+      Table destination,
+      Table table1,
+      Selection table1Rows,
+      Set<Integer> ignoreColumns,
+      boolean keepTable2JoinKeyColumns) {
     for (int c = 0; c < destination.columnCount(); c++) {
-      if (ignoreColumns.contains(c)) {
+      if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
         continue;
       }
       if (c < table1.columnCount()) {
@@ -739,7 +910,8 @@ public class DataFrameJoiner {
       Selection table2Rows,
       JoinType joinType,
       List<Integer> col2Indexes,
-      Set<Integer> ignoreColumns) {
+      Set<Integer> ignoreColumns,
+      boolean keepTable2JoinKeyColumns) {
 
     // Add index data from table2 into join column positions in table one.
     if (joinType == JoinType.FULL_OUTER) {
@@ -752,8 +924,10 @@ public class DataFrameJoiner {
     }
 
     for (int c = 0; c < destination.columnCount(); c++) {
-      if (ignoreColumns.contains(c) || joinColumnIndexes.contains(c)) {
-        continue;
+      if (!keepTable2JoinKeyColumns) {
+        if (ignoreColumns.contains(c) || joinColumnIndexes.contains(c)) {
+          continue;
+        }
       }
       if (c < table1ColCount) {
         for (int r1 = 0; r1 < table2Rows.size(); r1++) {
