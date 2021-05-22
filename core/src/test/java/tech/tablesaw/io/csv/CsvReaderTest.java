@@ -867,6 +867,7 @@ public class CsvReaderTest {
     assertEquals("1.32%", column.getString(0));
     assertEquals("32.77%", column.getString(1));
     assertEquals("100.00%", column.getString(2));
+  }
 
   @Test
   public void testSkipRowsWithInvalidColumnCount() throws IOException {
@@ -996,6 +997,5 @@ public class CsvReaderTest {
     ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
 
     assertArrayEquals(new ColumnType[] {SHORT, STRING}, columnTypes);
-
   }
 }
