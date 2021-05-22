@@ -17,7 +17,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   private final FloatArrayList data;
 
   private FloatColumn(String name, FloatArrayList data) {
-    super(FloatColumnType.instance(), name);
+    super(FloatColumnType.instance(), name, FloatColumnType.DEFAULT_PARSER);
     setPrintFormatter(NumberColumnFormatter.floatingPointDefault());
     this.data = data;
   }
@@ -189,6 +189,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
     return this;
   }
 
+  @Override
   public FloatColumn append(Float val) {
     if (val == null) {
       appendMissing();
@@ -342,7 +343,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   @Override
   public FloatColumn appendCell(final String value) {
     try {
-      return append(FloatColumnType.DEFAULT_PARSER.parseFloat(value));
+      return append(parser().parseFloat(value));
     } catch (final NumberFormatException e) {
       throw new NumberFormatException(
           "Error adding value to column " + name() + ": " + e.getMessage());

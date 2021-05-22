@@ -4,6 +4,7 @@ import static tech.tablesaw.api.ColumnType.SKIP;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Streams;
 import com.univocity.parsers.common.AbstractParser;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +28,25 @@ public abstract class FileReader {
   private static final int UNLIMITED_SAMPLE_SIZE = -1;
 
   /**
+   * @deprecated Use {@link #getColumnTypes(Reader, ReadOptions, int, AbstractParser, String[])} }
+   */
+  @Deprecated
+  public ColumnType[] getColumnTypes(
+      Reader reader, ReadOptions options, int linesToSkip, AbstractParser<?> parser) {
+    return getColumnTypes(reader, options, linesToSkip, parser, null);
+  }
+  /**
    * Returns an array containing the inferred columnTypes for the file being read, as calculated by
    * the ColumnType inference logic. These types may not be correct.
    */
   public ColumnType[] getColumnTypes(
-      Reader reader, ReadOptions options, int linesToSkip, AbstractParser<?> parser) {
+      Reader reader,
+      ReadOptions options,
+      int linesToSkip,
+      AbstractParser<?> parser,
+      String[] columnNames) {
 
-    parser.beginParsing(reader);
+    if (parser.getContext() == null) parser.beginParsing(reader);
 
     for (int i = 0; i < linesToSkip; i++) {
       parser.parseNext();
@@ -40,27 +54,40 @@ public abstract class FileReader {
 
     ColumnTypeDetector detector = new ColumnTypeDetector(options.columnTypesToDetect());
 
-    return detector.detectColumnTypes(
-        new Iterator<String[]>() {
+    ColumnType[] columnTypes =
+        detector.detectColumnTypes(
+            new Iterator<String[]>() {
 
-          String[] nextRow = parser.parseNext();
+              String[] nextRow = parser.parseNext();
 
-          @Override
-          public boolean hasNext() {
-            return nextRow != null;
-          }
+              @Override
+              public boolean hasNext() {
+                return nextRow != null;
+              }
 
-          @Override
-          public String[] next() {
-            if (!hasNext()) {
-              throw new NoSuchElementException();
-            }
-            String[] tmp = nextRow;
-            nextRow = parser.parseNext();
-            return tmp;
-          }
-        },
-        options);
+              @Override
+              public String[] next() {
+                if (!hasNext()) {
+                  throw new NoSuchElementException();
+                }
+                String[] tmp = nextRow;
+                nextRow = parser.parseNext();
+                return tmp;
+              }
+            },
+            options);
+
+    // If there are columnTypes configured by the user use them
+    for (int i = 0; i < columnTypes.length; i++) {
+      boolean hasColumnName = columnNames != null && i < columnNames.length;
+      Optional<ColumnType> configuredColumnType =
+          options.columnTypeReadOptions().columnType(i, hasColumnName ? columnNames[i] : null);
+      if (configuredColumnType.isPresent()) {
+        columnTypes[i] = configuredColumnType.get();
+      }
+    }
+
+    return columnTypes;
   }
 
   private String cleanName(String name) {
@@ -69,7 +96,9 @@ public abstract class FileReader {
 
   /** Returns the column names for each column in the source. */
   public String[] getColumnNames(
-      ReadOptions options, ColumnType[] types, AbstractParser<?> parser) {
+      ReadOptions options,
+      ReadOptions.ColumnTypeReadOptions columnTypeReadOptions,
+      AbstractParser<?> parser) {
 
     if (options.header()) {
 
@@ -89,8 +118,12 @@ public abstract class FileReader {
       return headerNames;
     } else {
       // Placeholder column names for when the file read has no header
-      String[] headerNames = new String[types.length];
-      for (int i = 0; i < types.length; i++) {
+      int columnCount =
+          columnTypeReadOptions.columnTypes() != null
+              ? columnTypeReadOptions.columnTypes().length
+              : 0;
+      String[] headerNames = new String[columnCount];
+      for (int i = 0; i < columnCount; i++) {
         headerNames[i] = "C" + i;
       }
       return headerNames;
@@ -123,22 +156,33 @@ public abstract class FileReader {
       ReadOptions options,
       boolean headerOnly,
       Reader reader,
-      ColumnType[] types,
+      ReadOptions.ColumnTypeReadOptions columnTypeReadOptions,
       AbstractParser<?> parser) {
-    return parseRows(options, headerOnly, reader, types, parser, UNLIMITED_SAMPLE_SIZE);
+    return parseRows(
+        options, headerOnly, reader, columnTypeReadOptions, parser, UNLIMITED_SAMPLE_SIZE);
   }
 
   protected Table parseRows(
       ReadOptions options,
       boolean headerOnly,
       Reader reader,
-      ColumnType[] types,
+      ReadOptions.ColumnTypeReadOptions columnTypeReadOptions,
       AbstractParser<?> parser,
       int sampleSize) {
     parser.beginParsing(reader);
     Table table = Table.create(options.tableName());
 
-    List<String> headerRow = Lists.newArrayList(getColumnNames(options, types, parser));
+    List<String> headerRow =
+        Lists.newArrayList(getColumnNames(options, columnTypeReadOptions, parser));
+
+    @SuppressWarnings({"UnstableApiUsage", "OptionalGetWithoutIsPresent"})
+    ColumnType[] types =
+        Streams.mapWithIndex(
+                headerRow.stream(),
+                (columnName, idx) -> columnTypeReadOptions.columnType((int) idx, columnName))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toArray(ColumnType[]::new);
 
     for (int x = 0; x < types.length; x++) {
       if (types[x] != SKIP) {
@@ -181,6 +225,11 @@ public abstract class FileReader {
         (nextLine = reader.parseNext()) != null;
         rowNumber++) {
       // validation
+      if (options.skipRowsWithInvalidColumnCount()
+          && options.header()
+          && nextLine.length != types.length) {
+        continue;
+      }
       if (nextLine.length < types.length) {
         if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
           logger.error("Warning: Invalid file. Row " + rowNumber + " is empty. Continuing.");

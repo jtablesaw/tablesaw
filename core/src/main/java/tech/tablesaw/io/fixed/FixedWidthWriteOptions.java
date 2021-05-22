@@ -217,7 +217,7 @@ public class FixedWidthWriteOptions extends WriteOptions {
       return this;
     }
 
-    public FixedWidthWriteOptions.Builder header(FixedWidthFields columnSpecs) {
+    public FixedWidthWriteOptions.Builder columnSpecs(FixedWidthFields columnSpecs) {
       this.columnSpecs = columnSpecs;
       return this;
     }

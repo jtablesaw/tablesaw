@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 
+import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.columns.strings.StringParser;
 import tech.tablesaw.selection.Selection;
 
 class StringColumnTest {
@@ -61,6 +64,35 @@ class StringColumnTest {
   void testAppendObj2() {
     final StringColumn sc = StringColumn.create("sc", Arrays.asList("a", "b", "c", "a"));
     assertArrayEquals(sc.asList().toArray(), sc.asObjectArray());
+  }
+
+  @Test
+  void appendAsterisk() {
+    final StringColumn sc = StringColumn.create("sc");
+    sc.append("*");
+    assertEquals(0, sc.countMissing());
+    StringParser parser = new StringParser(ColumnType.TEXT);
+    parser.setMissingValueStrings(new ArrayList<>());
+    sc.appendCell("*", parser);
+    assertEquals(0, sc.countMissing());
+    StringParser parser2 = new StringParser(ColumnType.TEXT);
+    parser2.setMissingValueStrings(Lists.newArrayList("45"));
+    sc.appendCell("45", parser2);
+    assertEquals(1, sc.countMissing());
+  }
+
+  @Test
+  public void testCustomParser() {
+    // Just do enough to ensure the parser is wired up correctly
+    final StringColumn sc = StringColumn.create("sc");
+    StringParser customParser = new StringParser(ColumnType.STRING);
+    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    sc.setParser(customParser);
+
+    sc.appendCell("not here");
+    assertTrue(sc.isMissing(sc.size() - 1));
+    sc.appendCell("*");
+    assertFalse(sc.isMissing(sc.size() - 1));
   }
 
   @Test

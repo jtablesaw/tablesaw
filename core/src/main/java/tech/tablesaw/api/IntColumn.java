@@ -19,7 +19,7 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   private final IntArrayList data;
 
   protected IntColumn(final String name, IntArrayList data) {
-    super(IntColumnType.instance(), name);
+    super(IntColumnType.instance(), name, IntColumnType.DEFAULT_PARSER);
     setPrintFormatter(NumberColumnFormatter.ints());
     this.data = data;
   }
@@ -179,6 +179,7 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
     return this;
   }
 
+  @Override
   public IntColumn append(Integer val) {
     if (val == null) {
       appendMissing();
@@ -353,7 +354,7 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   @Override
   public IntColumn appendCell(final String value) {
     try {
-      return append(IntColumnType.DEFAULT_PARSER.parseInt(value));
+      return append(parser().parseInt(value));
     } catch (final NumberFormatException e) {
       throw new NumberFormatException(
           "Error adding value to column " + name() + ": " + e.getMessage());
@@ -503,6 +504,7 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
     return result;
   }
 
+  @Override
   public IntColumn setMissing(int r) {
     set(r, IntColumnType.missingValueIndicator());
     return this;

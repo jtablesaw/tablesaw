@@ -21,6 +21,7 @@ import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCa
 
 import com.google.common.base.Joiner;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.columns.strings.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
 
@@ -107,6 +109,36 @@ public class TextColumnTest {
 
     Table joined = t1.joinOn("TIME").fullOuter(t2);
     assertEquals(3, joined.columnCount());
+  }
+
+  @Test
+  void appendCellAsterisk() {
+    final TextColumn sc = TextColumn.create("sc");
+    StringParser parser = new StringParser(ColumnType.TEXT);
+    parser.setMissingValueStrings(new ArrayList<>());
+    sc.appendCell("*", parser);
+    assertEquals(0, sc.countMissing());
+  }
+
+  @Test
+  void appendAsterisk() {
+    final TextColumn sc = TextColumn.create("sc");
+    sc.append("*");
+    assertEquals(0, sc.countMissing());
+  }
+
+  @Test
+  public void testCustomParser() {
+    // Just do enough to ensure the parser is wired up correctly
+    final TextColumn sc = TextColumn.create("sc");
+    StringParser customParser = new StringParser(ColumnType.TEXT);
+    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    sc.setParser(customParser);
+
+    sc.appendCell("not here");
+    assertTrue(sc.isMissing(sc.size() - 1));
+    sc.appendCell("*");
+    assertFalse(sc.isMissing(sc.size() - 1));
   }
 
   @Test

@@ -15,8 +15,8 @@ public class DoubleParser extends AbstractColumnParser<Double> {
 
   public DoubleParser(DoubleColumnType doubleColumnType, ReadOptions readOptions) {
     super(doubleColumnType);
-    if (readOptions.missingValueIndicator() != null) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
+    if (readOptions.missingValueIndicators().length > 0) {
+      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
     }
   }
 

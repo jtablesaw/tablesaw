@@ -8,6 +8,10 @@ import java.io.StringReader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.Source;
 
@@ -170,8 +174,8 @@ public class HtmlReadOptions extends ReadOptions {
     }
 
     @Override
-    public Builder missingValueIndicator(String missingValueIndicator) {
-      super.missingValueIndicator(missingValueIndicator);
+    public Builder missingValueIndicator(String... missingValueIndicators) {
+      super.missingValueIndicator(missingValueIndicators);
       return this;
     }
 
@@ -183,6 +187,30 @@ public class HtmlReadOptions extends ReadOptions {
 
     public Builder tableIndex(int tableIndex) {
       this.tableIndex = tableIndex;
+      return this;
+    }
+
+    @Override
+    public Builder columnTypes(ColumnType[] columnTypes) {
+      super.columnTypes(columnTypes);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypes(Function<String, ColumnType> columnTypeFunction) {
+      super.columnTypes(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypesPartial(Function<String, Optional<ColumnType>> columnTypeFunction) {
+      super.columnTypesPartial(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypesPartial(Map<String, ColumnType> columnTypeByName) {
+      super.columnTypesPartial(columnTypeByName);
       return this;
     }
   }

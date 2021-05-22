@@ -22,13 +22,14 @@ import java.io.Reader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.Source;
 
 public class FixedWidthReadOptions extends ReadOptions {
-
-  private final ColumnType[] columnTypes;
   private final FixedWidthFields columnSpecs;
   private final String lineEnding;
   private final char padding;
@@ -40,8 +41,6 @@ public class FixedWidthReadOptions extends ReadOptions {
 
   private FixedWidthReadOptions(FixedWidthReadOptions.Builder builder) {
     super(builder);
-
-    columnTypes = builder.columnTypes;
     columnSpecs = builder.columnSpecs;
     padding = builder.padding;
     lookupWildcard = builder.lookupWildcard;
@@ -86,7 +85,7 @@ public class FixedWidthReadOptions extends ReadOptions {
   }
 
   public ColumnType[] columnTypes() {
-    return columnTypes;
+    return columnTypeReadOptions.columnTypes();
   }
 
   public FixedWidthFields columnSpecs() {
@@ -130,7 +129,6 @@ public class FixedWidthReadOptions extends ReadOptions {
     protected boolean skipTrailingCharsUntilNewline = false;
     protected boolean recordEndsOnNewline = false;
     protected boolean skipInvalidRows = false;
-    protected ColumnType[] columnTypes;
     protected Integer maxNumberOfColumns = 10_000;
 
     protected Builder(Source source) {
@@ -198,8 +196,27 @@ public class FixedWidthReadOptions extends ReadOptions {
       return this;
     }
 
+    @Override
     public Builder columnTypes(ColumnType[] columnTypes) {
-      this.columnTypes = columnTypes;
+      super.columnTypes(columnTypes);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypes(Function<String, ColumnType> columnTypeFunction) {
+      super.columnTypes(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypesPartial(Function<String, Optional<ColumnType>> columnTypeFunction) {
+      super.columnTypesPartial(columnTypeFunction);
+      return this;
+    }
+
+    @Override
+    public Builder columnTypesPartial(Map<String, ColumnType> columnTypeByName) {
+      super.columnTypesPartial(columnTypeByName);
       return this;
     }
 
@@ -284,7 +301,7 @@ public class FixedWidthReadOptions extends ReadOptions {
     }
 
     @Override
-    public Builder missingValueIndicator(String missingValueIndicator) {
+    public Builder missingValueIndicator(String... missingValueIndicator) {
       super.missingValueIndicator(missingValueIndicator);
       return this;
     }

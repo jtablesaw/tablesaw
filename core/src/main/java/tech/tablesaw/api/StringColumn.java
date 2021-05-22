@@ -94,23 +94,23 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   }
 
   private StringColumn(String name, Collection<String> strings) {
-    super(StringColumnType.instance(), name);
+    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
     for (String string : strings) {
       append(string);
     }
   }
 
   private StringColumn(String name, DictionaryMap map) {
-    super(StringColumnType.instance(), name);
+    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
     lookupTable = map;
   }
 
   private StringColumn(String name) {
-    super(StringColumnType.instance(), name);
+    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
   }
 
   private StringColumn(String name, String[] strings) {
-    super(StringColumnType.instance(), name);
+    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
     for (String string : strings) {
       append(string);
     }
@@ -158,6 +158,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
    * @return value as String
    * @throws IndexOutOfBoundsException if the given rowIndex is not in the column
    */
+  @Override
   public String get(int rowIndex) {
     return lookupTable.getValueForIndex(rowIndex);
   }
@@ -234,11 +235,11 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
         if (i + n >= size()) {
           break;
         }
-        copy.appendCell(get(i));
+        copy.append(get(i));
       }
     } else {
       for (int i = -n; i < size(); i++) {
-        copy.appendCell(get(i));
+        copy.append(get(i));
       }
       for (int m = 0; m > n; m--) {
         copy.appendMissing();
@@ -317,7 +318,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
 
   @Override
   public StringColumn appendCell(String object) {
-    return appendCell(object, StringColumnType.DEFAULT_PARSER);
+    return appendCell(object, parser());
   }
 
   @Override
@@ -372,6 +373,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
     return DoubleColumn.create(this.name(), asDoubleArray());
   }
 
+  @Override
   public StringColumn where(Selection selection) {
     return subset(selection.toArray());
   }
@@ -441,6 +443,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   }
 
   /** Added for naming consistency with all other columns */
+  @Override
   public StringColumn append(String value) {
     try {
       lookupTable.append(value);

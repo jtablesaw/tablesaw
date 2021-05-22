@@ -1,13 +1,17 @@
 package tech.tablesaw.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.dates.DateColumnType;
+import tech.tablesaw.columns.dates.DateParser;
 
 public class DateColumnTest {
   private DateColumn column1;
@@ -36,6 +40,19 @@ public class DateColumnTest {
     LocalDate date = LocalDate.now();
     column1.append(date);
     assertEquals(5, column1.size());
+  }
+
+  @Test
+  public void testCustomParser() {
+    // Just do enough to ensure the parser is wired up correctly
+    DateParser customParser = new DateParser(ColumnType.LOCAL_DATE);
+    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    column1.setParser(customParser);
+
+    column1.appendCell("not here");
+    assertTrue(column1.isMissing(column1.size() - 1));
+    column1.appendCell("2013-10-23");
+    assertFalse(column1.isMissing(column1.size() - 1));
   }
 
   @Test

@@ -23,11 +23,13 @@ import java.nio.ByteBuffer;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.times.TimeColumnType;
+import tech.tablesaw.columns.times.TimeParser;
 import tech.tablesaw.selection.Selection;
 
 public class TimeColumnTest {
@@ -126,6 +128,19 @@ public class TimeColumnTest {
     column1.appendCell("14:00:00");
     column1.appendCell("18:15:30");
     assertEquals(4, column1.size());
+  }
+
+  @Test
+  public void testCustomParser() {
+    // Just do enough to ensure the parser is wired up correctly
+    TimeParser customParser = new TimeParser(ColumnType.LOCAL_TIME);
+    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    column1.setParser(customParser);
+
+    column1.appendCell("not here");
+    assertTrue(column1.isMissing(column1.size() - 1));
+    column1.appendCell("10:15:30");
+    assertFalse(column1.isMissing(column1.size() - 1));
   }
 
   @Test
@@ -414,11 +429,11 @@ public class TimeColumnTest {
 
   @Test
   public void testAppendObjLocalTime() {
-    LocalTime localTime = LocalTime.of(9,10,42);
+    LocalTime localTime = LocalTime.of(9, 10, 42);
     TimeColumn returned = column1.appendObj(localTime);
     assertEquals(column1, returned);
     assertEquals(1, returned.size());
-    assertEquals(LocalTime.of(9,10,42), returned.get(0));
+    assertEquals(LocalTime.of(9, 10, 42), returned.get(0));
   }
 
   @Test
@@ -427,7 +442,7 @@ public class TimeColumnTest {
     TimeColumn returned = column1.appendObj(time);
     assertEquals(column1, returned);
     assertEquals(1, returned.size());
-    assertEquals(LocalTime.of(9,10,42), returned.get(0));
+    assertEquals(LocalTime.of(9, 10, 42), returned.get(0));
   }
 
   @Test

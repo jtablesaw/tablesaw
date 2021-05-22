@@ -70,7 +70,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   private BooleanFormatter formatter = new BooleanFormatter("true", "false", "");
 
   private BooleanColumn(String name, ByteArrayList values) {
-    super(BooleanColumnType.instance(), name);
+    super(BooleanColumnType.instance(), name, BooleanColumnType.DEFAULT_PARSER);
     data = values;
   }
 
@@ -304,7 +304,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   @Override
   public BooleanColumn appendCell(String object) {
-    return append(BooleanColumnType.DEFAULT_PARSER.parseByte(object));
+    return append(parser().parseByte(object));
   }
 
   @Override
@@ -392,6 +392,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return countTrue() == 0;
   }
 
+  @Override
   public Selection isFalse() {
     Selection results = new BitmapBackedSelection();
     int i = 0;
@@ -404,6 +405,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return results;
   }
 
+  @Override
   public Selection isTrue() {
     Selection results = new BitmapBackedSelection();
     int i = 0;
@@ -416,6 +418,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return results;
   }
 
+  @Override
   public Selection isEqualTo(BooleanColumn other) {
     Selection results = new BitmapBackedSelection();
     int i = 0;
@@ -539,6 +542,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return this;
   }
 
+  @Override
   public Selection asSelection() {
     Selection selection = new BitmapBackedSelection();
     for (int i = 0; i < size(); i++) {

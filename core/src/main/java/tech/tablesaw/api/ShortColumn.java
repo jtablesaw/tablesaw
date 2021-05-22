@@ -27,7 +27,7 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
   private final ShortArrayList data;
 
   protected ShortColumn(final String name, ShortArrayList data) {
-    super(ShortColumnType.instance(), name);
+    super(ShortColumnType.instance(), name, ShortColumnType.DEFAULT_PARSER);
     setPrintFormatter(NumberColumnFormatter.ints());
     this.data = data;
   }
@@ -191,6 +191,7 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
     return this;
   }
 
+  @Override
   public ShortColumn append(Short val) {
     if (val == null) {
       appendMissing();
@@ -202,12 +203,12 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   @Override
   public ShortColumn emptyCopy() {
-    return (ShortColumn) super.emptyCopy();
+    return super.emptyCopy();
   }
 
   @Override
   public ShortColumn emptyCopy(final int rowSize) {
-    return (ShortColumn) super.emptyCopy(rowSize);
+    return super.emptyCopy(rowSize);
   }
 
   @Override
@@ -377,7 +378,7 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
   @Override
   public ShortColumn appendCell(final String value) {
     try {
-      return append(ShortColumnType.DEFAULT_PARSER.parseShort(value));
+      return append(parser().parseShort(value));
     } catch (final NumberFormatException e) {
       throw new NumberFormatException(
           "Error adding value to column " + name() + ": " + e.getMessage());

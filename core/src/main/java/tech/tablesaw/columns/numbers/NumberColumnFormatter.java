@@ -4,11 +4,11 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
+import tech.tablesaw.columns.ColumnFormatter;
 
-public class NumberColumnFormatter {
+public class NumberColumnFormatter extends ColumnFormatter {
 
   private final NumberFormat format;
-  private String missingString = "";
 
   public static NumberColumnFormatter percent(int fractionalDigits) {
     NumberFormat format = NumberFormat.getPercentInstance();
@@ -63,26 +63,28 @@ public class NumberColumnFormatter {
   }
 
   public NumberColumnFormatter() {
+    super("");
     this.format = null;
   }
 
   public NumberColumnFormatter(NumberFormat format) {
+    super("");
     this.format = format;
   }
 
   public NumberColumnFormatter(NumberFormat format, String missingString) {
+    super(missingString);
     this.format = format;
-    this.missingString = missingString;
   }
 
   public NumberColumnFormatter(String missingString) {
+    super(missingString);
     this.format = null;
-    this.missingString = missingString;
   }
 
   public String format(long value) {
     if (isMissingValue(value)) {
-      return missingString;
+      return getMissingString();
     }
     if (format == null) {
       return String.valueOf(value);
@@ -92,7 +94,7 @@ public class NumberColumnFormatter {
 
   public String format(double value) {
     if (isMissingValue(value)) {
-      return missingString;
+      return getMissingString();
     }
     if (format == null) {
       return String.valueOf(value);
@@ -106,7 +108,7 @@ public class NumberColumnFormatter {
         + "format="
         + format
         + ", missingString='"
-        + missingString
+        + getMissingString()
         + '\''
         + '}';
   }
