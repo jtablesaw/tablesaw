@@ -8,6 +8,12 @@ import java.io.Writer;
 public class WriteOptions {
 
   protected final Destination dest;
+
+  /**
+   * This value is not exposed as an actual option. It will determine whether the output stream
+   * automatically closes after the table has been output. The default value is false, and it just
+   * set true for File output.
+   */
   protected final boolean autoClose;
 
   protected WriteOptions(Builder builder) {
