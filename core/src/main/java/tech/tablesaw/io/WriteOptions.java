@@ -9,8 +9,16 @@ public class WriteOptions {
 
   protected final Destination dest;
 
+  /**
+   * This value is not exposed as an actual option. It will determine whether the output stream
+   * automatically closes after the table has been output. The default value is false, and it just
+   * set true for File output.
+   */
+  protected final boolean autoClose;
+
   protected WriteOptions(Builder builder) {
     this.dest = builder.dest;
+    this.autoClose = builder.autoClose;
   }
 
   public Destination destination() {
@@ -20,6 +28,7 @@ public class WriteOptions {
   public static class Builder {
 
     protected Destination dest;
+    protected boolean autoClose = false;
 
     protected Builder(Destination dest) {
       this.dest = dest;
@@ -35,6 +44,7 @@ public class WriteOptions {
 
     protected Builder(File dest) throws IOException {
       this.dest = new Destination(dest);
+      this.autoClose = true;
     }
   }
 }

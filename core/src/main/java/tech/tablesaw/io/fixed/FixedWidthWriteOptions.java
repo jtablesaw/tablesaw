@@ -142,6 +142,10 @@ public class FixedWidthWriteOptions extends WriteOptions {
     return normalizedNewline;
   }
 
+  public boolean autoClose() {
+    return autoClose;
+  }
+
   public static Builder builder(Destination destination) throws IOException {
     return new Builder(destination);
   }

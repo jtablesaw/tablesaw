@@ -61,7 +61,7 @@ public final class CsvWriter implements DataWriter<CsvWriteOptions> {
     } finally {
       if (csvWriter != null) {
         csvWriter.flush();
-        csvWriter.close();
+        if (options.autoClose()) csvWriter.close();
       }
     }
   }

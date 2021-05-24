@@ -90,6 +90,10 @@ public class CsvWriteOptions extends WriteOptions {
     return dateFormatter;
   }
 
+  public boolean autoClose() {
+    return autoClose;
+  }
+
   public static Builder builder(Destination dest) {
     return new Builder(dest);
   }
