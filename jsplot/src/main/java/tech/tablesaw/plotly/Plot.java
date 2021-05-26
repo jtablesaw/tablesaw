@@ -21,10 +21,10 @@ import tech.tablesaw.plotly.display.Browser;
  */
 public class Plot {
 
-  private static final String DEFAULT_DIV_NAME = "target";
-  private static final String DEFAULT_OUTPUT_FILE = "output.html";
-  private static final String DEFAULT_OUTPUT_FILE_NAME = "output";
-  private static final String DEFAULT_OUTPUT_FOLDER = "testoutput";
+  protected static final String DEFAULT_DIV_NAME = "target";
+  protected static final String DEFAULT_OUTPUT_FILE = "output.html";
+  protected static final String DEFAULT_OUTPUT_FILE_NAME = "output";
+  protected static final String DEFAULT_OUTPUT_FOLDER = "testoutput";
 
   public static void show(Figure figure, String divName, File outputFile) {
     Page page = Page.pageBuilder(figure, divName).build();
