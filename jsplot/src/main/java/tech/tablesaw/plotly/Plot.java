@@ -41,6 +41,26 @@ public class Plot {
     }
   }
 
+  /**
+   * Opens the default browser on the given HTML page. This is a convenience method for anyone who
+   * wants total control over the HTML file containing one or more plots, but still wants to use the
+   * mechanism for opening the default browser on it.
+   *
+   * @param html An arbitrary HTML page, it doesn't even need plots
+   * @param outputFile The file where the page will be written
+   */
+  public static void show(String html, File outputFile) {
+    try {
+      try (Writer writer =
+          new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
+        writer.write(html);
+      }
+      new Browser().browse(outputFile);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
   public static void show(Figure figure, String divName) {
     show(figure, divName, defaultFile());
   }
