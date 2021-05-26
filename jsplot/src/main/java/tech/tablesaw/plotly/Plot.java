@@ -21,10 +21,10 @@ import tech.tablesaw.plotly.display.Browser;
  */
 public class Plot {
 
-  private static final String DEFAULT_DIV_NAME = "target";
-  private static final String DEFAULT_OUTPUT_FILE = "output.html";
-  private static final String DEFAULT_OUTPUT_FILE_NAME = "output";
-  private static final String DEFAULT_OUTPUT_FOLDER = "testoutput";
+  protected static final String DEFAULT_DIV_NAME = "target";
+  protected static final String DEFAULT_OUTPUT_FILE = "output.html";
+  protected static final String DEFAULT_OUTPUT_FILE_NAME = "output";
+  protected static final String DEFAULT_OUTPUT_FOLDER = "testoutput";
 
   public static void show(Figure figure, String divName, File outputFile) {
     Page page = Page.pageBuilder(figure, divName).build();
@@ -34,6 +34,26 @@ public class Plot {
       try (Writer writer =
           new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
         writer.write(output);
+      }
+      new Browser().browse(outputFile);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  /**
+   * Opens the default browser on the given HTML page. This is a convenience method for anyone who
+   * wants total control over the HTML file containing one or more plots, but still wants to use the
+   * mechanism for opening the default browser on it.
+   *
+   * @param html An arbitrary HTML page, it doesn't even need plots
+   * @param outputFile The file where the page will be written
+   */
+  public static void show(String html, File outputFile) {
+    try {
+      try (Writer writer =
+          new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
+        writer.write(html);
       }
       new Browser().browse(outputFile);
     } catch (IOException e) {
