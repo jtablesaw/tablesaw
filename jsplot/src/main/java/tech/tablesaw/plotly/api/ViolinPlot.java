@@ -12,11 +12,12 @@ public class ViolinPlot {
     private static final int WIDTH = 800;
 
     public static Figure create(
-            String title, Table table, String groupingColumn, String numericColumn) {
+            String title, Table table, String groupingColumn, String numericColumn, boolean showBoxPlot, boolean showMeanLine) {
         Layout layout = Layout.builder().title(title).height(HEIGHT).width(WIDTH).build();
-
         ViolinTrace trace =
                 ViolinTrace.builder(table.categoricalColumn(groupingColumn), table.nCol(numericColumn))
+                        .boxPlot(showBoxPlot)
+                        .meanLine(showMeanLine)
                         .build();
         return new Figure(layout, trace);
     }

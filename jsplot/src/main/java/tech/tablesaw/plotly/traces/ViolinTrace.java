@@ -16,11 +16,15 @@ public class ViolinTrace extends AbstractTrace {
 
     private final Object[] x;
     private final double[] y;
+    private final boolean showBoxPlot;
+    private final boolean showMeanLine;
 
     private ViolinTrace(ViolinBuilder builder) {
         super(builder);
         this.x = builder.x;
         this.y = builder.y;
+        this.showMeanLine = builder.showMeanLine;
+        this.showBoxPlot = builder.showBoxPlot;
     }
 
     public static ViolinBuilder builder(Object[] x, double[] y) {
@@ -61,8 +65,12 @@ public class ViolinTrace extends AbstractTrace {
         context.put("variableName", "trace" + i);
         context.put("y", dataAsString(y));
         context.put("x", dataAsString(x));
-        context.put("box", "{visible: true}");
-//        context.put("meanLine", "{visible: true}");
+        if (showBoxPlot){
+            context.put("box", "{visible: true}");
+        }
+        if (showMeanLine){
+            context.put("meanLine", "{visible: true}");
+        }
         return context;
     }
 
@@ -71,6 +79,8 @@ public class ViolinTrace extends AbstractTrace {
         private static final String type = "violin";
         private final Object[] x;
         private final double[] y;
+        private boolean showBoxPlot;
+        private boolean showMeanLine;
 
         ViolinBuilder(Object[] x, double[] y) {
             this.x = x;
@@ -86,6 +96,16 @@ public class ViolinTrace extends AbstractTrace {
         ViolinBuilder(CategoricalColumn<?> x, NumericColumn<? extends Number> y) {
             this.x = columnToStringArray(x);
             this.y = y.asDoubleArray();
+        }
+
+        public ViolinBuilder boxPlot(boolean show) {
+            this.showBoxPlot = show;
+            return this;
+        }
+
+        public ViolinBuilder meanLine(boolean show) {
+            this.showMeanLine = show;
+            return this;
         }
 
         public ViolinTrace build() {
