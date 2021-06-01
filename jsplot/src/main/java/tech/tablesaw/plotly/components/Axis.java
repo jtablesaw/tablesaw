@@ -248,6 +248,8 @@ public class Axis extends Component {
 
   private final float[] domain;
 
+  private final String rangeSlider;
+
   public static AxisBuilder builder() {
     return new AxisBuilder();
   }
@@ -285,6 +287,7 @@ public class Axis extends Component {
     scaleRatio = builder.scaleRatio;
     categoryOrder = builder.categoryOrder;
     domain = builder.domain;
+    rangeSlider = builder.rangeSlider;
   }
 
   @Override
@@ -344,6 +347,9 @@ public class Axis extends Component {
     if (domain != null) {
       context.put("domain", String.format("[%.2f, %.2f]", domain[0], domain[1]));
     }
+    if (rangeSlider != null) {
+      context.put("rangeslider", rangeSlider);
+    }
     return context;
   }
 
@@ -387,6 +393,8 @@ public class Axis extends Component {
     private CategoryOrder categoryOrder;
 
     private float[] domain = null;
+
+    private String rangeSlider = null;
 
     private AxisBuilder() {}
 
@@ -592,6 +600,11 @@ public class Axis extends Component {
 
     public AxisBuilder showZeroLine(boolean zeroLine) {
       this.zeroLine = zeroLine;
+      return this;
+    }
+
+    public AxisBuilder rangeslider(String slider) {
+      this.rangeSlider = slider;
       return this;
     }
 
