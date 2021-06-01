@@ -3,7 +3,10 @@ package tech.tablesaw.examples;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.plotly.Plot;
-import tech.tablesaw.plotly.api.*;
+import tech.tablesaw.plotly.api.CandlestickPlot;
+import tech.tablesaw.plotly.api.LinePlot;
+import tech.tablesaw.plotly.api.OHLCPlot;
+import tech.tablesaw.plotly.api.TimeSeriesPlot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
@@ -12,7 +15,7 @@ import tech.tablesaw.plotly.traces.ScatterTrace;
 public class TimeSeriesVisualizations {
 
   public static void main(String[] args) throws Exception {
-    Table bush = Table.read().csv("./data/bush.csv");
+    Table bush = Table.read().csv("../data/bush.csv");
     Table foxOnly = bush.where(bush.stringColumn("who").equalsIgnoreCase("fox"));
     Figure foxPlot =
         TimeSeriesPlot.create("George W. Bush approval ratings", foxOnly, "date", "approval");
@@ -21,7 +24,7 @@ public class TimeSeriesVisualizations {
     Plot.show(
         TimeSeriesPlot.create("George W. Bush approval ratings", bush, "date", "approval", "who"));
 
-    Table robberies = Table.read().csv("./data/boston-robberies.csv");
+    Table robberies = Table.read().csv("../data/boston-robberies.csv");
     Plot.show(
         LinePlot.create(
             "Boston Robberies by month: Jan 1966-Oct 1975", robberies, "Record", "Robberies"));
@@ -37,7 +40,7 @@ public class TimeSeriesVisualizations {
             .build();
     Plot.show(new Figure(layout, trace));
 
-    Table priceTable = Table.read().csv("./data/ohlcdata.csv");
+    Table priceTable = Table.read().csv("../data/ohlcdata.csv");
     priceTable.addColumns(
         priceTable.dateColumn("date").atStartOfDay().setName("date time"),
         priceTable.dateColumn("date").atStartOfDay().asInstantColumn().setName("instant"));
@@ -54,7 +57,7 @@ public class TimeSeriesVisualizations {
         CandlestickPlot.create("Prices", priceTable, "instant", "open", "high", "low", "close"));
 
     // using a datetime column
-    Table dateTable = Table.read().csv("./data/dateTimeTestFile.csv");
+    Table dateTable = Table.read().csv("../data/dateTimeTestFile.csv");
     Plot.show(
         TimeSeriesPlot.create(
             "Value over time",
