@@ -1,0 +1,113 @@
+{
+{% if visible is not null %}
+visible: {{visible}},
+{% endif %}
+{% if text is not null %}
+text: "{{text}}",
+{% endif %}
+{% if font is not null %}
+font: {{font.asJavascript() | raw}},
+{% endif %}
+{% if width is not null %}
+width: {{width}},
+{% endif %}
+{% if height is not null %}
+height: {{height}},
+{% endif %}
+{% if opacity is not null %}
+opacity: {{opacity}},
+{% endif %}
+{% if align is not null %}
+align: "{{align}}",
+{% endif %}
+{% if valign is not null %}
+valign: "{{valign}}",
+{% endif %}
+{% if bgcolor is not null %}
+bgcolor: "{{bgcolor}}",
+{% endif %}
+{% if bordercolor is not null %}
+bordercolor: "{{bordercolor}}",
+{% endif %}
+{% if borderwidth is not null %}
+borderwidth: {{borderwidth}},
+{% endif %}
+{% if showarrow is not null %}
+showarrow: {{showarrow}},
+{% endif %}
+{% if arrowcolor is not null %}
+arrowcolor: "{{arrowcolor}}",
+{% endif %}
+{% if arrowhead is not null %}
+arrowhead: {{arrowhead}},
+{% endif %}
+{% if startarrowhead is not null %}
+startarrowhead: {{startarrowhead}},
+{% endif %}
+{% if arrowwidth is not null %}
+arrowwidth: {{arrowwidth}},
+{% endif %}
+{% if standoff is not null %}
+standoff: {{standoff}},
+{% endif %}
+{% if startstandoff is not null %}
+startstandoff: {{startstandoff}},
+{% endif %}
+{% if ax is not null %}
+ax: {{ax}},
+{% endif %}
+{% if ay is not null %}
+ay: {{ay}},
+{% endif %}
+{% if axref is not null %}
+axref: "{{axref}}",
+{% endif %}
+{% if ayref is not null %}
+ayref: "{{ayref}}",
+{% endif %}
+{% if xref is not null %}
+xref: "{{xref}}",
+{% endif %}
+{% if x is not null %}
+x: {{x}},
+{% endif %}
+{% if xanchor is not null %}
+xanchor: "{{xanchor}}",
+{% endif %}
+{% if xshift is not null %}
+xshift: "{{xshift}}",
+{% endif %}
+{% if yref is not null %}
+yref: "{{yref}}",
+{% endif %}
+{% if y is not null %}
+y: {{y}},
+{% endif %}
+{% if yanchor is not null %}
+yanchor: "{{yanchor}}",
+{% endif %}
+{% if yshift is not null %}
+yshift: {{yshift}},
+{% endif %}
+{% if clicktoshow is not null %}
+clicktoshow: "{{clicktoshow}}",
+{% endif %}
+{% if xclick is not null %}
+xclick: {{xclick}},
+{% endif %}
+{% if yclick is not null %}
+yclick: {{yclick}},
+{% endif %}
+{% if hovertext is not null %}
+hovertext: "{{hovertext}}",
+{% endif %}
+{% if hoverlabel is not null %}
+hoverlabel: {{hoverlabel.asJavascript() | raw}},
+{% endif %}
+{% if name is not null %}
+name: "{{name}}",
+{% endif %}
+{% if templateitemname is not null %}
+templateitemname: "{{templateitemname}}"
+{% endif %}
+}
