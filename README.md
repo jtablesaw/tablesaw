@@ -55,6 +55,9 @@ You may also add supporting projects:
 - `tablesaw-json` - for using JSON
 - `tablesaw-jsplot` - for creating charts
 
+External supporting projects - **outside of this organization**:
+- [tablesaw-parquet](https://github.com/tlabs-data/tablesaw-parquet) - for using the [Apache Parquet](https://parquet.apache.org/) file format with Tablesaw ([report issue](https://github.com/tlabs-data/tablesaw-parquet/issues))
+
 ### Documentation and support
 
 * Start here:  https://jtablesaw.github.io/tablesaw/gettingstarted
