@@ -305,4 +305,15 @@ public class TableSliceTest {
 
     assertArrayEquals(expected, actual);
   }
+
+  @Test
+  void structure() {
+
+    Table table = Table.create(StringColumn.create("MyCol", "A", "A", "B"));
+    TableSliceGroup sliceGroup = table.splitOn("MyCol");
+
+    for (TableSlice slice : sliceGroup.getSlices()) {
+      assertNotNull(slice.structure());
+    }
+  }
 }

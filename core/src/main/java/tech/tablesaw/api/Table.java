@@ -836,24 +836,6 @@ public class Table extends Relation implements Iterable<Row> {
     return StandardTableSliceGroup.create(this, columns);
   }
 
-  @Override
-  public Table structure() {
-    Table t = new Table("Structure of " + name());
-
-    IntColumn index = IntColumn.indexColumn("Index", columnCount(), 0);
-    StringColumn columnName = StringColumn.create("Column Name", columnCount());
-    StringColumn columnType = StringColumn.create("Column Type", columnCount());
-    t.addColumns(index);
-    t.addColumns(columnName);
-    t.addColumns(columnType);
-    for (int i = 0; i < columnCount(); i++) {
-      Column<?> column = columnList.get(i);
-      columnType.set(i, column.type().name());
-      columnName.set(i, columnNames().get(i));
-    }
-    return t;
-  }
-
   /** Returns the unique records in this table Note: Uses a lot of memory for a sort */
   public Table dropDuplicateRows() {
 
