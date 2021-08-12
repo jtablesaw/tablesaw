@@ -656,7 +656,7 @@ public class Table extends Relation implements Iterable<Row> {
     Table newTable = emptyCopy(rowCount());
 
     int[] newRows = rows();
-    IntArrays.parallelQuickSort(newRows, rowComparator);
+    IntArrays.mergeSort(newRows, rowComparator);
 
     Rows.copyRowsToTable(newRows, this, newTable);
     return newTable;
