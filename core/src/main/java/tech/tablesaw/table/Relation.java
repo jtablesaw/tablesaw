@@ -211,33 +211,20 @@ public abstract class Relation implements Iterable<Row> {
   }
 
   public Table structure() {
-    StringBuilder nameBuilder = new StringBuilder();
-    nameBuilder
-        .append("Table: ")
-        .append(name())
-        .append(" - ")
-        .append(rowCount())
-        .append(" observations (rows) of ")
-        .append(columnCount())
-        .append(" variables (cols)");
+    Table t = Table.create("Structure of " + name());
 
-    Table structure = Table.create(nameBuilder.toString());
-    structure.addColumns(DoubleColumn.create("Index"));
-    structure.addColumns(StringColumn.create("Column Name"));
-    structure.addColumns(StringColumn.create("Type"));
-    structure.addColumns(DoubleColumn.create("Unique Values"));
-    structure.addColumns(StringColumn.create("First"));
-    structure.addColumns(StringColumn.create("Last"));
-
-    for (Column<?> column : columns()) {
-      structure.intColumn("Index").append(columnIndex(column));
-      structure.stringColumn("Column Name").append(column.name());
-      structure.stringColumn("Type").append(column.type().name());
-      structure.intColumn("Unique Values").append(column.countUnique());
-      structure.stringColumn("First").append(column.getString(0));
-      structure.stringColumn("Last").append(column.getString(column.size() - 1));
+    IntColumn index = IntColumn.indexColumn("Index", columnCount(), 0);
+    StringColumn columnName = StringColumn.create("Column Name", columnCount());
+    StringColumn columnType = StringColumn.create("Column Type", columnCount());
+    t.addColumns(index);
+    t.addColumns(columnName);
+    t.addColumns(columnType);
+    for (int i = 0; i < columnCount(); i++) {
+      Column<?> column = this.columns().get(i);
+      columnType.set(i, column.type().name());
+      columnName.set(i, columnNames().get(i));
     }
-    return structure;
+    return t;
   }
 
   public Table summary() {
