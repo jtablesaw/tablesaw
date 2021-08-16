@@ -3,7 +3,7 @@ language: java
 
 # for sonarcloud issue tagging
 git:
-  depth: false
+  depth: 3
 
 addons:
   sonarcloud:
