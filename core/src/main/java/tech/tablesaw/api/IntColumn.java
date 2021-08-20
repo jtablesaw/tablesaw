@@ -274,9 +274,6 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   @Override
   public String getString(final int row) {
     final int value = getInt(row);
-    if (IntColumnType.valueIsMissing(value)) {
-      return "";
-    }
     return String.valueOf(getPrintFormatter().format(value));
   }
 

@@ -61,6 +61,7 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
   @Override
   public void setPrintFormatter(final NumberColumnFormatter formatter) {
     this.printFormatter = formatter;
+    formatter.setColumnType(type());
   }
 
   protected NumberColumnFormatter getPrintFormatter() {

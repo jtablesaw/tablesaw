@@ -71,6 +71,21 @@ public class CsvWriterTest {
   }
 
   @Test
+  void printFormatter_double2() throws IOException {
+    Table table = Table.create("", DoubleColumn.create("percents"));
+    table
+        .doubleColumn("percents")
+        .setPrintFormatter(
+            new NumberColumnFormatter(NumberColumnFormatter.percent(2).getFormat(), "NA"));
+    table.doubleColumn("percents").append(Double.NaN).append(0.323).append(0.1192).append(1.0);
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "percents\n" + "NA\n" + "32.30%\n" + "11.92%\n" + "100.00%\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
   void printFormatter_date() throws IOException {
     Table table = Table.create("", DateColumn.create("dates"));
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MMM");
@@ -100,6 +115,19 @@ public class CsvWriterTest {
   }
 
   @Test
+  void printFormatter_int2() throws IOException {
+    Table table = Table.create("", IntColumn.create("ints"));
+    table.intColumn("ints").setPrintFormatter(new NumberColumnFormatter("NA"));
+    Integer missing = null;
+    table.intColumn("ints").append(102_123).append(2).append(missing).append(-1_232_132);
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "ints\n" + "102123\n" + "2\n" + "NA\n" + "-1232132\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
   void printFormatter_float() throws IOException {
     Table table = Table.create("", FloatColumn.create("floats"));
     table.floatColumn("floats").setPrintFormatter(NumberColumnFormatter.fixedWithGrouping(2));
@@ -108,6 +136,22 @@ public class CsvWriterTest {
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
         "floats\n" + "32.30\n" + "0.12\n" + "\n" + "\"1,001.00\"\n",
+        writer.toString().replaceAll("\\r\\n", "\n"));
+  }
+
+  @Test
+  void printFormatter_float2() throws IOException {
+    Table table = Table.create("", FloatColumn.create("floats"));
+    table
+        .floatColumn("floats")
+        .setPrintFormatter(
+            new NumberColumnFormatter(
+                NumberColumnFormatter.fixedWithGrouping(2).getFormat(), "NA"));
+    table.floatColumn("floats").append(032.3f).append(0.1192f).appendObj(null).append(1001.0f);
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
+    assertEquals(
+        "floats\n" + "32.30\n" + "0.12\n" + "NA\n" + "\"1,001.00\"\n",
         writer.toString().replaceAll("\\r\\n", "\n"));
   }
 

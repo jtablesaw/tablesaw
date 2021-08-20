@@ -268,9 +268,6 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
   @Override
   public String getString(final int row) {
     final short value = getShort(row);
-    if (ShortColumnType.valueIsMissing(value)) {
-      return "";
-    }
     return String.valueOf(getPrintFormatter().format(value));
   }
 
