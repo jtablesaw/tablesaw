@@ -25,10 +25,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   @Override
   public String getString(int row) {
     final float value = getFloat(row);
-    if (FloatColumnType.valueIsMissing(value)) {
-      return "";
-    }
-    return String.valueOf(getPrintFormatter().format(value));
+    return getPrintFormatter().format(value);
   }
 
   public static FloatColumn create(String name) {

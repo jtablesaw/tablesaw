@@ -38,9 +38,6 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
   @Override
   public String getString(int row) {
     final double value = getDouble(row);
-    if (DoubleColumnType.valueIsMissing(value)) {
-      return "";
-    }
     return String.valueOf(getPrintFormatter().format(value));
   }
 

@@ -78,7 +78,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   ColumnType type();
 
   /**
-   * Returns the parser used by {@link #appendCell()}.
+   * Returns the parser used by {@link #appendCell(String)} ()}.
    *
    * @return {@link AbstractColumnParser}
    */
@@ -571,6 +571,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
   Column<T> set(int row, T value);
 
+  @SuppressWarnings("unchecked")
   default Column<T> set(int row, String stringValue, AbstractColumnParser<?> parser) {
     AbstractColumnParser<T> typedParser = (AbstractColumnParser<T>) parser;
     return set(row, typedParser.parse(stringValue));
@@ -620,7 +621,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   Column<T> setName(String name);
 
   /**
-   * Sets the parser used by {@link #appendCell()}
+   * Sets the parser used by {@link #appendCell(String)}
    *
    * @param parser a column parser that converts text input to the column data type
    * @return this Column to allow method chaining

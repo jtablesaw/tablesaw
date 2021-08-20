@@ -75,9 +75,6 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   @Override
   public String getString(final int row) {
     final long value = getLong(row);
-    if (LongColumnType.valueIsMissing(value)) {
-      return "";
-    }
     return getPrintFormatter().format(value);
   }
 
