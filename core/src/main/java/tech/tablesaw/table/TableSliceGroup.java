@@ -202,7 +202,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
           if (firstFunction) {
             groupColumn.append(subTable.name());
           }
-          if (result instanceof Number) {
+          if (function.returnType().equals(ColumnType.DOUBLE)) {
             Number number = (Number) result;
             resultColumn.append(number.doubleValue());
           } else {
