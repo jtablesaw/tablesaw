@@ -29,7 +29,12 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 
-/** A group of tables formed by performing splitting operations on an original table */
+/**
+ * A group of table slices formed by performing splitting operations on an original table
+ *
+ * <p>NOTE: This can use a tremendous amount of memory on a large table containing many TextColumns.
+ * If that is your use case, consider handling this manually instead.
+ */
 public class TableSliceGroup implements Iterable<TableSlice> {
 
   // A string that is used internally as a delimiter in creating a column name from all the grouping
@@ -39,6 +44,8 @@ public class TableSliceGroup implements Iterable<TableSlice> {
   // A function that splits the group column name back into the original column names for the
   // grouping columns
   private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
+
+  protected List<String> textColumns = new ArrayList<>();
 
   // The list of slices or views over the source table that I contain
   private final List<TableSlice> subTables = new ArrayList<>();
@@ -84,6 +91,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     for (int i = 0; i < sourceTable.columnCount(); i++) {
       if (sourceTable.column(i).type().equals(ColumnType.TEXT)) {
         String originalName = sourceTable.column(i).name();
+        textColumns.add(originalName);
         sourceTable.replaceColumn(i, sourceTable.textColumn(i).asStringColumn());
         sourceTable.column(i).setName(originalName);
       }

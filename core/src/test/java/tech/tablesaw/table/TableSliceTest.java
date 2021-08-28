@@ -8,15 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.api.ColumnType.TEXT;
 
 import com.google.common.collect.Streams;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Row;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.Sort;
@@ -315,5 +313,16 @@ public class TableSliceTest {
     for (TableSlice slice : sliceGroup.getSlices()) {
       assertNotNull(slice.structure());
     }
+  }
+
+  /** Test that we can append both text and string columns to a string column */
+  @Test
+  void asTableWithTextColumn() {
+    Table sourceCopy = source.copy();
+    sourceCopy.replaceColumn("who", sourceCopy.stringColumn("who").asTextColumn());
+    TableSliceGroup group = sourceCopy.splitOn("who");
+    TableSlice slice = group.get(0);
+    Table t = slice.asTable();
+    assertEquals(t.column("who").type(), TEXT);
   }
 }
