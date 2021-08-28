@@ -29,7 +29,12 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 
-/** A group of tables formed by performing splitting operations on an original table */
+/**
+ * A group of table slices formed by performing splitting operations on an original table
+ *
+ * <p>NOTE: This can use a tremendous amount of memory on a large table containing many TextColumns.
+ * If that is your use case, consider handling this manually instead.
+ */
 public class TableSliceGroup implements Iterable<TableSlice> {
 
   // A string that is used internally as a delimiter in creating a column name from all the grouping
@@ -242,10 +247,6 @@ public class TableSliceGroup implements Iterable<TableSlice> {
 
   /**
    * Returns a list of Tables created by reifying my list of slices (views) over the original table
-   *
-   * <p>NOTE: This can use a tremendous amount of memory on a large table containing many
-   * TextColumns. If that is your use case, consider looping over TableSlices and converting each to
-   * a table independently.
    */
   public List<Table> asTableList() {
     List<Table> tableList = new ArrayList<>();
