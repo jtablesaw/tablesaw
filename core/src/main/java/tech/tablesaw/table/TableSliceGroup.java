@@ -40,6 +40,8 @@ public class TableSliceGroup implements Iterable<TableSlice> {
   // grouping columns
   private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
 
+  protected List<String> textColumns = new ArrayList<>();
+
   // The list of slices or views over the source table that I contain
   private final List<TableSlice> subTables = new ArrayList<>();
 
@@ -84,6 +86,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     for (int i = 0; i < sourceTable.columnCount(); i++) {
       if (sourceTable.column(i).type().equals(ColumnType.TEXT)) {
         String originalName = sourceTable.column(i).name();
+        textColumns.add(originalName);
         sourceTable.replaceColumn(i, sourceTable.textColumn(i).asStringColumn());
         sourceTable.column(i).setName(originalName);
       }
@@ -239,6 +242,10 @@ public class TableSliceGroup implements Iterable<TableSlice> {
 
   /**
    * Returns a list of Tables created by reifying my list of slices (views) over the original table
+   *
+   * <p>NOTE: This can use a tremendous amount of memory on a large table containing many
+   * TextColumns. If that is your use case, consider looping over TableSlices and converting each to
+   * a table independently.
    */
   public List<Table> asTableList() {
     List<Table> tableList = new ArrayList<>();

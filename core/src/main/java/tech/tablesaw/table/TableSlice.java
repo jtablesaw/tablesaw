@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Row;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
@@ -43,6 +44,10 @@ import tech.tablesaw.sorting.comparators.IntComparatorChain;
 public class TableSlice extends Relation {
 
   private final Table table;
+
+  // the names of any columns that are TextColumns in the original table
+  private List<String> textColumns = new ArrayList<>();
+
   private String name;
   @Nullable private Selection selection;
   @Nullable private int[] sortOrder = null;
@@ -58,11 +63,33 @@ public class TableSlice extends Relation {
   }
 
   /**
+   * Returns a new View constructed from the given table, containing only the rows represented by
+   * the bitmap
+   */
+  public TableSlice(Table table, Selection rowSelection, List<String> textColumns) {
+    this.name = table.name();
+    this.textColumns = textColumns;
+    this.selection = rowSelection;
+    this.table = table;
+  }
+
+  /**
    * Returns a new view constructed from the given table. The view can be sorted independently of
    * the table.
    */
   public TableSlice(Table table) {
     this.name = table.name();
+    this.selection = null;
+    this.table = table;
+  }
+
+  /**
+   * Returns a new view constructed from the given table. The view can be sorted independently of
+   * the table.
+   */
+  public TableSlice(Table table, List<String> textColumns) {
+    this.name = table.name();
+    this.textColumns = textColumns;
     this.selection = null;
     this.table = table;
   }
@@ -180,12 +207,20 @@ public class TableSlice extends Relation {
     return this;
   }
 
+  /**
+   * Returns a Table with the data contained in this slice. If the slice contains string columns
+   * that were TextColumns in the original table, they are converted back to TextColumns here
+   */
   public Table asTable() {
-    Table table = Table.create(this.name());
+    Table t = Table.create(this.name());
     for (Column<?> column : this.columns()) {
-      table.addColumns(column);
+      if (textColumns.contains(column.name())) {
+        t.addColumns(((StringColumn) column).asTextColumn());
+      } else {
+        t.addColumns(column);
+      }
     }
-    return table;
+    return t;
   }
 
   /**
