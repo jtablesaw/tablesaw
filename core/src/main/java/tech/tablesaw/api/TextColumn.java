@@ -14,6 +14,9 @@
 
 package tech.tablesaw.api;
 
+import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.api.ColumnType.TEXT;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -337,11 +340,10 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   @Override
   public TextColumn append(Column<String> column) {
-    Preconditions.checkArgument(column.type() == this.type());
-    TextColumn source = (TextColumn) column;
-    final int size = source.size();
+    Preconditions.checkArgument(column.type() == TEXT || column.type().equals(STRING));
+    final int size = column.size();
     for (int i = 0; i < size; i++) {
-      append(source.getString(i));
+      append(column.getString(i));
     }
     return this;
   }

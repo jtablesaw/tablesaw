@@ -777,4 +777,20 @@ class StringColumnTest {
     assertEquals("Top Freq.", summary.getUnformatted(3, 0));
     assertEquals("1", summary.getUnformatted(3, 1));
   }
+
+  /** Test that we can append both text and string columns to a string column */
+  @Test
+  void appendTextColumn() {
+    StringColumn col1 = StringColumn.create("col1");
+    col1.append("1");
+    TextColumn col2 = TextColumn.create("col2");
+    col2.append("2");
+    StringColumn col3 = StringColumn.create("col3");
+    col3.append("3");
+    assertEquals(1, col1.size());
+    col1.append(col2);
+    assertEquals(2, col1.size());
+    col1.append(col3);
+    assertEquals(3, col1.size());
+  }
 }
