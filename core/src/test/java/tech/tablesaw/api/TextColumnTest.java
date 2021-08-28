@@ -562,4 +562,20 @@ public class TextColumnTest {
     assertEquals(3, col1.countUnique());
     assertEquals(3, col1.unique().size());
   }
+
+  /** Test that we can append both text and string columns to a text column */
+  @Test
+  void appendStringColumn() {
+    TextColumn col1 = TextColumn.create("col1");
+    col1.append("1");
+    TextColumn col2 = TextColumn.create("col2");
+    col2.append("2");
+    StringColumn col3 = StringColumn.create("col3");
+    col3.append("3");
+    assertEquals(1, col1.size());
+    col1.append(col2);
+    assertEquals(2, col1.size());
+    col1.append(col3);
+    assertEquals(3, col1.size());
+  }
 }
