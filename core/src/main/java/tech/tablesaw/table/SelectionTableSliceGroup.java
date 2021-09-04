@@ -41,7 +41,7 @@ public class SelectionTableSliceGroup extends TableSliceGroup {
 
   private void splitOnSelection(String nameTemplate, List<Selection> selections) {
     for (int i = 0; i < selections.size(); i++) {
-      TableSlice view = new TableSlice(getSourceTable(), selections.get(i), textColumns);
+      TableSlice view = new TableSlice(getSourceTable(), selections.get(i));
       String name = nameTemplate + ": " + i + 1;
       view.setName(name);
       getSlices().add(view);
