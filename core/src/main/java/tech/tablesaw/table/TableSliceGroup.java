@@ -52,42 +52,8 @@ public class TableSliceGroup implements Iterable<TableSlice> {
    * Returns an instance for calculating a single summary for the given table, with no sub-groupings
    */
   protected TableSliceGroup(Table original) {
-    if (containsAnyTextColumns(original)) {
-      sourceTable = original.copy();
-      replaceTextColumnsWithStringColumns();
-    } else {
-      sourceTable = original;
-    }
+    sourceTable = original;
     splitColumnNames = new String[0];
-  }
-
-  private boolean containsAnyTextColumns(Table original) {
-    for (Column<?> column : original.columns()) {
-      if (column.type().equals(ColumnType.TEXT)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Replace any textColumns in the table with stringColumns. We do this because TextColumns don't
-   * split correctly: The split algorithm uses a byte[] version of the elements to do it's magic,
-   * and text columns have variable sized strings, so variable sized byte arrays. Determining the
-   * correct array size (maybe the largest array size for the array?) would be somewhat fraught
-   * because the size depends on the encoding and the strings do not know they're own encoding. This
-   * would need to be detected using a 3rd party library.
-   *
-   * <p>So replace with the equivalent stringColumn instead.
-   */
-  private void replaceTextColumnsWithStringColumns() {
-    for (int i = 0; i < sourceTable.columnCount(); i++) {
-      if (sourceTable.column(i).type().equals(ColumnType.TEXT)) {
-        String originalName = sourceTable.column(i).name();
-        sourceTable.replaceColumn(i, sourceTable.textColumn(i).asStringColumn());
-        sourceTable.column(i).setName(originalName);
-      }
-    }
   }
 
   /**
@@ -95,12 +61,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
    * groupColumnNames that appear in the source table
    */
   protected TableSliceGroup(Table sourceTable, String[] groupColumnNames) {
-    if (containsAnyTextColumns(sourceTable)) {
-      this.sourceTable = sourceTable.copy();
-      replaceTextColumnsWithStringColumns();
-    } else {
-      this.sourceTable = sourceTable;
-    }
+    this.sourceTable = sourceTable;
     this.splitColumnNames = groupColumnNames;
   }
 

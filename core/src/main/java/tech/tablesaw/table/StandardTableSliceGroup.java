@@ -14,6 +14,7 @@
 
 package tech.tablesaw.table;
 
+import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import tech.tablesaw.api.CategoricalColumn;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -65,38 +67,64 @@ public class StandardTableSliceGroup extends TableSliceGroup {
    * Splits the sourceTable table into sub-tables, grouping on the columns whose names are given in
    * splitColumnNames
    */
-  private void splitOn(String... columnNames) {
+  private void splitOn(String... splitColumnNames) {
     Map<ByteArray, Selection> selectionMap = new LinkedHashMap<>();
     Map<ByteArray, String> sliceNameMap = new HashMap<>();
-    List<Column<?>> splitColumns = getSourceTable().columns(columnNames);
-    int byteSize = getByteSize(splitColumns);
+    List<Column<?>> splitColumns = getSourceTable().columns(splitColumnNames);
 
-    for (int i = 0; i < getSourceTable().rowCount(); i++) {
-      StringBuilder stringKey = new StringBuilder();
-      ByteBuffer byteBuffer = ByteBuffer.allocate(byteSize);
-      int count = 0;
-      for (Column<?> col : splitColumns) {
-        stringKey.append(col.getString(i));
-        if (count < splitColumns.size() - 1) {
-          stringKey.append(SPLIT_STRING);
+    if (containsTextColumn(splitColumns)) {
+      for (int i = 0; i < getSourceTable().rowCount(); i++) {
+        ByteArrayList byteArrayList = new ByteArrayList();
+        StringBuilder stringKey = new StringBuilder();
+        int count = 0;
+        for (Column<?> col : splitColumns) {
+          stringKey.append(col.getString(i));
+          if (count < splitColumns.size() - 1) {
+            stringKey.append(SPLIT_STRING);
+          }
+          byteArrayList.addElements(byteArrayList.size(), col.asBytes(i));
+          count++;
         }
-        byteBuffer.put(col.asBytes(i));
-        count++;
+        // Add to the matching selection.
+        ByteArray byteArray = new ByteArray(byteArrayList.toByteArray());
+        Selection selection = selectionMap.getOrDefault(byteArray, new BitmapBackedSelection());
+        selection.add(i);
+        selectionMap.put(byteArray, selection);
+        sliceNameMap.put(byteArray, stringKey.toString());
       }
-      // Add to the matching selection.
-      ByteArray byteArray = new ByteArray(byteBuffer.array());
-      Selection selection = selectionMap.getOrDefault(byteArray, new BitmapBackedSelection());
-      selection.add(i);
-      selectionMap.put(byteArray, selection);
-      sliceNameMap.put(byteArray, stringKey.toString());
+    } else { // handle the case where split is on non-text-columns
+      int byteSize = getByteSize(splitColumns);
+      for (int i = 0; i < getSourceTable().rowCount(); i++) {
+        StringBuilder stringKey = new StringBuilder();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(byteSize);
+        int count = 0;
+        for (Column<?> col : splitColumns) {
+          stringKey.append(col.getString(i));
+          if (count < splitColumns.size() - 1) {
+            stringKey.append(SPLIT_STRING);
+          }
+          byteBuffer.put(col.asBytes(i));
+          count++;
+        }
+        // Add to the matching selection.
+        ByteArray byteArray = new ByteArray(byteBuffer.array());
+        Selection selection = selectionMap.getOrDefault(byteArray, new BitmapBackedSelection());
+        selection.add(i);
+        selectionMap.put(byteArray, selection);
+        sliceNameMap.put(byteArray, stringKey.toString());
+      }
     }
 
-    // Add all slices
+    // Construct slices for all the values in our maps
     for (Entry<ByteArray, Selection> entry : selectionMap.entrySet()) {
       TableSlice slice = new TableSlice(getSourceTable(), entry.getValue());
       slice.setName(sliceNameMap.get(entry.getKey()));
       addSlice(slice);
     }
+  }
+
+  private boolean containsTextColumn(List<Column<?>> splitColumns) {
+    return splitColumns.stream().anyMatch(objects -> objects.type().equals(ColumnType.TEXT));
   }
 
   /** Wrapper class for a byte[] that implements equals and hashcode. */
