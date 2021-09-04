@@ -383,9 +383,8 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   /** Returns the contents of the cell at rowNumber as a byte[] */
   @Override
   public byte[] asBytes(int rowNumber) {
-    return new byte[0];
-    // TODO (lwhite): FIX ME:  return
-    // ByteBuffer.allocate(byteSize()).putInt(getInt(rowNumber)).array();
+    String value = get(rowNumber);
+    return value.getBytes();
   }
 
   /** Added for naming consistency with all other columns */

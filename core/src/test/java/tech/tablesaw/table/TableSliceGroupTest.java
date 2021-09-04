@@ -123,12 +123,12 @@ public class TableSliceGroupTest {
     TextColumn whoText = table.stringColumn("who").asTextColumn();
     whoText.setName("who text");
     table.addColumns(whoText);
-    TableSliceGroup group1 =
-        StandardTableSliceGroup.create(table, table.categoricalColumn("who text"));
-    TableSliceGroup group2 = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
+    TableSliceGroup group1 = StandardTableSliceGroup.create(table, table.textColumn("who text"));
+    TableSliceGroup group2 = StandardTableSliceGroup.create(table, table.stringColumn("who"));
+
     Table aggregated1 = group1.aggregate("approval", exaggerate);
     Table aggregated2 = group2.aggregate("approval", exaggerate);
-    assertEquals(aggregated1.rowCount(), aggregated2.rowCount());
+    assertEquals(aggregated2.rowCount(), aggregated1.rowCount());
   }
 
   @Test
