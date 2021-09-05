@@ -133,7 +133,7 @@ index, or indexes. Both of the following are supported:
 
 ```java
 nc.where(Selection.with(0, 2)); // returns 2 rows with the given indexes
-nc.where(Selection.withRange(1, 3)); // returns rows 1-3 inclusive
+nc.where(Selection.withRange(1, 3)); // returns rows 1 inclusive to 3 exclusive
 ```
 
 If you have several columns of the same length as you would in a table of data, you can make a selection with one column
