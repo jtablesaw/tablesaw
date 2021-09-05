@@ -58,7 +58,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
         BooleanFillers<BooleanColumn>,
         BooleanFilters {
 
-  private ByteArrayList data;
+  protected ByteArrayList data;
 
   private final IntComparator comparator =
       (r1, r2) -> {

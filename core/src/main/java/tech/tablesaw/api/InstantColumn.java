@@ -59,7 +59,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
         TemporalFilters<Instant>,
         CategoricalColumn<Instant> {
 
-  private LongArrayList data;
+  protected LongArrayList data;
 
   private final IntComparator comparator =
       (r1, r2) -> {

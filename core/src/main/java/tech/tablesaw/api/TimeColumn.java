@@ -56,7 +56,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
 
   private TimeColumnFormatter printFormatter = new TimeColumnFormatter();
 
-  private IntArrayList data;
+  protected IntArrayList data;
 
   private final IntComparator comparator =
       (r1, r2) -> {

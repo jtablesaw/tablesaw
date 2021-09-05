@@ -24,7 +24,7 @@ import tech.tablesaw.selection.Selection;
 public class ShortColumn extends NumberColumn<ShortColumn, Short>
     implements CategoricalColumn<Short> {
 
-  private final ShortArrayList data;
+  protected final ShortArrayList data;
 
   protected ShortColumn(final String name, ShortArrayList data) {
     super(ShortColumnType.instance(), name, ShortColumnType.DEFAULT_PARSER);

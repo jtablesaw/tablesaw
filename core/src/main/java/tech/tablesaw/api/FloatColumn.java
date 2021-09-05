@@ -14,7 +14,7 @@ import tech.tablesaw.selection.Selection;
 
 public class FloatColumn extends NumberColumn<FloatColumn, Float> {
 
-  private final FloatArrayList data;
+  protected final FloatArrayList data;
 
   private FloatColumn(String name, FloatArrayList data) {
     super(FloatColumnType.instance(), name, FloatColumnType.DEFAULT_PARSER);

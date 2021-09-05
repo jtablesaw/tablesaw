@@ -17,7 +17,7 @@ import tech.tablesaw.selection.Selection;
 
 public class LongColumn extends NumberColumn<LongColumn, Long> implements CategoricalColumn<Long> {
 
-  private final LongArrayList data;
+  protected final LongArrayList data;
 
   private LongColumn(String name, LongArrayList data) {
     super(LongColumnType.instance(), name, LongColumnType.DEFAULT_PARSER);
