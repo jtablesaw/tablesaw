@@ -57,7 +57,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
         TemporalFillers<LocalDateTime, DateTimeColumn>,
         CategoricalColumn<LocalDateTime> {
 
-  private LongArrayList data;
+  protected LongArrayList data;
 
   private final IntComparator comparator =
       (r1, r2) -> {

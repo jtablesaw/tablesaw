@@ -47,7 +47,7 @@ import tech.tablesaw.selection.Selection;
 public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   // holds each element in the column.
-  private List<String> values;
+  protected List<String> values;
 
   private final IntComparator rowComparator =
       (i, i1) -> {

@@ -16,7 +16,7 @@ import tech.tablesaw.selection.Selection;
 public class IntColumn extends NumberColumn<IntColumn, Integer>
     implements CategoricalColumn<Integer> {
 
-  private final IntArrayList data;
+  protected final IntArrayList data;
 
   protected IntColumn(final String name, IntArrayList data) {
     super(IntColumnType.instance(), name, IntColumnType.DEFAULT_PARSER);

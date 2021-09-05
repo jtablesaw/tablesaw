@@ -53,7 +53,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
         DateMapFunctions,
         CategoricalColumn<LocalDate> {
 
-  private IntArrayList data;
+  protected IntArrayList data;
 
   private final IntComparator comparator =
       (r1, r2) -> {
