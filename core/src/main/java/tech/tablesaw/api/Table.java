@@ -909,7 +909,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public Table append(Table tableToAppend) {
+  public Table append(Relation tableToAppend) {
     for (final Column column : columnList) {
       final Column columnToAppend = tableToAppend.column(column.name());
       column.append(columnToAppend);

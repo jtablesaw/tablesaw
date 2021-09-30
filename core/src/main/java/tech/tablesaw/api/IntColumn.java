@@ -99,6 +99,10 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
     return isMissingValue(result) ? null : result;
   }
 
+  public int[] asIntArray() {
+    return data.toIntArray();
+  }
+
   @Override
   public IntColumn subset(final int[] rows) {
     final IntColumn c = this.emptyCopy();
@@ -441,6 +445,13 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
     final Selection results = new BitmapBackedSelection();
     results.addRange(0, size());
     results.andNot(isIn(numbers));
+    return results;
+  }
+
+  public Selection isNotIn(final IntColumn ints) {
+    final Selection results = new BitmapBackedSelection();
+    results.addRange(0, size());
+    results.andNot(isIn(ints.data.toIntArray()));
     return results;
   }
 

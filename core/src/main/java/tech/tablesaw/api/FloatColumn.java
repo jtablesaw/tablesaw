@@ -206,6 +206,10 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
     return data.iterator();
   }
 
+  public float[] asFloatArray() {
+    return data.toFloatArray();
+  }
+
   @Override
   public Float[] asObjectArray() {
     final Float[] output = new Float[size()];

@@ -283,6 +283,10 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return data.iterator();
   }
 
+  public double[] asDoubleArray() {
+    return data.toDoubleArray();
+  }
+
   @Override
   public Double[] asObjectArray() {
     final Double[] output = new Double[size()];
