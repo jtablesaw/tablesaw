@@ -143,6 +143,14 @@ public interface StringFilters extends Column<String>, StringFilterSpec<Selectio
 
   Selection isIn(Collection<String> strings);
 
+  default Selection isIn(Column<String> strings) {
+    return isIn(strings.unique().asList());
+  }
+
+  default Selection isNotIn(Column<String> strings) {
+    return isNotIn(strings.unique().asList());
+  }
+
   Selection isNotIn(String... strings);
 
   Selection isNotIn(Collection<String> strings);

@@ -1,10 +1,13 @@
 package tech.tablesaw.columns.numbers;
 
 import static java.lang.Double.NaN;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
@@ -48,6 +51,27 @@ public class NumberFiltersTest {
     Selection selection = doubles.isPositive();
     assertEquals(0, selection.get(0));
     assertEquals(1, selection.size());
+  }
+
+  @Test
+  public void asIntArray() {
+    int[] values = {4, 1, 1, 2, 2, 5, 7};
+    IntColumn int1 = IntColumn.create("ints", values);
+    assertArrayEquals(values, int1.asIntArray());
+  }
+
+  @Test
+  public void asFloatArray() {
+    float[] values = {4, 1, 1, 2, 2, 5, 7};
+    FloatColumn c1 = FloatColumn.create("f", values);
+    assertArrayEquals(values, c1.asFloatArray());
+  }
+
+  @Test
+  public void asDoubleArray() {
+    double[] values = {4, 1, 1, 2, 2, 5, 7};
+    DoubleColumn c1 = DoubleColumn.create("f", values);
+    assertArrayEquals(values, c1.asDoubleArray());
   }
 
   @Test

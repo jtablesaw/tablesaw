@@ -234,6 +234,10 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
     return output;
   }
 
+  public short[] asShortArray() {
+    return data.toShortArray();
+  }
+
   @Override
   public int compare(Short o1, Short o2) {
     return Short.compare(o1, o2);

@@ -752,6 +752,28 @@ class StringColumnTest {
   }
 
   @Test
+  public void isIn() {
+    String[] data = {"1", "1", "2", "2", "3", "4"};
+    StringColumn col = StringColumn.create("col", data);
+    Table t = Table.create("t", col);
+    String[] data1 = {"1", "2"};
+    StringColumn col1 = StringColumn.create("col1", data1);
+    Table t2 = t.where(t.stringColumn("col").isIn(col1));
+    assertEquals(4, t2.rowCount());
+  }
+
+  @Test
+  public void isNotIn() {
+    String[] data = {"1", "1", "2", "2", "3", "4"};
+    StringColumn col = StringColumn.create("col", data);
+    Table t = Table.create("t", col);
+    String[] data1 = {"1", "2"};
+    StringColumn col1 = StringColumn.create("col1", data1);
+    Table t2 = t.where(t.stringColumn("col").isNotIn(col1));
+    assertEquals(2, t2.rowCount());
+  }
+
+  @Test
   public void countUniqueWithMissing() {
     StringColumn col1 = StringColumn.create("col1");
     col1.append("1");

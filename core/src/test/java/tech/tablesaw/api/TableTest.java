@@ -37,6 +37,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.table.TableSlice;
 
 public class TableTest {
 
@@ -564,6 +565,16 @@ public class TableTest {
         });
   }
 
+  @Test
+  void testAppendWithSlice() throws Exception {
+    Table t = Table.read().csv("../data/bush.csv");
+    Table t2 = t.emptyCopy();
+    TableSlice slice = t.splitOn("who").get(0);
+    t2.append(slice);
+    assertEquals(64, t2.rowCount());
+  }
+
+  @Test
   void testAppendTableWithNonExistingColumns() {
     assertThrows(
         IllegalStateException.class,
@@ -573,6 +584,7 @@ public class TableTest {
         });
   }
 
+  @Test
   void testAppendTableWithAnotherColumnName() {
     assertThrows(
         IllegalStateException.class,
@@ -583,6 +595,7 @@ public class TableTest {
         });
   }
 
+  @Test
   void testAppendTableWithDifferentShape() {
     assertThrows(
         IllegalStateException.class,
