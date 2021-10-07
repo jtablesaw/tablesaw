@@ -58,7 +58,7 @@ public abstract class Relation implements Iterable<Row> {
   }
 
   public String shape() {
-    return rowCount() + " rows X " + columnCount() + " cols";
+    return name() + ": " + rowCount() + " rows X " + columnCount() + " cols";
   }
 
   public Relation removeColumns(int... columnIndexes) {

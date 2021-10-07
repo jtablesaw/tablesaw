@@ -753,13 +753,13 @@ public class CsvReaderTest {
   @Test
   public void testEmptyFileHeaderEnabled() throws IOException {
     Table table1 = Table.read().csv(CsvReadOptions.builder("../data/empty_file.csv").header(false));
-    assertEquals("0 rows X 0 cols", table1.shape());
+    assertEquals("empty_file.csv: 0 rows X 0 cols", table1.shape());
   }
 
   @Test
   public void testEmptyFileHeaderDisabled() throws IOException {
     Table table1 = Table.read().csv(CsvReadOptions.builder("../data/empty_file.csv").header(false));
-    assertEquals("0 rows X 0 cols", table1.shape());
+    assertEquals("empty_file.csv: 0 rows X 0 cols", table1.shape());
   }
 
   @Test
@@ -779,7 +779,7 @@ public class CsvReaderTest {
                 CsvReadOptions.builder("../data/10001_columns.csv")
                     .maxNumberOfColumns(10001)
                     .header(false));
-    assertEquals("1 rows X 10001 cols", table1.shape());
+    assertEquals("10001_columns.csv: 1 rows X 10001 cols", table1.shape());
   }
 
   @Test
@@ -791,7 +791,7 @@ public class CsvReaderTest {
                     .maxNumberOfColumns(3)
                     .commentPrefix('#')
                     .header(true));
-    assertEquals("3 rows X 3 cols", table1.shape());
+    assertEquals("with_comments.csv: 3 rows X 3 cols", table1.shape());
   }
 
   @Test
