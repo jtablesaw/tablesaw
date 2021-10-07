@@ -917,6 +917,16 @@ public class Table extends Relation implements Iterable<Row> {
     return this;
   }
 
+  @Override
+  public Table removeColumns(String... columns) {
+    return (Table) super.removeColumns(columns);
+  }
+
+  @Override
+  public Table removeColumns(int... columnIndexes) {
+    return (Table) super.removeColumns(columnIndexes);
+  }
+
   /**
    * Appends an empty row and returns a Row object indexed to the newly added row so values can be
    * set.
