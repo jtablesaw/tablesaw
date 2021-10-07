@@ -7,16 +7,29 @@ Tablesaw is all about tables and tables are made of columns. You'll often need t
 
 Let's start with a definition. A column is a named vector of data, all of a single type. Some elements may be missing, and it's important to deal with those. We cover that later. 
 
-Here are the supported column types. All of the concrete column types are in the api package. For the details on each kind see the appropriate Javadoc files. 
+Here are the supported column types. All concrete column types are in the api package. For the details on each kind see the appropriate Javadoc files. 
 
 * [BooleanColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/BooleanColumn.html), which holds true and false values
-* [StringColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/StringColumn.html), as in "Hello, World," or "RN183-15F", "charlie@gmail.com";
+
+There are two columns for textual data:  
+* [StringColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/StringColumn.html), is for categorical values that appear multiple times in the column, such as "New York".
+* [TextColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/TextColumn.html), for unique text values as in
+
+There are multiple columns for numeric data, including five concrete types:
 * [NumberColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/NumberColumn.html): an interface for numeric data types.   
+* [ShortColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/ShortColumn.html): is for small integral values.
+* [IntColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/IntColumn.html): is the best integral type for most cases
+* [LongColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/LongColumn.html): for large integral values.   
+* [FloatColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/FloatColum.html): for single-precision floating point.   
+* [DoubleColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/DoubleColumn.html): is usually best floating point type for most values.   
+
+Four kinds of temporal columns are supported:
 * [DateColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/DateColumn.html): A "local date". That is, a date without a timezone. April 10, 2018, for example.
 * [DateTimeColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/DateTimeColumn.html): A local date and time combined. April 10, 2018 at 9:07.
 * [TimeColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/TimeColumn.html): A local time, like 12:47:03
+* [InstantColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/InstantColumn.html): A single point in time without reference to time zones 
 
-There is currently one concrete type of NumberColumn, called [DoubleColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/DoubleColumn.html). As you'd expect, it holds 8-byte floating point numbers, but is used also for integer types. 
+All mathematical operations return double values or instances of [DoubleColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/DoubleColumn.html). As you'd expect, it holds 8-byte floating point numbers. 
 
 We'll begin by looking at the operations that are common to all column types. 
 
