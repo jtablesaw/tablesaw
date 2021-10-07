@@ -5,6 +5,7 @@
 Tablesaw is a large library. We'll use Tablesaw to look at data about Tornadoes. If you haven't already done so,
 we strongly recommend that you read the Getting Started guide, before continuing here. 
 
+The code can be found in the core project, in the test folder under tech/tablesaw/examples/TornadoExample
 ## Exploring Tornadoes 
 
 To give a better sense of how Tablesaw works, we’ll use a tornado data set from NOAA. Here’s what we’ll cover:
@@ -224,4 +225,4 @@ To save a table, you can write it as a CSV file:
 @@snip [write_csv](./src/main/java/tech/tablesaw/docs/Tutorial.java)
 ```
 
-And that’s it for the introduction. Please see the User Guide for more information.
+And that’s it. Please see the User Guide for more information.
