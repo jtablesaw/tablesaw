@@ -95,7 +95,7 @@ public class TableMetadata {
    * the shape() method defined on Relation.
    */
   public String shape() {
-    return getRowCount() + " rows X " + columnCount() + " cols";
+    return getName() + ": " + getRowCount() + " rows X " + columnCount() + " cols";
   }
 
   /** Returns a List of the names of all the columns in this table */

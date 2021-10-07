@@ -216,7 +216,7 @@ class SawStorageTest {
   void metadata() throws Exception {
     Table baseball = Table.read().csv("../data/baseball.csv");
     String path = new SawWriter("../testoutput/baseball", baseball).write();
-    assertEquals("1232 rows X 15 cols", new SawReader(path).shape());
+    assertEquals("baseball.csv: 1232 rows X 15 cols", new SawReader(path).shape());
     assertEquals(1232, new SawReader(path).rowCount());
     assertEquals(15, new SawReader(path).columnCount());
     assertEquals(baseball.columnNames(), new SawReader(path).columnNames());
