@@ -284,6 +284,8 @@ public class DateFiltersTest {
     assertTrue(t.dateColumn("test").isAfter(t.dateColumn("before")).contains(0));
 
     assertFalse(dateColumn.isNotEqualTo(same).contains(0));
+    assertTrue(dateColumn.isNotEqualTo(dateTime).contains(0));
+    assertFalse(dateColumn.isNotEqualTo(dateTime).contains(1));
     assertFalse(t.dateColumn("test").isNotEqualTo(same).contains(0));
     assertFalse(t.dateColumn("test").isNotEqualTo(t.dateColumn("same")).contains(0));
 
