@@ -1,9 +1,6 @@
 package tech.tablesaw.columns.dates;
 
-import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
-import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThanOrEqualTo;
-import static tech.tablesaw.columns.DateAndTimePredicates.isMissing;
-import static tech.tablesaw.columns.DateAndTimePredicates.isNotMissing;
+import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.time.LocalDate;
@@ -246,6 +243,14 @@ public interface DateFilters extends Column<LocalDate>, DateAndDateTimeFilterSpe
 
   default Selection isEqualTo(int packedDate) {
     return eval(isEqualTo, packedDate);
+  }
+
+  default Selection isNotEqualTo(int packedDate) {
+    return eval(isNotEqualTo, packedDate);
+  }
+
+  default Selection isNotEqualTo(LocalDate value) {
+    return isNotEqualTo(PackedLocalDate.pack(value));
   }
 
   /**
