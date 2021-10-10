@@ -191,7 +191,7 @@ public class FixedWidthReaderTest {
             .columnTypesPartial(ImmutableMap.of("Year", STRING))
             .build();
 
-    ColumnType[] columnTypes = new FixedWidthReader().read(options).columnTypes();
+    ColumnType[] columnTypes = new FixedWidthReader().read(options).typeArray();
 
     ColumnType[] expectedTypes = Arrays.copyOf(car_types, car_types.length);
     car_types[0] = STRING; // Year
@@ -213,7 +213,7 @@ public class FixedWidthReaderTest {
             .columnTypes(columnName -> STRING)
             .build();
 
-    ColumnType[] columnTypes = new FixedWidthReader().read(options).columnTypes();
+    ColumnType[] columnTypes = new FixedWidthReader().read(options).typeArray();
 
     assertTrue(Arrays.stream(columnTypes).allMatch(columnType -> columnType.equals(STRING)));
   }

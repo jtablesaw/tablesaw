@@ -25,21 +25,17 @@ import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.roaringbitmap.RoaringBitmap;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.aggregate.PivotTable;
@@ -696,6 +692,12 @@ public class Table extends Relation implements Iterable<Row> {
     }
   }
 
+  /**
+   * Adds the given row to this table
+   *
+   * @deprecated Use {@link #append(Row)} instead.
+   */
+  @Deprecated
   public void addRow(Row row) {
     for (int i = 0; i < row.columnCount(); i++) {
       column(i).appendObj(row.getObject(i));
@@ -871,15 +873,126 @@ public class Table extends Relation implements Iterable<Row> {
     return temp;
   }
 
+  /**
+   * Returns a new table containing copies of the selected columns from this table
+   *
+   * @param columns The columns to copy into the new table
+   * @see #retainColumns(Column[])
+   */
+  public Table selectColumns(Column<?>... columns) {
+    Table t = Table.create(this.name);
+    for (Column<?> c : columns) {
+      t.addColumns(c.copy());
+    }
+    return t;
+  }
+
+  /**
+   * Returns a new table containing copies of the selected columns from this table
+   *
+   * @param columns The columns to copy into the new table
+   * @see #retainColumns(Column[])
+   * @deprecated Use {@link #selectColumns(Column[])} instead
+   */
   public Table select(Column<?>... columns) {
-    return new Table(this.name, columns);
+    return selectColumns(columns);
   }
 
+  /**
+   * Returns a new table containing copies of the selected columns from this table
+   *
+   * @param columnNames The names of the columns to include
+   * @see #retainColumns(String[])
+   */
+  public Table selectColumns(String... columnNames) {
+    Table t = Table.create(this.name);
+    for (String s : columnNames) {
+      t.addColumns(column(s).copy());
+    }
+    return t;
+  }
+
+  /**
+   * Returns a new table containing copies of the selected columns from this table
+   *
+   * @param columnNames The names of the columns to include
+   * @see #retainColumns(String[])
+   * @deprecated Use {@link #selectColumns(String[])} instead
+   */
   public Table select(String... columnNames) {
-    return Table.create(this.name, columns(columnNames).toArray(new Column<?>[0]));
+    return selectColumns(columnNames);
   }
 
-  /** Removes the given columns */
+  /**
+   * Returns a new table containing copies of all the columns from this table, except those at the
+   * given indexes
+   *
+   * @param columnIndexes The indexes of the columns to exclude
+   * @see #removeColumns(int[])
+   */
+  public Table rejectColumns(int... columnIndexes) {
+    Table t = Table.create(this.name);
+    RoaringBitmap bm = new RoaringBitmap();
+    bm.add((long) 0, columnCount());
+    RoaringBitmap excluded = new RoaringBitmap();
+    excluded.add(columnIndexes);
+    bm.andNot(excluded);
+    for (int i : bm) {
+      t.addColumns(column(i).copy());
+    }
+    return t;
+  }
+
+  /**
+   * Returns a new table containing copies of all the columns from this table, except those named in
+   * the argument
+   *
+   * @param columnNames The names of the columns to exclude
+   * @see #removeColumns(int[])
+   */
+  public Table rejectColumns(String... columnNames) {
+    IntArrayList indices = new IntArrayList();
+    for (String s : columnNames) {
+      indices.add(columnIndex(s));
+    }
+    return rejectColumns(indices.toIntArray());
+  }
+
+  /**
+   * Returns a new table containing copies of all the columns from this table, except those named in
+   * the argument
+   *
+   * @param columns The names of the columns to exclude
+   * @see #removeColumns(int[])
+   */
+  public Table rejectColumns(Column<?>... columns) {
+    IntArrayList indices = new IntArrayList();
+    for (Column<?> c : columns) {
+      indices.add(columnIndex(c));
+    }
+    return rejectColumns(indices.toIntArray());
+  }
+
+  /**
+   * Returns a new table containing copies of the columns at the given indexes
+   *
+   * @param columnIndexes The indexes of the columns to include
+   * @see #retainColumns(int[])
+   */
+  public Table selectColumns(int... columnIndexes) {
+    Table t = Table.create(this.name);
+    RoaringBitmap bm = new RoaringBitmap();
+    bm.add((long) 0, columnCount());
+    RoaringBitmap excluded = new RoaringBitmap();
+    excluded.add(columnIndexes);
+    bm.andNot(excluded);
+    for (int i : bm) {
+      t.addColumns(column(i).copy());
+    }
+    return t;
+  }
+
+  /** Removes the given columns from this table and returns this table */
   @Override
   public Table removeColumns(Column<?>... columns) {
     columnList.removeAll(Arrays.asList(columns));
@@ -901,6 +1014,14 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /** Removes all columns except for those given in the argument from this table */
+  public Table retainColumns(int... columnIndexes) {
+    List<Column<?>> retained = columns(columnIndexes);
+    columnList.clear();
+    columnList.addAll(retained);
+    return this;
+  }
+
+  /** Removes all columns except for those given in the argument from this table */
   public Table retainColumns(String... columnNames) {
     List<Column<?>> retained = columns(columnNames);
     columnList.clear();
@@ -908,11 +1029,24 @@ public class Table extends Relation implements Iterable<Row> {
     return this;
   }
 
+  /** Returns this table after adding the data from the argument */
   @SuppressWarnings({"rawtypes", "unchecked"})
   public Table append(Relation tableToAppend) {
     for (final Column column : columnList) {
       final Column columnToAppend = tableToAppend.column(column.name());
       column.append(columnToAppend);
+    }
+    return this;
+  }
+
+  /**
+   * Appends the given row to this table and returns the table.
+   *
+   * <p>Note: The table is modified in-place TODO: Performance
+   */
+  public Table append(Row row) {
+    for (int i = 0; i < row.columnCount(); i++) {
+      column(i).appendObj(row.getObject(i));
     }
     return this;
   }
@@ -1272,7 +1406,7 @@ public class Table extends Relation implements Iterable<Row> {
 
   private ColumnType validateTableHasSingleColumnType(int startingColumn) {
     // If all columns are of the same type
-    ColumnType[] columnTypes = this.columnTypes();
+    ColumnType[] columnTypes = this.typeArray();
     long distinctColumnTypesCount =
         Arrays.stream(columnTypes).skip(startingColumn).distinct().count();
     if (distinctColumnTypesCount > 1) {

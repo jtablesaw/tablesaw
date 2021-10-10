@@ -97,7 +97,7 @@ public class Tutorial implements DocsSourceFile {
                 .isGreaterThan(300) // 300 yards
                 .or(result.doubleColumn("Length").isGreaterThan(10))); // 10 miles
 
-    result = result.select("State", "Date");
+    result = result.selectColumns("State", "Date");
 
     // @@ filtering
     outputWriter.write(result.first(3), "filtering");

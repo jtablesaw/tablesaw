@@ -51,7 +51,7 @@ public class SmileConverterTest {
         moneyball.numberColumn("RS").subtract(moneyball.numberColumn("RA")).setName("RD"));
 
     LinearModel winsModel =
-        OLS.fit(Formula.lhs("RD"), moneyball.select("W", "RD").smile().toDataFrame());
+        OLS.fit(Formula.lhs("RD"), moneyball.selectColumns("W", "RD").smile().toDataFrame());
     assertNotNull(winsModel.toString());
   }
 

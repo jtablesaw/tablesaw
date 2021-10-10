@@ -203,7 +203,7 @@ public class XlsxReaderTest {
                         ImmutableMap.of("shortcol", DOUBLE, "intcol", LONG, "formulacol", FLOAT))
                     .build());
 
-    ColumnType[] columnTypes = table.columnTypes();
+    ColumnType[] columnTypes = table.typeArray();
 
     assertArrayEquals(
         columnTypes,
@@ -235,7 +235,7 @@ public class XlsxReaderTest {
                     .columnTypes(columName -> STRING)
                     .build());
 
-    ColumnType[] columnTypes = table.columnTypes();
+    ColumnType[] columnTypes = table.typeArray();
 
     assertTrue(Arrays.stream(columnTypes).allMatch(columnType -> columnType.equals(STRING)));
   }

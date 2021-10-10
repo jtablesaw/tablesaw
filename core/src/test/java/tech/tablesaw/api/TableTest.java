@@ -73,6 +73,23 @@ public class TableTest {
   }
 
   @Test
+  void types() throws Exception {
+    Table t = Table.read().csv("../data/bush.csv");
+    List<ColumnType> types = t.types();
+    assertEquals(3, types.size());
+    assertTrue(types.contains(ColumnType.STRING));
+    assertTrue(types.contains(ColumnType.LOCAL_DATE));
+    assertTrue(types.contains(ColumnType.INTEGER));
+  }
+
+  @Test
+  void containsColumn() throws Exception {
+    Table t = Table.read().csv("../data/bush.csv");
+    assertTrue(t.containsColumn("who"));
+    assertTrue(t.containsColumn("date"));
+  }
+
+  @Test
   void reorderColumns() throws Exception {
     Table t = Table.read().csv("../data/bush.csv");
     List<String> names = t.columnNames();
@@ -149,6 +166,60 @@ public class TableTest {
     assertTrue(t.containsColumn(sc2));
     assertFalse(t.containsColumn(sc1));
     assertFalse(t.containsColumn(sc3));
+  }
+
+  @Test
+  void testRejectColumns() {
+    StringColumn sc = StringColumn.create("0");
+    StringColumn sc1 = StringColumn.create("1");
+    StringColumn sc2 = StringColumn.create("2");
+    StringColumn sc3 = StringColumn.create("3");
+    Table t = Table.create("t", sc, sc1, sc2, sc3);
+    Table t2 = t.rejectColumns(1, 3);
+    assertTrue(t.containsColumn(sc));
+    assertTrue(t.containsColumn(sc2));
+    assertTrue(t.containsColumn(sc1));
+    assertTrue(t.containsColumn(sc3));
+    assertTrue(t2.containsColumn(sc.name()));
+    assertTrue(t2.containsColumn(sc2.name()));
+    assertFalse(t2.containsColumn(sc1.name()));
+    assertFalse(t2.containsColumn(sc3.name()));
+  }
+
+  @Test
+  void testRejectColumns3() {
+    StringColumn sc = StringColumn.create("0");
+    StringColumn sc1 = StringColumn.create("1");
+    StringColumn sc2 = StringColumn.create("2");
+    StringColumn sc3 = StringColumn.create("3");
+    Table t = Table.create("t", sc, sc1, sc2, sc3);
+    Table t2 = t.rejectColumns(sc1, sc3);
+    assertTrue(t.containsColumn(sc));
+    assertTrue(t.containsColumn(sc2));
+    assertTrue(t.containsColumn(sc1));
+    assertTrue(t.containsColumn(sc3));
+    assertTrue(t2.containsColumn(sc.name()));
+    assertTrue(t2.containsColumn(sc2.name()));
+    assertFalse(t2.containsColumn(sc1.name()));
+    assertFalse(t2.containsColumn(sc3.name()));
+  }
+
+  @Test
+  void testRejectColumns2() {
+    StringColumn sc = StringColumn.create("0");
+    StringColumn sc1 = StringColumn.create("1");
+    StringColumn sc2 = StringColumn.create("2");
+    StringColumn sc3 = StringColumn.create("3");
+    Table t = Table.create("t", sc, sc1, sc2, sc3);
+    Table t2 = t.rejectColumns("1", "3");
+    assertTrue(t.containsColumn(sc));
+    assertTrue(t.containsColumn(sc2));
+    assertTrue(t.containsColumn(sc1));
+    assertTrue(t.containsColumn(sc3));
+    assertTrue(t2.containsColumn(sc.name()));
+    assertTrue(t2.containsColumn(sc2.name()));
+    assertFalse(t2.containsColumn(sc1.name()));
+    assertFalse(t2.containsColumn(sc3.name()));
   }
 
   @Test
@@ -245,14 +316,14 @@ public class TableTest {
   @Test
   void testSelect1() throws Exception {
     Table t = Table.read().csv("../data/bush.csv");
-    Table t1 = t.select(t.column(1), t.column(2));
+    Table t1 = t.selectColumns(t.column(1), t.column(2));
     assertEquals(2, t1.columnCount());
   }
 
   @Test
   void testSelect2() throws Exception {
     Table t = Table.read().csv("../data/bush.csv");
-    Table t1 = t.select(t.column(0), t.column(1), t.column(2), t.dateColumn(0).year());
+    Table t1 = t.selectColumns(t.column(0), t.column(1), t.column(2), t.dateColumn(0).year());
     assertEquals(4, t1.columnCount());
     assertEquals("date year", t1.column(3).name());
   }
@@ -557,11 +628,13 @@ public class TableTest {
     assertTableColumnSize(table, column, secondColumnSize);
   }
 
+  @Test
   void testAppendNull() {
+    Row r = null;
     assertThrows(
         NullPointerException.class,
         () -> {
-          table.append(null);
+          table.append(r);
         });
   }
 
@@ -781,7 +854,7 @@ public class TableTest {
     StringColumn s3 = StringColumn.create("3", "3", "2", "1");
     IntColumn s4 = IntColumn.create("4", 1, 2, 3);
     Table t = Table.create("t", s3, s2, s1, s4);
-    assertDoesNotThrow(() -> t.where(t.intColumn("4").isIn((int) 1, (int) 2)));
+    assertDoesNotThrow(() -> t.where(t.intColumn("4").isIn(1, 2)));
   }
 
   @Test

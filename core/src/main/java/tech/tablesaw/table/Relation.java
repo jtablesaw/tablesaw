@@ -170,11 +170,38 @@ public abstract class Relation implements Iterable<Row> {
   /**
    * Returns an array of the column types of all columns in the relation, including duplicates as
    * appropriate, and maintaining order
+   *
+   * @deprecated for API name consistency. Use {@link #typeArray()} instead.
    */
+  @Deprecated
   public ColumnType[] columnTypes() {
     ColumnType[] columnTypes = new ColumnType[columnCount()];
     for (int i = 0; i < columnCount(); i++) {
       columnTypes[i] = columns().get(i).type();
+    }
+    return columnTypes;
+  }
+
+  /**
+   * Returns an array of the column types of all columns in the relation, including duplicates as
+   * appropriate, and maintaining order
+   */
+  public ColumnType[] typeArray() {
+    ColumnType[] columnTypes = new ColumnType[columnCount()];
+    for (int i = 0; i < columnCount(); i++) {
+      columnTypes[i] = columns().get(i).type();
+    }
+    return columnTypes;
+  }
+
+  /**
+   * Returns a List of the column types of all columns in the relation, including duplicates as
+   * appropriate, and maintaining order
+   */
+  public List<ColumnType> types() {
+    List<ColumnType> columnTypes = new ArrayList<>(columnCount());
+    for (int i = 0; i < columnCount(); i++) {
+      columnTypes.add(columns().get(i).type());
     }
     return columnTypes;
   }
@@ -190,6 +217,10 @@ public abstract class Relation implements Iterable<Row> {
     return widths;
   }
 
+  /**
+   * Returns a String containing a 'pretty-printed' representation of this table containing at most
+   * 20 rows. The 20 rows are the first and last ten in this table.
+   */
   @Override
   public String toString() {
     return print();
@@ -206,10 +237,18 @@ public abstract class Relation implements Iterable<Row> {
     return new String(baos.toByteArray());
   }
 
+  /**
+   * Returns a String containing a 'pretty-printed' representation of this table containing at most
+   * 20 rows. The 20 rows are the first and last ten in this table.
+   */
   public String print() {
     return print(20);
   }
 
+  /**
+   * Returns the structure of the this relation as a 3-column Table, consisting of Index (an
+   * IntColumn), Column Name (a StringColumn), and Column Type (a StringColumn)
+   */
   public Table structure() {
     Table t = Table.create("Structure of " + name());
 
@@ -313,7 +352,6 @@ public abstract class Relation implements Iterable<Row> {
     for (int i : columnIndices) {
       cols.add(numberColumn(i));
     }
-
     return cols;
   }
 
@@ -323,7 +361,6 @@ public abstract class Relation implements Iterable<Row> {
     for (String name : columnNames) {
       cols.add(numberColumn(name));
     }
-
     return cols;
   }
 
@@ -516,5 +553,10 @@ public abstract class Relation implements Iterable<Row> {
 
   public boolean containsColumn(Column<?> column) {
     return columns().contains(column);
+  }
+
+  public boolean containsColumn(String columnName) {
+    String lowerCase = columnName.toLowerCase();
+    return columnNames().stream().anyMatch(e -> e.toLowerCase().equals(lowerCase));
   }
 }
