@@ -33,7 +33,6 @@ import static tech.tablesaw.aggregate.AggregateFunctions.percentile95;
 import static tech.tablesaw.aggregate.AggregateFunctions.percentile99;
 import static tech.tablesaw.aggregate.AggregateFunctions.proportionFalse;
 import static tech.tablesaw.aggregate.AggregateFunctions.proportionTrue;
-import static tech.tablesaw.aggregate.AggregateFunctions.standardDeviation;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 import static tech.tablesaw.api.QuerySupport.and;
@@ -196,20 +195,33 @@ class AggregateFunctionsTest {
     StringColumn sc = StringColumn.create("group_key", group);
 
     Table table = Table.create(sc, bc);
-    Table summarized = table.summarize("test", proportionTrue, proportionFalse)
-                            .by("group_key");
+    Table summarized = table.summarize("test", proportionTrue, proportionFalse).by("group_key");
 
     assertEquals(2, summarized.rowCount());
-    assertEquals(1, summarized.where(summarized.stringColumn("group_key").isEqualTo("a")).rowCount());
-    assertEquals(1, summarized.where(summarized.stringColumn("group_key").isEqualTo("b")).rowCount());
-    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn(0).isEqualTo("a")).column(1).type());
-    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn(0).isEqualTo("a")).column(2).type());
-    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn(0).isEqualTo("b")).column(1).type());
-    assertEquals(ColumnType.DOUBLE, summarized.where(summarized.stringColumn(0).isEqualTo("b")).column(2).type());
-    assertEquals(0.25, summarized.where(summarized.stringColumn(0).isEqualTo("a")).doubleColumn(1).get(0));
-    assertEquals(0.75, summarized.where(summarized.stringColumn(0).isEqualTo("a")).doubleColumn(2).get(0));
-    assertEquals(0.75, summarized.where(summarized.stringColumn(0).isEqualTo("b")).doubleColumn(1).get(0));
-    assertEquals(0.25, summarized.where(summarized.stringColumn(0).isEqualTo("b")).doubleColumn(2).get(0));
+    assertEquals(
+        1, summarized.where(summarized.stringColumn("group_key").isEqualTo("a")).rowCount());
+    assertEquals(
+        1, summarized.where(summarized.stringColumn("group_key").isEqualTo("b")).rowCount());
+    assertEquals(
+        ColumnType.DOUBLE,
+        summarized.where(summarized.stringColumn(0).isEqualTo("a")).column(1).type());
+    assertEquals(
+        ColumnType.DOUBLE,
+        summarized.where(summarized.stringColumn(0).isEqualTo("a")).column(2).type());
+    assertEquals(
+        ColumnType.DOUBLE,
+        summarized.where(summarized.stringColumn(0).isEqualTo("b")).column(1).type());
+    assertEquals(
+        ColumnType.DOUBLE,
+        summarized.where(summarized.stringColumn(0).isEqualTo("b")).column(2).type());
+    assertEquals(
+        0.25, summarized.where(summarized.stringColumn(0).isEqualTo("a")).doubleColumn(1).get(0));
+    assertEquals(
+        0.75, summarized.where(summarized.stringColumn(0).isEqualTo("a")).doubleColumn(2).get(0));
+    assertEquals(
+        0.75, summarized.where(summarized.stringColumn(0).isEqualTo("b")).doubleColumn(1).get(0));
+    assertEquals(
+        0.25, summarized.where(summarized.stringColumn(0).isEqualTo("b")).doubleColumn(2).get(0));
   }
 
   @Test
@@ -311,7 +323,7 @@ class AggregateFunctionsTest {
     StringColumn stringColumn = StringColumn.create("s", strings);
 
     Table table = Table.create("test", booleanColumn, numberColumn);
-    table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation).by(stringColumn);
+    table.summarize(booleanColumn, numberColumn, countTrue, stdDev).by(stringColumn);
   }
 
   @Test
@@ -327,8 +339,7 @@ class AggregateFunctionsTest {
     StringColumn stringColumn = StringColumn.create("s", strings);
 
     Table table = Table.create("test", booleanColumn, numberColumn, stringColumn);
-    Table summarized =
-        table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation).apply();
+    Table summarized = table.summarize(booleanColumn, numberColumn, countTrue, stdDev).apply();
     assertEquals(1.2909944487358056, summarized.doubleColumn(1).get(0), 0.00001);
   }
 

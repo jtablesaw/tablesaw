@@ -261,8 +261,7 @@ public class ColumnTest {
     String[] strings = new String[] {"-1.0", "0.0", "1.0"};
     DoubleColumn doubleColumn = DoubleColumn.create("t1", new double[] {-1, 0, 1});
     StringColumn stringColumn1 =
-        (StringColumn)
-            doubleColumn.mapInto(toString, StringColumn.create("T", doubleColumn.size()));
+        doubleColumn.mapInto(toString, StringColumn.create("T", doubleColumn.size()));
     assertContentEquals(stringColumn1, strings);
   }
 
@@ -278,8 +277,7 @@ public class ColumnTest {
               LocalDateTime.of(2018, 9, 2, 21, 42)
             });
     StringColumn stringColumn1 =
-        (StringColumn)
-            dateColumn.mapInto(toSeason, StringColumn.create("Season", dateColumn.size()));
+        dateColumn.mapInto(toSeason, StringColumn.create("Season", dateColumn.size()));
     assertContentEquals(stringColumn1, strings);
   }
 

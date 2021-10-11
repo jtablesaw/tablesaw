@@ -636,7 +636,7 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void testLoadFromUrlWithColumnTypes() throws IOException {
+  public void testLoadFromUrlWithtypeArray() throws IOException {
     ColumnType[] types = {LOCAL_DATE, DOUBLE, STRING};
     Table table;
     try (InputStream input = new File("../data/bush.csv").toURI().toURL().openStream()) {
@@ -852,8 +852,8 @@ public class CsvReaderTest {
   @Test
   public void testReadCsvWithPercentage1() throws IOException {
     Table table = Table.read().csv(CsvReadOptions.builder("../data/currency_percent.csv"));
-    assertEquals(DoubleColumnType.instance(), table.columnTypes()[1]);
-    assertEquals(DoubleColumnType.instance(), table.columnTypes()[2]);
+    assertEquals(DoubleColumnType.instance(), table.typeArray()[1]);
+    assertEquals(DoubleColumnType.instance(), table.typeArray()[2]);
   }
 
   @Test
@@ -910,7 +910,7 @@ public class CsvReaderTest {
                             .get(columnName)))
             .build();
 
-    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+    ColumnType[] columnTypes = new CsvReader().read(options).typeArray();
 
     ColumnType[] expectedTypes = Arrays.copyOf(bus_types, bus_types.length);
     expectedTypes[0] = STRING; // stop_id
@@ -931,7 +931,7 @@ public class CsvReaderTest {
             .columnTypes(columnName -> STRING)
             .build();
 
-    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+    ColumnType[] columnTypes = new CsvReader().read(options).typeArray();
 
     assertTrue(Arrays.stream(columnTypes).allMatch(columnType -> columnType.equals(STRING)));
   }
@@ -959,7 +959,7 @@ public class CsvReaderTest {
                     FLOAT))
             .build();
 
-    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+    ColumnType[] columnTypes = new CsvReader().read(options).typeArray();
 
     assertArrayEquals(bus_types, columnTypes);
   }
@@ -976,7 +976,7 @@ public class CsvReaderTest {
             .columnTypes(new ColumnType[] {SHORT, STRING, STRING, FLOAT, FLOAT})
             .build();
 
-    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+    ColumnType[] columnTypes = new CsvReader().read(options).typeArray();
 
     assertArrayEquals(bus_types, columnTypes);
   }
@@ -994,7 +994,7 @@ public class CsvReaderTest {
             .columnTypesPartial(ImmutableMap.of("stop_id", SHORT, "stop_name", STRING))
             .build();
 
-    ColumnType[] columnTypes = new CsvReader().read(options).columnTypes();
+    ColumnType[] columnTypes = new CsvReader().read(options).typeArray();
 
     assertArrayEquals(new ColumnType[] {SHORT, STRING}, columnTypes);
   }

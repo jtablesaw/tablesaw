@@ -689,14 +689,14 @@ public class DataFrameJoinerTest {
 
   @Test
   public void innerJoinSingleColumn() {
-    Table joined = SP500.select("Date").joinOn("Date").inner(ONE_YEAR.select("Date"));
+    Table joined = SP500.selectColumns("Date").joinOn("Date").inner(ONE_YEAR.selectColumns("Date"));
     assertEquals(5, joined.rowCount());
     assertEquals(1, joined.columnCount());
   }
 
   @Test
   public void innerJoinSingleColumnOnRight() {
-    Table joined = SP500.joinOn("Date").inner(ONE_YEAR.select("Date"));
+    Table joined = SP500.joinOn("Date").inner(ONE_YEAR.selectColumns("Date"));
     assertEquals(5, joined.rowCount());
     assertEquals(2, joined.columnCount());
   }
@@ -801,7 +801,7 @@ public class DataFrameJoinerTest {
 
   @Test
   public void fullOuterJoinColTwoOnlyJoinKeys() {
-    Table joined = ANIMAL_FEED.joinOn("Animal").fullOuter(ANIMAL_NAMES.select("Animal"));
+    Table joined = ANIMAL_FEED.joinOn("Animal").fullOuter(ANIMAL_NAMES.selectColumns("Animal"));
     assertEquals(2, joined.columnCount());
     assertEquals(8, joined.rowCount());
   }

@@ -71,7 +71,7 @@ public class SliceBugTests {
 
     Table filteredTable =
         salesTable
-            .select(salesTable.columnNames().toArray(new String[0]))
+            .selectColumns(salesTable.columnNames().toArray(new String[0]))
             .where(
                 salesTable
                     .instantColumn("sale_timestamp")

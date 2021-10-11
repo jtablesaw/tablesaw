@@ -38,7 +38,7 @@ public class JsonReaderTest {
     assertEquals(3, table.rowCount());
     assertEquals("Date", table.column(0).name());
     assertEquals("Value", table.column(1).name());
-    assertEquals(ColumnType.LONG, table.columnTypes()[0]);
+    assertEquals(ColumnType.LONG, table.typeArray()[0]);
     assertEquals(1453438800000L, table.column("Date").get(0));
   }
 
@@ -49,7 +49,7 @@ public class JsonReaderTest {
     Table table = Table.read().string(json, "json");
     assertEquals(2, table.columnCount());
     assertEquals(3, table.rowCount());
-    assertEquals(ColumnType.LONG, table.columnTypes()[0]);
+    assertEquals(ColumnType.LONG, table.typeArray()[0]);
   }
 
   @Test
@@ -61,7 +61,7 @@ public class JsonReaderTest {
     assertEquals(3, table.rowCount());
     assertEquals("a", table.column(0).name());
     assertEquals("b.c", table.column(1).name());
-    assertEquals(ColumnType.LONG, table.columnTypes()[0]);
+    assertEquals(ColumnType.LONG, table.typeArray()[0]);
   }
 
   @Test
@@ -76,7 +76,7 @@ public class JsonReaderTest {
             IntColumn.create("C", new int[] {Integer.MIN_VALUE, 123}));
     Table actual = Table.read().string(json, "json");
 
-    assertEquals(ColumnType.INTEGER, actual.columnTypes()[0]);
+    assertEquals(ColumnType.INTEGER, actual.typeArray()[0]);
     assertEquals(expected.column("A").asList(), actual.column("A").asList());
     assertEquals(expected.column("B").asList(), actual.column("B").asList());
     assertEquals(expected.column("C").asList(), actual.column("C").asList());
@@ -93,7 +93,7 @@ public class JsonReaderTest {
                 JsonReadOptions.builderFromString(json)
                     .columnTypesPartial(ImmutableMap.of("Date", INSTANT))
                     .build())
-            .columnTypes();
+            .typeArray();
 
     assertArrayEquals(columnTypes, new ColumnType[] {INSTANT, DOUBLE});
   }
@@ -106,7 +106,7 @@ public class JsonReaderTest {
     ColumnType[] columnTypes =
         new JsonReader()
             .read(JsonReadOptions.builderFromString(json).columnTypes(columnName -> STRING).build())
-            .columnTypes();
+            .typeArray();
 
     assertArrayEquals(columnTypes, new ColumnType[] {STRING, STRING});
   }
