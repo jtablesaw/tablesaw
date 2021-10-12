@@ -15,6 +15,7 @@
 package tech.tablesaw.api;
 
 import static java.util.stream.Collectors.toList;
+import static tech.tablesaw.aggregate.AggregateFunctions.count;
 import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
 import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
@@ -1195,22 +1196,28 @@ public class Table extends Relation implements Iterable<Row> {
    * Returns a table containing two columns, the grouping column, and a column named "Count" that
    * contains the counts for each grouping column value
    */
-  public Table countBy(CategoricalColumn<?> groupingColumn) {
-    return groupingColumn.countByCategory();
+  public Table countBy(CategoricalColumn<?>... groupingColumns) {
+    String[] names = new String[groupingColumns.length];
+    for (int i = 0; i < groupingColumns.length; i++) {
+      names[i] = groupingColumns[i].name();
+    }
+    return countBy(names);
   }
 
   /**
-   * Returns a table containing two columns, the grouping column, and a column named "Count" that
-   * contains the counts for each grouping column value
+   * Returns a table containing a column for each grouping column, and a column named "Count" that
+   * contains the counts for each combination of grouping column values
    *
-   * @param categoricalColumnName The name of a CategoricalColumn in this table
-   * @return A table containing counts of rows grouped by the categorical column
+   * @param categoricalColumnNames The name(s) of one or more CategoricalColumns in this table
+   * @return A table containing counts of rows grouped by the categorical columns
    * @throws ClassCastException if the categoricalColumnName parameter is the name of a column that
    *     does not * implement categorical
    */
-  public Table countBy(String categoricalColumnName) {
-    CategoricalColumn<?> groupingColumn = categoricalColumn(categoricalColumnName);
-    return groupingColumn.countByCategory();
+  public Table countBy(String... categoricalColumnNames) {
+    Table t = summarize(column(0).name(), count).by(categoricalColumnNames);
+    t.column(t.columnCount() - 1).setName("Count");
+    t.replaceColumn("Count", (t.doubleColumn("Count").asIntColumn()));
+    return t;
   }
 
   /**
