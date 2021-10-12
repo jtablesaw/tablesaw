@@ -242,12 +242,6 @@ public class TableTest {
   }
 
   @Test
-  void testCountBy() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    assertEquals(3, t.countBy("who", "date").columnCount());
-  }
-
-  @Test
   void appendEmptyColumnToPopulatedTable() {
     assertThrows(
         IllegalArgumentException.class,

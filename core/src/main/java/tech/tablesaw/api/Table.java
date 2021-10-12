@@ -15,7 +15,6 @@
 package tech.tablesaw.api;
 
 import static java.util.stream.Collectors.toList;
-import static tech.tablesaw.aggregate.AggregateFunctions.count;
 import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
 import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
@@ -37,7 +36,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.roaringbitmap.RoaringBitmap;
-import tech.tablesaw.aggregate.*;
+import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.aggregate.CrossTab;
+import tech.tablesaw.aggregate.PivotTable;
+import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
@@ -1198,18 +1200,17 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns a table containing a column for each grouping column, and a column named "Count" that
-   * contains the counts for each combination of grouping column values
+   * Returns a table containing two columns, the grouping column, and a column named "Count" that
+   * contains the counts for each grouping column value
    *
-   * @param categoricalColumnNames The name(s) of one or more CategoricalColumns in this table
-   * @return A table containing counts of rows grouped by the categorical columns
+   * @param categoricalColumnName The name of a CategoricalColumn in this table
+   * @return A table containing counts of rows grouped by the categorical column
    * @throws ClassCastException if the categoricalColumnName parameter is the name of a column that
    *     does not * implement categorical
    */
-  public Table countBy(String... categoricalColumnNames) {
-    Table t = summarize(column(0).name(), count).by(categoricalColumnNames);
-    t.column(t.columnCount() - 1).setName("Count");
-    return t;
+  public Table countBy(String categoricalColumnName) {
+    CategoricalColumn<?> groupingColumn = categoricalColumn(categoricalColumnName);
+    return groupingColumn.countByCategory();
   }
 
   /**
