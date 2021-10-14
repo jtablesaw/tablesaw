@@ -11,10 +11,16 @@ public class RollingColumn {
 
   protected final Column<?> column;
   protected final int window;
+  protected final boolean center;
 
-  public RollingColumn(Column<?> column, int window) {
+  public RollingColumn(Column<?> column, int window, boolean center) {
     this.column = column;
     this.window = window;
+    this.center = center;
+  }
+
+  public RollingColumn(Column<?> column, int window) {
+    this(column, window, false);
   }
 
   protected String generateNewColumnName(AggregateFunction<?, ?> function) {
@@ -31,7 +37,9 @@ public class RollingColumn {
   public <INCOL extends Column<?>, OUT> Column<?> calc(AggregateFunction<INCOL, OUT> function) {
     // TODO: the subset operation copies the array. creating a view would likely be more efficient
     Column<?> result = function.returnType().create(generateNewColumnName(function));
-    for (int i = 0; i < window - 1; i++) {
+    int bound = center ? (window - 1) / 2 : window - 1;
+
+    for (int i = 0; i < bound; i++) {
       result.appendMissing();
     }
     for (int origColIndex = 0; origColIndex < column.size() - window + 1; origColIndex++) {
@@ -44,6 +52,11 @@ public class RollingColumn {
         ((DoubleColumn) result).append(number.doubleValue());
       } else {
         result.appendObj(answer);
+      }
+    }
+    if (center) {
+      for (int i = 0; i < bound; i++) {
+        result.appendMissing();
       }
     }
     return result;

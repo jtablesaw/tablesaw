@@ -171,6 +171,14 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     return new RollingColumn(this, windowSize);
   }
 
+  /**
+   * @param windowSize size of the rolling window to use
+   * @param center set the operation result at the center of the window or at the end of it
+   */
+  default RollingColumn rolling(final int windowSize, final boolean center) {
+    return new RollingColumn(this, windowSize, center);
+  }
+
   String getUnformattedString(int r);
 
   boolean isMissing(int rowNumber);
