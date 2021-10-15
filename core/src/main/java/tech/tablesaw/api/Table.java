@@ -20,7 +20,6 @@ import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
 import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
@@ -115,6 +114,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
   }
 
+  /** TODO: Add documentation */
   private static void autoRegisterReadersAndWriters() {
     try (ScanResult scanResult =
         new ClassGraph().enableAllInfo().whitelistPackages("tech.tablesaw.io").scan()) {
@@ -223,10 +223,15 @@ public class Table extends Relation implements Iterable<Row> {
     return key;
   }
 
+  /** Returns an object that an be used to read data from a file into a new Table */
   public static DataFrameReader read() {
     return new DataFrameReader(defaultReaderRegistry);
   }
 
+  /**
+   * Returns an object that an be used to write data from a Table into a file. If the file exists,
+   * it is over-written
+   */
   public DataFrameWriter write() {
     return new DataFrameWriter(defaultWriterRegistry, this);
   }
@@ -385,6 +390,7 @@ public class Table extends Relation implements Iterable<Row> {
     return columnList;
   }
 
+  /** Returns the columns in this table as an array */
   public Column<?>[] columnArray() {
     return columnList.toArray(new Column<?>[columnCount()]);
   }
@@ -422,8 +428,6 @@ public class Table extends Relation implements Iterable<Row> {
 
   /**
    * Returns the index of the given column (its position in the list of columns)
-   *
-   * <p>
    *
    * @throws IllegalArgumentException if the column is not present in this table
    */
@@ -705,17 +709,20 @@ public class Table extends Relation implements Iterable<Row> {
     }
   }
 
+  /** Returns a new Row object with its position set to the given zero-based row index. */
   public Row row(int rowIndex) {
     Row row = new Row(Table.this);
     row.at(rowIndex);
     return row;
   }
 
+  /** Returns a table containing the rows contained in the given array of row indices */
   public Table rows(int... rowNumbers) {
     Preconditions.checkArgument(Ints.max(rowNumbers) <= rowCount());
     return where(Selection.with(rowNumbers));
   }
 
+  /** Returns a table EXCLUDING the rows contained in the given array of row indices */
   public Table dropRows(int... rowNumbers) {
     Preconditions.checkArgument(Ints.max(rowNumbers) <= rowCount());
     Selection selection = Selection.withRange(0, rowCount()).andNot(Selection.with(rowNumbers));
@@ -723,8 +730,8 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Retains the first rowCount rows if rowCount positive. Retains the last rowCount rows if
-   * rowCount negative.
+   * Returns a new table containing the first rowCount rows if rowCount positive. Returns the last
+   * rowCount rows if rowCount negative.
    */
   public Table inRange(int rowCount) {
     Preconditions.checkArgument(rowCount <= rowCount());
@@ -733,14 +740,18 @@ public class Table extends Relation implements Iterable<Row> {
     return where(Selection.withRange(rowStart, rowEnd));
   }
 
+  /**
+   * Returns a new table containing the rows contained in the range from rowStart inclusive to
+   * rowEnd exclusive
+   */
   public Table inRange(int rowStart, int rowEnd) {
     Preconditions.checkArgument(rowEnd <= rowCount());
     return where(Selection.withRange(rowStart, rowEnd));
   }
 
   /**
-   * Drops the first rowCount rows if rowCount positive. Drops the last rowCount rows if rowCount
-   * negative.
+   * Returns a new table EXCLUDING the first rowCount rows if rowCount positive. Drops the last
+   * rowCount rows if rowCount negative.
    */
   public Table dropRange(int rowCount) {
     Preconditions.checkArgument(rowCount <= rowCount());
@@ -749,25 +760,36 @@ public class Table extends Relation implements Iterable<Row> {
     return where(Selection.withRange(rowStart, rowEnd));
   }
 
+  /**
+   * Returns a table EXCLUDING the rows contained in the range from rowStart inclusive to rowEnd
+   * exclusive
+   */
   public Table dropRange(int rowStart, int rowEnd) {
     Preconditions.checkArgument(rowEnd <= rowCount());
     return where(Selection.withoutRange(0, rowCount(), rowStart, rowEnd));
   }
 
+  /** Returns a table containing the rows contained in the given Selection */
   public Table where(Selection selection) {
     Table newTable = this.emptyCopy(selection.size());
     Rows.copyRowsToTable(selection, this, newTable);
     return newTable;
   }
 
+  /** Returns a new Table made by applying the given function to this table */
   public Table where(Function<Table, Selection> selection) {
     return where(selection.apply(this));
   }
 
+  /**
+   * Returns a new Table made by EXCLUDING any rows returned when the given function is applied to
+   * this table
+   */
   public Table dropWhere(Function<Table, Selection> selection) {
     return where(not(selection));
   }
 
+  /** Returns a table EXCLUDING the rows contained in the given Selection */
   public Table dropWhere(Selection selection) {
     Selection opposite = new BitmapBackedSelection();
     opposite.addRange(0, rowCount());
@@ -1000,13 +1022,16 @@ public class Table extends Relation implements Iterable<Row> {
     return this;
   }
 
-  /** Removes the given columns with missing values */
+  /** Removes all columns with missing values from this table, and returns this table. */
   public Table removeColumnsWithMissingValues() {
     removeColumns(columnList.stream().filter(x -> x.countMissing() > 0).toArray(Column<?>[]::new));
     return this;
   }
 
-  /** Removes all columns except for those given in the argument from this table */
+  /**
+   * Removes all columns except for those given in the argument from this table and returns this
+   * table
+   */
   public Table retainColumns(Column<?>... columns) {
     List<Column<?>> retained = Arrays.asList(columns);
     columnList.clear();
@@ -1014,7 +1039,10 @@ public class Table extends Relation implements Iterable<Row> {
     return this;
   }
 
-  /** Removes all columns except for those given in the argument from this table */
+  /**
+   * Removes all columns except for those given in the argument from this table and returns this
+   * table
+   */
   public Table retainColumns(int... columnIndexes) {
     List<Column<?>> retained = columns(columnIndexes);
     columnList.clear();
@@ -1022,7 +1050,10 @@ public class Table extends Relation implements Iterable<Row> {
     return this;
   }
 
-  /** Removes all columns except for those given in the argument from this table */
+  /**
+   * Removes all columns except for those given in the argument from this table and returns this
+   * table
+   */
   public Table retainColumns(String... columnNames) {
     List<Column<?>> retained = columns(columnNames);
     columnList.clear();
@@ -1052,11 +1083,13 @@ public class Table extends Relation implements Iterable<Row> {
     return this;
   }
 
+  /** Removes the columns with the given names from this table and returns this table */
   @Override
   public Table removeColumns(String... columns) {
     return (Table) super.removeColumns(columns);
   }
 
+  /** Removes the columns at the given indices from this table and returns this table */
   @Override
   public Table removeColumns(int... columnIndexes) {
     return (Table) super.removeColumns(columnIndexes);
@@ -1096,24 +1129,59 @@ public class Table extends Relation implements Iterable<Row> {
     return this;
   }
 
+  /**
+   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * using the given functions. This object implements reduce/aggregation operations on a table.
+   *
+   * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
+   * can compute sub-totals using the Summarizer:by() method.
+   */
   public Summarizer summarize(String columName, AggregateFunction<?, ?>... functions) {
     return summarize(column(columName), functions);
   }
 
+  /**
+   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * using the given functions. This object implements reduce/aggregation operations on a table.
+   *
+   * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
+   * can compute sub-totals using the Summarizer:by() method.
+   */
   public Summarizer summarize(List<String> columnNames, AggregateFunction<?, ?>... functions) {
     return new Summarizer(this, columnNames, functions);
   }
 
+  /**
+   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * using the given functions. This object implements reduce/aggregation operations on a table.
+   *
+   * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
+   * can compute sub-totals using the Summarizer:by() method.
+   */
   public Summarizer summarize(
       String numericColumn1Name, String numericColumn2Name, AggregateFunction<?, ?>... functions) {
     return summarize(column(numericColumn1Name), column(numericColumn2Name), functions);
   }
 
+  /**
+   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * using the given functions. This object implements reduce/aggregation operations on a table.
+   *
+   * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
+   * can compute sub-totals using the Summarizer:by() method.
+   */
   public Summarizer summarize(
       String col1Name, String col2Name, String col3Name, AggregateFunction<?, ?>... functions) {
     return summarize(column(col1Name), column(col2Name), column(col3Name), functions);
   }
 
+  /**
+   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * using the given functions. This object implements reduce/aggregation operations on a table.
+   *
+   * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
+   * can compute sub-totals using the Summarizer:by() method.
+   */
   public Summarizer summarize(
       String col1Name,
       String col2Name,
@@ -1124,15 +1192,36 @@ public class Table extends Relation implements Iterable<Row> {
         column(col1Name), column(col2Name), column(col3Name), column(col4Name), functions);
   }
 
+  /**
+   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * using the given functions. This object implements reduce/aggregation operations on a table.
+   *
+   * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
+   * can compute sub-totals using the Summarizer:by() method.
+   */
   public Summarizer summarize(Column<?> numberColumn, AggregateFunction<?, ?>... function) {
     return new Summarizer(this, numberColumn, function);
   }
 
+  /**
+   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * using the given functions. This object implements reduce/aggregation operations on a table.
+   *
+   * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
+   * can compute sub-totals using the Summarizer:by() method.
+   */
   public Summarizer summarize(
       Column<?> column1, Column<?> column2, AggregateFunction<?, ?>... function) {
     return new Summarizer(this, column1, column2, function);
   }
 
+  /**
+   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * using the given functions. This object implements reduce/aggregation operations on a table.
+   *
+   * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
+   * can compute sub-totals using the Summarizer:by() method.
+   */
   public Summarizer summarize(
       Column<?> column1,
       Column<?> column2,
@@ -1141,6 +1230,13 @@ public class Table extends Relation implements Iterable<Row> {
     return new Summarizer(this, column1, column2, column3, function);
   }
 
+  /**
+   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * using the given functions. This object implements reduce/aggregation operations on a table.
+   *
+   * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
+   * can compute sub-totals using the Summarizer:by() method.
+   */
   public Summarizer summarize(
       Column<?> column1,
       Column<?> column2,
@@ -1153,16 +1249,26 @@ public class Table extends Relation implements Iterable<Row> {
   /**
    * Returns a table with n by m + 1 cells. The first column contains labels, the other cells
    * contains the counts for every unique combination of values from the two specified columns in
-   * this table
+   * this table.
    */
   public Table xTabCounts(String column1Name, String column2Name) {
     return CrossTab.counts(this, categoricalColumn(column1Name), categoricalColumn(column2Name));
   }
 
+  /**
+   * Returns a table with n by m + 1 cells. The first column contains labels, the other cells
+   * contains the row percents for every unique combination of values from the two specified columns
+   * in this table. Row percents total to 100% in every row.
+   */
   public Table xTabRowPercents(String column1Name, String column2Name) {
     return CrossTab.rowPercents(this, column1Name, column2Name);
   }
 
+  /**
+   * Returns a table with n by m + 1 cells. The first column contains labels, the other cells
+   * contains the column percents for every unique combination of values from the two specified
+   * columns in this table. Column percents total to 100% in every column.
+   */
   public Table xTabColumnPercents(String column1Name, String column2Name) {
     return CrossTab.columnPercents(this, column1Name, column2Name);
   }
@@ -1177,8 +1283,9 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns a table with two columns, the first contains a value each unique value in the argument,
-   * and the second contains the proportion of observations having that value
+   * TODO: Rename the method to xTabProportions, deprecating this version Returns a table with two
+   * columns, the first contains a value each unique value in the argument, and the second contains
+   * the proportion of observations having that value
    */
   public Table xTabPercents(String column1Name) {
     return CrossTab.percents(this, column1Name);
@@ -1230,6 +1337,7 @@ public class Table extends Relation implements Iterable<Row> {
     return new DataFrameJoiner(this, columnNames);
   }
 
+  /** Returns a table containing the number of missing values in each column in this table */
   public Table missingValueCounts() {
     return summarize(columnNames(), countMissing).apply();
   }
@@ -1316,6 +1424,7 @@ public class Table extends Relation implements Iterable<Row> {
     };
   }
 
+  /** Returns the rows in this table as a Stream */
   public Stream<Row> stream() {
     return Streams.stream(iterator());
   }
@@ -1478,7 +1587,6 @@ public class Table extends Relation implements Iterable<Row> {
    *     columns must have the same type
    * @param dropMissing drop any row where the value is missing
    */
-  @Beta
   public Table melt(
       List<String> idVariables, List<NumericColumn<?>> measuredVariables, Boolean dropMissing) {
 
@@ -1577,7 +1685,6 @@ public class Table extends Relation implements Iterable<Row> {
    *
    * <p>Cast function details: {@see https://www.jstatsoft.org/article/view/v021i12}
    */
-  @Beta
   public Table cast() {
     StringColumn variableNames = stringColumn(MELT_VARIABLE_COLUMN_NAME);
     List<Column<?>> idColumns =
