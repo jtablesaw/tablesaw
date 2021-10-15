@@ -204,8 +204,8 @@ public class Row implements Iterator<Row> {
 
   /**
    * Returns a Boolean value from this Row at the column of the given name. An IllegalStateException
-   * is thrown if the column is not present in the Row and an IllegalArgumentException is thrown if
-   * it has a different
+   * is thrown if the column is not present in the Row and an * IllegalArgumentException is thrown
+   * if the column has a different type
    */
   public Boolean getBoolean(String columnName) {
     return booleanColumnMap.get(columnName).get(getIndex(rowNumber));
@@ -213,17 +213,27 @@ public class Row implements Iterator<Row> {
 
   /**
    * Returns a LocalDate value from this Row at the column of the given name. An
-   * IllegalArgumentException is throw if the column is not present in the Row or has a different
-   * type
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if the column has a different type
    */
   public LocalDate getDate(String columnName) {
     return dateColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a LocalDate value from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if the column has a different type
+   */
   public LocalDate getDate(int columnIndex) {
     return dateColumnMap.get(columnNames[columnIndex]).get(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a LocalDateTime from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type
+   */
   public LocalDateTime getDateTime(int columnIndex) {
     return getDateTime(columnNames[columnIndex]);
   }
@@ -231,12 +241,17 @@ public class Row implements Iterator<Row> {
   /**
    * Returns a LocalDateTime value from this Row at the column of the given name. An
    * IllegalStateException is thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different
+   * IllegalArgumentException is thrown if it has a different type
    */
   public LocalDateTime getDateTime(String columnName) {
     return ((DateTimeColumn) columnMap.get(columnName)).get(getIndex(rowNumber));
   }
 
+  /**
+   * Returns an Instant from this Row at the column with the given index. An IllegalStateException
+   * is thrown if the column is not present in the Row and an IllegalArgumentException is thrown if
+   * it has a different type
+   */
   public Instant getInstant(int columnIndex) {
     return getInstant(columnNames[columnIndex]);
   }
@@ -244,12 +259,17 @@ public class Row implements Iterator<Row> {
   /**
    * Returns an Instant value from this Row at the column of the given name. An
    * IllegalStateException is thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different
+   * IllegalArgumentException is thrown if it has a different type
    */
   public Instant getInstant(String columnName) {
     return ((InstantColumn) columnMap.get(columnName)).get(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a double from this Row at the column with the given index. An IllegalStateException is
+   * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
+   * has a different type
+   */
   public double getDouble(int columnIndex) {
     return getDouble(columnNames[columnIndex]);
   }
@@ -257,12 +277,17 @@ public class Row implements Iterator<Row> {
   /**
    * Returns a double from this Row at the column of the given name. An IllegalStateException is
    * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
-   * has a different
+   * has a different type
    */
   public double getDouble(String columnName) {
     return doubleColumnMap.get(columnName).getDouble(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a float from this Row at the column with the given index. An IllegalStateException is
+   * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
+   * has a different type
+   */
   public float getFloat(int columnIndex) {
     return getFloat(columnNames[columnIndex]);
   }
@@ -270,12 +295,17 @@ public class Row implements Iterator<Row> {
   /**
    * Returns a float from this Row at the column of the given name. An IllegalStateException is
    * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
-   * has a different
+   * has a different type
    */
   public float getFloat(String columnName) {
     return floatColumnMap.get(columnName).getFloat(getIndex(rowNumber));
   }
 
+  /**
+   * Returns an int from this Row at the column with the given index. An IllegalStateException is
+   * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
+   * has a different type
+   */
   public int getInt(int columnIndex) {
     return getInt(columnNames[columnIndex]);
   }
@@ -283,12 +313,17 @@ public class Row implements Iterator<Row> {
   /**
    * Returns an int from this Row at the column of the given name. An IllegalStateException is
    * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
-   * has a different
+   * has a different type
    */
   public int getInt(String columnName) {
     return intColumnMap.get(columnName).getInt(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a long from this Row at the column with the given index. An IllegalStateException is
+   * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
+   * has a different type
+   */
   public long getLong(int columnIndex) {
     return getLong(columnNames[columnIndex]);
   }
@@ -296,7 +331,7 @@ public class Row implements Iterator<Row> {
   /**
    * Returns a long from this Row at the column of the given name. An IllegalStateException is
    * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
-   * has a different
+   * has a different type
    */
   public long getLong(String columnName) {
     return longColumnMap.get(columnName).getLong(getIndex(rowNumber));
@@ -310,6 +345,10 @@ public class Row implements Iterator<Row> {
     return columnMap.get(columnName).get(getIndex(rowNumber));
   }
 
+  /**
+   * Returns an Object representing the LocalTime from this Row at the column with the given index.
+   * An IllegalStateException is thrown if the column is not present in the Row
+   */
   public Object getObject(int columnIndex) {
     return columnMap.get(columnNames[columnIndex]).get(getIndex(rowNumber));
   }
@@ -317,16 +356,26 @@ public class Row implements Iterator<Row> {
   /**
    * Returns an int representing the LocalDate from this Row at the column of the given name. An
    * IllegalStateException is thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different
+   * IllegalArgumentException is thrown if it has a different type
    */
   public int getPackedDate(String columnName) {
     return dateColumnMap.get(columnName).getIntInternal(getIndex(rowNumber));
   }
 
+  /**
+   * Returns an int representing the LocalTime from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type type
+   */
   public int getPackedDate(int columnIndex) {
     return dateColumnMap.get(columnNames[columnIndex]).getIntInternal(getIndex(rowNumber));
   }
 
+  /**
+   * Returns an long representing the LocalTime from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type type
+   */
   public long getPackedInstant(int columnIndex) {
     return instantColumnMap.get(columnNames[columnIndex]).getLongInternal(getIndex(rowNumber));
   }
@@ -334,7 +383,7 @@ public class Row implements Iterator<Row> {
   /**
    * Returns a long representing the Instant from this Row at the column of the given name. An
    * IllegalStateException is thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different
+   * IllegalArgumentException is thrown if it has a different type
    */
   public long getPackedInstant(String columnName) {
     return instantColumnMap.get(columnName).getLongInternal(getIndex(rowNumber));
@@ -343,12 +392,17 @@ public class Row implements Iterator<Row> {
   /**
    * Returns a long representing the LocalDateTime from this Row at the column of the given name. An
    * IllegalStateException is thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different
+   * IllegalArgumentException is thrown if it has a different type
    */
   public long getPackedDateTime(String columnName) {
     return dateTimeColumnMap.get(columnName).getLongInternal(getIndex(rowNumber));
   }
 
+  /**
+   * Returns an long representing the LocalTime from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type type
+   */
   public long getPackedDateTime(int columnIndex) {
     return dateTimeColumnMap.get(columnNames[columnIndex]).getLongInternal(getIndex(rowNumber));
   }
@@ -356,16 +410,26 @@ public class Row implements Iterator<Row> {
   /**
    * Returns an int representing the LocalTime from this Row at the column of the given name. An
    * IllegalStateException is thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different
+   * IllegalArgumentException is thrown if it has a different type
    */
   public int getPackedTime(String columnName) {
     return timeColumnMap.get(columnName).getIntInternal(getIndex(rowNumber));
   }
 
+  /**
+   * Returns an int representing the LocalTime from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type type
+   */
   public int getPackedTime(int columnIndex) {
     return timeColumnMap.get(columnNames[columnIndex]).getIntInternal(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a short value from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type type
+   */
   public short getShort(int columnIndex) {
     return getShort(columnNames[columnIndex]);
   }
@@ -375,6 +439,11 @@ public class Row implements Iterator<Row> {
     return rowNumber;
   }
 
+  /**
+   * Returns a String value from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type type
+   */
   public String getString(int columnIndex) {
     return getString(columnNames[columnIndex]);
   }
@@ -382,7 +451,7 @@ public class Row implements Iterator<Row> {
   /**
    * Returns a short from this Row at the column of the given name. An IllegalStateException is
    * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
-   * has a different
+   * has a different type
    */
   public short getShort(String columnName) {
     return shortColumnMap.get(columnName).getShort(getIndex(rowNumber));
@@ -391,25 +460,35 @@ public class Row implements Iterator<Row> {
   /**
    * Returns a String representing the text from this Row at the column of the given name. An
    * IllegalStateException is thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different
+   * IllegalArgumentException is thrown if it has a different type
    */
   public String getText(String columnName) {
     return stringColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a String value from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type type
+   */
   public String getText(int columnIndex) {
     return getString(columnNames[columnIndex]);
   }
 
   /**
    * Returns a LocalTime value from this Row at the column of the given name. An
-   * IllegalArgumentException is throw if the column is not present in the Row or has a different
-   * type
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type type
    */
   public LocalTime getTime(String columnName) {
     return timeColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a LocalTime value from this Row at the column with the given index. An
+   * IllegalStateException is thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type type
+   */
   public LocalTime getTime(int columnIndex) {
     return timeColumnMap.get(columnNames[columnIndex]).get(getIndex(rowNumber));
   }
@@ -417,7 +496,7 @@ public class Row implements Iterator<Row> {
   /**
    * Returns a String from this Row at the column of the given name. An IllegalStateException is
    * thrown if the column is not present in the Row and an IllegalArgumentException is thrown if it
-   * has a different
+   * has a different type
    */
   public String getString(String columnName) {
     return stringColumnMap.get(columnName).get(getIndex(rowNumber));
@@ -430,11 +509,13 @@ public class Row implements Iterator<Row> {
     return x.isMissing(i);
   }
 
+  /** Returns true if there's at least one more row beyond the current one. */
   @Override
   public boolean hasNext() {
     return rowNumber < this.tableSlice.rowCount() - 1;
   }
 
+  /** Increments the row pointer, making the next row's data accessible */
   @Override
   public Row next() {
     if (!hasNext()) {
@@ -460,94 +541,232 @@ public class Row implements Iterator<Row> {
     columnMap.get(columnName).setMissing(getIndex(rowNumber));
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setBoolean(int columnIndex, boolean value) {
     setBoolean(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setBoolean(String columnName, boolean value) {
     booleanColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setDate(int columnIndex, LocalDate value) {
     setDate(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setDate(String columnName, LocalDate value) {
     dateColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setDateTime(int columnIndex, LocalDateTime value) {
     setDateTime(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setDateTime(String columnName, LocalDateTime value) {
     dateTimeColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setInstant(int columnIndex, Instant value) {
     setInstant(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setInstant(String columnName, Instant value) {
     instantColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setDouble(int columnIndex, double value) {
     setDouble(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setDouble(String columnName, double value) {
     doubleColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setFloat(int columnIndex, float value) {
     setFloat(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setFloat(String columnName, float value) {
     floatColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setInt(int columnIndex, int value) {
     setInt(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setInt(String columnName, int value) {
     intColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setLong(int columnIndex, long value) {
     setLong(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setLong(String columnName, long value) {
     longColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setShort(int columnIndex, short value) {
     setShort(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setShort(String columnName, short value) {
     shortColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setString(int columnIndex, String value) {
     setString(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setString(String columnName, String value) {
     stringColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setText(int columnIndex, String value) {
     setString(columnNames[columnIndex], value);
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setText(String columnName, String value) {
     stringColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 
+  /**
+   * Sets the value of the column at the given index and this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setTime(int columnIndex, LocalTime value) {
     setTime(columnNames[columnIndex], value);
   }
@@ -562,10 +781,15 @@ public class Row implements Iterator<Row> {
     return tableSlice.mappedRowNumber(rowNumber);
   }
 
+  /**
+   * Returns a double representing the value held in the column with the given name at this row, for
+   * any numeric column type
+   */
   public double getNumber(String columnName) {
     return numericColumnMap.get(columnName).getDouble(getIndex(rowNumber));
   }
 
+  /** Returns the type of the named column */
   public ColumnType getColumnType(String columnName) {
     return columnMap.get(columnName).type();
   }
@@ -580,6 +804,12 @@ public class Row implements Iterator<Row> {
     return t.print();
   }
 
+  /**
+   * Sets the value of the column with the given name at this Row to the given value. An
+   * IllegalStateException is * thrown if the column is not present in the Row and an
+   * IllegalArgumentException is thrown if it has a different type to that named in the method
+   * signature
+   */
   public void setTime(String columnName, LocalTime value) {
     timeColumnMap.get(columnName).set(rowNumber, value);
   }
