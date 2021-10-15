@@ -638,29 +638,26 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   /** Appends a missing value appropriate to the column */
   Column<T> appendMissing();
 
-  /**
-   * Returns a new column containing a subset
-   *
-   * @param selection
-   * @return
-   */
+  /** Returns a new column containing the subset referenced by the {@link Selection} */
   Column<T> where(Selection selection);
 
+  /** Returns a copy of this column with the missing values removed */
   Column<T> removeMissing();
 
   /**
-   * Returns a column of the same type as the receiver, containing only the unique values of the
-   * receiver.
+   * Returns a column of the same type containing only the unique values
    *
    * @return a {@link Column}
    */
   Column<T> unique();
 
+  /** Returns a column of the same type containing the first {@code numRows} of this column. */
   default Column<T> first(final int numRows) {
     int newRowCount = Math.min(numRows, size());
     return inRange(0, newRowCount);
   }
 
+  /** Returns a column of the same type containing the last {@code numRows} of this column. */
   default Column<T> last(final int numRows) {
     int newRowCount = Math.min(numRows, size());
     return inRange(size() - newRowCount, size());
