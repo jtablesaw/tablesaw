@@ -34,17 +34,22 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
 
   private AbstractColumnParser<T> parser;
 
+  /**
+   * Constructs a column with the given {@link ColumnType}, name, and {@link AbstractColumnParser}
+   */
   public AbstractColumn(ColumnType type, final String name, final AbstractColumnParser<T> parser) {
     this.type = type;
     setParser(parser);
     setName(name);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String name() {
     return name;
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C setName(final String name) {
@@ -52,11 +57,13 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
     return (C) this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public AbstractColumnParser<T> parser() {
     return parser;
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C setParser(final AbstractColumnParser<T> parser) {
@@ -65,97 +72,114 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
     return (C) this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ColumnType type() {
     return type;
   }
 
+  /** {@inheritDoc} */
   @Override
   public abstract Column<T> emptyCopy();
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C filter(Predicate<? super T> test) {
     return (C) Column.super.filter(test);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C sorted(Comparator<? super T> comp) {
     return (C) Column.super.sorted(comp);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C map(Function<? super T, ? extends T> fun) {
     return (C) Column.super.map(fun);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C min(Column<T> other) {
     return (C) Column.super.min(other);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C max(Column<T> other) {
     return (C) Column.super.max(other);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C set(Selection condition, Column<T> other) {
     return (C) Column.super.set(condition, other);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C set(Selection rowSelection, T newValue) {
     return (C) Column.super.set(rowSelection, newValue);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C first(int numRows) {
     return (C) Column.super.first(numRows);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C last(int numRows) {
     return (C) Column.super.last(numRows);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C sampleN(int n) {
     return (C) Column.super.sampleN(n);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C sampleX(double proportion) {
     return (C) Column.super.sampleX(proportion);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C subset(int[] rows) {
     return (C) Column.super.subset(rows);
   }
 
+  /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public C inRange(int start, int end) {
     return (C) Column.super.inRange(start, end);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return type().getPrinterFriendlyName() + " column: " + name();
   }
 
+  /** {@inheritDoc} */
   @Override
   public StringColumn asStringColumn() {
     StringColumn sc = StringColumn.create(name() + " strings");
@@ -165,6 +189,7 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
     return sc;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int indexOf(final Object o) {
     return IntStream.range(0, size()).filter(i -> get(i).equals(o)).findFirst().orElse(-1);
