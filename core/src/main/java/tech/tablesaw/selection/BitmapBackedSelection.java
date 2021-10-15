@@ -20,6 +20,7 @@ import java.util.BitSet;
 import java.util.Random;
 import org.roaringbitmap.RoaringBitmap;
 
+/** A Selection implemented using bitmaps */
 public class BitmapBackedSelection implements Selection {
 
   private static final Random random = new Random();
@@ -36,31 +37,37 @@ public class BitmapBackedSelection implements Selection {
     addRange(0, size);
   }
 
+  /** Constructs a selection containing the elements in the given array */
   public BitmapBackedSelection(int[] arr) {
     this.bitmap = new RoaringBitmap();
     add(arr);
   }
 
+  /** Constructs a selection containing the elements in the given bitmap */
   public BitmapBackedSelection(RoaringBitmap bitmap) {
     this.bitmap = bitmap;
   }
 
+  /** Constructs an empty Selection */
   public BitmapBackedSelection() {
     this.bitmap = new RoaringBitmap();
   }
 
+  /** {@inheritDoc} */
   @Override
   public Selection removeRange(long start, long end) {
     this.bitmap.remove(start, end);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Selection flip(int rangeStart, int rangeEnd) {
     this.bitmap.flip((long) rangeStart, rangeEnd);
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Selection add(int... ints) {
     bitmap.add(ints);
@@ -72,11 +79,13 @@ public class BitmapBackedSelection implements Selection {
     return "Selection of size: " + bitmap.getCardinality();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int size() {
     return bitmap.getCardinality();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int[] toArray() {
     return bitmap.toArray();
@@ -107,23 +116,27 @@ public class BitmapBackedSelection implements Selection {
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Selection andNot(Selection otherSelection) {
     bitmap.andNot(toBitmap(otherSelection));
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isEmpty() {
     return size() == 0;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Selection clear() {
     bitmap.clear();
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean contains(int i) {
     return bitmap.contains(i);
@@ -141,6 +154,7 @@ public class BitmapBackedSelection implements Selection {
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int get(int i) {
     return bitmap.select(i);
@@ -186,6 +200,7 @@ public class BitmapBackedSelection implements Selection {
     };
   }
 
+  /** Returns a Selection containing all indexes in the array */
   protected static Selection with(int... rows) {
     BitmapBackedSelection selection = new BitmapBackedSelection();
     for (int i : rows) {
@@ -194,12 +209,20 @@ public class BitmapBackedSelection implements Selection {
     return selection;
   }
 
+  /**
+   * Returns a Selection containing all indexes in the range start (inclusive) to end (exclusive),
+   */
   protected static Selection withRange(int start, int end) {
     BitmapBackedSelection selection = new BitmapBackedSelection();
     selection.addRange(start, end);
     return selection;
   }
 
+  /**
+   * Returns a Selection containing all values from totalRangeStart to totalRangeEnd, except for
+   * those in the range from excludedRangeStart to excludedRangeEnd. Start values are inclusive, end
+   * values exclusive.
+   */
   protected static Selection withoutRange(
       int totalRangeStart, int totalRangeEnd, int excludedRangeStart, int excludedRangeEnd) {
     Preconditions.checkArgument(excludedRangeStart >= totalRangeStart);
