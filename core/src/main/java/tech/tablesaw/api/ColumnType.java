@@ -20,6 +20,10 @@ import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.ReadOptions;
 
+/**
+ * Specifies the type of data held by a column and a small number of methods specialized for each
+ * type
+ */
 public interface ColumnType {
 
   final Map<String, ColumnType> values = new HashMap<>();
@@ -39,14 +43,22 @@ public interface ColumnType {
   TextColumnType TEXT = TextColumnType.instance();
   SkipColumnType SKIP = SkipColumnType.instance();
 
+  /** Registers the given ColumnType, identifying it as supported */
   static void register(ColumnType type) {
     values.put(type.name(), type);
   }
 
+  /** Returns an array containing all supported ColumnTypes */
   static ColumnType[] values() {
     return values.values().toArray(new ColumnType[0]);
   }
 
+  /**
+   * Returns the columnType named by the argument
+   *
+   * @param name a valid column type name
+   * @return the ColumnType with that name
+   */
   static ColumnType valueOf(String name) {
     Preconditions.checkNotNull(name);
 
@@ -57,12 +69,16 @@ public interface ColumnType {
     return result;
   }
 
+  /** Returns a column of this type with the given name */
   Column<?> create(String name);
 
+  /** Returns the name of this ColumnType */
   String name();
 
+  /** Returns the size in bytes of a single element held in columns of this type */
   int byteSize();
 
+  /** Returns a printer-friendly version of this ColumnType's name */
   String getPrinterFriendlyName();
 
   AbstractColumnParser<?> customParser(ReadOptions options);
