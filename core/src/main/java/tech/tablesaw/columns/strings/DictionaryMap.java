@@ -10,6 +10,11 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+/**
+ * Interface implemented by the objects that perform the dictionary encoding of the Strings in
+ * StringColumn, as well as the primitive values that represent the individual instances of the
+ * String in the column.
+ */
 public interface DictionaryMap {
 
   void sortDescending();

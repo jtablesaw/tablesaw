@@ -5,6 +5,14 @@ import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.io.ReadOptions;
 
+/**
+ * A ColumnType for columns that holds String values.
+ *
+ * <p>It is optimized for situations where the values in the column rarely if ever repeat, so the
+ * dictionary encoding performed by StringColumn would be detrimental to memory usage.
+ *
+ * <p>See also: {@link tech.tablesaw.api.StringColumn}
+ */
 public class TextColumnType extends AbstractColumnType {
 
   public static final int BYTE_SIZE = 4;
