@@ -13,26 +13,36 @@ import tech.tablesaw.columns.Column;
 public abstract class AbstractStringColumn<C extends AbstractColumn<C, String>>
     extends AbstractColumn<C, String>
     implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
+
   private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
+  /** Constructs a column of the given ColumnType, name, and parser */
   public AbstractStringColumn(ColumnType type, String name, AbstractColumnParser<String> parser) {
     super(type, name, parser);
   }
 
+  /**
+   * Sets an {@link StringColumnFormatter} which will be used to format the display of data from
+   * this column when it is printed (using, for example, Table:print()) and optionally when written
+   * to a text file like a CSV.
+   */
   public void setPrintFormatter(StringColumnFormatter formatter) {
     Preconditions.checkNotNull(formatter);
     this.printFormatter = formatter;
   }
 
+  /** Returns the current {@link StringColumnFormatter}. */
   public StringColumnFormatter getPrintFormatter() {
     return printFormatter;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getString(int row) {
     return printFormatter.format(get(row));
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getUnformattedString(int row) {
     return String.valueOf(get(row));
@@ -72,21 +82,25 @@ public abstract class AbstractStringColumn<C extends AbstractColumn<C, String>>
     return bottom;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Column<String> append(Column<String> column, int row) {
     return append(column.getUnformattedString(row));
   }
 
+  /** {@inheritDoc} */
   @Override
   public Column<String> set(int row, Column<String> column, int sourceRow) {
     return set(row, column.getUnformattedString(sourceRow));
   }
 
+  /** {@inheritDoc} */
   @Override
   public int byteSize() {
     return type().byteSize();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int compare(String o1, String o2) {
     return o1.compareTo(o2);
