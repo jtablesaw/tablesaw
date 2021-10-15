@@ -21,8 +21,10 @@ import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.index.*;
 import tech.tablesaw.selection.Selection;
 
+/** Implements joins between two or more Tables */
 public class DataFrameJoiner {
 
+  /** The types of joins that are supported */
   private enum JoinType {
     INNER,
     LEFT_OUTER,
