@@ -16,6 +16,10 @@ import tech.tablesaw.api.InstantColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
 
+/**
+ * A tool that con be used to convert a Relation to a format suitable for use with the Smile machine
+ * learning library.
+ */
 public class SmileConverter {
 
   private final Relation table;

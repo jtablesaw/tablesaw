@@ -5,6 +5,9 @@ import java.util.List;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.table.Relation;
 
+/**
+ * A tool for converting a Table or other Relation to a two-dimensional array of numeric primitives.
+ */
 public class TableConverter {
 
   private final Relation table;

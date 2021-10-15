@@ -13,8 +13,10 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
 
 /**
- * Represents a row in a Relation (either a Table or TableSlice), allowing iteration ofover the
- * relation.
+ * Represents a row in a Relation (either a Table or TableSlice), allowing iteration over the
+ * relation. During iteration, the Row slides over the table row-wise, exposing data as it advances,
+ * acting as a cursor into the table. There is only one Row object for the entire table during
+ * iteration.
  *
  * <p>Implementation Note: The row is always implemented over a TableSlice. If the constructor
  * argument is a table, it is wrapped by a slice over the whole table.
@@ -99,18 +101,27 @@ public class Row implements Iterator<Row> {
   private final ColumnMap<NumericColumn<? extends Number>> numericColumnMap = new ColumnMap<>();
   private int rowNumber;
 
+  /** Constructs a Row object for the given table */
   public Row(Table table) {
     this(table, -1);
   }
 
+  /** Constructs a Row object for the given TableSlice */
   public Row(TableSlice tableSlice) {
     this(tableSlice, -1);
   }
 
+  /**
+   * Constructs a Row object for the given Table, with the Row positioned at the given 0-based index
+   */
   public Row(Table table, int rowNumber) {
     this(new TableSlice(table), rowNumber);
   }
 
+  /**
+   * Constructs a Row object for the given TableSlice, with the Row positioned at the given 0-based
+   * index
+   */
   public Row(TableSlice tableSlice, int rowNumber) {
     this.tableSlice = tableSlice;
     columnNames = tableSlice.columnNames().toArray(new String[0]);
@@ -161,10 +172,12 @@ public class Row implements Iterator<Row> {
     }
   }
 
+  /** Moves this Row to the given 0-based row index */
   public void at(int rowNumber) {
     this.rowNumber = rowNumber;
   }
 
+  /** Returns the number of columns in this Row */
   public int columnCount() {
     return tableSlice.columnCount();
   }
@@ -174,6 +187,7 @@ public class Row implements Iterator<Row> {
     return tableSlice.columnNames();
   }
 
+  /** Returns a Boolean value from this Row at the given column index. */
   public Boolean getBoolean(int columnIndex) {
     return getBoolean(columnNames[columnIndex]);
   }
@@ -188,10 +202,20 @@ public class Row implements Iterator<Row> {
     return booleanColumnMap.get(columnName).getByte(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a Boolean value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public Boolean getBoolean(String columnName) {
     return booleanColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a LocalDate value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public LocalDate getDate(String columnName) {
     return dateColumnMap.get(columnName).get(getIndex(rowNumber));
   }
@@ -204,6 +228,11 @@ public class Row implements Iterator<Row> {
     return getDateTime(columnNames[columnIndex]);
   }
 
+  /**
+   * Returns a LocalDateTime value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public LocalDateTime getDateTime(String columnName) {
     return ((DateTimeColumn) columnMap.get(columnName)).get(getIndex(rowNumber));
   }
@@ -212,6 +241,11 @@ public class Row implements Iterator<Row> {
     return getInstant(columnNames[columnIndex]);
   }
 
+  /**
+   * Returns an Instant value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public Instant getInstant(String columnName) {
     return ((InstantColumn) columnMap.get(columnName)).get(getIndex(rowNumber));
   }
@@ -220,6 +254,11 @@ public class Row implements Iterator<Row> {
     return getDouble(columnNames[columnIndex]);
   }
 
+  /**
+   * Returns a double value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public double getDouble(String columnName) {
     return doubleColumnMap.get(columnName).getDouble(getIndex(rowNumber));
   }
@@ -228,6 +267,11 @@ public class Row implements Iterator<Row> {
     return getFloat(columnNames[columnIndex]);
   }
 
+  /**
+   * Returns a float value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public float getFloat(String columnName) {
     return floatColumnMap.get(columnName).getFloat(getIndex(rowNumber));
   }
@@ -236,6 +280,10 @@ public class Row implements Iterator<Row> {
     return getInt(columnNames[columnIndex]);
   }
 
+  /**
+   * Returns an int value from this Row at the column of the given name. An IllegalArgumentException
+   * is throw if the column is not present in the Row or has a different type
+   */
   public int getInt(String columnName) {
     return intColumnMap.get(columnName).getInt(getIndex(rowNumber));
   }
@@ -244,6 +292,10 @@ public class Row implements Iterator<Row> {
     return getLong(columnNames[columnIndex]);
   }
 
+  /**
+   * Returns a long value from this Row at the column of the given name. An IllegalArgumentException
+   * is throw if the column is not present in the Row or has a different type
+   */
   public long getLong(String columnName) {
     return longColumnMap.get(columnName).getLong(getIndex(rowNumber));
   }
@@ -300,10 +352,20 @@ public class Row implements Iterator<Row> {
     return getString(columnNames[columnIndex]);
   }
 
+  /**
+   * Returns a short value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public short getShort(String columnName) {
     return shortColumnMap.get(columnName).getShort(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a String value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public String getText(String columnName) {
     return stringColumnMap.get(columnName).get(getIndex(rowNumber));
   }
@@ -312,6 +374,11 @@ public class Row implements Iterator<Row> {
     return getString(columnNames[columnIndex]);
   }
 
+  /**
+   * Returns a LocalTime value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public LocalTime getTime(String columnName) {
     return timeColumnMap.get(columnName).get(getIndex(rowNumber));
   }
@@ -320,10 +387,16 @@ public class Row implements Iterator<Row> {
     return timeColumnMap.get(columnNames[columnIndex]).get(getIndex(rowNumber));
   }
 
+  /**
+   * Returns a String value from this Row at the column of the given name. An
+   * IllegalArgumentException is throw if the column is not present in the Row or has a different
+   * type
+   */
   public String getString(String columnName) {
     return stringColumnMap.get(columnName).get(getIndex(rowNumber));
   }
 
+  /** Returns true if the value at columnName is missing, and false otherwise */
   public boolean isMissing(String columnName) {
     Column<?> x = columnMap.get(columnName);
     int i = getIndex(rowNumber);
