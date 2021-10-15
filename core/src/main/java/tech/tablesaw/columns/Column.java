@@ -41,10 +41,13 @@ import tech.tablesaw.util.StringUtils;
  */
 public interface Column<T> extends Iterable<T>, Comparator<T> {
 
+  /** Returns the number of elements in this column, including missing values */
   int size();
 
+  /** Returns a table containing a ColumnType specific summary of the data in this column */
   Table summary();
 
+  /** Returns an array of objects as appropriate for my type of column */
   T[] asObjectArray();
 
   /**
@@ -92,6 +95,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    */
   String getString(int row);
 
+  /** Returns the value at the given zero-based index */
   T get(int row);
 
   /**
@@ -129,10 +133,13 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     return (first ? Optional.empty() : Optional.of(acc));
   }
 
+  /** Removes all elements TODO: Make this return this column */
   void clear();
 
+  /** Sorts my values in ascending order */
   void sortAscending();
 
+  /** Sorts my values in descending order */
   void sortDescending();
 
   /**
@@ -142,14 +149,17 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    */
   boolean isEmpty();
 
+  /** Returns an IntComparator for sorting my rows */
   IntComparator rowComparator();
 
   default String title() {
     return "Column: " + name() + System.lineSeparator();
   }
 
+  /** Returns a selection containing an index for every missing value in this column */
   Selection isMissing();
 
+  /** Returns a selection containing an index for every non-missing value in this column */
   Selection isNotMissing();
 
   /**
@@ -167,12 +177,21 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    */
   byte[] asBytes(int rowNumber);
 
+  /**
+   * Returns a {@link RollingColumn} with the given windowSize, which can be used for performing
+   * calculations on rolling subsets of my data
+   *
+   * @param windowSize The number of elements to include in each calculation
+   * @return a RollingColumn
+   */
   default RollingColumn rolling(final int windowSize) {
     return new RollingColumn(this, windowSize);
   }
 
+  /** Returns a String representation of the value at index r, without any formatting applied */
   String getUnformattedString(int r);
 
+  /** Returns true if the value at rowNumber is missing */
   boolean isMissing(int rowNumber);
 
   /** TODO(lwhite): Print n from the top and bottom, like a table; */
@@ -314,10 +333,10 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   }
 
   /**
-   * Returns the minimum row according to the provided Comparator
+   * Returns the minimum value according to the provided Comparator
    *
-   * @param comp
-   * @return the minimum row
+   * @param comp the Comparator to use
+   * @return the minimum value
    */
   default Optional<T> min(Comparator<? super T> comp) {
     boolean first = true;
@@ -381,6 +400,10 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     return into;
   }
 
+  /**
+   * Sets the value at index i to the missing-value indicator for this column type, and return this
+   * column
+   */
   Column<T> setMissing(int i);
 
   /**
@@ -414,6 +437,10 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     return result;
   }
 
+  /**
+   * Return a column of the same type containing just those elements whose indexes are included in
+   * the given array
+   */
   default Column<T> subset(int[] rows) {
     final Column<T> c = this.emptyCopy();
     for (final int row : rows) {
@@ -565,31 +592,58 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    */
   Column<T> lag(int n);
 
+  /**
+   * Add one element to the bottom of this column and set its value to the parsed value of the given
+   * String. Parsing is type-specific
+   */
   Column<T> appendCell(String stringValue);
 
+  /**
+   * Add one element to the bottom of this column and set its value to the parsed value of the given
+   * String, as performed by the given parser
+   */
   Column<T> appendCell(String stringValue, AbstractColumnParser<?> parser);
 
+  /** Sets the value at index row to the given value and return this column */
   Column<T> set(int row, T value);
 
+  /**
+   * Sets the value at row to the parsed value of the given String using the given parser and
+   * returns this column
+   */
   @SuppressWarnings("unchecked")
   default Column<T> set(int row, String stringValue, AbstractColumnParser<?> parser) {
     AbstractColumnParser<T> typedParser = (AbstractColumnParser<T>) parser;
     return set(row, typedParser.parse(stringValue));
   }
 
+  /** Sets the value at row to the value at sourceRow in the given column and return this column */
   Column<T> set(int row, Column<T> sourceColumn, int sourceRow);
 
+  /** Appends value to the bottom of this column and return this column */
   Column<T> append(T value);
 
+  /** Appends all the values in the argument to the bottom of this column and return this column */
   Column<T> append(Column<T> column);
 
+  /**
+   * Appends the value at the given row in the given column to the bottom of this column and return
+   * this column
+   */
   Column<T> append(Column<T> column, int row);
 
+  /** Appends the given value to the bottom of this column and return this column */
   Column<T> appendObj(Object value);
 
   /** Appends a missing value appropriate to the column */
   Column<T> appendMissing();
 
+  /**
+   * Returns a new column containing a subset
+   *
+   * @param selection
+   * @return
+   */
   Column<T> where(Selection selection);
 
   Column<T> removeMissing();
