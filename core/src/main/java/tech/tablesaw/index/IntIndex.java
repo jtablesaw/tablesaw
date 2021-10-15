@@ -30,11 +30,12 @@ import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/** An index for four-byte integer and integer backed columns (date, category, time) */
+/** An index for four-byte integer and integer backed columns (date, String, time) */
 public class IntIndex implements Index {
 
   private final Int2ObjectAVLTreeMap<IntArrayList> index;
 
+  /** Constructs an index for the given column */
   public IntIndex(DateColumn column) {
     int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
     Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
@@ -53,6 +54,7 @@ public class IntIndex implements Index {
     index = new Int2ObjectAVLTreeMap<>(tempMap);
   }
 
+  /** Constructs an index for the given column */
   public IntIndex(IntColumn column) {
     Preconditions.checkArgument(
         column.type().equals(ColumnType.INTEGER),
@@ -74,6 +76,7 @@ public class IntIndex implements Index {
     index = new Int2ObjectAVLTreeMap<>(tempMap);
   }
 
+  /** Constructs an index for the given column */
   public IntIndex(TimeColumn column) {
     int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
     Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
@@ -99,7 +102,7 @@ public class IntIndex implements Index {
   }
 
   /**
-   * Returns a bitmap containing row numbers of all cells matching the given int
+   * Returns a bitmap {@link Selection} containing row numbers of all cells matching the given int
    *
    * @param value This is a 'key' from the index perspective, meaning it is a value from the
    *     standpoint of the column
@@ -113,14 +116,17 @@ public class IntIndex implements Index {
     return selection;
   }
 
+  /** Returns the {@link Selection} of all values exactly equal to the given value */
   public Selection get(LocalTime value) {
     return get(PackedLocalTime.pack(value));
   }
 
+  /** Returns the {@link Selection} of all values exactly equal to the given value */
   public Selection get(LocalDate value) {
     return get(PackedLocalDate.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(int value) {
     Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
@@ -130,14 +136,17 @@ public class IntIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(LocalTime value) {
     return atLeast(PackedLocalTime.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(LocalDate value) {
     return atLeast(PackedLocalDate.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(int value) {
     Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 1);
@@ -147,14 +156,17 @@ public class IntIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(LocalTime value) {
     return greaterThan(PackedLocalTime.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(LocalDate value) {
     return greaterThan(PackedLocalDate.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(int value) {
     Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> head =
@@ -165,14 +177,17 @@ public class IntIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(LocalTime value) {
     return atMost(PackedLocalTime.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(LocalDate value) {
     return atMost(PackedLocalDate.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(int value) {
     Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> head =
@@ -183,10 +198,12 @@ public class IntIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(LocalTime value) {
     return lessThan(PackedLocalTime.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(LocalDate value) {
     return lessThan(PackedLocalDate.pack(value));
   }

@@ -20,7 +20,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.columns.instant.PackedInstant;
@@ -33,6 +32,7 @@ public class LongIndex implements Index {
 
   private final Long2ObjectAVLTreeMap<IntArrayList> index;
 
+  /** Constructs an index for the given column */
   public LongIndex(TemporalColumn<?> column) {
     int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
     Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
@@ -51,24 +51,7 @@ public class LongIndex implements Index {
     index = new Long2ObjectAVLTreeMap<>(tempMap);
   }
 
-  public LongIndex(IntColumn column) {
-    int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
-    Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
-    for (int i = 0; i < column.size(); i++) {
-      long value = column.getInt(i);
-      IntArrayList recordIds = tempMap.get(value);
-      if (recordIds == null) {
-        recordIds = new IntArrayList();
-        recordIds.add(i);
-        tempMap.trim();
-        tempMap.put(value, recordIds);
-      } else {
-        recordIds.add(i);
-      }
-    }
-    index = new Long2ObjectAVLTreeMap<>(tempMap);
-  }
-
+  /** Constructs an index for the given column */
   public LongIndex(LongColumn column) {
     int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
     Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
@@ -108,14 +91,17 @@ public class LongIndex implements Index {
     return selection;
   }
 
+  /** Returns the {@link Selection} of all values exactly equal to the given value */
   public Selection get(Instant value) {
     return get(PackedInstant.pack(value));
   }
 
+  /** Returns the {@link Selection} of all values exactly equal to the given value */
   public Selection get(LocalDateTime value) {
     return get(PackedLocalDateTime.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(long value) {
     Selection selection = new BitmapBackedSelection();
     Long2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
@@ -125,14 +111,17 @@ public class LongIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(Instant value) {
     return atLeast(PackedInstant.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(LocalDateTime value) {
     return atLeast(PackedLocalDateTime.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(long value) {
     Selection selection = new BitmapBackedSelection();
     Long2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 1);
@@ -142,14 +131,17 @@ public class LongIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(Instant value) {
     return greaterThan(PackedInstant.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(LocalDateTime value) {
     return greaterThan(PackedLocalDateTime.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(long value) {
     Selection selection = new BitmapBackedSelection();
     Long2ObjectSortedMap<IntArrayList> head =
@@ -160,14 +152,17 @@ public class LongIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(Instant value) {
     return atMost(PackedInstant.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(LocalDateTime value) {
     return atMost(PackedLocalDateTime.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(long value) {
     Selection selection = new BitmapBackedSelection();
     Long2ObjectSortedMap<IntArrayList> head =
@@ -178,10 +173,12 @@ public class LongIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(Instant value) {
     return lessThan(PackedInstant.pack(value));
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(LocalDateTime value) {
     return lessThan(PackedLocalDateTime.pack(value));
   }

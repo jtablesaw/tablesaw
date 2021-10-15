@@ -24,11 +24,12 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/** An index for four-byte integer and integer backed columns (date, category, time) */
+/** An index for byte columns (BooleanColumn) */
 public class ByteIndex implements Index {
 
   private final Byte2ObjectAVLTreeMap<IntArrayList> index;
 
+  /** Constructs an index for the given column */
   public ByteIndex(BooleanColumn column) {
     Preconditions.checkArgument(
         column.type().equals(ColumnType.BOOLEAN), "Byte indexing only allowed on BOOLEAN columns");
@@ -70,6 +71,7 @@ public class ByteIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(byte value) {
     Selection selection = new BitmapBackedSelection();
     Byte2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
@@ -79,6 +81,7 @@ public class ByteIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(byte value) {
     Selection selection = new BitmapBackedSelection();
     Byte2ObjectSortedMap<IntArrayList> tail = index.tailMap((byte) (value + 1));
@@ -88,6 +91,7 @@ public class ByteIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(byte value) {
     Selection selection = new BitmapBackedSelection();
     Byte2ObjectSortedMap<IntArrayList> head =
@@ -98,6 +102,7 @@ public class ByteIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(byte value) {
     Selection selection = new BitmapBackedSelection();
     Byte2ObjectSortedMap<IntArrayList> head =

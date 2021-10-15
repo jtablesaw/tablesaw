@@ -27,6 +27,7 @@ public class DoubleIndex implements Index {
 
   private final Double2ObjectAVLTreeMap<IntArrayList> index;
 
+  /** Constructs an index for the given column */
   public DoubleIndex(DoubleColumn column) {
     int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
     Double2ObjectOpenHashMap<IntArrayList> tempMap = new Double2ObjectOpenHashMap<>(sizeEstimate);
@@ -66,6 +67,7 @@ public class DoubleIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(double value) {
     Selection selection = new BitmapBackedSelection();
     Double2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
@@ -75,6 +77,7 @@ public class DoubleIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(double value) {
     Selection selection = new BitmapBackedSelection();
     Double2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 0.000001);
@@ -84,6 +87,7 @@ public class DoubleIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(double value) {
     Selection selection = new BitmapBackedSelection();
     Double2ObjectSortedMap<IntArrayList> head =
@@ -95,6 +99,7 @@ public class DoubleIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(double value) {
     Selection selection = new BitmapBackedSelection();
     Double2ObjectSortedMap<IntArrayList> head = index.headMap(value);

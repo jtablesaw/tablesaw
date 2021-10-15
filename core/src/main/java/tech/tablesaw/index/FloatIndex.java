@@ -27,6 +27,7 @@ public class FloatIndex implements Index {
 
   private final Float2ObjectAVLTreeMap<IntArrayList> index;
 
+  /** Constructs an index for the given column */
   public FloatIndex(FloatColumn column) {
     int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
     Float2ObjectOpenHashMap<IntArrayList> tempMap = new Float2ObjectOpenHashMap<>(sizeEstimate);
@@ -66,6 +67,7 @@ public class FloatIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(float value) {
     Selection selection = new BitmapBackedSelection();
     Float2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
@@ -75,6 +77,7 @@ public class FloatIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(float value) {
     Selection selection = new BitmapBackedSelection();
     Float2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 0.000001f);
@@ -84,6 +87,7 @@ public class FloatIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(float value) {
     Selection selection = new BitmapBackedSelection();
     Float2ObjectSortedMap<IntArrayList> head =
@@ -95,6 +99,7 @@ public class FloatIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(float value) {
     Selection selection = new BitmapBackedSelection();
     Float2ObjectSortedMap<IntArrayList> head = index.headMap(value);

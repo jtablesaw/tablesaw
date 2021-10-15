@@ -24,11 +24,12 @@ import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/** An index for four-byte integer and integer backed columns (date, category, time) */
+/** An index for {@link ShortColumn} */
 public class ShortIndex implements Index {
 
   private final Short2ObjectAVLTreeMap<IntArrayList> index;
 
+  /** Constructs an index for the given column */
   public ShortIndex(ShortColumn column) {
     Preconditions.checkArgument(
         column.type().equals(ShortColumnType.instance()),
@@ -71,6 +72,7 @@ public class ShortIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(short value) {
     Selection selection = new BitmapBackedSelection();
     Short2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
@@ -80,6 +82,7 @@ public class ShortIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values greater than the given value */
   public Selection greaterThan(short value) {
     Selection selection = new BitmapBackedSelection();
     Short2ObjectSortedMap<IntArrayList> tail = index.tailMap((short) (value + 1));
@@ -89,6 +92,7 @@ public class ShortIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(short value) {
     Selection selection = new BitmapBackedSelection();
     Short2ObjectSortedMap<IntArrayList> head =
@@ -99,6 +103,7 @@ public class ShortIndex implements Index {
     return selection;
   }
 
+  /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(short value) {
     Selection selection = new BitmapBackedSelection();
     Short2ObjectSortedMap<IntArrayList> head =
