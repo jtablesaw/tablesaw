@@ -8,8 +8,8 @@ import tech.tablesaw.api.InstantColumn;
 public abstract class InstantAggregateFunction extends AggregateFunction<InstantColumn, Instant> {
 
   /**
-   * Constructs an InstantAggregateFunction with the given name. The name is used as a column name
-   * in the output
+   * Constructs an InstantAggregateFunction with the given name. The name may be used to name a
+   * column in the output when this function is used by {@link Summarizer}
    */
   public InstantAggregateFunction(String name) {
     super(name);
