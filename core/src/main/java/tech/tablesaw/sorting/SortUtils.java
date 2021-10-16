@@ -8,6 +8,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
 import tech.tablesaw.sorting.comparators.ReversingIntComparator;
 
+/** Static utility class that provides Comparators for sorting */
 public class SortUtils {
 
   private SortUtils() {}
