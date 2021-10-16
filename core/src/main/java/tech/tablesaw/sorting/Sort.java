@@ -41,23 +41,38 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
 
   private final LinkedHashMap<String, Order> sortOrder = new LinkedHashMap<>();
 
+  /**
+   * Constructs a Sort specifying the order (ascending or descending) to apply to the column with
+   * the given name
+   */
   public Sort(String columnName, Order order) {
     next(columnName, order);
   }
 
+  /**
+   * Returns a Sort specifying the order (ascending or descending) to apply to the column with the
+   * given name
+   */
   public static Sort on(String columnName, Order order) {
     return new Sort(columnName, order);
   }
 
+  /**
+   * Returns a Sort that concatenates a new sort on the given order (ascending or descending) and
+   * columnName onto the sort specified here. This method is used to construct complex sorts such
+   * as: Sort.on("foo", Order.ASCEND).next("bar", Order.DESCEND);
+   */
   public Sort next(String columnName, Order order) {
     sortOrder.put(columnName, order);
     return this;
   }
 
+  /** Returns true if no order has been set */
   public boolean isEmpty() {
     return sortOrder.isEmpty();
   }
 
+  /** Returns the number of columns used in this sort */
   public int size() {
     return sortOrder.size();
   }
