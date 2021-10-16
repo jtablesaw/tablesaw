@@ -21,6 +21,21 @@ import tech.tablesaw.table.TableSliceGroup;
  */
 public class PivotTable {
 
+  /**
+   * Returns a table that is a rotation of the given table pivoted around the key columns, and
+   * filling the output cells using the values calculated by the {@code aggregateFunction} when
+   * applied to the {@code values column} grouping by the key columns
+   *
+   * @param table The table that provides the data to be pivoted
+   * @param column1 A "key" categorical column from which the primary grouping is created. There
+   *     will be one on each row of the result
+   * @param column2 A second categorical column for which a subtotal is created; this produces n
+   *     columns on each row of the result
+   * @param values A numeric column that provides the values to be summarized
+   * @param aggregateFunction function that defines what operation is performed on the values in the
+   *     subgroups
+   * @return A new, pivoted table
+   */
   public static Table pivot(
       Table table,
       CategoricalColumn<?> column1,
