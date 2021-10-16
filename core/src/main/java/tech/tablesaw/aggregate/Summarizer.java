@@ -146,6 +146,14 @@ public class Summarizer {
     this.reductions = functions;
   }
 
+  /**
+   * Similar in intent to the SQL "group by" statement, it produces a table with one row for each
+   * subgroup of the output data containing the result of applying the summary functions to the
+   * subgroup
+   *
+   * @param columnNames The names of the columns to group on
+   * @return A table containing the grouped results
+   */
   public Table by(String... columnNames) {
     for (String columnName : columnNames) {
       if (tableDoesNotContain(columnName, temp)) {
@@ -156,6 +164,14 @@ public class Summarizer {
     return summarize(group);
   }
 
+  /**
+   * Similar in intent to the SQL "group by" statement, it produces a table with one row for each
+   * subgroup of the output data containing the result of applying the summary functions to the
+   * subgroup
+   *
+   * @param columns The columns to group on
+   * @return A table containing the grouped results
+   */
   public Table by(CategoricalColumn<?>... columns) {
     for (Column<?> c : columns) {
       if (!temp.containsColumn(c)) {
@@ -226,6 +242,14 @@ public class Summarizer {
     }
   }
 
+  /**
+   * Similar in intent to the SQL having command, it enables the user to apply a filter to the
+   * grouped results of summary. Only groups that pass the filter are included in the output.
+   *
+   * @param selection A {@link Selection} where each index provided refers to a row in the output
+   *     table
+   * @return A table of filtered summarized data
+   */
   public Table having(Function<Table, Selection> selection) {
     Preconditions.checkState(
         groupColumnNames.length > 0,
@@ -241,6 +265,7 @@ public class Summarizer {
     }
   }
 
+  /** TODO: research how the groupBy() methods differ from the by() methods? Are they synonyms? */
   public Summarizer groupBy(CategoricalColumn<?>... columns) {
     groupColumnNames = new String[columns.length];
     for (int i = 0; i < columns.length; i++) {
@@ -253,6 +278,7 @@ public class Summarizer {
     return this;
   }
 
+  /** TODO: research how the groupBy() methods differ from the by() methods? Are they synonyms? */
   public Summarizer groupBy(String... columnNames) {
     for (String columnName : columnNames) {
       if (tableDoesNotContain(columnName, temp)) {
@@ -263,6 +289,7 @@ public class Summarizer {
     return this;
   }
 
+  /** TODO: research how the groupBy() methods differ from the by() methods? Are they synonyms? */
   public Summarizer groupBy(int step) {
     IntColumn groupColumn = assignToGroupsByStep(step);
     if (tableDoesNotContain(groupColumn.name(), temp)) {
