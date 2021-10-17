@@ -23,10 +23,12 @@ public final class ReversingIntComparator implements IntComparator {
 
   private final IntComparator intComparator;
 
+  /** Constructs a comparator that sorts in reverse order of the argument */
   private ReversingIntComparator(IntComparator intComparator) {
     this.intComparator = intComparator;
   }
 
+  /** Returns a comparator that sorts in reverse order of the argument */
   public static IntComparator reverse(IntComparator intComparator) {
     return new ReversingIntComparator(intComparator);
   }

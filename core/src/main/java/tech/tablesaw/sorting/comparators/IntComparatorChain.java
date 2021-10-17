@@ -21,6 +21,13 @@ import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * An IntComparator that wraps one or more Comparators in sequence. The ComparatorChain calls each
+ * Comparator in sequence until either 1) any single Comparator returns a non-zero result (and that
+ * result is then returned), or 2) the ComparatorChain is exhausted (and zero is returned)
+ *
+ * <p>The implementation is based on Apache Commons Collections
+ */
 public class IntComparatorChain implements IntComparator, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -29,6 +36,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
   private BitSet orderingBits;
   private boolean isLocked;
 
+  /** Constructs a comparator chain with the argument as the first node in the chain */
   public IntComparatorChain(IntComparator comparator) {
     this(comparator, false);
   }
@@ -44,10 +52,15 @@ public class IntComparatorChain implements IntComparator, Serializable {
     }
   }
 
+  /** Appends the comparator to the end of the chain */
   public void addComparator(IntComparator comparator) {
     this.addComparator(comparator, false);
   }
 
+  /**
+   * Add the comparator to the end of the chain, reversing the application order if {@code reverse}
+   * is equal to {@code true}
+   */
   private void addComparator(IntComparator comparator, boolean reverse) {
     this.comparatorChain.add(comparator);
     if (reverse) {
@@ -55,6 +68,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
     }
   }
 
+  /** Returns the number of comparators in the chain */
   public int size() {
     return this.comparatorChain.size();
   }
@@ -66,6 +80,12 @@ public class IntComparatorChain implements IntComparator, Serializable {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws UnsupportedOperationException
+   */
+  @Override
   public int compare(int o1, int o2) throws UnsupportedOperationException {
     if (!this.isLocked) {
       this.checkChainIntegrity();
@@ -91,6 +111,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
     return 0;
   }
 
+  @Override
   public int hashCode() {
     int hash = 0;
     if (null != this.comparatorChain) {
@@ -103,6 +124,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
     return hash;
   }
 
+  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;
