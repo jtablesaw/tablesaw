@@ -79,4 +79,12 @@ public class FloatColumnTest {
     floatColumn.appendCell("5.0");
     assertFalse(floatColumn.isMissing(floatColumn.size() - 1));
   }
+
+  @Test
+  public void asSet() {
+    final float[] floatColumnValues = {4, 5, 9.3f, 5, 9.3f};
+    final FloatColumn floatColumn = FloatColumn.create("fc", floatColumnValues);
+    assertEquals(3, floatColumn.asSet().size());
+    assertTrue(floatColumn.asSet().contains(4f));
+  }
 }
