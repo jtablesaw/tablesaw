@@ -23,6 +23,11 @@ import tech.tablesaw.columns.numbers.*;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+/**
+ * A Column of numeric values
+ *
+ * @param <T>
+ */
 public interface NumericColumn<T extends Number>
     extends Column<T>, NumberMapFunctions, NumberFilters {
 
@@ -481,5 +486,7 @@ public interface NumericColumn<T extends Number>
   @Override
   NumericColumn<T> copy();
 
+  /** {@inheritDoc} */
+  @Override
   StringColumn asStringColumn();
 }
