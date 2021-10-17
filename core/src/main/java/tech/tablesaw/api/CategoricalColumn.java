@@ -34,6 +34,10 @@ import tech.tablesaw.columns.Column;
  */
 public interface CategoricalColumn<T> extends Column<T> {
 
+  /**
+   * Returns a count of the number of elements in each category (i.e., the number of repetitions of
+   * each value) TODO: This needs to be well tested, especially for IntColumn
+   */
   default Table countByCategory() {
 
     final Table t = new Table("Column: " + name());
