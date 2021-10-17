@@ -5,7 +5,9 @@ import it.unimi.dsi.fastutil.doubles.*;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
@@ -380,6 +382,12 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     return ByteBuffer.allocate(DoubleColumnType.instance().byteSize())
         .putDouble(getDouble(rowNumber))
         .array();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Set<Double> asSet() {
+    return new HashSet<>(unique().asList());
   }
 
   @Override

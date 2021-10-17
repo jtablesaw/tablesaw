@@ -11,7 +11,9 @@ import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -493,5 +495,11 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
       }
     }
     return result;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Set<Short> asSet() {
+    return new HashSet<>(unique().asList());
   }
 }

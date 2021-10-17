@@ -3,7 +3,9 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.*;
 import java.nio.ByteBuffer;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.stream.IntStream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -516,5 +518,10 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   public IntColumn setMissing(int r) {
     set(r, IntColumnType.missingValueIndicator());
     return this;
+  }
+
+  @Override
+  public Set<Integer> asSet() {
+    return new HashSet<>(unique().asList());
   }
 }

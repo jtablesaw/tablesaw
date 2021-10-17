@@ -3,7 +3,9 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.floats.*;
 import java.nio.ByteBuffer;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.stream.Stream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -478,5 +480,10 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
       }
     }
     return result;
+  }
+
+  @Override
+  public Set<Float> asSet() {
+    return new HashSet<>(unique().asList());
   }
 }
