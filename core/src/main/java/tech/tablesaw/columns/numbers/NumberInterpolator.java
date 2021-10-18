@@ -4,11 +4,15 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.interpolation.Interpolator;
 
-/** Creates a new column with missing cells filled based off the value of nearby cells. */
+/**
+ * Creates a new column with missing cells filled based off the value of nearby cells. <br>
+ * Subclass to provide alternate interpolation strategies
+ */
 public class NumberInterpolator<T extends Number> extends Interpolator<T> {
 
   protected final NumericColumn<T> col;
 
+  /** Constructs an interpolator for the given column */
   public NumberInterpolator(NumericColumn<T> col) {
     super(col);
     this.col = col;
