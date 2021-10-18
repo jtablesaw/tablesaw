@@ -33,24 +33,30 @@ public abstract class AbstractColumnType implements ColumnType {
     ColumnType.register(this);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return name;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String name() {
     return name;
   }
 
+  /** {@inheritDoc} */
   public int byteSize() {
     return byteSize;
   }
 
+  /** {@inheritDoc} */
+  @Override
   public String getPrinterFriendlyName() {
     return printerFriendlyName;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -61,6 +67,7 @@ public abstract class AbstractColumnType implements ColumnType {
         && Objects.equal(printerFriendlyName, that.printerFriendlyName);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return Objects.hashCode(byteSize, name, printerFriendlyName);
