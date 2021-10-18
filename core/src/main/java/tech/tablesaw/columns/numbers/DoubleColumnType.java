@@ -10,10 +10,12 @@ public class DoubleColumnType extends AbstractColumnType {
 
   private static final int BYTE_SIZE = 8;
 
+  /** Returns the default parser for DoubleColumn */
   public static final DoubleParser DEFAULT_PARSER = new DoubleParser(ColumnType.DOUBLE);
 
   private static DoubleColumnType INSTANCE = new DoubleColumnType(BYTE_SIZE, "DOUBLE", "Double");
 
+  /** Returns the singleton instance of DoubleColumnType */
   public static DoubleColumnType instance() {
     if (INSTANCE == null) {
       INSTANCE = new DoubleColumnType(BYTE_SIZE, "DOUBLE", "Double");
