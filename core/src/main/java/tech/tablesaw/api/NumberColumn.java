@@ -113,9 +113,6 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     return column;
   }
 
-  @Override
-  public abstract C copy();
-
   /**
    * Compares the given ints, which refer to the indexes of the doubles in this column, according to
    * the values of the doubles themselves
@@ -125,17 +122,11 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     return comparator;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int byteSize() {
     return type().byteSize();
   }
-
-  /** Returns the contents of the cell at rowNumber as a byte[] */
-  @Override
-  public abstract byte[] asBytes(final int rowNumber);
-
-  @Override
-  public abstract C appendMissing();
 
   /** Returns the count of missing values in this column */
   @Override
