@@ -4,18 +4,16 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 
 /**
- * A partial implementation of aggregate functions to summarize over a StringColumn
- *
- * @deprecated Use {@link StringAggregateFunction} instead
+ * A partial implementation of aggregate functions to summarize over a StringColumn and return a
+ * String
  */
-@Deprecated
-public abstract class StringFunction extends AggregateFunction<StringColumn, String> {
+public abstract class StringAggregateFunction extends AggregateFunction<StringColumn, String> {
 
   /**
    * Constructs an {@code StringFunction} with the given name. The name may be used to name a column
    * in the output when this function is used by {@link Summarizer}
    */
-  public StringFunction(String name) {
+  public StringAggregateFunction(String name) {
     super(name);
   }
 

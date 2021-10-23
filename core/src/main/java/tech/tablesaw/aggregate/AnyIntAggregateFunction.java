@@ -6,17 +6,14 @@ import tech.tablesaw.columns.Column;
 /**
  * Partial implementation of AggregateFunction that returns an integer when applied to a column of
  * any type
- *
- * @deprecated Use {@link AnyIntAggregateFunction} instead
  */
-@Deprecated
-abstract class CountFunction extends AggregateFunction<Column<?>, Integer> {
+public abstract class AnyIntAggregateFunction extends AggregateFunction<Column<?>, Integer> {
 
   /**
    * Constructs a CountFunction with the given name. The name is used to name an output column when
    * this function is used by {@link Summarizer}
    */
-  public CountFunction(String functionName) {
+  public AnyIntAggregateFunction(String functionName) {
     super(functionName);
   }
 

@@ -6,17 +6,15 @@ import tech.tablesaw.api.ColumnType;
 /**
  * A partial implementation of an AggregateFunction that returns an Integer value when applied to a
  * Boolean Column
- *
- * @deprecated Use {@link BooleanIntAggregateFunction} instead
  */
-@Deprecated
-abstract class BooleanCountFunction extends AggregateFunction<BooleanColumn, Integer> {
+public abstract class BooleanIntAggregateFunction
+    extends AggregateFunction<BooleanColumn, Integer> {
 
   /**
    * Constructs a BooleanCountFunction with the given name. The name may be used to name a column in
    * the output when this function is used by {@link Summarizer}
    */
-  public BooleanCountFunction(String functionName) {
+  public BooleanIntAggregateFunction(String functionName) {
     super(functionName);
   }
 
