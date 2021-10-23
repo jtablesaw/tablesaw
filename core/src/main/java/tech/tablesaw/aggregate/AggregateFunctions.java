@@ -64,10 +64,7 @@ public class AggregateFunctions {
         }
       };
 
-  /**
-   * A function that takes a column argument and returns the latest instant in that column TODO:
-   * Standardize names
-   */
+  /** A function that takes a column argument and returns the latest instant in that column */
   public static final InstantAggregateFunction maxInstant =
       new InstantAggregateFunction("Max Instant") {
         @Override
@@ -89,8 +86,8 @@ public class AggregateFunctions {
    * A function that takes a column argument and returns the number of {@code true} values in a
    * column
    */
-  public static final BooleanCountFunction countTrue =
-      new BooleanCountFunction("Number True") {
+  public static final BooleanIntAggregateFunction countTrue =
+      new BooleanIntAggregateFunction("Number True") {
 
         @Override
         public Integer summarize(BooleanColumn column) {
@@ -141,8 +138,8 @@ public class AggregateFunctions {
    * A function that takes a column argument and returns the count of {@code false} values in the
    * column
    */
-  public static final BooleanCountFunction countFalse =
-      new BooleanCountFunction("Number False") {
+  public static final BooleanIntAggregateFunction countFalse =
+      new BooleanIntAggregateFunction("Number False") {
         @Override
         public Integer summarize(BooleanColumn column) {
           return (column).countFalse();
@@ -153,8 +150,8 @@ public class AggregateFunctions {
    * A function that takes a column argument and returns the proportion of values in that column
    * that are {@code true}
    */
-  public static final BooleanNumericFunction proportionTrue =
-      new BooleanNumericFunction("Proportion True") {
+  public static final BooleanDoubleAggregateFunction proportionTrue =
+      new BooleanDoubleAggregateFunction("Proportion True") {
         @Override
         public Double summarize(BooleanColumn column) {
           return (column).proportionTrue();
@@ -165,8 +162,8 @@ public class AggregateFunctions {
    * A function that takes a column argument and returns the proportion of values in the column that
    * are {@code false}
    */
-  public static final BooleanNumericFunction proportionFalse =
-      new BooleanNumericFunction("Proportion False") {
+  public static final BooleanDoubleAggregateFunction proportionFalse =
+      new BooleanDoubleAggregateFunction("Proportion False") {
         @Override
         public Double summarize(BooleanColumn column) {
           return (column).proportionFalse();
@@ -235,8 +232,8 @@ public class AggregateFunctions {
    * A function that takes a {@link Column} argument and returns the count of values in the column
    * excluding missing values
    */
-  public static final CountFunction countNonMissing =
-      new CountFunction("Count") {
+  public static final AnyIntAggregateFunction countNonMissing =
+      new AnyIntAggregateFunction("Count") {
 
         @Override
         public Integer summarize(Column<?> column) {
@@ -248,14 +245,14 @@ public class AggregateFunctions {
    * A function that takes a {@link Column} argument and returns the count of values in the column
    * excluding missing values. A synonym for countNonMissing
    */
-  public static final CountFunction count = countNonMissing;
+  public static final AnyIntAggregateFunction count = countNonMissing;
 
   /**
    * A function that takes a {@link NumericColumn} argument and returns the count of missing values
    * in the column
    */
-  public static final CountFunction countMissing =
-      new CountFunction("Missing Values") {
+  public static final AnyIntAggregateFunction countMissing =
+      new AnyIntAggregateFunction("Missing Values") {
 
         @Override
         public Integer summarize(Column<?> column) {
@@ -267,8 +264,8 @@ public class AggregateFunctions {
    * AA function that takes a {@link Column} argument and returns the number of non-missing unique
    * values in the column
    */
-  public static final CountFunction countUnique =
-      new CountFunction("Count Unique") {
+  public static final AnyIntAggregateFunction countUnique =
+      new AnyIntAggregateFunction("Count Unique") {
 
         @Override
         public Integer summarize(Column<?> doubles) {
@@ -333,8 +330,8 @@ public class AggregateFunctions {
    * A function that takes a {@link Column} argument and returns the number of values in the column,
    * including missing values
    */
-  public static final CountFunction countWithMissing =
-      new CountFunction("Count (incl. missing)") {
+  public static final AnyIntAggregateFunction countWithMissing =
+      new AnyIntAggregateFunction("Count (incl. missing)") {
 
         @Override
         public Integer summarize(Column<?> column) {
@@ -595,16 +592,16 @@ public class AggregateFunctions {
   }
 
   /**
-   * Returns the given mean difference of the values in the arguments TODO(lwhite): These are two
-   * column reductions. We need a class for that
+   * Returns the given mean difference of the values in the arguments <br>
+   * TODO(lwhite): These are two column reductions. We need a class for that
    */
   public static Double meanDifference(NumericColumn<?> column1, NumericColumn<?> column2) {
     return StatUtils.meanDifference(column1.asDoubleArray(), column2.asDoubleArray());
   }
 
   /**
-   * Returns the given sum difference of the values in the arguments TODO(lwhite): These are two
-   * column reductions. We need a class for that
+   * Returns the given sum difference of the values in the arguments <br>
+   * TODO(lwhite): These are two column reductions. We need a class for that
    */
   public static Double sumDifference(NumericColumn<?> column1, NumericColumn<?> column2) {
     return StatUtils.sumDifference(column1.asDoubleArray(), column2.asDoubleArray());

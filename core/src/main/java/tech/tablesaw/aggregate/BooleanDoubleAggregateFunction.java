@@ -6,16 +6,15 @@ import tech.tablesaw.api.ColumnType;
 /**
  * Partial implementation of Aggregate function that returns a Double value when applied to a
  * BooleanColumn
- *
- * @deprecated Use {@link BooleanDoubleAggregateFunction} instead
  */
-abstract class BooleanNumericFunction extends AggregateFunction<BooleanColumn, Double> {
+public abstract class BooleanDoubleAggregateFunction
+    extends AggregateFunction<BooleanColumn, Double> {
 
   /**
    * Constructs a BooleanNumericFunction with the given name. The name may be used to name a column
    * in the output when this function is used by {@link Summarizer}
    */
-  public BooleanNumericFunction(String functionName) {
+  public BooleanDoubleAggregateFunction(String functionName) {
     super(functionName);
   }
 
