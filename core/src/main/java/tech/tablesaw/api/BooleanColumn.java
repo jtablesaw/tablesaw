@@ -470,9 +470,9 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   @Override
   public BooleanColumn lag(int n) {
-    int srcPos = n >= 0 ? 0 : 0 - n;
+    int srcPos = n >= 0 ? 0 : -n;
     byte[] dest = new byte[size()];
-    int destPos = n <= 0 ? 0 : n;
+    int destPos = Math.max(n, 0);
     int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
@@ -515,9 +515,16 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return comparator;
   }
 
+  /** {@inheritDoc} */
   @Override
   public BooleanColumn append(Column<Boolean> column) {
-    checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     BooleanColumn col = (BooleanColumn) column;
     final int size = col.size();
     for (int i = 0; i < size; i++) {
@@ -528,7 +535,13 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   @Override
   public Column<Boolean> append(Column<Boolean> column, int row) {
-    checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     BooleanColumn col = (BooleanColumn) column;
     append(col.getByte(row));
     return this;
@@ -536,7 +549,13 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   @Override
   public Column<Boolean> set(int row, Column<Boolean> column, int sourceRow) {
-    checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     BooleanColumn col = (BooleanColumn) column;
     set(row, col.getByte(sourceRow));
     return this;

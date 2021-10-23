@@ -1,6 +1,7 @@
 package tech.tablesaw.api;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+
 import it.unimi.dsi.fastutil.floats.*;
 import java.nio.ByteBuffer;
 import java.util.HashSet;
@@ -163,9 +164,9 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   /** {@inheritDoc} */
   @Override
   public FloatColumn lag(int n) {
-    final int srcPos = n >= 0 ? 0 : 0 - n;
+    final int srcPos = n >= 0 ? 0 : -n;
     final float[] dest = new float[size()];
-    final int destPos = n <= 0 ? 0 : n;
+    final int destPos = Math.max(n, 0);
     final int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
@@ -265,7 +266,13 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   /** {@inheritDoc} */
   @Override
   public FloatColumn append(final Column<Float> column) {
-    Preconditions.checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     final FloatColumn numberColumn = (FloatColumn) column;
     final int size = numberColumn.size();
     for (int i = 0; i < size; i++) {
@@ -277,14 +284,26 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   /** {@inheritDoc} */
   @Override
   public FloatColumn append(Column<Float> column, int row) {
-    Preconditions.checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return append(((FloatColumn) column).getFloat(row));
   }
 
   /** {@inheritDoc} */
   @Override
   public FloatColumn set(int row, Column<Float> column, int sourceRow) {
-    Preconditions.checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return set(row, ((FloatColumn) column).getFloat(sourceRow));
   }
 

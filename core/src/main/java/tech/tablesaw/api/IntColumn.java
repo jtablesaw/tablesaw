@@ -1,5 +1,7 @@
 package tech.tablesaw.api;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.*;
 import java.nio.ByteBuffer;
@@ -159,9 +161,9 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   /** {@inheritDoc} */
   @Override
   public IntColumn lag(int n) {
-    final int srcPos = n >= 0 ? 0 : 0 - n;
+    final int srcPos = n >= 0 ? 0 : -n;
     final int[] dest = new int[size()];
-    final int destPos = n <= 0 ? 0 : n;
+    final int destPos = Math.max(n, 0);
     final int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
@@ -255,7 +257,13 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   /** {@inheritDoc} */
   @Override
   public IntColumn append(final Column<Integer> column) {
-    Preconditions.checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     final IntColumn numberColumn = (IntColumn) column;
     final int size = numberColumn.size();
     for (int i = 0; i < size; i++) {
@@ -267,14 +275,26 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   /** {@inheritDoc} */
   @Override
   public IntColumn append(Column<Integer> column, int row) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return append(((IntColumn) column).getInt(row));
   }
 
   /** {@inheritDoc} */
   @Override
   public IntColumn set(int row, Column<Integer> column, int sourceRow) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return set(row, ((IntColumn) column).getInt(sourceRow));
   }
 
