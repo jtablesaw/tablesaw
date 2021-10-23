@@ -44,7 +44,7 @@ public class IntColumnType extends AbstractColumnType {
     return value == missingValueIndicator();
   }
 
-  /** @deprecated Please use valueIsMissing(double) instead */
+  /** Returns the missing value indicator for this column type NOTE: */
   public static int missingValueIndicator() {
     return Integer.MIN_VALUE;
   }
