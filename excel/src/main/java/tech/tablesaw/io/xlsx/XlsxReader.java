@@ -53,6 +53,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.ReaderRegistry;
+import tech.tablesaw.io.RuntimeIOException;
 import tech.tablesaw.io.Source;
 
 @Immutable
@@ -72,8 +73,13 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   @Override
-  public Table read(XlsxReadOptions options) throws IOException {
-    List<Table> tables = readMultiple(options, true);
+  public Table read(XlsxReadOptions options) {
+    List<Table> tables = null;
+    try {
+      tables = readMultiple(options, true);
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
+    }
     if (options.sheetIndex() != null) {
       int index = options.sheetIndex();
       if (index < 0 || index >= tables.size()) {
@@ -426,7 +432,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   @Override
-  public Table read(Source source) throws IOException {
+  public Table read(Source source) {
     return read(XlsxReadOptions.builder(source).build());
   }
 

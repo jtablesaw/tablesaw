@@ -1,5 +1,6 @@
 package tech.tablesaw.io.json;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wnameless.json.flattener.JsonFlattener;
@@ -10,11 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.DataReader;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.ReaderRegistry;
-import tech.tablesaw.io.Source;
-import tech.tablesaw.io.TableBuildingUtils;
+import tech.tablesaw.io.*;
 
 public class JsonReader implements DataReader<JsonReadOptions> {
 
@@ -32,8 +29,13 @@ public class JsonReader implements DataReader<JsonReadOptions> {
   }
 
   @Override
-  public Table read(JsonReadOptions options) throws IOException {
-    JsonNode jsonObj = mapper.readTree(options.source().createReader(null));
+  public Table read(JsonReadOptions options) {
+    JsonNode jsonObj = null;
+    try {
+      jsonObj = mapper.readTree(options.source().createReader(null));
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
+    }
     if (options.path() != null) {
       jsonObj = jsonObj.at(options.path());
     }
@@ -77,19 +79,29 @@ public class JsonReader implements DataReader<JsonReadOptions> {
     return TableBuildingUtils.build(columnNames, dataRows, options);
   }
 
-  private Table convertArrayOfObjects(JsonNode jsonObj, ReadOptions options) throws IOException {
+  private Table convertArrayOfObjects(JsonNode jsonObj, ReadOptions options) {
     // flatten each object inside the array
     StringBuilder result = new StringBuilder("[");
     for (int i = 0; i < jsonObj.size(); i++) {
       JsonNode rowObj = jsonObj.get(i);
-      String flattenedRow = JsonFlattener.flatten(mapper.writeValueAsString(rowObj));
+      String flattenedRow = null;
+      try {
+        flattenedRow = JsonFlattener.flatten(mapper.writeValueAsString(rowObj));
+      } catch (JsonProcessingException e) {
+        throw new RuntimeIOException(e);
+      }
       if (i != 0) {
         result.append(",");
       }
       result.append(flattenedRow);
     }
     String flattenedJsonString = result.append("]").toString();
-    JsonNode flattenedJsonObj = mapper.readTree(flattenedJsonString);
+    JsonNode flattenedJsonObj = null;
+    try {
+      flattenedJsonObj = mapper.readTree(flattenedJsonString);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeIOException(e);
+    }
 
     Set<String> colNames = new HashSet<>();
     for (JsonNode row : flattenedJsonObj) {
@@ -117,7 +129,7 @@ public class JsonReader implements DataReader<JsonReadOptions> {
   }
 
   @Override
-  public Table read(Source source) throws IOException {
+  public Table read(Source source) {
     return read(JsonReadOptions.builder(source).build());
   }
 }

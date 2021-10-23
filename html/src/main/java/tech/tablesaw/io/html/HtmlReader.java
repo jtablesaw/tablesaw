@@ -11,10 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.DataReader;
-import tech.tablesaw.io.ReaderRegistry;
-import tech.tablesaw.io.Source;
-import tech.tablesaw.io.TableBuildingUtils;
+import tech.tablesaw.io.*;
 
 public class HtmlReader implements DataReader<HtmlReadOptions> {
 
@@ -31,15 +28,19 @@ public class HtmlReader implements DataReader<HtmlReadOptions> {
   }
 
   @Override
-  public Table read(HtmlReadOptions options) throws IOException {
+  public Table read(HtmlReadOptions options) {
     Document doc;
     InputStream inputStream = options.source().inputStream();
-    if (inputStream != null) {
-      // Reader must support mark, so can't use InputStreamReader
-      // Parse the InputStream directly
-      doc = Jsoup.parse(inputStream, null, "");
-    } else {
-      doc = Parser.htmlParser().parseInput(options.source().createReader(null), "");
+    try {
+      if (inputStream != null) {
+        // Reader must support mark, so can't use InputStreamReader
+        // Parse the InputStream directly
+        doc = Jsoup.parse(inputStream, null, "");
+      } else {
+        doc = Parser.htmlParser().parseInput(options.source().createReader(null), "");
+      }
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
     }
     Elements tables = doc.select("table");
     int tableIndex = 0;
@@ -92,7 +93,7 @@ public class HtmlReader implements DataReader<HtmlReadOptions> {
   }
 
   @Override
-  public Table read(Source source) throws IOException {
+  public Table read(Source source) {
     return read(HtmlReadOptions.builder(source).build());
   }
 }

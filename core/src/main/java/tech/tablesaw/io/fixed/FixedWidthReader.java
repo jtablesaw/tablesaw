@@ -28,11 +28,7 @@ import javax.annotation.concurrent.Immutable;
 import org.apache.commons.math3.util.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.DataReader;
-import tech.tablesaw.io.FileReader;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.ReaderRegistry;
-import tech.tablesaw.io.Source;
+import tech.tablesaw.io.*;
 
 @Immutable
 public class FixedWidthReader extends FileReader implements DataReader<FixedWidthReadOptions> {
@@ -57,7 +53,7 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
    * provided
    */
   private Pair<Reader, ReadOptions.ColumnTypeReadOptions> getReaderAndColumnTypes(
-      FixedWidthReadOptions options) throws IOException {
+      FixedWidthReadOptions options) {
     ReadOptions.ColumnTypeReadOptions columnTypeReadOptions = options.columnTypeReadOptions();
     byte[] bytesCache = null;
 
@@ -65,27 +61,37 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
         options.columnSpecs() != null
             && options.columnSpecs().getFieldNames() != null
             && options.columnSpecs().getFieldNames().length > 0;
-    if (!options.columnTypeReadOptions().hasColumnTypeForAllColumns()
-        && (!options.columnTypeReadOptions().hasColumnTypeForAllColumnsIfHavingColumnNames()
-            || !hasColumnNames)) {
-      Reader reader = options.source().createReader(bytesCache);
-      if (options.source().file() == null) {
-        bytesCache = CharStreams.toString(reader).getBytes();
-        // create a new reader since we just exhausted the existing one
-        reader = options.source().createReader(bytesCache);
+    try {
+      if (!options.columnTypeReadOptions().hasColumnTypeForAllColumns()
+          && (!options.columnTypeReadOptions().hasColumnTypeForAllColumnsIfHavingColumnNames()
+              || !hasColumnNames)) {
+        Reader reader = options.source().createReader(bytesCache);
+        if (options.source().file() == null) {
+
+          bytesCache = CharStreams.toString(reader).getBytes();
+
+          // create a new reader since we just exhausted the existing one
+          reader = options.source().createReader(bytesCache);
+        }
+        columnTypeReadOptions =
+            ReadOptions.ColumnTypeReadOptions.of(detectColumnTypes(reader, options));
       }
-      columnTypeReadOptions =
-          ReadOptions.ColumnTypeReadOptions.of(detectColumnTypes(reader, options));
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
     }
 
-    return Pair.create(options.source().createReader(bytesCache), columnTypeReadOptions);
+    try {
+      return Pair.create(options.source().createReader(bytesCache), columnTypeReadOptions);
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
+    }
   }
 
-  public Table read(FixedWidthReadOptions options) throws IOException {
+  public Table read(FixedWidthReadOptions options) {
     return read(options, false);
   }
 
-  private Table read(FixedWidthReadOptions options, boolean headerOnly) throws IOException {
+  private Table read(FixedWidthReadOptions options, boolean headerOnly) {
     Pair<Reader, ReadOptions.ColumnTypeReadOptions> pair = getReaderAndColumnTypes(options);
     Reader reader = pair.getKey();
     ReadOptions.ColumnTypeReadOptions columnTypeReadOptions = pair.getValue();
@@ -100,7 +106,11 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
         // close it
         // if it's null, we close it here.
         parser.stopParsing();
-        reader.close();
+        try {
+          reader.close();
+        } catch (IOException e) {
+          throw new RuntimeIOException(e);
+        }
       }
     }
   }
@@ -119,15 +129,10 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
    *
    * <p>Note that the types are array separated, and that the index position and the column name are
    * printed such that they would be interpreted as comments if you paste the output into an array:
-   *
-   * <p>
-   *
-   * @throws IOException if file cannot be read
    */
-  public String printColumnTypes(FixedWidthReadOptions options) throws IOException {
+  public String printColumnTypes(FixedWidthReadOptions options) {
 
     Table structure = read(options, true).structure();
-
     return getTypeString(structure);
   }
 
@@ -200,7 +205,7 @@ public class FixedWidthReader extends FileReader implements DataReader<FixedWidt
   }
 
   @Override
-  public Table read(Source source) throws IOException {
+  public Table read(Source source) {
     return read(FixedWidthReadOptions.builder(source).build());
   }
 }
