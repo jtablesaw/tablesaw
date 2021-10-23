@@ -359,7 +359,13 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   /** {@inheritDoc} */
   @Override
   public TextColumn append(Column<String> column) {
-    Preconditions.checkArgument(column.type() == TEXT || column.type().equals(STRING));
+    Preconditions.checkArgument(
+        column.type() == TEXT || column.type().equals(STRING),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     final int size = column.size();
     for (int i = 0; i < size; i++) {
       append(column.getString(i));

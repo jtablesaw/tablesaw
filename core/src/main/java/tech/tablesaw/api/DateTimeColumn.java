@@ -199,9 +199,9 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public DateTimeColumn lag(int n) {
-    int srcPos = n >= 0 ? 0 : 0 - n;
+    int srcPos = n >= 0 ? 0 : -n;
     long[] dest = new long[size()];
-    int destPos = n <= 0 ? 0 : n;
+    int destPos = Math.max(n, 0);
     int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
@@ -483,7 +483,13 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public DateTimeColumn append(Column<LocalDateTime> column) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
     final int size = dateTimeColumn.size();
     for (int i = 0; i < size; i++) {
@@ -494,13 +500,25 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   @Override
   public DateTimeColumn append(Column<LocalDateTime> column, int row) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return appendInternal(((DateTimeColumn) column).getLongInternal(row));
   }
 
   @Override
   public DateTimeColumn set(int row, Column<LocalDateTime> column, int sourceRow) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return set(row, ((DateTimeColumn) column).getLongInternal(sourceRow));
   }
 
@@ -513,7 +531,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     }
     for (long aData : data) {
       if (DateTimeColumnType.missingValueIndicator() != aData) {
-        max = (max > aData) ? max : aData;
+        max = Math.max(max, aData);
       }
     }
 

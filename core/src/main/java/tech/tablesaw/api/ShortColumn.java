@@ -157,9 +157,9 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   @Override
   public ShortColumn lag(int n) {
-    final int srcPos = n >= 0 ? 0 : 0 - n;
+    final int srcPos = n >= 0 ? 0 : -n;
     final short[] dest = new short[size()];
-    final int destPos = n <= 0 ? 0 : n;
+    final int destPos = Math.max(n, 0);
     final int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
@@ -260,7 +260,13 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   @Override
   public ShortColumn append(final Column<Short> column) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     final ShortColumn numberColumn = (ShortColumn) column;
     final int size = numberColumn.size();
     for (int i = 0; i < size; i++) {
@@ -277,13 +283,25 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
 
   @Override
   public ShortColumn append(Column<Short> column, int row) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return append(((ShortColumn) column).getShort(row));
   }
 
   @Override
   public ShortColumn set(int row, Column<Short> column, int sourceRow) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return set(row, ((ShortColumn) column).getShort(sourceRow));
   }
 

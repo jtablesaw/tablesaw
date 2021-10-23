@@ -14,10 +14,10 @@
 
 package tech.tablesaw.api;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static tech.tablesaw.api.ColumnType.STRING;
 import static tech.tablesaw.api.ColumnType.TEXT;
 
-import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -394,7 +394,13 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
 
   @Override
   public StringColumn append(Column<String> column) {
-    Preconditions.checkArgument(column.type() == TEXT || column.type().equals(STRING));
+    checkArgument(
+        column.type() == TEXT || column.type().equals(STRING),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     final int size = column.size();
     for (int i = 0; i < size; i++) {
       append(column.getString(i));

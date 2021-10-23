@@ -1,5 +1,7 @@
 package tech.tablesaw.api;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.*;
 import java.math.BigDecimal;
@@ -208,9 +210,9 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   @Override
   public DoubleColumn lag(int n) {
-    final int srcPos = n >= 0 ? 0 : 0 - n;
+    final int srcPos = n >= 0 ? 0 : -n;
     final double[] dest = new double[size()];
-    final int destPos = n <= 0 ? 0 : n;
+    final int destPos = Math.max(n, 0);
     final int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
@@ -335,7 +337,13 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   @Override
   public DoubleColumn append(final Column<Double> column) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     final DoubleColumn numberColumn = (DoubleColumn) column;
     final int size = numberColumn.size();
     for (int i = 0; i < size; i++) {
@@ -346,7 +354,13 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   @Override
   public DoubleColumn append(Column<Double> column, int row) {
-    Preconditions.checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     DoubleColumn doubleColumn = (DoubleColumn) column;
     return append(doubleColumn.getDouble(row));
   }

@@ -14,6 +14,8 @@
 
 package tech.tablesaw.api;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
@@ -207,9 +209,9 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   @Override
   public DateColumn lag(int n) {
-    int srcPos = n >= 0 ? 0 : 0 - n;
+    int srcPos = n >= 0 ? 0 : -n;
     int[] dest = new int[size()];
-    int destPos = n <= 0 ? 0 : n;
+    int destPos = Math.max(n, 0);
     int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
@@ -257,7 +259,13 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   @Override
   public DateColumn append(final Column<LocalDate> column) {
-    Preconditions.checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     DateColumn dateColumn = (DateColumn) column;
     final int size = dateColumn.size();
     for (int i = 0; i < size; i++) {
@@ -268,13 +276,25 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
 
   @Override
   public DateColumn append(Column<LocalDate> column, int row) {
-    Preconditions.checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return appendInternal(((DateColumn) column).getIntInternal(row));
   }
 
   @Override
   public DateColumn set(int row, Column<LocalDate> column, int sourceRow) {
-    Preconditions.checkArgument(column.type() == this.type());
+    checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return set(row, ((DateColumn) column).getIntInternal(sourceRow));
   }
 

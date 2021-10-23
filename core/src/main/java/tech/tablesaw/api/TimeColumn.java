@@ -143,9 +143,9 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
   /** {@inheritDoc} */
   @Override
   public TimeColumn lag(int n) {
-    int srcPos = n >= 0 ? 0 : 0 - n;
+    int srcPos = n >= 0 ? 0 : -n;
     int[] dest = new int[size()];
-    int destPos = n <= 0 ? 0 : n;
+    int destPos = Math.max(n, 0);
     int length = n >= 0 ? size() - n : size() + n;
 
     for (int i = 0; i < size(); i++) {
@@ -304,7 +304,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     int max = getIntInternal(0);
 
     for (int aData : data) {
-      max = (max > aData) ? max : aData;
+      max = Math.max(max, aData);
     }
 
     if (max == TimeColumnType.missingValueIndicator()) {
@@ -325,7 +325,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
 
     for (int aData : data) {
       if (aData != TimeColumnType.missingValueIndicator()) {
-        min = (min < aData) ? min : aData;
+        min = Math.min(min, aData);
       }
     }
     if (min == Integer.MAX_VALUE) {
@@ -454,7 +454,13 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
   /** {@inheritDoc} */
   @Override
   public TimeColumn append(Column<LocalTime> column) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     TimeColumn timeCol = (TimeColumn) column;
     final int size = timeCol.size();
     for (int i = 0; i < size; i++) {
@@ -466,14 +472,26 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
   /** {@inheritDoc} */
   @Override
   public TimeColumn append(Column<LocalTime> column, int row) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return appendInternal(((TimeColumn) column).getIntInternal(row));
   }
 
   /** {@inheritDoc} */
   @Override
   public TimeColumn set(int row, Column<LocalTime> column, int sourceRow) {
-    Preconditions.checkArgument(column.type() == this.type());
+    Preconditions.checkArgument(
+        column.type() == this.type(),
+        "Column '%s' has type %s, but column '%s' has type %s.",
+        name(),
+        type(),
+        column.name(),
+        column.type());
     return set(row, ((TimeColumn) column).getIntInternal(sourceRow));
   }
 
