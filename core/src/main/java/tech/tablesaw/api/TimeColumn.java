@@ -29,10 +29,7 @@ import java.nio.ByteBuffer;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -553,6 +550,11 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
   public boolean contains(LocalTime time) {
     int t = PackedLocalTime.pack(time);
     return data.contains(t);
+  }
+
+  @Override
+  public Set<LocalTime> asSet() {
+    return new HashSet<>(unique().asList());
   }
 
   /** {@inheritDoc} */

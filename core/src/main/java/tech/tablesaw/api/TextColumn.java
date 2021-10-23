@@ -397,6 +397,8 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
     return values.iterator();
   }
 
+  /** {@inheritDoc} */
+  @Override
   public Set<String> asSet() {
     return new HashSet<>(values);
   }

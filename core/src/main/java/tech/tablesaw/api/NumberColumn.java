@@ -9,6 +9,12 @@ import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
+/**
+ * An abstract class that provides a partial implementation for columns of numeric data
+ *
+ * @param <C> The column type
+ * @param <T> The (boxed) type of data in the column
+ */
 public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Number>
     extends AbstractColumn<C, T> implements NumericColumn<T> {
 
@@ -44,6 +50,10 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     return this;
   }
 
+  /**
+   * Sets the value of all elements in this column matching condition to be equal to newValue and
+   * returns this column
+   */
   public NumberColumn<C, T> set(DoublePredicate condition, T newValue) {
     for (int row = 0; row < size(); row++) {
       if (condition.test(getDouble(row))) {
@@ -53,17 +63,20 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
-  public void setPrintFormatter(final NumberFormat format, final String missingValueString) {
-    this.printFormatter = new NumberColumnFormatter(format, missingValueString);
+  public void setPrintFormatter(final NumberFormat format, final String missingValueIndicator) {
+    this.printFormatter = new NumberColumnFormatter(format, missingValueIndicator);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setPrintFormatter(final NumberColumnFormatter formatter) {
     this.printFormatter = formatter;
     formatter.setColumnType(type());
   }
 
+  /** Returns the NumbetPrintFormatter for this column, or null */
   protected NumberColumnFormatter getPrintFormatter() {
     return printFormatter;
   }
@@ -88,6 +101,7 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
    */
   public abstract NumericColumn<T> bottom(final int n);
 
+  /** {@inheritDoc} */
   @Override
   public String getString(final int row) {
     final double value = getDouble(row);
@@ -97,6 +111,7 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     return String.valueOf(printFormatter.format(value));
   }
 
+  /** {@inheritDoc} */
   @Override
   public C emptyCopy() {
     final C column = createCol(name());
@@ -105,6 +120,7 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     return column;
   }
 
+  /** {@inheritDoc} */
   @Override
   public C emptyCopy(final int rowSize) {
     final C column = createCol(name(), rowSize);
@@ -112,9 +128,6 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     column.locale = locale;
     return column;
   }
-
-  @Override
-  public abstract C copy();
 
   /**
    * Compares the given ints, which refer to the indexes of the doubles in this column, according to
@@ -125,17 +138,11 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
     return comparator;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int byteSize() {
     return type().byteSize();
   }
-
-  /** Returns the contents of the cell at rowNumber as a byte[] */
-  @Override
-  public abstract byte[] asBytes(final int rowNumber);
-
-  @Override
-  public abstract C appendMissing();
 
   /** Returns the count of missing values in this column */
   @Override

@@ -5,7 +5,9 @@ import it.unimi.dsi.fastutil.longs.*;
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.stream.LongStream;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
@@ -313,6 +315,12 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
     return ByteBuffer.allocate(LongColumnType.instance().byteSize())
         .putLong(getLong(rowNumber))
         .array();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Set<Long> asSet() {
+    return new HashSet<>(unique().asList());
   }
 
   @Override

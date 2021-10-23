@@ -31,11 +31,13 @@ import tech.tablesaw.selection.Selection;
 public interface NumericColumn<T extends Number>
     extends Column<T>, NumberMapFunctions, NumberFilters {
 
+  /** {@inheritDoc} */
   @Override
   default boolean isEmpty() {
     return size() == 0;
   }
 
+  /** {@inheritDoc} */
   @Override
   default double[] asDoubleArray() {
     final double[] output = new double[size()];
@@ -45,6 +47,7 @@ public interface NumericColumn<T extends Number>
     return output;
   }
 
+  /** {@inheritDoc} */
   @Override
   default Selection eval(final DoublePredicate predicate) {
     final Selection bitmap = new BitmapBackedSelection();
@@ -57,6 +60,7 @@ public interface NumericColumn<T extends Number>
     return bitmap;
   }
 
+  /** {@inheritDoc} */
   @Override
   default Selection eval(final BiPredicate<Number, Number> predicate, final Number number) {
     final double value = number.doubleValue();
@@ -70,6 +74,7 @@ public interface NumericColumn<T extends Number>
     return bitmap;
   }
 
+  /** {@inheritDoc} */
   @Override
   default Selection isIn(Collection<Number> numbers) {
     final Selection results = new BitmapBackedSelection();
@@ -81,6 +86,7 @@ public interface NumericColumn<T extends Number>
     return results;
   }
 
+  /** {@inheritDoc} */
   @Override
   default Selection isNotIn(Collection<Number> numbers) {
     final Selection results = new BitmapBackedSelection();
@@ -89,11 +95,13 @@ public interface NumericColumn<T extends Number>
     return results;
   }
 
+  /** {@inheritDoc} */
   @Override
   default Selection isMissing() {
     return eval(isMissing);
   }
 
+  /** {@inheritDoc} */
   @Override
   default Selection isNotMissing() {
     return eval(isNotMissing);
@@ -159,12 +167,7 @@ public interface NumericColumn<T extends Number>
     return count(test, 1) == 0;
   }
 
-  /**
-   * Returns the maximum row according to the provided Comparator
-   *
-   * @param comp
-   * @return the maximum row
-   */
+  /** Returns the maximum row according to the provided Comparator */
   default Optional<Double> max(DoubleComparator comp) {
     boolean first = true;
     double d1 = 0.0;
@@ -180,12 +183,7 @@ public interface NumericColumn<T extends Number>
     return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
   }
 
-  /**
-   * Returns the minimum row according to the provided Comparator
-   *
-   * @param comp
-   * @return the minimum row
-   */
+  /** Returns the minimum row according to the provided Comparator */
   default Optional<Double> min(DoubleComparator comp) {
     boolean first = true;
     double d1 = 0.0;
@@ -201,8 +199,13 @@ public interface NumericColumn<T extends Number>
     return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
   }
 
-  void setPrintFormatter(final NumberFormat format, final String missingValueString);
+  /**
+   * Sets the print formatter to a new {@link tech.tablesaw.columns.ColumnFormatter} constructed
+   * from the given number format and missing value indicator TODO: make these return the column?
+   */
+  void setPrintFormatter(final NumberFormat format, final String missingValueIndicator);
 
+  /** Sets the print formatter to the argument */
   void setPrintFormatter(final NumberColumnFormatter formatter);
 
   /**
@@ -259,11 +262,16 @@ public interface NumericColumn<T extends Number>
     return into;
   }
 
+  /** Returns the subset of data in this column included in the given {@link Selection} */
   @Override
   default NumericColumn<T> where(final Selection selection) {
     return (NumericColumn<T>) subset(selection.toArray());
   }
 
+  /**
+   * Returns a {@link NumberInterpolator} object that can be used to interpolate values for elements
+   * missing in the column
+   */
   @Override
   default NumberInterpolator<T> interpolate() {
     return new NumberInterpolator<>(this);
@@ -280,67 +288,82 @@ public interface NumericColumn<T extends Number>
     return function.summarize(column);
   }
 
-  // Reduce functions applied to the whole column
+  /** Returns the sum of the values in this column */
   default double sum() {
     return sum.summarize(this);
   }
 
+  /** Returns the product of values in this column */
   default double product() {
     return product.summarize(this);
   }
 
+  /** Returns the mean of the data in this column */
   default double mean() {
     return mean.summarize(this);
   }
 
+  /** Returns the median or 50th percentile of the data in this column */
   default double median() {
     return median.summarize(this);
   }
 
+  /** Returns the 1st quartile of the data in this column */
   default double quartile1() {
     return quartile1.summarize(this);
   }
 
+  /** Returns the 3rd quartile of the data in this column */
   default double quartile3() {
     return quartile3.summarize(this);
   }
 
+  /** Returns the given percentile of the data in this column */
   default double percentile(double percentile) {
     return AggregateFunctions.percentile(this, percentile);
   }
 
+  /** Returns the range of the data in this column */
   default double range() {
     return range.summarize(this);
   }
 
+  /** Returns the largest value in this column */
   default double max() {
     return max.summarize(this);
   }
 
+  /** Returns the smallest value in this column */
   default double min() {
     return min.summarize(this);
   }
 
+  /** Returns the sample variance of the data in this column */
   default double variance() {
     return variance.summarize(this);
   }
 
+  /** Returns the population variance of the data in this column */
   default double populationVariance() {
     return populationVariance.summarize(this);
   }
 
+  /** Returns the standard deviation of the data in this column */
   default double standardDeviation() {
     return stdDev.summarize(this);
   }
 
+  /** Returns the sum of logs of the data in this column */
   default double sumOfLogs() {
     return sumOfLogs.summarize(this);
   }
 
+  /** Returns the sum of squares of the data in this column */
   default double sumOfSquares() {
     return sumOfSquares.summarize(this);
   }
 
+  /** Returns the geometric mean of the data in this column */
   default double geometricMean() {
     return geometricMean.summarize(this);
   }
@@ -350,10 +373,12 @@ public interface NumericColumn<T extends Number>
     return quadraticMean.summarize(this);
   }
 
+  /** Returns the kurtosis of the data in this column */
   default double kurtosis() {
     return kurtosis.summarize(this);
   }
 
+  /** Returns the skewness of the data in this column */
   default double skewness() {
     return skewness.summarize(this);
   }
@@ -365,11 +390,16 @@ public interface NumericColumn<T extends Number>
     return new PearsonsCorrelation().correlation(x, y);
   }
 
+  /** Returns the auto-correlation (correlation between each element and the next) */
   default double autoCorrelation() {
     int defaultLag = 1;
     return autoCorrelation(defaultLag);
   }
 
+  /**
+   * Returns the auto-correlation between elements separated by {@code lag}. If lag is 2, the
+   * correlation is computed between pairs of elements 0 and 2, 1 and 3; 2 and 4, etc.
+   */
   default double autoCorrelation(int lag) {
     int slice = this.size() - lag;
     if (slice <= 1) {
@@ -399,19 +429,28 @@ public interface NumericColumn<T extends Number>
     return new KendallsCorrelation().correlation(x, y);
   }
 
+  /** Returns a table of common statistical values that together describe the data in this column */
   default Table summary() {
     return stats().asTable();
   }
 
+  /**
+   * Returns a {@link Stats} object that collects common statistical measures of the data in this
+   * column
+   */
   default Stats stats() {
     return Stats.create(this);
   }
 
+  /** {@inheritDoc} */
   @Override
   default NumberRollingColumn rolling(final int windowSize) {
     return new NumberRollingColumn(this, windowSize);
   }
 
+  /**
+   * Returns a column containing the percentage change between values that are {@code periods} apart
+   */
   default DoubleColumn pctChange(int periods) {
     return (DoubleColumn)
         rolling(periods + 1)
@@ -420,6 +459,7 @@ public interface NumericColumn<T extends Number>
                 name() + " " + periods + "-period " + AggregateFunctions.pctChange.functionName());
   }
 
+  /** {@inheritDoc} */
   @Override
   default NumericColumn<T> lead(final int n) {
     final NumericColumn<T> numberColumn = lag(-n);
@@ -427,8 +467,11 @@ public interface NumericColumn<T extends Number>
     return numberColumn;
   }
 
+  /** {@inheritDoc} */
+  @Override
   NumericColumn<T> lag(final int n);
 
+  /** Returns a double representation of the number at {@code index} */
   double getDouble(int index);
 
   /**
@@ -479,10 +522,19 @@ public interface NumericColumn<T extends Number>
     return (DoubleColumn) this.copy();
   }
 
+  /**
+   * Returns a new ShortColumn containing a value for each value in this column
+   *
+   * <p>The exact behavior when overridden depends on the type of the receiver (LongColumn,
+   * FloatColumn, etc.)
+   *
+   * <p>In this version, the result is a copy of the original
+   */
   default ShortColumn asShortColumn() {
     return (ShortColumn) this.copy();
   }
 
+  /** {@inheritDoc} */
   @Override
   NumericColumn<T> copy();
 

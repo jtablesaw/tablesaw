@@ -14,9 +14,7 @@
 
 package tech.tablesaw.api;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,5 +81,13 @@ public class DoubleColumnTest {
     assertTrue(col.isMissing(col.size() - 1));
     col.appendCell("5.0");
     assertFalse(col.isMissing(col.size() - 1));
+  }
+
+  @Test
+  public void asSet() {
+    final double[] values = {4, 5, 9.3, 5, 9.3};
+    final DoubleColumn c = DoubleColumn.create("fc", values);
+    assertEquals(3, c.asSet().size());
+    assertTrue(c.asSet().contains(4.0));
   }
 }

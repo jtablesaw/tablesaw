@@ -81,8 +81,10 @@ public interface ColumnType {
   /** Returns a printer-friendly version of this ColumnType's name */
   String getPrinterFriendlyName();
 
+  /** TODO: Research this method to provide a good comment */
   AbstractColumnParser<?> customParser(ReadOptions options);
 
+  /** TODO: Research this method to provide a good comment */
   default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {
     Object o1 = original.get(rowNumber);
     Object o2 = temp.get(temp.size() - 1);

@@ -639,6 +639,8 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return data.iterator();
   }
 
+  /** {@inheritDoc} */
+  @Override
   public Set<Instant> asSet() {
     Set<Instant> times = new HashSet<>();
     InstantColumn unique = unique();

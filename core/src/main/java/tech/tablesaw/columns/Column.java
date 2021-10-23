@@ -18,10 +18,7 @@ import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -176,6 +173,9 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    * @return content as byte[]
    */
   byte[] asBytes(int rowNumber);
+
+  /** Returns a Set containing all the unique values in this column */
+  Set<T> asSet();
 
   /**
    * Returns a {@link RollingColumn} with the given windowSize, which can be used for performing
