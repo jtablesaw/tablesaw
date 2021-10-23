@@ -25,11 +25,7 @@ import javax.annotation.concurrent.Immutable;
 import org.apache.commons.math3.util.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.DataReader;
-import tech.tablesaw.io.FileReader;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.ReaderRegistry;
-import tech.tablesaw.io.Source;
+import tech.tablesaw.io.*;
 
 @Immutable
 public class CsvReader extends FileReader implements DataReader<CsvReadOptions> {
@@ -83,8 +79,12 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
     return Pair.create(source.createReader(bytesCache), columnTypeReadOptions);
   }
 
-  public Table read(CsvReadOptions options) throws IOException {
-    return read(options, false);
+  public Table read(CsvReadOptions options) {
+    try {
+      return read(options, false);
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
+    }
   }
 
   private Table read(CsvReadOptions options, boolean headerOnly) throws IOException {
@@ -192,7 +192,7 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
   }
 
   @Override
-  public Table read(Source source) throws IOException {
+  public Table read(Source source) {
     return read(CsvReadOptions.builder(source).build());
   }
 }
