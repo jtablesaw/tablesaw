@@ -8,8 +8,10 @@ import tech.tablesaw.columns.Column;
  */
 public class Interpolator<T> {
 
+  /** The column being interpolated */
   protected final Column<T> col;
 
+  /** Constructs an object for performing interpolation on the given column */
   public Interpolator(Column<T> column) {
     this.col = column;
   }
