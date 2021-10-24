@@ -457,19 +457,9 @@ public class Table extends Relation implements Iterable<Row> {
     return columnList.stream().map(Column::name).collect(toList());
   }
 
-  /** Returns a table with the same columns as this table */
+  /** Returns a table with the same columns and data as this table */
   public Table copy() {
-    Table copy = new Table(name);
-    for (Column<?> column : columnList) {
-      copy.addColumns(column.emptyCopy(rowCount()));
-    }
-
-    int[] rows = new int[rowCount()];
-    for (int i = 0; i < rowCount(); i++) {
-      rows[i] = i;
-    }
-    Rows.copyRowsToTable(rows, this, copy);
-    return copy;
+    return inRange(0, this.rowCount());
   }
 
   /** Returns a table with the same columns as this table, but no data */
@@ -491,6 +481,57 @@ public class Table extends Relation implements Iterable<Row> {
       copy.addColumns(column.emptyCopy(rowSize));
     }
     return copy;
+  }
+
+  /**
+   * Copies the rows specified by Selection into newTable
+   *
+   * @param rows A Selection defining the rows to copy
+   * @param newTable The table to copy the rows into
+   */
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public void copyRowsToTable(Selection rows, Table newTable) {
+    for (int columnIndex = 0; columnIndex < this.columnCount(); columnIndex++) {
+      Column oldColumn = this.column(columnIndex);
+      int r = 0;
+      for (int i : rows) {
+        newTable.column(columnIndex).set(r, oldColumn, i);
+        r++;
+      }
+    }
+  }
+
+  /**
+   * Copies the rows indicated by the row index values in the given array from oldTable to newTable
+   */
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public void copyRowsToTable(int[] rows, Table newTable) {
+    for (int columnIndex = 0; columnIndex < columnCount(); columnIndex++) {
+      Column oldColumn = column(columnIndex);
+      int r = 0;
+      for (int i : rows) {
+        newTable.column(columnIndex).set(r, oldColumn, i);
+        r++;
+      }
+    }
+  }
+
+  /**
+   * Returns {@code true} if the row @rowNumber in table1 holds the same data as the row at
+   * rowNumber in table2
+   */
+  public static boolean compareRows(int rowNumber, Table table1, Table table2) {
+    int columnCount = table1.columnCount();
+    boolean result;
+    for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+      ColumnType columnType = table1.column(columnIndex).type();
+      result =
+          columnType.compare(rowNumber, table2.column(columnIndex), table1.column(columnIndex));
+      if (!result) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
@@ -659,7 +700,7 @@ public class Table extends Relation implements Iterable<Row> {
     int[] newRows = rows();
     IntArrays.mergeSort(newRows, rowComparator);
 
-    Rows.copyRowsToTable(newRows, this, newTable);
+    copyRowsToTable(newRows, newTable);
     return newTable;
   }
 
@@ -772,7 +813,7 @@ public class Table extends Relation implements Iterable<Row> {
   /** Returns a table containing the rows contained in the given Selection */
   public Table where(Selection selection) {
     Table newTable = this.emptyCopy(selection.size());
-    Rows.copyRowsToTable(selection, this, newTable);
+    copyRowsToTable(selection, newTable);
     return newTable;
   }
 
@@ -795,7 +836,7 @@ public class Table extends Relation implements Iterable<Row> {
     opposite.addRange(0, rowCount());
     opposite.andNot(selection);
     Table newTable = this.emptyCopy(opposite.size());
-    Rows.copyRowsToTable(opposite, this, newTable);
+    copyRowsToTable(opposite, newTable);
     return newTable;
   }
 
@@ -868,8 +909,8 @@ public class Table extends Relation implements Iterable<Row> {
     Table temp = emptyCopy();
 
     for (int row = 0; row < rowCount(); row++) {
-      if (temp.isEmpty() || !Rows.compareRows(row, sorted, temp)) {
-        Rows.appendRowToTable(row, sorted, temp);
+      if (temp.isEmpty() || !compareRows(row, sorted, temp)) {
+        temp.append(sorted.row(row));
       }
     }
     return temp;
@@ -892,7 +933,7 @@ public class Table extends Relation implements Iterable<Row> {
     Selection notMissing = Selection.withRange(0, rowCount());
     notMissing.andNot(missing);
     Table temp = emptyCopy(notMissing.size());
-    Rows.copyRowsToTable(notMissing, this, temp);
+    copyRowsToTable(notMissing, temp);
     return temp;
   }
 

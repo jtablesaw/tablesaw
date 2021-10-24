@@ -42,9 +42,16 @@ import tech.tablesaw.sorting.comparators.IntComparatorChain;
  */
 public class TableSlice extends Relation {
 
+  /** The physical table object backing this slice */
   private final Table table;
+
+  /** The name of the slice */
   private String name;
+
+  /** The Selection that defines which rows in the table are present in this slice */
   @Nullable private Selection selection;
+
+  /** An array of row indices defining the presentation order of the slice */
   @Nullable private int[] sortOrder = null;
 
   /**
@@ -67,6 +74,7 @@ public class TableSlice extends Relation {
     this.table = table;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Column<?> column(int columnIndex) {
     Column<?> col = table.column(columnIndex);
@@ -78,16 +86,19 @@ public class TableSlice extends Relation {
     return col;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Column<?> column(String columnName) {
     return column(table.columnIndex(columnName));
   }
 
+  /** {@inheritDoc} */
   @Override
   public int columnCount() {
     return table.columnCount();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int rowCount() {
     if (hasSelection()) {
@@ -96,6 +107,7 @@ public class TableSlice extends Relation {
     return table.rowCount();
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<Column<?>> columns() {
     List<Column<?>> columns = new ArrayList<>();
@@ -105,21 +117,25 @@ public class TableSlice extends Relation {
     return columns;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int columnIndex(Column<?> column) {
     return table.columnIndex(column);
   }
 
+  /** {@inheritDoc} */
   @Override
   public Object get(int r, int c) {
     return table.get(mappedRowNumber(r), c);
   }
 
+  /** {@inheritDoc} */
   @Override
   public String name() {
     return name;
   }
 
+  /** {@inheritDoc} */
   public Table getTable() {
     return table;
   }
@@ -144,23 +160,27 @@ public class TableSlice extends Relation {
     this.selection = null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<String> columnNames() {
     return table.columnNames();
   }
 
+  /** {@inheritDoc} */
   @Override
   public TableSlice addColumns(Column<?>... column) {
     throw new UnsupportedOperationException(
         "Class TableSlice does not support the addColumns operation");
   }
 
+  /** {@inheritDoc} */
   @Override
   public TableSlice removeColumns(Column<?>... columns) {
     throw new UnsupportedOperationException(
         "Class TableSlice does not support the removeColumns operation");
   }
 
+  /** {@inheritDoc} */
   @Override
   public Table first(int nRows) {
     int count = 0;
@@ -174,12 +194,14 @@ public class TableSlice extends Relation {
     return copy;
   }
 
+  /** {@inheritDoc} */
   @Override
   public TableSlice setName(String name) {
     this.name = name;
     return this;
   }
 
+  /** Returns the data in this slice as a new Table */
   public Table asTable() {
     Table table = Table.create(this.name());
     for (Column<?> column : this.columns()) {

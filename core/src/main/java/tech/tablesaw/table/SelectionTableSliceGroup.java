@@ -23,6 +23,16 @@ import tech.tablesaw.selection.Selection;
 /** A group of tables formed by performing splitting operations on an original table */
 public class SelectionTableSliceGroup extends TableSliceGroup {
 
+  /**
+   * Creates a TableSliceGroup where each slice contains {@code step} number of rows from the
+   * backing table
+   *
+   * @param original The original backing table that provides the data for the new slice group
+   * @param subTableNameTemplate The prefix of a name for each slice in the group. If the argument
+   *     is "step" the name will take the form "step 1", "step 2", etc.
+   * @param step The number of rows per slice
+   * @return The new table
+   */
   public static SelectionTableSliceGroup create(
       Table original, String subTableNameTemplate, int step) {
     return new SelectionTableSliceGroup(original, subTableNameTemplate, step);
