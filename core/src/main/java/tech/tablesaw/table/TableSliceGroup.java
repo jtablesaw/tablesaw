@@ -29,20 +29,28 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 
-/** A group of tables formed by performing splitting operations on an original table */
-public class TableSliceGroup implements Iterable<TableSlice> {
+/**
+ * A group of virtual tables (table slices) formed by performing splitting operations on an original
+ * table See: {@link TableSlice}
+ */
+public abstract class TableSliceGroup implements Iterable<TableSlice> {
 
-  // A string that is used internally as a delimiter in creating a column name from all the grouping
-  // columns
+  /**
+   * A string that is used internally as a delimiter in creating a column name from all the grouping
+   * columns
+   */
   protected static final String SPLIT_STRING = "~~~";
 
-  // A function that splits the group column name back into the original column names for the
-  // grouping columns
+  /**
+   * A function that splits the group column name back into the original column names for the
+   * grouping columns
+   */
   private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
 
-  // The list of slices or views over the source table that I contain
+  /** The list of slices or views over the source table that I contain */
   private final List<TableSlice> subTables = new ArrayList<>();
 
+  /** An array containing the names of the columns that the backing table was split on */
   private final String[] splitColumnNames;
 
   // The table that underlies all the manipulations performed here
@@ -65,10 +73,12 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     this.splitColumnNames = groupColumnNames;
   }
 
+  /** Returns the names of the columns the backing table was split on. */
   protected String[] getSplitColumnNames() {
     return splitColumnNames;
   }
 
+  /** Returns the sum of the sizes for the columns in the given {@link Column} list */
   protected int getByteSize(List<Column<?>> columns) {
     int byteSize = 0;
     for (Column<?> c : columns) {
@@ -77,18 +87,22 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     return byteSize;
   }
 
+  /** Add a slice to this group */
   protected void addSlice(TableSlice slice) {
     subTables.add(slice);
   }
 
+  /** Returns the slices as a list */
   public List<TableSlice> getSlices() {
     return subTables;
   }
 
+  /** Returns the ith slice in this group */
   public TableSlice get(int i) {
     return subTables.get(i);
   }
 
+  /** Returns the table behind this slice group */
   public Table getSourceTable() {
     return sourceTable;
   }
@@ -177,6 +191,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     return splitGroupingColumn(groupTable);
   }
 
+  /** Returns the name of a summary table made by aggregating on the slices in this group */
   public static Table summaryTableName(Table source) {
     return Table.create(source.name() + " summary");
   }
@@ -209,6 +224,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     return tableList;
   }
 
+  /** Sets the source table that backs this TableSliceGroup */
   protected void setSourceTable(Table sourceTable) {
     this.sourceTable = sourceTable;
   }
