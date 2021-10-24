@@ -32,6 +32,11 @@ import tech.tablesaw.selection.Selection;
 /** A group of tables formed by performing splitting operations on an original table */
 public class StandardTableSliceGroup extends TableSliceGroup {
 
+  /**
+   * Constructs a TableSliceGroup made by subdividing the original table by the given columns. A
+   * group subdividing on the two columns "Name" and "Place" will have a slice for every combination
+   * of name and place in the table
+   */
   private StandardTableSliceGroup(Table original, CategoricalColumn<?>... columns) {
     super(original, splitColumnNames(columns));
     setSourceTable(getSourceTable());
