@@ -17,9 +17,12 @@ package tech.tablesaw.api;
 import static org.junit.jupiter.api.Assertions.*;
 import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -45,6 +48,7 @@ public class TableTest {
   private static final String LINE_END = System.lineSeparator();
   private static final int ROWS_BOUNDARY = 1000;
   private static final Random RANDOM = new Random();
+  private static final ColumnType[] BUSH_COLUMN_TYPES = {LOCAL_DATE, INTEGER, STRING};
   private static Table bush;
   private static Table bushMinimized;
 
@@ -54,9 +58,13 @@ public class TableTest {
 
   @BeforeAll
   static void readTables() {
-    bush = Table.read().csv("../data/bush.csv");
-    bushMinimized =
-        Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
+    bush =
+        Table.read()
+            .csv(
+                CsvReadOptions.builder(new File("../data/bush.csv"))
+                    .columnTypes(BUSH_COLUMN_TYPES));
+    ColumnType[] types = {LOCAL_DATE, SHORT, TEXT};
+    bushMinimized = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").columnTypes(types));
   }
 
   @BeforeEach
@@ -67,19 +75,43 @@ public class TableTest {
 
   @Test
   void testSummarize() {
-    Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+    ColumnType[] types = {
+      LOCAL_DATE,
+      LOCAL_TIME,
+      STRING,
+      INTEGER,
+      INTEGER,
+      INTEGER,
+      INTEGER,
+      DOUBLE,
+      DOUBLE,
+      DOUBLE,
+      DOUBLE
+    };
+    Table table =
+        Table.read()
+            .csv(
+                CsvReadOptions.builder(new File("../data/tornadoes_1950-2014.csv"))
+                    .columnTypes(types));
     Table result = table.summarize("Injuries", mean, stdDev).by("State");
     assertEquals(49, result.rowCount());
     assertEquals(3, result.columnCount());
     assertEquals(
-        "4.580805569368441",
-        result.where(result.stringColumn("state").isEqualTo("AL")).doubleColumn(1).getString(0));
+        4.580805569368441,
+        result.where(result.stringColumn("state").isEqualTo("AL")).doubleColumn(1).get(0));
   }
 
   @Test
   void testColumn() {
     Column<?> column1 = table.column(0);
     assertNotNull(column1);
+  }
+
+  @Test
+  void testSelectColumns() {
+    Table b2 = bush.selectColumns(0);
+    assertEquals(1, b2.columnCount());
+    assertEquals("date", b2.column(0).name());
   }
 
   @Test
@@ -265,7 +297,11 @@ public class TableTest {
 
   @Test
   void dropDuplicateRows() {
-    Table t1 = Table.read().csv("../data/bush.csv");
+    Table t1 =
+        Table.read()
+            .csv(
+                CsvReadOptions.builder(new File("../data/bush.csv"))
+                    .columnTypes(BUSH_COLUMN_TYPES));
     int rowCount = t1.rowCount();
     t1.append(bush).append(bush);
     assertEquals(3 * rowCount, t1.rowCount());

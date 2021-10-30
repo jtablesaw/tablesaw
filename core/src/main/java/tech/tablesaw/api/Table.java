@@ -1046,10 +1046,7 @@ public class Table extends Relation implements Iterable<Row> {
   public Table selectColumns(int... columnIndexes) {
     Table t = Table.create(this.name);
     RoaringBitmap bm = new RoaringBitmap();
-    bm.add((long) 0, columnCount());
-    RoaringBitmap excluded = new RoaringBitmap();
-    excluded.add(columnIndexes);
-    bm.andNot(excluded);
+    bm.add(columnIndexes);
     for (int i : bm) {
       t.addColumns(column(i).copy());
     }
