@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
@@ -32,31 +33,61 @@ import tech.tablesaw.table.TableSlice;
 /** TODO All the methods on this class should be tested carefully */
 public class RowTest {
 
+  private static Table bush;
+  private static Table baseball;
+  private static Table tornado;
+  private static final ColumnType[] BASEBALL_COLUMN_TYPES = {
+    STRING, STRING, INTEGER, INTEGER, INTEGER,
+    INTEGER, DOUBLE, DOUBLE, DOUBLE, BOOLEAN,
+    INTEGER, INTEGER, INTEGER, DOUBLE, DOUBLE
+  };
+
+  private static final ColumnType[] BUSH_COLUMN_TYPES = {LOCAL_DATE, INTEGER, STRING};
+  private static final ColumnType[] TORNADO_COLUMN_TYPES = {
+    LOCAL_DATE, LOCAL_TIME, STRING, STRING, SHORT, SHORT, SHORT, DOUBLE, DOUBLE, DOUBLE, DOUBLE
+  };
+
+  @BeforeAll
+  static void readTables() {
+    bush = readBush(BUSH_COLUMN_TYPES);
+    tornado = readTornado(TORNADO_COLUMN_TYPES);
+    baseball = readBaseball(BASEBALL_COLUMN_TYPES);
+  }
+
+  static Table readBush(ColumnType[] columnTypes) {
+    return Table.read()
+        .csv(CsvReadOptions.builder(new File("../data/bush.csv")).columnTypes(columnTypes));
+  }
+
+  static Table readBaseball(ColumnType[] columnTypes) {
+    return Table.read()
+        .csv(CsvReadOptions.builder(new File("../data/baseball.csv")).columnTypes(columnTypes));
+  }
+
+  static Table readTornado(ColumnType[] columnTypes) {
+    return Table.read()
+        .csv(
+            CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
+                .columnTypes(columnTypes));
+  }
+
   @Test
   public void columnNames() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
-    Row row = new Row(table);
-    assertEquals(table.columnNames(), row.columnNames());
+    Row row = new Row(bush);
+    assertEquals(bush.columnNames(), row.columnNames());
   }
 
   @Test
-  public void testColumnCount() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
-    Row row = new Row(table);
-    assertEquals(table.columnCount(), row.columnCount());
+  public void testColumnCount() {
+    Row row = new Row(bush);
+    assertEquals(bush.columnCount(), row.columnCount());
   }
 
   @Test
-  public void testGetBoolean() throws IOException {
-    ColumnType[] types = {
-      STRING, STRING, INTEGER, INTEGER, INTEGER,
-      INTEGER, DOUBLE, DOUBLE, DOUBLE, BOOLEAN,
-      INTEGER, INTEGER, INTEGER, DOUBLE, DOUBLE
-    };
+  public void testGetBoolean() {
 
-    Table table =
-        Table.read()
-            .csv(CsvReadOptions.builder(new File("../data/baseball.csv")).columnTypes(types));
+    Table table = baseball;
+
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -67,38 +98,28 @@ public class RowTest {
   }
 
   @Test
-  public void testGetDate() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
-    Row row = new Row(table);
+  public void testGetDate() {
+    Row row = new Row(bush);
     while (row.hasNext()) {
       row.next();
-      LocalDate date = table.dateColumn("date").get(row.getRowNumber());
+      LocalDate date = bush.dateColumn("date").get(row.getRowNumber());
       assertEquals(date, row.getDate(0));
       assertEquals(date, row.getDate("date"));
     }
   }
 
   @Test
-  public void testGetDate2() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
-    Row row = new Row(table);
+  public void testGetDate2() {
+    Row row = new Row(bush);
     while (row.hasNext()) {
       row.next();
-      assertEquals(table.dateColumn("date").get(row.getRowNumber()), row.getDate("DATE"));
+      assertEquals(bush.dateColumn("date").get(row.getRowNumber()), row.getDate("DATE"));
     }
   }
 
   @Test
-  public void testGetDateTime() throws IOException {
-    ColumnType[] types = {
-      LOCAL_DATE, LOCAL_TIME, STRING, STRING, SHORT, SHORT, SHORT, DOUBLE, DOUBLE, DOUBLE, DOUBLE
-    };
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
-                    .columnTypes(types)
-                    .minimizeColumnSizes());
+  public void testGetDateTime() {
+    Table table = tornado.copy();
     DateTimeColumn dateTimeCol = table.dateColumn("Date").atTime(table.timeColumn("Time"));
     dateTimeCol.setName("DateTime");
     table.addColumns(dateTimeCol);
@@ -112,15 +133,8 @@ public class RowTest {
   }
 
   @Test
-  public void testGetDouble() throws IOException {
-    ColumnType[] types = {
-      STRING, STRING, INTEGER, INTEGER, INTEGER,
-      INTEGER, DOUBLE, DOUBLE, DOUBLE, INTEGER,
-      INTEGER, INTEGER, INTEGER, DOUBLE, DOUBLE
-    };
-    Table table =
-        Table.read()
-            .csv(CsvReadOptions.builder(new File("../data/baseball.csv")).columnTypes(types));
+  public void testGetDouble() {
+    Table table = baseball;
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -131,16 +145,14 @@ public class RowTest {
   }
 
   @Test
-  public void testGetFloat() throws IOException {
+  public void testGetFloat() {
     ColumnType[] types = {
       STRING, STRING, INTEGER, INTEGER, INTEGER,
       INTEGER, FLOAT, FLOAT, FLOAT, INTEGER,
       INTEGER, INTEGER, INTEGER, FLOAT, FLOAT
     };
 
-    Table table =
-        Table.read()
-            .csv(CsvReadOptions.builder(new File("../data/baseball.csv")).columnTypes(types));
+    Table table = readBaseball(types);
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -151,14 +163,9 @@ public class RowTest {
   }
 
   @Test
-  public void testGetLong() throws IOException {
-    ColumnType[] types = {LOCAL_DATE, LONG, STRING};
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/bush.csv"))
-                    .columnTypes(types)
-                    .minimizeColumnSizes());
+  public void testGetLong() {
+    ColumnType[] bushColumnTypes = {LOCAL_DATE, LONG, STRING};
+    Table table = readBush(bushColumnTypes);
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -169,14 +176,8 @@ public class RowTest {
   }
 
   @Test
-  public void testGetObject() throws IOException {
-    ColumnType[] types = {LOCAL_DATE, LONG, STRING};
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/bush.csv"))
-                    .columnTypes(types)
-                    .minimizeColumnSizes());
+  public void testGetObject() {
+    Table table = readBush(BUSH_COLUMN_TYPES);
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -186,28 +187,19 @@ public class RowTest {
   }
 
   @Test
-  public void testGetPackedDate() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
-    Row row = new Row(table);
+  public void testGetPackedDate() {
+    Row row = new Row(bush);
     while (row.hasNext()) {
       row.next();
-      assertEquals(table.dateColumn(0).getIntInternal(row.getRowNumber()), row.getPackedDate(0));
+      assertEquals(bush.dateColumn(0).getIntInternal(row.getRowNumber()), row.getPackedDate(0));
       assertEquals(
-          table.dateColumn("date").getIntInternal(row.getRowNumber()), row.getPackedDate("date"));
+          bush.dateColumn("date").getIntInternal(row.getRowNumber()), row.getPackedDate("date"));
     }
   }
 
   @Test
-  public void testGetPackedDateTime() throws IOException {
-    ColumnType[] types = {
-      LOCAL_DATE, LOCAL_TIME, STRING, STRING, SHORT, SHORT, SHORT, DOUBLE, DOUBLE, DOUBLE, DOUBLE
-    };
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
-                    .columnTypes(types)
-                    .minimizeColumnSizes());
+  public void testGetPackedDateTime() {
+    Table table = tornado.copy();
     DateTimeColumn dateTimeCol = table.dateColumn("Date").atTime(table.timeColumn("Time"));
     dateTimeCol.setName("DateTime");
     table.addColumns(dateTimeCol);
@@ -223,16 +215,8 @@ public class RowTest {
   }
 
   @Test
-  public void testGetPackedTime() throws IOException {
-    ColumnType[] types = {
-      LOCAL_DATE, LOCAL_TIME, STRING, STRING, SHORT, SHORT, SHORT, DOUBLE, DOUBLE, DOUBLE, DOUBLE
-    };
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
-                    .columnTypes(types)
-                    .minimizeColumnSizes());
+  public void testGetPackedTime() {
+    Table table = tornado.copy();
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -243,14 +227,10 @@ public class RowTest {
   }
 
   @Test
-  public void testGetShort() throws IOException {
+  public void testGetShort() {
     ColumnType[] types = {LOCAL_DATE, SHORT, STRING};
     Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/bush.csv"))
-                    .columnTypes(types)
-                    .minimizeColumnSizes());
+        Table.read().csv(CsvReadOptions.builder(new File("../data/bush.csv")).columnTypes(types));
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -261,14 +241,10 @@ public class RowTest {
   }
 
   @Test
-  public void testGetString() throws IOException {
+  public void testGetString() {
     ColumnType[] types = {LOCAL_DATE, SHORT, STRING};
     Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/bush.csv"))
-                    .minimizeColumnSizes()
-                    .columnTypes(types));
+        Table.read().csv(CsvReadOptions.builder(new File("../data/bush.csv")).columnTypes(types));
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -278,14 +254,10 @@ public class RowTest {
   }
 
   @Test
-  public void testGetText() throws IOException {
+  public void testGetText() {
     ColumnType[] types = {LOCAL_DATE, SHORT, TEXT};
     Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/bush.csv"))
-                    .minimizeColumnSizes()
-                    .columnTypes(types));
+        Table.read().csv(CsvReadOptions.builder(new File("../data/bush.csv")).columnTypes(types));
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -295,16 +267,8 @@ public class RowTest {
   }
 
   @Test
-  public void testGetTime() throws IOException {
-    ColumnType[] types = {
-      LOCAL_DATE, LOCAL_TIME, STRING, STRING, SHORT, SHORT, SHORT, DOUBLE, DOUBLE, DOUBLE, DOUBLE
-    };
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
-                    .columnTypes(types)
-                    .minimizeColumnSizes());
+  public void testGetTime() {
+    Table table = tornado.copy();
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -315,16 +279,8 @@ public class RowTest {
   }
 
   @Test
-  public void testSetBoolean() throws IOException {
-    ColumnType[] types = {
-      STRING, STRING, INTEGER, INTEGER, INTEGER,
-      INTEGER, DOUBLE, DOUBLE, DOUBLE, BOOLEAN,
-      INTEGER, INTEGER, INTEGER, DOUBLE, DOUBLE
-    };
-
-    Table table =
-        Table.read()
-            .csv(CsvReadOptions.builder(new File("../data/baseball.csv")).columnTypes(types));
+  public void testSetBoolean() {
+    Table table = baseball.copy();
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -337,8 +293,8 @@ public class RowTest {
   }
 
   @Test
-  public void testSetDate() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
+  public void testSetDate() {
+    Table table = readBush(BUSH_COLUMN_TYPES);
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -357,16 +313,8 @@ public class RowTest {
   }
 
   @Test
-  public void testSetDateTime() throws IOException {
-    ColumnType[] types = {
-      LOCAL_DATE, LOCAL_TIME, STRING, STRING, SHORT, SHORT, SHORT, DOUBLE, DOUBLE, DOUBLE, DOUBLE
-    };
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
-                    .columnTypes(types)
-                    .minimizeColumnSizes());
+  public void testSetDateTime() {
+    Table table = tornado.copy();
     DateTimeColumn dateTimeCol = table.dateColumn("Date").atTime(table.timeColumn("Time"));
     dateTimeCol.setName("DateTime");
     table.addColumns(dateTimeCol);
@@ -385,17 +333,8 @@ public class RowTest {
   }
 
   @Test
-  public void testSetDouble() throws IOException {
-
-    ColumnType[] types = {
-      STRING, STRING, INTEGER, INTEGER, INTEGER,
-      INTEGER, DOUBLE, DOUBLE, DOUBLE, INTEGER,
-      INTEGER, INTEGER, INTEGER, DOUBLE, DOUBLE
-    };
-
-    Table table =
-        Table.read()
-            .csv(CsvReadOptions.builder(new File("../data/baseball.csv")).columnTypes(types));
+  public void testSetDouble() {
+    Table table = baseball.copy();
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -413,17 +352,14 @@ public class RowTest {
   }
 
   @Test
-  public void testSetFloat() throws IOException {
+  public void testSetFloat() {
 
     ColumnType[] types = {
       STRING, STRING, INTEGER, INTEGER, INTEGER,
       INTEGER, FLOAT, FLOAT, FLOAT, INTEGER,
       INTEGER, INTEGER, INTEGER, FLOAT, FLOAT
     };
-
-    Table table =
-        Table.read()
-            .csv(CsvReadOptions.builder(new File("../data/baseball.csv")).columnTypes(types));
+    Table table = readBaseball(types);
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -441,17 +377,9 @@ public class RowTest {
   }
 
   @Test
-  public void testSetInt() throws IOException {
+  public void testSetInt() {
 
-    ColumnType[] types = {
-      STRING, STRING, INTEGER, INTEGER, INTEGER,
-      INTEGER, DOUBLE, DOUBLE, DOUBLE, INTEGER,
-      INTEGER, INTEGER, INTEGER, DOUBLE, DOUBLE
-    };
-
-    Table table =
-        Table.read()
-            .csv(CsvReadOptions.builder(new File("../data/baseball.csv")).columnTypes(types));
+    Table table = baseball.copy();
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -469,18 +397,13 @@ public class RowTest {
   }
 
   @Test
-  public void testSetLong() throws IOException {
+  public void testSetLong() {
     ColumnType[] types = {LOCAL_DATE, LONG, STRING};
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/bush.csv"))
-                    .minimizeColumnSizes()
-                    .columnTypes(types));
+    Table table = readBush(types);
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
-      Long rowVal = table.longColumn(1).getLong(row.getRowNumber());
+      long rowVal = table.longColumn(1).getLong(row.getRowNumber());
 
       // setLong(columnIndex, value)
       row.setLong(1, rowVal + 1);
@@ -493,18 +416,13 @@ public class RowTest {
   }
 
   @Test
-  public void testSetShort() throws IOException {
+  public void testSetShort() {
     ColumnType[] types = {LOCAL_DATE, SHORT, STRING};
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/bush.csv"))
-                    .minimizeColumnSizes()
-                    .columnTypes(types));
+    Table table = readBush(types);
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
-      Short rowVal = table.shortColumn(1).getShort(row.getRowNumber());
+      short rowVal = table.shortColumn(1).getShort(row.getRowNumber());
 
       // setShort(columnIndex, value)
       row.setShort(1, (short) (rowVal + 1));
@@ -517,8 +435,8 @@ public class RowTest {
   }
 
   @Test
-  public void testSetString() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
+  public void testSetString() {
+    Table table = readBush(BUSH_COLUMN_TYPES);
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -537,14 +455,9 @@ public class RowTest {
   }
 
   @Test
-  public void testSetText() throws IOException {
-    ColumnType[] types = {LOCAL_DATE, SHORT, TEXT};
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/bush.csv"))
-                    .minimizeColumnSizes()
-                    .columnTypes(types));
+  public void testSetText() {
+    ColumnType[] bushColumnTypes = {LOCAL_DATE, INTEGER, TEXT};
+    Table table = readBush(bushColumnTypes);
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -563,16 +476,8 @@ public class RowTest {
   }
 
   @Test
-  public void testSetTime() throws IOException {
-    ColumnType[] types = {
-      LOCAL_DATE, LOCAL_TIME, STRING, STRING, SHORT, SHORT, SHORT, DOUBLE, DOUBLE, DOUBLE, DOUBLE
-    };
-    Table table =
-        Table.read()
-            .csv(
-                CsvReadOptions.builder(new File("../data/rev_tornadoes_1950-2014.csv"))
-                    .columnTypes(types)
-                    .minimizeColumnSizes());
+  public void testSetTime() {
+    Table table = tornado.copy();
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
@@ -588,15 +493,14 @@ public class RowTest {
   }
 
   @Test
-  public void iterationWithSelection() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
+  public void iterationWithSelection() {
     int[] sourceIndex = new int[] {10, 20, 30};
-    Row row = new Row(new TableSlice(table, Selection.with(10, 20, 30)), -1);
+    Row row = new Row(new TableSlice(bush, Selection.with(10, 20, 30)), -1);
 
     int count = 0;
     while (row.hasNext()) {
       row.next();
-      LocalDate date = table.dateColumn("date").get(sourceIndex[row.getRowNumber()]);
+      LocalDate date = bush.dateColumn("date").get(sourceIndex[row.getRowNumber()]);
       assertEquals(date, row.getDate(0));
       assertEquals(date, row.getDate("date"));
       count++;
@@ -605,8 +509,8 @@ public class RowTest {
   }
 
   @Test
-  public void setWithSelectionSortOrder() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
+  public void setWithSelectionSortOrder() {
+    Table table = bush.copy();
     int[] sourceIndex = new int[] {3, 6};
     Row row = new Row(new TableSlice(table, Selection.with(3, 6)));
 
@@ -619,9 +523,8 @@ public class RowTest {
   }
 
   @Test
-  public void iterationWithSelectionAndOrder() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
-    TableSlice tableSlice = new TableSlice(table, Selection.withRange(0, 5));
+  public void iterationWithSelectionAndOrder() {
+    TableSlice tableSlice = new TableSlice(bush, Selection.withRange(0, 5));
     tableSlice.sortOn(Sort.on("approval", Order.ASCEND));
 
     Row row = new Row(tableSlice);
@@ -656,16 +559,16 @@ public class RowTest {
   }
 
   @Test
-  void testGetNumber() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
+  void testGetNumber() {
+    ColumnType[] bushColumnTypes = {LOCAL_DATE, DOUBLE, STRING};
+    Table table = readBush(bushColumnTypes);
     assertEquals(53.0, table.row(0).getNumber("approval"));
   }
 
   @Test
-  void testIsMissing() throws IOException {
-    Table table = Table.read().csv("../data/bush.csv");
-    assertFalse(table.row(0).isMissing("approval"));
-    table.row(0).setMissing("approval");
-    assertTrue(table.row(0).isMissing("approval"));
+  void testIsMissing() {
+    assertFalse(bush.row(0).isMissing("approval"));
+    bush.row(0).setMissing("approval");
+    assertTrue(bush.row(0).isMissing("approval"));
   }
 }
