@@ -23,6 +23,7 @@ import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+/** A column in a table that contains short values */
 public class ShortColumn extends NumberColumn<ShortColumn, Short>
     implements CategoricalColumn<Short> {
 

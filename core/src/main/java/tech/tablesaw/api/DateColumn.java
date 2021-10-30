@@ -48,7 +48,7 @@ import tech.tablesaw.columns.dates.DateMapFunctions;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.selection.Selection;
 
-/** A column in a base table that contains float values */
+/** A column in a table that contains int-encoded local date values */
 public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     implements DateFilters,
         DateFillers<DateColumn>,

@@ -15,6 +15,7 @@ import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+/** A column in a table that contains float values */
 public class FloatColumn extends NumberColumn<FloatColumn, Float> {
 
   protected final FloatArrayList data;

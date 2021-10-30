@@ -17,6 +17,7 @@ import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+/** A column in a table that contains int values */
 public class IntColumn extends NumberColumn<IntColumn, Integer>
     implements CategoricalColumn<Integer> {
 

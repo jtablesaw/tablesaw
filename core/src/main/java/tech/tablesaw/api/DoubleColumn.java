@@ -24,6 +24,7 @@ import tech.tablesaw.columns.numbers.fillers.DoubleRangeIterable;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+/** A column in a table that contains double values */
 public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
     implements NumberFillers<DoubleColumn> {
 
