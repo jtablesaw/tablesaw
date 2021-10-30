@@ -66,7 +66,7 @@ public class RowPerformanceTest {
     stopwatch.start();
     while (row.hasNext()) {
       row.next();
-      row.getInt("lowValue");
+      row.getDouble("lowValue");
     }
     stopwatch.stop();
     System.out.println("one getInt(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -139,7 +139,7 @@ public class RowPerformanceTest {
     stopwatch.start();
     while (row.hasNext()) {
       row.next();
-      row.getInt(2);
+      row.getDouble(2);
     }
     stopwatch.stop();
     System.out.println("one getInt(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
