@@ -23,6 +23,7 @@ import static tech.tablesaw.api.ColumnType.TEXT;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.function.Supplier;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
@@ -70,6 +71,13 @@ class SawStorageTest {
   private final DateColumn localDateColumn = DateColumn.create("date");
   private final LongColumn longColumn = LongColumn.create("long");
   private final BooleanColumn booleanColumn = BooleanColumn.create("bool");
+
+  private static Table baseball;
+
+  @BeforeAll
+  static void readTables() {
+    baseball = Table.read().csv("../data/baseball.csv");
+  }
 
   @BeforeEach
   void setUp() {
@@ -185,7 +193,7 @@ class SawStorageTest {
   }
 
   @Test
-  void bush() throws Exception {
+  void bush() {
     Table bush = Table.read().csv("../data/bush.csv");
     String path = new SawWriter("../testoutput/bush", bush).write();
     Table table = new SawReader(path).read();
@@ -193,7 +201,7 @@ class SawStorageTest {
   }
 
   @Test
-  void tornado() throws Exception {
+  void tornado() {
     Table tornado = Table.read().csv("../data/tornadoes_1950-2014.csv");
     String path = new SawWriter("../testoutput/tornadoes_1950-2014", tornado).write();
     Table table = new SawReader(path).read();
@@ -203,8 +211,7 @@ class SawStorageTest {
   }
 
   @Test
-  void baseball() throws Exception {
-    Table baseball = Table.read().csv("../data/baseball.csv");
+  void baseball() {
     String path = new SawWriter("../testoutput/baseball", baseball).write();
     Table table = new SawReader(path).read();
     assertTrue(baseball.column(1).size() > 0);
@@ -213,8 +220,7 @@ class SawStorageTest {
   }
 
   @Test
-  void metadata() throws Exception {
-    Table baseball = Table.read().csv("../data/baseball.csv");
+  void metadata() {
     String path = new SawWriter("../testoutput/baseball", baseball).write();
     assertEquals("baseball.csv: 1232 rows X 15 cols", new SawReader(path).shape());
     assertEquals(1232, new SawReader(path).rowCount());
@@ -224,8 +230,7 @@ class SawStorageTest {
   }
 
   @Test
-  void selectedColumns() throws Exception {
-    Table baseball = Table.read().csv("../data/baseball.csv");
+  void selectedColumns() {
     String path = new SawWriter("../testoutput/baseball", baseball).write();
     Table bb2 = new SawReader(path, new ReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
     assertEquals(3, bb2.columnCount());
@@ -236,8 +241,7 @@ class SawStorageTest {
   }
 
   @Test
-  void noCompression() throws Exception {
-    Table baseball = Table.read().csv("../data/baseball.csv");
+  void noCompression() {
     String path =
         new SawWriter(
                 "../testoutput/baseball",
@@ -253,7 +257,7 @@ class SawStorageTest {
   }
 
   @Test
-  void boston_roberies() throws Exception {
+  void boston_roberies() {
     Table robereries = Table.read().csv("../data/boston-robberies.csv");
     String path = new SawWriter("../testoutput/boston_robberies", robereries).write();
     Table table = new SawReader(path).read();
@@ -262,7 +266,7 @@ class SawStorageTest {
   }
 
   @Test
-  void sacramento() throws Exception {
+  void sacramento() {
     Table sacramento = Table.read().csv("../data/sacramento_real_estate_transactions.csv");
     String path = new SawWriter("../testoutput/sacramento", sacramento).write();
     Table table = new SawReader(path).read();
@@ -271,7 +275,7 @@ class SawStorageTest {
   }
 
   @Test
-  void test_wines() throws Exception {
+  void test_wines() {
     Table wines = Table.read().csv("../data/test_wines.csv");
     String path = new SawWriter("../testoutput/test_wines", wines).write();
     Table table = new SawReader(path).read();
@@ -286,36 +290,24 @@ class SawStorageTest {
   }
 
   @Test
-  void saveIntsLarger() {
-    final Table intsOnlyLarger =
-        Table.create(
-            "Ints only, larger",
-            IntColumn.indexColumn("index1", 10_000_000, 1),
-            IntColumn.indexColumn("index2", 10_000_000, 1));
-    String path = new SawWriter(tempDir, intsOnlyLarger).write();
-    Table table = new SawReader(path).read();
-    assertEquals(10_000_000, table.rowCount());
-  }
-
-  @Test
   void saveStrings() {
 
     StringColumn index2 = StringColumn.create("index2");
-    for (int j = 0; j < 1000; j++) {
-      for (int i = 0; i < 1000; i++) {
+    for (int j = 0; j < 100; j++) {
+      for (int i = 0; i < 100; i++) {
         index2.append(String.valueOf(i));
       }
     }
     StringColumn index3 = StringColumn.create("index3");
     for (int j = 0; j < 10; j++) {
-      for (int i = 0; i < 100000; i++) {
+      for (int i = 0; i < 1000; i++) {
         index3.append(String.valueOf(i));
       }
     }
     final Table wines =
         Table.create(
             "million ints",
-            IntColumn.indexColumn("index1", 1_000_000, 1).asStringColumn().setName("index1"),
+            IntColumn.indexColumn("index1", 10_000, 1).asStringColumn().setName("index1"),
             index2,
             index3);
     String path = new SawWriter(tempDir, wines).write();
