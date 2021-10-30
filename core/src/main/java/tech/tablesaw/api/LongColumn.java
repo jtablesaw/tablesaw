@@ -19,6 +19,7 @@ import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+/** A column in a table that contains long values */
 public class LongColumn extends NumberColumn<LongColumn, Long> implements CategoricalColumn<Long> {
 
   protected final LongArrayList data;

@@ -50,7 +50,7 @@ import tech.tablesaw.filtering.predicates.BytePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/** A column in a base table that contains float values */
+/** A column in a table that contains boolean values */
 public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     implements BooleanFilterSpec<Selection>,
         BooleanMapUtils,
@@ -563,6 +563,21 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
    * current value matches the selection criteria
    */
   public BooleanColumn set(Selection rowSelection, boolean newValue) {
+    for (int row : rowSelection) {
+      set(row, newValue);
+    }
+    return this;
+  }
+
+  /**
+   * Conditionally update this column, replacing current values with newValue for all rows where the
+   * current value matches the selection criteria.
+   *
+   * @param rowSelection the rows to be updated
+   * @param newValue a byte representation of boolean values. The only valid arguments are 0, 1, and
+   *     {@link BooleanColumnType:missingValueIndicator()}
+   */
+  public BooleanColumn set(Selection rowSelection, byte newValue) {
     for (int row : rowSelection) {
       set(row, newValue);
     }

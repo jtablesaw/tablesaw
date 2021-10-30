@@ -44,7 +44,7 @@ import tech.tablesaw.columns.times.TimeFilters;
 import tech.tablesaw.columns.times.TimeMapFunctions;
 import tech.tablesaw.selection.Selection;
 
-/** A column that contains local time values */
+/** A column that contains int-encoded local time values */
 public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     implements CategoricalColumn<LocalTime>,
         TimeFilters,
