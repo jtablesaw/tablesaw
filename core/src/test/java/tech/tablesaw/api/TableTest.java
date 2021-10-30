@@ -31,6 +31,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.Column;
@@ -44,10 +45,19 @@ public class TableTest {
   private static final String LINE_END = System.lineSeparator();
   private static final int ROWS_BOUNDARY = 1000;
   private static final Random RANDOM = new Random();
+  private static Table bush;
+  private static Table bushMinimized;
 
   private Table table;
   private final DoubleColumn f1 = DoubleColumn.create("f1");
   private final DoubleColumn numberColumn = DoubleColumn.create("d1");
+
+  @BeforeAll
+  static void readTables() {
+    bush = Table.read().csv("../data/bush.csv");
+    bushMinimized =
+        Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
+  }
 
   @BeforeEach
   void setUp() {
@@ -56,7 +66,7 @@ public class TableTest {
   }
 
   @Test
-  void testSummarize() throws Exception {
+  void testSummarize() {
     Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
     Table result = table.summarize("Injuries", mean, stdDev).by("State");
     assertEquals(49, result.rowCount());
@@ -73,9 +83,8 @@ public class TableTest {
   }
 
   @Test
-  void types() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    List<ColumnType> types = t.types();
+  void types() {
+    List<ColumnType> types = bush.types();
     assertEquals(3, types.size());
     assertTrue(types.contains(ColumnType.STRING));
     assertTrue(types.contains(ColumnType.LOCAL_DATE));
@@ -83,21 +92,19 @@ public class TableTest {
   }
 
   @Test
-  void containsColumn() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    assertTrue(t.containsColumn("who"));
-    assertTrue(t.containsColumn("date"));
+  void containsColumn() {
+    assertTrue(bush.containsColumn("who"));
+    assertTrue(bush.containsColumn("date"));
   }
 
   @Test
-  void reorderColumns() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    List<String> names = t.columnNames();
+  void reorderColumns() {
+    List<String> names = bush.columnNames();
     assertEquals(names.get(0), "date");
     assertEquals(names.get(1), "approval");
     assertEquals(names.get(2), "who");
 
-    Table reordered = t.reorderColumns("who", "approval", "date");
+    Table reordered = bush.copy().reorderColumns("who", "approval", "date");
     List<String> reorderedNames = reordered.columnNames();
 
     assertEquals(reorderedNames.get(0), "who");
@@ -242,9 +249,8 @@ public class TableTest {
   }
 
   @Test
-  void testCountBy() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    assertEquals(3, t.countBy("who", "date").columnCount());
+  void testCountBy() {
+    assertEquals(3, bush.countBy("who", "date").columnCount());
   }
 
   @Test
@@ -258,19 +264,17 @@ public class TableTest {
   }
 
   @Test
-  void dropDuplicateRows() throws Exception {
+  void dropDuplicateRows() {
     Table t1 = Table.read().csv("../data/bush.csv");
     int rowCount = t1.rowCount();
-    Table t2 = Table.read().csv("../data/bush.csv");
-    Table t3 = Table.read().csv("../data/bush.csv");
-    t1.append(t2).append(t3);
+    t1.append(bush).append(bush);
     assertEquals(3 * rowCount, t1.rowCount());
     t1 = t1.dropDuplicateRows();
     assertEquals(rowCount, t1.rowCount());
   }
 
   @Test
-  void dropDuplicateRowsWithMissingValue() throws Exception {
+  void dropDuplicateRowsWithMissingValue() {
     // Add 4 rows to the table, two of which are duplicates and have missing values.
     int missing = IntColumnType.missingValueIndicator();
     Table t1 =
@@ -312,41 +316,38 @@ public class TableTest {
 
   @Test
   void testLast() throws IOException {
-    Table t = Table.read().csv("../data/bush.csv");
-    t = t.sortOn("date");
-    Table t1 = t.last(3);
+    bush = bush.sortOn("date");
+    Table t1 = bush.last(3);
     assertEquals(3, t1.rowCount());
     assertEquals(LocalDate.of(2004, 2, 5), t1.dateColumn(0).get(2));
   }
 
   @Test
-  void testSelect1() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    Table t1 = t.selectColumns(t.column(1), t.column(2));
+  void testSelect1() {
+    Table t1 = bush.selectColumns(bush.column(1), bush.column(2));
     assertEquals(2, t1.columnCount());
   }
 
   @Test
-  void testSelect2() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    Table t1 = t.selectColumns(t.column(0), t.column(1), t.column(2), t.dateColumn(0).year());
+  void testSelect2() {
+    Table t1 =
+        bush.selectColumns(
+            bush.column(0), bush.column(1), bush.column(2), bush.dateColumn(0).year());
     assertEquals(4, t1.columnCount());
     assertEquals("date year", t1.column(3).name());
   }
 
   @Test
-  void testSampleSplit() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    Table[] results = t.sampleSplit(.75);
-    assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
+  void testSampleSplit() {
+    Table[] results = bush.sampleSplit(.75);
+    assertEquals(bush.rowCount(), results[0].rowCount() + results[1].rowCount());
   }
 
   @Test
-  void testStratifiedSampleSplit() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    Table[] results = t.stratifiedSampleSplit(t.stringColumn("who"), .75);
-    assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
-    int totalFoxCount = t.where(t.stringColumn("who").equalsIgnoreCase("fox")).rowCount();
+  void testStratifiedSampleSplit() {
+    Table[] results = bush.stratifiedSampleSplit(bush.stringColumn("who"), .75);
+    assertEquals(bush.rowCount(), results[0].rowCount() + results[1].rowCount());
+    int totalFoxCount = bush.where(bush.stringColumn("who").equalsIgnoreCase("fox")).rowCount();
     int stratifiedFoxCount =
         results[0].where(results[0].stringColumn("who").equalsIgnoreCase("fox")).rowCount();
 
@@ -354,11 +355,8 @@ public class TableTest {
   }
 
   @Test
-  void testDoWithEachRow() throws Exception {
-    Table t =
-        Table.read()
-            .csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes())
-            .first(10);
+  void testDoWithEachRow() {
+    Table t = bushMinimized.first(10);
     Short[] ratingsArray = {53, 58};
     List<Short> ratings = Lists.asList((short) 52, ratingsArray);
 
@@ -372,8 +370,8 @@ public class TableTest {
   }
 
   @Test
-  void testDoWithEachRow2() throws Exception {
-    Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
+  void testDoWithEachRow2() {
+    Table t = bushMinimized;
     int dateTarget = PackedLocalDate.pack(LocalDate.of(2002, 1, 1));
     double ratingTarget = 75;
     AtomicInteger count = new AtomicInteger(0);
@@ -388,19 +386,17 @@ public class TableTest {
   }
 
   @Test
-  void testDetect() throws Exception {
-    Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
+  void testDetect() {
     int dateTarget = PackedLocalDate.pack(LocalDate.of(2002, 1, 1));
     double ratingTarget = 75;
     Predicate<Row> doable =
         row -> (row.getPackedDate("date") > dateTarget && row.getShort("approval") > ratingTarget);
-    assertTrue(t.stream().anyMatch(doable));
+    assertTrue(bushMinimized.stream().anyMatch(doable));
   }
 
   @Test
-  void testRowToString() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    Row row = new Row(t);
+  void testRowToString() {
+    Row row = new Row(bush);
     row.at(0);
     assertEquals(
         "             bush.csv              "
@@ -414,19 +410,16 @@ public class TableTest {
   }
 
   @Test
-  void stepWithRows() throws Exception {
-    Table t =
-        Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes()).first(6);
-
+  void stepWithRows() {
+    Table t = bushMinimized.first(6);
     final int sum1 = (int) t.shortColumn("approval").sum();
-
     RowConsumer rowConsumer = new RowConsumer();
     t.steppingStream(3).forEach(rowConsumer);
     assertEquals(sum1, rowConsumer.getSum());
   }
 
   @Test
-  void melt() throws Exception {
+  void melt() {
     boolean dropMissing = false;
     String df =
         "subject, time, age, weight, height"
@@ -497,7 +490,7 @@ public class TableTest {
   }
 
   @Test
-  void cast() throws IOException {
+  void cast() {
     Table molten = Table.read().csv("../data/molten_smiths.csv");
     Table cast = molten.cast();
     StringWriter writer = new StringWriter();
@@ -514,7 +507,7 @@ public class TableTest {
   }
 
   @Test
-  void castWithDropMissing() throws IOException {
+  void castWithDropMissing() {
     Table molten = Table.read().csv("../data/molten_smiths_drop_missing.csv");
     Table cast = molten.cast();
     StringWriter writer = new StringWriter();
@@ -547,9 +540,8 @@ public class TableTest {
   }
 
   @Test
-  void testRollWithNrows2() throws Exception {
-    Table t =
-        Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes()).first(4);
+  void testRollWithNrows2() {
+    Table t = bushMinimized.first(4);
     ShortColumn approval = t.shortColumn("approval");
 
     List<Integer> sums = new ArrayList<>();
@@ -608,8 +600,8 @@ public class TableTest {
   }
 
   @Test
-  void testAppendRow() throws Exception {
-    Table table = Table.read().csv("../data/bush.csv");
+  void testAppendRow() {
+    Table table = bush.copy();
     for (int i = 0; i < 2; i++) {
       Row row = table.appendRow();
       row.setString("who", "me");
@@ -645,10 +637,9 @@ public class TableTest {
   }
 
   @Test
-  void testAppendWithSlice() throws Exception {
-    Table t = Table.read().csv("../data/bush.csv");
-    Table t2 = t.emptyCopy();
-    TableSlice slice = t.splitOn("who").get(0);
+  void testAppendWithSlice() {
+    Table t2 = bush.emptyCopy();
+    TableSlice slice = bush.splitOn("who").get(0);
     t2.append(slice);
     assertEquals(64, t2.rowCount());
   }
@@ -756,21 +747,18 @@ public class TableTest {
   }
 
   @Test
-  void testRowSort() throws Exception {
-    Table bush = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes());
+  void testRowSort() {
 
     Comparator<Row> rowComparator = Comparator.comparingDouble(o -> o.getShort("approval"));
-
-    Table sorted = bush.sortOn(rowComparator);
+    Table sorted = bushMinimized.sortOn(rowComparator);
     ShortColumn approval = sorted.shortColumn("approval");
-    for (int i = 0; i < bush.rowCount() - 2; i++) {
+    for (int i = 0; i < bushMinimized.rowCount() - 2; i++) {
       assertTrue(approval.get(i) <= approval.get(i + 1));
     }
   }
 
   @Test
-  void testIterable() throws Exception {
-    Table bush = Table.read().csv("../data/bush.csv");
+  void testIterable() {
     int rowNumber = 0;
     for (Row row : bush.first(10)) {
       assertEquals(row.getRowNumber(), rowNumber++);
@@ -778,64 +766,58 @@ public class TableTest {
   }
 
   @Test
-  void testCountBy1() throws Exception {
-    Table bush = Table.read().csv("../data/bush.csv");
+  void testCountBy1() {
     Table result = bush.countBy(bush.categoricalColumn("who"));
     assertEquals(bush.categoricalColumn("who").countUnique(), result.rowCount());
   }
 
   @Test
-  void testCountBy2() throws Exception {
-    Table bush = Table.read().csv("../data/bush.csv");
+  void testCountBy2() {
     Table result = bush.countBy("who");
     assertEquals(bush.categoricalColumn("who").countUnique(), result.rowCount());
   }
 
   @Test
-  void dropRangeStarting() throws IOException {
-    Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
-    Table result = table.dropRange(20);
-    assertEquals(table.rowCount() - 20, result.rowCount());
+  void dropRangeStarting() {
+    Table result = bush.dropRange(20);
+    assertEquals(bush.rowCount() - 20, result.rowCount());
     for (Column<?> c : result.columns()) {
       for (int r = 0; r < result.rowCount(); r++) {
-        assertEquals(result.getString(r, c.name()), table.getString(r + 20, c.name()));
+        assertEquals(result.getString(r, c.name()), bush.getString(r + 20, c.name()));
       }
     }
   }
 
   @Test
-  void dropRangeEnding() throws IOException {
-    Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
-    Table result = table.dropRange(-20);
-    assertEquals(table.rowCount() - 20, result.rowCount());
+  void dropRangeEnding() {
+    Table result = bush.dropRange(-20);
+    assertEquals(bush.rowCount() - 20, result.rowCount());
     for (Column<?> c : result.columns()) {
       for (int r = 0; r < result.rowCount(); r++) {
-        assertEquals(result.getString(r, c.name()), table.getString(r, c.name()));
+        assertEquals(result.getString(r, c.name()), bush.getString(r, c.name()));
       }
     }
   }
 
   @Test
-  void inRangeStarting() throws IOException {
-    Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
-    Table result = table.inRange(20);
+  void inRangeStarting() {
+    Table result = bush.inRange(20);
     assertEquals(20, result.rowCount());
     for (Column<?> c : result.columns()) {
       for (int r = 0; r < result.rowCount(); r++) {
-        assertEquals(result.getString(r, c.name()), table.getString(r, c.name()));
+        assertEquals(result.getString(r, c.name()), bush.getString(r, c.name()));
       }
     }
   }
 
   @Test
-  void inRangeEnding() throws IOException {
-    Table table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
-    Table result = table.inRange(-20);
+  void inRangeEnding() {
+    Table result = bush.inRange(-20);
     assertEquals(20, result.rowCount());
     for (Column<?> c : result.columns()) {
       for (int r = 0; r < result.rowCount(); r++) {
         assertEquals(
-            result.getString(r, c.name()), table.getString(table.rowCount() - 20 + r, c.name()));
+            result.getString(r, c.name()), bush.getString(bush.rowCount() - 20 + r, c.name()));
       }
     }
   }
