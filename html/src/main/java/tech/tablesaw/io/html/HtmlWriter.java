@@ -23,6 +23,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataWriter;
 import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.RuntimeIOException;
 import tech.tablesaw.io.WriterRegistry;
 import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
 
@@ -39,7 +40,7 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
     registry.registerOptions(HtmlWriteOptions.class, INSTANCE);
   }
 
-  public void write(Table table, HtmlWriteOptions options) throws IOException {
+  public void write(Table table, HtmlWriteOptions options) {
     ElementCreator elements = options.elementCreator();
     Element html = elements.create("table");
     html.appendChild(header(table.columns(), elements));
@@ -52,6 +53,8 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
 
     try (Writer writer = options.destination().createWriter()) {
       writer.write(html.toString());
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
     }
   }
 
@@ -84,7 +87,7 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
   }
 
   @Override
-  public void write(Table table, Destination dest) throws IOException {
+  public void write(Table table, Destination dest) {
     write(table, HtmlWriteOptions.builder(dest).build());
   }
 }

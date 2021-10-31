@@ -1,7 +1,6 @@
 package tech.tablesaw.io.csv;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.file.Paths;
@@ -106,11 +105,11 @@ public class CsvWriteOptions extends WriteOptions {
     return new Builder(dest);
   }
 
-  public static Builder builder(File dest) throws IOException {
+  public static Builder builder(File dest) {
     return new Builder(dest);
   }
 
-  public static Builder builder(String fileName) throws IOException {
+  public static Builder builder(String fileName) {
     return builder(new File(fileName));
   }
 
@@ -129,7 +128,7 @@ public class CsvWriteOptions extends WriteOptions {
     private DateTimeFormatter dateFormatter;
     private Map<String, String> columnNameMap = new HashMap<>();
 
-    protected Builder(String fileName) throws IOException {
+    protected Builder(String fileName) {
       super(Paths.get(fileName).toFile());
     }
 
@@ -137,7 +136,7 @@ public class CsvWriteOptions extends WriteOptions {
       super(dest);
     }
 
-    protected Builder(File file) throws IOException {
+    protected Builder(File file) {
       super(file);
     }
 

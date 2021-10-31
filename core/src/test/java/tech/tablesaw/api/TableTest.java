@@ -23,7 +23,6 @@ import static tech.tablesaw.api.ColumnType.DOUBLE;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.File;
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.LocalDate;
@@ -351,7 +350,7 @@ public class TableTest {
   }
 
   @Test
-  void testLast() throws IOException {
+  void testLast() {
     bush = bush.sortOn("date");
     Table t1 = bush.last(3);
     assertEquals(3, t1.rowCount());
