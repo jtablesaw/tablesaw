@@ -45,7 +45,7 @@ public class AddCellToColumnException extends RuntimeException {
   /**
    * Creates a new instance of this Exception
    *
-   * @param e The Exceeption that caused adding to fail
+   * @param e The Exception that caused adding to fail
    * @param columnIndex The index of the column that threw the Exception
    * @param rowNumber The number of the row that caused the Exception to be thrown
    * @param columnNames The column names stored as an array

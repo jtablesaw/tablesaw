@@ -14,14 +14,18 @@ import static tech.tablesaw.api.ColumnType.STRING;
 import static tech.tablesaw.api.ColumnType.TEXT;
 
 import com.google.common.collect.Lists;
+import java.io.StringReader;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.TextColumnType;
 
 class ColumnTypeDetectorTest {
+
+  private static final String LINE_END = System.lineSeparator();
 
   @Test
   void detectColumnTypes() {
@@ -50,5 +54,21 @@ class ColumnTypeDetectorTest {
     assertEquals(TextColumnType.instance(), types[0]);
     assertEquals(DateColumnType.instance(), types[1]);
     assertEquals(StringColumnType.instance(), types[2]);
+  }
+
+  /**
+   * Test to ensure a useful error message is thrown when type detection runs into a row with an
+   * extra comma at the end
+   */
+  @Test
+  void errorMsg() {
+    String df =
+        "subject, time, age, weight, height"
+            + LINE_END
+            + "John Smith,    1,  33,     90,   1.87"
+            + LINE_END
+            + "Mary Smith,    1,  NA,     NA,   1.54, ";
+    StringReader reader = new StringReader(df);
+    assertThrows(ColumnIndexOutOfBoundsException.class, () -> Table.read().csv(reader));
   }
 }
