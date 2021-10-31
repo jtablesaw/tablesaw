@@ -1,7 +1,6 @@
 package tech.tablesaw.io;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
@@ -42,7 +41,7 @@ public class WriteOptions {
       this.dest = new Destination(dest);
     }
 
-    protected Builder(File dest) throws IOException {
+    protected Builder(File dest) {
       this.dest = new Destination(dest);
       this.autoClose = true;
     }

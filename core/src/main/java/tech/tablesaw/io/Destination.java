@@ -1,19 +1,18 @@
 package tech.tablesaw.io;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 
 public class Destination {
 
   protected final OutputStream stream;
   protected final Writer writer;
 
-  public Destination(File file) throws IOException {
-    this.stream = new FileOutputStream(file);
+  public Destination(File file) {
+    try {
+      this.stream = new FileOutputStream(file);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeIOException(e);
+    }
     this.writer = null;
   }
 
