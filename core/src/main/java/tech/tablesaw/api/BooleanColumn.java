@@ -50,7 +50,7 @@ import tech.tablesaw.filtering.predicates.BytePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/** A column in a table that contains boolean values */
+/** A column that contains boolean values */
 public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     implements BooleanFilterSpec<Selection>,
         BooleanMapUtils,

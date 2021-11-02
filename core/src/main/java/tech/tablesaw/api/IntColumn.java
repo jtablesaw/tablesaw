@@ -17,7 +17,7 @@ import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/** A column in a table that contains int values */
+/** A column that contains int values */
 public class IntColumn extends NumberColumn<IntColumn, Integer>
     implements CategoricalColumn<Integer> {
 
@@ -59,11 +59,13 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
     return new IntColumn(name, list);
   }
 
+  /** {@inheritDoc} */
   @Override
   public IntColumn createCol(String name, int initialSize) {
     return create(name, initialSize);
   }
 
+  /** {@inheritDoc} */
   @Override
   public IntColumn createCol(String name) {
     return create(name);

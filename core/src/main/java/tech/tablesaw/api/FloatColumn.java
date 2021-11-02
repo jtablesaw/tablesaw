@@ -15,7 +15,7 @@ import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-/** A column in a table that contains float values */
+/** A column that contains float values */
 public class FloatColumn extends NumberColumn<FloatColumn, Float> {
 
   protected final FloatArrayList data;
@@ -26,6 +26,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
     this.data = data;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getString(int row) {
     final float value = getFloat(row);
@@ -62,6 +63,7 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
     return column;
   }
 
+  /** {@inheritDoc} */
   @Override
   public FloatColumn createCol(String name, int initialSize) {
     return create(name, initialSize);

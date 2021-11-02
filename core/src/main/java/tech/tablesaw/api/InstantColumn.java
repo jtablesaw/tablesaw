@@ -53,9 +53,9 @@ import tech.tablesaw.columns.temporal.TemporalFilters;
 import tech.tablesaw.selection.Selection;
 
 /**
- * A column in a table that contains long-integer encoded (packed) instant values. An instant is a
- * unique point of time on the timeline. The instants held by Instant column have millisecond
- * precision, unlike instances of {@link java.time.Instant}, which have nanosecond precision
+ * A column that contains long-integer encoded (packed) instant values. An instant is a unique point
+ * of time on the timeline. The instants held by Instant column have millisecond precision, unlike
+ * instances of {@link java.time.Instant}, which have nanosecond precision
  */
 public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     implements InstantMapFunctions,
