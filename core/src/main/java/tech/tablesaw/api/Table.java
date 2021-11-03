@@ -236,7 +236,10 @@ public class Table extends Relation implements Iterable<Row> {
     return new DataFrameWriter(defaultWriterRegistry, this);
   }
 
-  /** Adds the given column to this table */
+  /**
+   * Adds the given column to this table. Column must either be empty or have size() == the
+   * rowCount() of the table they're being added to. Column names in the table must remain unique.
+   */
   @Override
   public Table addColumns(final Column<?>... cols) {
     for (final Column<?> c : cols) {
@@ -257,7 +260,9 @@ public class Table extends Relation implements Iterable<Row> {
 
   /**
    * Throws an IllegalArgumentException if a column with the given name is already in the table, or
-   * if the number of rows in the column does not match the number of rows in the table
+   * if the number of rows in the column does not match the number of rows in the table. Regarding
+   * the latter rule, however, if the column is completely empty (size == 0), then it is filled with
+   * missing values to match the rowSize() as a convenience.
    */
   private void validateColumn(final Column<?> newColumn) {
     Preconditions.checkNotNull(
@@ -278,10 +283,18 @@ public class Table extends Relation implements Iterable<Row> {
 
   /**
    * Throws an IllegalArgumentException if the column size doesn't match the rowCount() for the
-   * table
+   * table. Columns that are completely empty, however, are initialized to match rowcount by filling
+   * with missing values
    */
   private void checkColumnSize(Column<?> newColumn) {
     if (columnCount() != 0) {
+      if (!isEmpty()) {
+        if (newColumn.isEmpty()) {
+          while (newColumn.size() < rowCount()) {
+            newColumn.appendMissing();
+          }
+        }
+      }
       Preconditions.checkArgument(
           newColumn.size() == rowCount(),
           "Column "
@@ -291,7 +304,9 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Adds the given column to this table at the given position in the column list
+   * Adds the given column to this table at the given position in the column list. Columns must
+   * either be empty or have size() == the rowCount() of the table they're being added to. Column
+   * names in the table must remain unique.
    *
    * @param index Zero-based index into the column list
    * @param column Column to be added
