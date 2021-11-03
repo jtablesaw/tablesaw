@@ -29,6 +29,7 @@ final class AnalyticQueryEngine {
     this.rowComparator = sort.isPresent() ? SortUtils.getChain(query.getTable(), sort.get()) : null;
   }
 
+  /** Returns a new AnalyticQueryEngine to execute the given query */
   public static AnalyticQueryEngine create(AnalyticQuery query) {
     return new AnalyticQueryEngine(query);
   }
