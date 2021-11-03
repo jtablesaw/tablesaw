@@ -280,14 +280,23 @@ public class TableTest {
   }
 
   @Test
+  void appendSmallerColumnToEmptyTable() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          table.doubleColumn("f1").append(23).append(42);
+          table.addColumns(StringColumn.create("test", 1));
+        });
+  }
+
+  @Test
   void testCountBy() {
     assertEquals(3, bush.countBy("who", "date").columnCount());
   }
 
   @Test
   void appendEmptyColumnToPopulatedTable() {
-    assertThrows(
-        IllegalArgumentException.class,
+    assertDoesNotThrow(
         () -> {
           table.doubleColumn("f1").append(23);
           table.addColumns(StringColumn.create("test"));
