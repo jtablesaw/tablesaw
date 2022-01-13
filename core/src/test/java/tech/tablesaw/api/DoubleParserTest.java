@@ -39,6 +39,12 @@ class DoubleParserTest {
   }
 
   @Test
+  void testCanParse4() {
+    DoubleParser doubleParser = new DoubleParser(ColumnType.DOUBLE);
+    assertFalse(doubleParser.canParse(","));
+  }
+
+  @Test
   void testParseDouble1() {
     DoubleParser doubleParser = new DoubleParser(ColumnType.DOUBLE);
     assertEquals(1.3, doubleParser.parseDouble("1.3"));
