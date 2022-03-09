@@ -65,8 +65,7 @@ At this point we continue developing our model, but for those interested, this n
 >
 > ```Java
 > // create a boolean column - 'true' means team won more than 95 games
-> BooleanColumn ninetyFivePlus =
->         BooleanColumn.create("95+ Wins", wins.isGreaterThanOrEqualTo(95), wins.size());
+> BooleanColumn ninetyFivePlus = BooleanColumn.create("95+ Wins", wins.isGreaterThanOrEqualTo(95), wins.size());
 > moneyball.addColumns(ninetyFivePlus);
 >
 > // calculate the column percents
@@ -93,17 +92,17 @@ To check this assumption we compute Run Difference as Runs Scored - Runs Allow
 
 ```java
 NumberColumn RS = (NumberColumn) moneyball.numberColumn("RS");
-        NumberColumn RA = (NumberColumn) moneyball.numberColumn("RA");
+NumberColumn RA = (NumberColumn) moneyball.numberColumn("RA");
 
-        NumberColumn runDifference = RS.subtract(RA).setName("RD");
-        moneyball.addColumns(runDifference);
+NumberColumn runDifference = RS.subtract(RA).setName("RD");
+moneyball.addColumns(runDifference);
 ```
 
 Now lets see if Run Difference is correlated with Wins. We use a scatter plot again:
 
 ```Java
 Figure runsVsWins = ScatterPlot.create("Run Difference x Wins", moneyball, "RD","W");
-        Plot.show(runsVsWins);
+Plot.show(runsVsWins);
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/run diff vs wins.png)
