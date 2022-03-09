@@ -146,7 +146,7 @@ If you're new to regression, here are some take-aways from the output:
 
 Of course, this model is not simply descriptive. We can use it to make predictions. In the code below, we predict how many games we will win if we score 135 more runs than our opponents.  To do this, we pass an array of doubles, one for each explanatory variable in our model, to the predict() method. In this case, there's just one variable: run difference.
 
-- ```Java
+```Java
 double[] runDifferential = {135};
 double expectedWins = winsModel.predict(runDifferential);
   > 95.159733753496
@@ -201,7 +201,7 @@ double[] resids = runsScored.residuals();
 Plot.show(ScatterPlot.create("Runs Scored from OBP and SLG", "Fitted", fitted, "Residuals", resids));
 ```
 
-![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/runsscoredmodel.png)
+![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/runs%20scored%20model.png)
 
 Again, the plot looks good.
 
@@ -265,10 +265,8 @@ Table AsIn2001 = moneyball.selectColumns("year", "OOBP", "OBP", "OSLG", "SLG")
 Now we get the prediction:
 
 ```java
-{% raw %}
 double[][] values = new double[][] {{ 0.308, 0.345, .38, 0.439 }};
 double[] value = winsFinal.predict(values);
-{% endraw %}
 ```
 
 The model predicted that the 2001 A's would win 102 games given their slugging and On-Base stats. They won 103.
