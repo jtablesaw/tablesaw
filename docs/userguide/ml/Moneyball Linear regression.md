@@ -13,7 +13,6 @@ In baseball, you make the playoffs by winning more games than your rivals, but y
 Specifically, they wanted to know how to spend their salary dollars to produce the most wins. Statistics like "Batting Average" are available for individual players so if you knew Batting Average had the greatest impact, you can trade for players with high batting averages, and thus improve your odds of success.
 
 To do regression modeling in Tablesaw, we'll first need to import Smile:
-
 ```
 //Gradle
 // https://mvnrepository.com/artifact/com.github.haifengl/smile-core
@@ -28,6 +27,7 @@ To do regression modeling in Tablesaw, we'll first need to import Smile:
   <version>2.0.0</version>
 </dependency>
 ```
+(you will also need [tablesaw-core](https://mvnrepository.com/artifact/tech.tablesaw/tablesaw-core) and [tablesaw-jsplot](https://mvnrepository.com/artifact/tech.tablesaw/tablesaw-jsplot))
 
 To connect player stats to making the playoffs, they systematically decomposed their high-level goal. They started by asking how many wins they'd need to make the playoffs. They decided that 95 wins would give them a strong chance. Here's how we might check that assumption in Tablesaw. [(Download CSV here)](https://raw.githubusercontent.com/jtablesaw/tablesaw/master/data/baseball.csv)
 
