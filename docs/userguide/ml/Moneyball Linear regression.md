@@ -49,7 +49,7 @@ Figure winsByYear = ScatterPlot.create("Regular season wins by year", moneyball,
 Plot.show(winsByYear);
 ```
 
-![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/wins by year.png)
+![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/wins%20by%20year.png)
 
 Teams that made the playoffs are shown as yellow points.  If you draw a vertical line at 95 wins, you can see that it's likely a team that wins more than 95 games will make the playoffs. So far so good.
 
@@ -105,7 +105,7 @@ Figure runsVsWins = ScatterPlot.create("Run Difference x Wins", moneyball, "RD",
 Plot.show(runsVsWins);
 ```
 
-![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/run diff vs wins.png)
+![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/run%20diff%20vs%20wins.png)
 
 Our plot shows a strong linear relation between the two.
 
@@ -201,7 +201,7 @@ double[] resids = runsScored.residuals();
 Plot.show(ScatterPlot.create("Runs Scored from OBP and SLG", "Fitted", fitted, "Residuals", resids));
 ```
 
-![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/runs scored model.png)
+![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/runsscoredmodel.png)
 
 Again, the plot looks good.
 
