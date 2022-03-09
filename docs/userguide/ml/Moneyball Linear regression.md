@@ -36,7 +36,7 @@ To connect player stats to making the playoffs, they systematically decomposed t
 Table baseball = Table.read().csv("data/baseball.csv");
 
 // filter the data to start at the 2002 season when the A's model was made
-Table moneyball = baseball.selectWhere(column("year").isLessThan(2002));
+Table moneyball = baseball.where(baseball.intColumn("year").isLessThan(2002));
 ```
 
 We can check the assumption visually by plotting wins per year in a way that separates the teams who make the playoffs from those who don't. This code produces the chart below:
@@ -45,7 +45,8 @@ We can check the assumption visually by plotting wins per year in a way that s
 NumericColumn wins = moneyball.nCol("W");
 NumericColumn year = moneyball.nCol("Year");
 Column playoffs = moneyball.column("Playoffs");
-ScatterPlot.show("Regular season wins by year", moneyball, "W", "year", "playoffs");
+Figure winsByYear = ScatterPlot.create("Regular season wins by year", moneyball, "W", "year", "playoffs");
+Plot.show(winsByYear);
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/wins by year.png)
@@ -71,10 +72,10 @@ At this point we continue developing our model, but for those interested, this n
 > // calculate the column percents
 > Table xtab95 = moneyball.xTabColumnPercents("Playoffs", "95+ Wins");
 >
-> // format the results to show percents with one decimal place
-> xtab95.columnsOfType(ColumnType.DOUBLE)
->     .forEach(ea ->
->              ((NumberColumn)ea).setPrintFormatter(NumberColumnFormatter.percent(1)));
+> for(Object ea: xtab95.columnsOfType(ColumnType.DOUBLE))
+>        {
+>            ((NumberColumn) ea).setPrintFormatter(NumberColumnFormatter.percent(1));
+>        }
 >
 > >        Crosstab Column Proportions:         
 >  [labels]  |  false   |   true   |  total   |
@@ -91,18 +92,18 @@ Unfortunately, you can't directly control the number of games you win. We need t
 To check this assumption we compute Run Difference as Runs Scored - Runs Allowed:
 
 ```java
-NumberColumn RS = moneyball.numberColumn("RS");
-NumberColumn RA = moneyball.numberColumn("RA");
+NumberColumn RS = (NumberColumn) moneyball.numberColumn("RS");
+        NumberColumn RA = (NumberColumn) moneyball.numberColumn("RA");
 
-NumberColumn runDifference = RS.subtract(RA).setName("RD");
-moneyball.addColumn(runDifference);
-runDifference.setName("Run Difference");
+        NumberColumn runDifference = RS.subtract(RA).setName("RD");
+        moneyball.addColumns(runDifference);
 ```
 
 Now lets see if Run Difference is correlated with Wins. We use a scatter plot again:
 
 ```Java
-ScatterPlot.show("Run Difference x Wins", moneyball, "Run Difference","W");
+Figure runsVsWins = ScatterPlot.create("Run Difference x Wins", moneyball, "RD","W");
+        Plot.show(runsVsWins);
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/run diff vs wins.png)
@@ -114,7 +115,7 @@ Our plot shows a strong linear relation between the two.
 Let's create our first predictive model using linear regression, with runDifference as the sole explanatory variable. Here we use Smile's OLS (Ordinary Least Squares) regression model.
 
 ```Java
-LinearModel winsModel = OLS.fit(Formula.lhs("RD"), moneyball.select("W", "RD").smile().toDataFrame());
+LinearModel winsModel = OLS.fit(Formula.lhs("W"), moneyball.selectColumns("RD", "W").smile().toDataFrame());
 ```
 
 If we print our "winsModel", it produces the output below:
@@ -147,8 +148,8 @@ If you're new to regression, here are some take-aways from the output:
 Of course, this model is not simply descriptive. We can use it to make predictions. In the code below, we predict how many games we will win if we score 135 more runs than our opponents.  To do this, we pass an array of doubles, one for each explanatory variable in our model, to the predict() method. In this case, there's just one variable: run difference.
 
 - ```Java
-  double[] runDifference = {135};
-  double expectedWins = winsModel.predict(runDifference);
+double[] runDifferential = {135};
+double expectedWins = winsModel.predict(runDifferential);
   > 95.159733753496
   ```
 
@@ -159,7 +160,7 @@ We'd expect 95 wins when we outscore opponents by 135 runs.
 It's time to go deeper again and see how we can model Runs Scored and Runs Allowed. The approach the A's took was to model Runs Scored using team On-base percent (OBP) and team Slugging Average (SLG). In Tablesaw, we write:
 
 ```java
-LinearModel runsScored = OLS.fit(Formula.lhs("RS"), moneyball.select("RS", "OBP", "SLG").smile().toDataFrame());
+LinearModel runsScored = OLS.fit(Formula.lhs("RS"), moneyball.selectColumns("RS", "OBP", "SLG").smile().toDataFrame());
 ```
 
 
@@ -185,7 +186,7 @@ Once again the first parameter takes a Tablesaw column containing the values we
 Again we have a model with excellent explanatory power with an R-squared of 92. Now we'll check the model visually to see if it violates any assumptions. Our residuals should be normally distributed. We can use a histogram to verify:
 
 ```java
-Histogram.show(runsScored2.residuals());
+Plot.show(Histogram.create("Runs Scored Residuals",runsScored.residuals()));
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/histogram.png)
@@ -195,10 +196,10 @@ It looks great.  It's also important to plot the predicted (or "fitted") value
 Our Scatter class can create this plot directly from the model:
 
 ```java
-double[] fitted = runsScored2.fittedValues();
-double[] resids = runsScored2.residuals();
+double[] fitted = runsScored.fittedValues();
+double[] resids = runsScored.residuals();
 
-ScatterPlot.show("Runs Scored from OBP and SLG", "Fitted", fitted, "Residuals", resids);
+Plot.show(ScatterPlot.create("Runs Scored from OBP and SLG", "Fitted", fitted, "Residuals", resids));
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/runs scored model.png)
@@ -214,7 +215,7 @@ SLG &amp; OBP -&gt; Runs Scored -&gt; Run Difference -&gt; Regular Season Wins
 Of course, we haven't modeled the Runs Allowed side of Run Difference. We could use pitching and field stats to do this, but the A's cleverly used the same two variables (SLG and OBP), but now looked at how their opponent's performed against the A's. We could do the same as these data are encoded in the dataset as OOBP and OSLG.
 
 ```java
-LinearModel runsAllowed = OLS.fit(Formula.lhs("RA"), moneyball.select("RA", "OOBP", "OSLG").smile().toDataFrame());
+LinearModel runsAllowed = OLS.fit(Formula.lhs("RA"), moneyball.selectColumns("RA", "OOBP", "OSLG").dropRowsWithMissingValues().smile().toDataFrame());
 
 > Linear Model:
 
@@ -240,7 +241,7 @@ This model also looks good, but you'd want to look at the plots again, and do ot
 Finally, we can tie this all together and see how well wins is predicted when we consider both offensive and defensive stats.
 
 ```java
-LinearModel winsFinal = new OLS(Formula.lhs("W"), moneyball.select("W", "OOBP", "OBP", "OSLG", "SLG").smile().toDataFrame());
+LinearModel winsFinal = OLS.fit(Formula.lhs("W"), moneyball.selectColumns("W", "OOBP", "OBP", "OSLG", "SLG").dropRowsWithMissingValues().smile().toDataFrame());
 ```
 
 The output isn't shown, but we get an R squared of .89. Again this is quite good.
@@ -250,12 +251,12 @@ The output isn't shown, but we get an R squared of .89. Again this is quite good
 For fun, I decided to see what the model predicts for the 2001 A's. First, I got the independent variables for the A's in that year.
 
 ```java
-StringColumn team = moneyball.stringColumn("team");
-NumberColumn year = moneyball.numberColumn("year");
+StringColumn team2001 = moneyball.stringColumn("team");
+NumberColumn year2001 = (NumberColumn) moneyball.numberColumn("year");
 
-Table AsIn2001 = moneyball.select("year", "OOBP", "OBP", "OSLG", "SLG")
-                .where(team.isEqualTo("OAK")
-                        .and(year.isEqualTo(2001)));
+Table AsIn2001 = moneyball.selectColumns("year", "OOBP", "OBP", "OSLG", "SLG")
+                .where(team2001.isEqualTo("OAK")
+                .and(year2001.isEqualTo(2001)));
 
 >                    baseball.csv                   
   Year   |  OOBP   |   OBP   |  OSLG  |   SLG   |
