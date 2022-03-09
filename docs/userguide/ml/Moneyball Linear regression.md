@@ -29,7 +29,7 @@ To do regression modeling in Tablesaw, we'll first need to import Smile:
 </dependency>
 ```
 
-To connect player stats to making the playoffs, they systematically decomposed their high-level goal. They started by asking how many wins they'd need to make the playoffs. They decided that 95 wins would give them a strong chance. Here's how we might check that assumption in Tablesaw.
+To connect player stats to making the playoffs, they systematically decomposed their high-level goal. They started by asking how many wins they'd need to make the playoffs. They decided that 95 wins would give them a strong chance. Here's how we might check that assumption in Tablesaw. [(Download CSV here)](https://raw.githubusercontent.com/jtablesaw/tablesaw/master/data/baseball.csv)
 
 ```Java
 // Get the data
