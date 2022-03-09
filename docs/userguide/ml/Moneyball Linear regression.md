@@ -1,6 +1,6 @@
 # Moneyball: Linear Regression with Smile & Tablesaw
 
-Linear regression analysis has been called the "Hello World" of machine learning, because it's widely used and easy to understand. It's also very powerful. We'll walk through the modeling process here using Smile and Tablesaw. [Smile](https://github.com/haifengl/smile) is a fantastic Java machine learning library  and [Tablesaw](https://github.com/jtablesaw/tablesaw/) is data wrangling library like pandas. 
+Linear regression analysis has been called the "Hello World" of machine learning, because it's widely used and easy to understand. It's also very powerful. We'll walk through the modeling process here using Smile and Tablesaw. [Smile](https://github.com/haifengl/smile) is a fantastic Java machine learning library  and [Tablesaw](https://github.com/jtablesaw/tablesaw/) is data wrangling library like pandas.
 
 One of the best known applications of regression comes from the book <a href="https://www.amazon.com/dp/B000RH0C8G/ref=dp-kindle-redirect?_encoding=UTF8&amp;btkr=1">Moneyball</a>, which describes the innovative use of data science at the Oakland A's baseball team. My analysis is based on a lecture given in the EdX course: <a href="https://www.edx.org/course/analytics-edge-mitx-15-071x-2">MITx: 15.071x The Analytics Edge</a>.  If you're new to data analytics, I would *strongly* recommend this course.
 
@@ -8,13 +8,20 @@ Moneyball is a great example of how to apply data science to solve a business
 
 ![Moneyball model](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/moneyball-3_1.png)
 
-In baseball, you make the playoffs by winning more games than your rivals, but you can't control the number of games your rivals win. How should you proceed? The A's needed to find controllable variables that affected their likelihood of making the playoffs. 
+In baseball, you make the playoffs by winning more games than your rivals, but you can't control the number of games your rivals win. How should you proceed? The A's needed to find controllable variables that affected their likelihood of making the playoffs.
 
-Specifically, they wanted to know how to spend their salary dollars to produce the most wins. Statistics like "Batting Average" are available for individual players so if you knew Batting Average had the greatest impact, you can trade for players with high batting averages, and thus improve your odds of success. 
+Specifically, they wanted to know how to spend their salary dollars to produce the most wins. Statistics like "Batting Average" are available for individual players so if you knew Batting Average had the greatest impact, you can trade for players with high batting averages, and thus improve your odds of success.
 
 To do regression modeling in Tablesaw, we'll first need to import Smile:
 
 ```
+//Gradle
+// https://mvnrepository.com/artifact/com.github.haifengl/smile-core
+    implementation group: 'com.github.haifengl', name: 'smile-core', version: '2.0.0'
+
+```
+```
+//Maven
 <dependency>
   <groupId>com.github.haifengl</groupId>
   <artifactId>smile-core</artifactId>
@@ -49,26 +56,26 @@ Teams that made the playoffs are shown as yellow points.  If you draw a vertic
 >
 > The plots in this post were produced using Tablesaw's new plotting capabilities. We've created a wrapper for much of the amazing [Plot.ly](https://github.com/plotly) open-source JavaScript plotting library. The plots can be used interactively in an IDE or delivered from a server. This is an area of active development. Support for advanced features continue to be added.  
 
-At this point we continue developing our model, but for those interested, this next section shows how to use cross-tabs to quantify how teams with 95+ wins have faired in getting to the playoffs. 
+At this point we continue developing our model, but for those interested, this next section shows how to use cross-tabs to quantify how teams with 95+ wins have faired in getting to the playoffs.
 
-> **Aside: Cross Tabs** 
+> **Aside: Cross Tabs**
 >
-> We can also use cross-tabulations (cross-tabs) to quantify the historical data. Cross-tabs calculate the number or percent of observations that fall into various groups. Here we're interested in looking at the interaction between winning more than 95 games and making the playoffs. We start by making a boolean column for more than 95 wins, then create a cross tab between that column and the "playoffs" column. 
+> We can also use cross-tabulations (cross-tabs) to quantify the historical data. Cross-tabs calculate the number or percent of observations that fall into various groups. Here we're interested in looking at the interaction between winning more than 95 games and making the playoffs. We start by making a boolean column for more than 95 wins, then create a cross tab between that column and the "playoffs" column.
 >
 > ```Java
 > // create a boolean column - 'true' means team won more than 95 games
 > BooleanColumn ninetyFivePlus =
 >         BooleanColumn.create("95+ Wins", wins.isGreaterThanOrEqualTo(95), wins.size());
 > moneyball.addColumns(ninetyFivePlus);
-> 
+>
 > // calculate the column percents
 > Table xtab95 = moneyball.xTabColumnPercents("Playoffs", "95+ Wins");
-> 
+>
 > // format the results to show percents with one decimal place
 > xtab95.columnsOfType(ColumnType.DOUBLE)
->     .forEach(ea -> 
+>     .forEach(ea ->
 >              ((NumberColumn)ea).setPrintFormatter(NumberColumnFormatter.percent(1)));
-> 
+>
 > >        Crosstab Column Proportions:         
 >  [labels]  |  false   |   true   |  total   |
 > ---------------------------------------------
@@ -77,7 +84,7 @@ At this point we continue developing our model, but for those interested, this n
 >            |  100.0%  |  100.0%  |  100.0%  |
 > ```
 >
-> As you can see from the table roughly 82% of teams who win 95 or more games also made the playoffs. 
+> As you can see from the table roughly 82% of teams who win 95 or more games also made the playoffs.
 
 Unfortunately, you can't directly control the number of games you win. We need to go deeper. At the next level, we hypothesize that the number of wins can be predicted by the number of Runs Scored during the season, combined with the number of Runs Allowed.
 
@@ -100,7 +107,7 @@ ScatterPlot.show("Run Difference x Wins", moneyball, "Run Difference","W");
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/run diff vs wins.png)
 
-Our plot shows a strong linear relation between the two. 
+Our plot shows a strong linear relation between the two.
 
 ### Modeling with OLS (Ordinary Least Squares) Regression
 
@@ -162,7 +169,7 @@ Once again the first parameter takes a Tablesaw column containing the values we
     Residuals:
                Min          1Q      Median          3Q         Max
           -70.8379    -17.1810     -1.0917     16.7812     90.0358
-    
+
     Coefficients:
                 Estimate        Std. Error        t value        Pr(&gt;|t|)
     (Intercept)  -804.6271           18.9208       -42.5261          0.0000 ***
@@ -170,7 +177,7 @@ Once again the first parameter takes a Tablesaw column containing the values we
     SLG          1584.9085           42.1556        37.5966          0.0000 ***
     ---------------------------------------------------------------------
     Significance codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    
+
     Residual standard error: 24.7900 on 899 degrees of freedom
     Multiple R-squared: 0.9296,    Adjusted R-squared: 0.9294
     F-statistic: 5933.7256 on 2 and 899 DF,  p-value: 0.000
@@ -228,19 +235,19 @@ Multiple R-squared: 0.9073,    Adjusted R-squared: 0.9052
 F-statistic: 425.8225 on 2 and 87 DF,  p-value: 1.162e-45
 ```
 
-This model also looks good, but you'd want to look at the plots again, and do other checking as well. Checking the predictive variables for collinearity is always good. 
+This model also looks good, but you'd want to look at the plots again, and do other checking as well. Checking the predictive variables for collinearity is always good.
 
-Finally, we can tie this all together and see how well wins is predicted when we consider both offensive and defensive stats. 
+Finally, we can tie this all together and see how well wins is predicted when we consider both offensive and defensive stats.
 
 ```java
 LinearModel winsFinal = new OLS(Formula.lhs("W"), moneyball.select("W", "OOBP", "OBP", "OSLG", "SLG").smile().toDataFrame());
 ```
 
-The output isn't shown, but we get an R squared of .89. Again this is quite good. 
+The output isn't shown, but we get an R squared of .89. Again this is quite good.
 
 ### The A's in 2001
 
-For fun, I decided to see what the model predicts for the 2001 A's. First, I got the independent variables for the A's in that year. 
+For fun, I decided to see what the model predicts for the 2001 A's. First, I got the independent variables for the A's in that year.
 
 ```java
 StringColumn team = moneyball.stringColumn("team");
@@ -249,7 +256,7 @@ NumberColumn year = moneyball.numberColumn("year");
 Table AsIn2001 = moneyball.select("year", "OOBP", "OBP", "OSLG", "SLG")
                 .where(team.isEqualTo("OAK")
                         .and(year.isEqualTo(2001)));
-                
+
 >                    baseball.csv                   
   Year   |  OOBP   |   OBP   |  OSLG  |   SLG   |
 -------------------------------------------------
@@ -264,7 +271,7 @@ double[] value = winsFinal.predict(values);
 {% endraw %}
 ```
 
-The model predicted that the 2001 A's would win 102 games given their slugging and On-Base stats. They won 103. 
+The model predicted that the 2001 A's would win 102 games given their slugging and On-Base stats. They won 103.
 
 ## Recap
 
