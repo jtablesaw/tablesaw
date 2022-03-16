@@ -33,7 +33,7 @@ public class DoubleParser extends AbstractColumnParser<Double> {
         Double.parseDouble(AbstractColumnParser.remove(s, ','));
       }
       return true;
-    } catch (NumberFormatException | ParseException e) {
+    } catch (NumberFormatException | ParseException | IndexOutOfBoundsException e) {
       // it's all part of the plan
       return false;
     }
