@@ -65,6 +65,12 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   protected LongArrayList data;
 
+  /** {@inheritDoc} */
+  @Override
+  public int valueHash(int rowNumber) {
+    return Long.hashCode(getLongInternal(rowNumber));
+  }
+
   private final IntComparator comparator =
       (r1, r2) -> {
         long f1 = getPackedDateTime(r1);

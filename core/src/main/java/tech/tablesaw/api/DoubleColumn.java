@@ -275,6 +275,12 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   /** {@inheritDoc} */
   @Override
+  public int valueHash(int rowNumber) {
+    return Double.hashCode(getDouble(rowNumber));
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public DoubleColumn append(Double val) {
     if (val == null) {
       appendMissing();

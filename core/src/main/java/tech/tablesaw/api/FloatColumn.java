@@ -33,6 +33,12 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
     return getPrintFormatter().format(value);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public int valueHash(int rowNumber) {
+    return Float.hashCode(getFloat(rowNumber));
+  }
+
   public static FloatColumn create(String name) {
     return new FloatColumn(name, new FloatArrayList());
   }

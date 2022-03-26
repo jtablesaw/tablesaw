@@ -94,6 +94,12 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
 
   /** {@inheritDoc} */
   @Override
+  public int valueHash(int rowNumber) {
+    return getInt(rowNumber);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void clear() {
     data.clear();
   }

@@ -632,6 +632,12 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return type().byteSize();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public int valueHash(int rowNumber) {
+    return getIntInternal(rowNumber);
+  }
+
   /**
    * Returns the contents of the cell at rowNumber as a byte[]
    *

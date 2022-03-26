@@ -22,10 +22,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
@@ -51,6 +48,34 @@ public class CsvReadOptions extends ReadOptions {
     commentPrefix = builder.commentPrefix;
     lineSeparatorDetectionEnabled = builder.lineSeparatorDetectionEnabled;
     sampleSize = builder.sampleSize;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    CsvReadOptions that = (CsvReadOptions) o;
+    return lineSeparatorDetectionEnabled == that.lineSeparatorDetectionEnabled
+        && sampleSize == that.sampleSize
+        && Objects.equals(separator, that.separator)
+        && Objects.equals(quoteChar, that.quoteChar)
+        && Objects.equals(escapeChar, that.escapeChar)
+        && Objects.equals(lineEnding, that.lineEnding)
+        && Objects.equals(maxNumberOfColumns, that.maxNumberOfColumns)
+        && Objects.equals(commentPrefix, that.commentPrefix);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        separator,
+        quoteChar,
+        escapeChar,
+        lineEnding,
+        maxNumberOfColumns,
+        commentPrefix,
+        lineSeparatorDetectionEnabled,
+        sampleSize);
   }
 
   public static Builder builder(Source source) {

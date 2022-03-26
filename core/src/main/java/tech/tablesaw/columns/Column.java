@@ -638,6 +638,9 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   /** Appends a missing value appropriate to the column */
   Column<T> appendMissing();
 
+  /** Returns an int suitable as a hash for the value in this column at the given index */
+  int valueHash(int rowNumber);
+
   /** Returns a new column containing the subset referenced by the {@link Selection} */
   Column<T> where(Selection selection);
 

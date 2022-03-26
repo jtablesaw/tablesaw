@@ -67,6 +67,12 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
     return this;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public int valueHash(int rowNumber) {
+    return get(rowNumber).hashCode();
+  }
+
   public static StringColumn create(String name) {
     return new StringColumn(name);
   }

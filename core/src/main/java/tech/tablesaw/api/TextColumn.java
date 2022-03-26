@@ -58,6 +58,12 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
 
+  /** {@inheritDoc} */
+  @Override
+  public int valueHash(int rowNumber) {
+    return get(rowNumber).hashCode();
+  }
+
   private TextColumn(String name, Collection<String> strings) {
     super(TextColumnType.instance(), name, TextColumnType.DEFAULT_PARSER);
     values = new ArrayList<>(strings.size());

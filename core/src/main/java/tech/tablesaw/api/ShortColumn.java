@@ -35,6 +35,12 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
     this.data = data;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public int valueHash(int rowNumber) {
+    return getShort(rowNumber);
+  }
+
   public static ShortColumn create(final String name) {
     return new ShortColumn(name, new ShortArrayList());
   }

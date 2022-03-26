@@ -30,6 +30,12 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
     this.data = data;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public int valueHash(int rowNumber) {
+    return Long.hashCode(getLong(rowNumber));
+  }
+
   public static LongColumn create(final String name) {
     return new LongColumn(name, new LongArrayList());
   }

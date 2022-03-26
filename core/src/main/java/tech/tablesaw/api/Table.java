@@ -21,7 +21,7 @@ import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Streams;
+import com.google.common.collect.*;
 import com.google.common.primitives.Ints;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
@@ -550,13 +550,29 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Splits the table into two, randomly assigning records to each according to the proportion given
-   * in trainingProportion
-   *
-   * @param table1Proportion The proportion to go in the first table
-   * @return An array two tables, with the first table having the proportion specified in the method
-   *     parameter, and the second table having the balance of the rows
+   * Returns true if every value in row1 is equal to the same value in row2, where row1 and row2 are
+   * both rows from this table
    */
+  private boolean duplicateRows(Row row1, Row row2) {
+    if (row1.columnCount() != row2.columnCount()) {
+      return false;
+    }
+    boolean result;
+    for (int columnIndex = 0; columnIndex < row1.columnCount(); columnIndex++) {
+      ColumnType columnType = row1.getColumnType(columnIndex);
+      result =
+          columnType.compare(
+              row1.getRowNumber(),
+              row1.column(columnIndex),
+              row2.getRowNumber(),
+              row2.column(columnIndex));
+      if (!result) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   public Table[] sampleSplit(double table1Proportion) {
     Table[] tables = new Table[2];
     int table1Count = (int) Math.round(rowCount() * table1Proportion);
@@ -917,18 +933,52 @@ public class Table extends Relation implements Iterable<Row> {
     return StandardTableSliceGroup.create(this, columns);
   }
 
-  /** Returns the unique records in this table Note: Uses a lot of memory for a sort */
+  /**
+   * Returns the unique records in this table, such that any record that appears more than once in
+   * this table, appears only once in the returned table.
+   */
   public Table dropDuplicateRows() {
 
-    Table sorted = this.sortOn(columnNames().toArray(new String[columns().size()]));
     Table temp = emptyCopy();
-
-    for (int row = 0; row < rowCount(); row++) {
-      if (temp.isEmpty() || !compareRows(row, sorted, temp)) {
-        temp.append(sorted.row(row));
+    ListMultimap<Integer, Integer> uniqueHashes = ArrayListMultimap.create();
+    for (Row row : this) {
+      if (!isDuplicate(row, uniqueHashes)) {
+        temp.append(row);
       }
     }
     return temp;
+  }
+
+  /**
+   * Returns true if all the values in row are identical to those in another row previously seen and
+   * recorded in the list.
+   *
+   * @param row the row to evaluate
+   * @param uniqueHashes a map of row hashes to the id of an exemplar row that produces that hash.
+   *     If two different rows produce the same hash, then the row number for each is placed in the
+   *     list, so that there are exemplars for both
+   * @return true if the row's values exactly match a row that was previously seen
+   */
+  private boolean isDuplicate(Row row, ListMultimap<Integer, Integer> uniqueHashes) {
+    Integer hash = row.rowHash();
+    if (!uniqueHashes.containsKey(hash)) {
+      uniqueHashes.put(hash, row.getRowNumber());
+      return false;
+    }
+
+    // the hashmap contains the hash, make sure the actual row values match
+    List<Integer> matchingKeys = uniqueHashes.get(hash);
+
+    for (Integer key : matchingKeys) {
+      Row oldRow = this.row(key);
+      if (duplicateRows(row, oldRow)) {
+        return true;
+      } else {
+        uniqueHashes.put(hash, row.getRowNumber());
+        return false;
+      }
+    }
+    return true;
   }
 
   /** Returns only those records in this table that have no columns with missing values */

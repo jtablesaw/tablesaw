@@ -62,6 +62,12 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
         return Integer.compare(f1, f2);
       };
 
+  /** {@inheritDoc} */
+  @Override
+  public int valueHash(int rowNumber) {
+    return getIntInternal(rowNumber);
+  }
+
   private TimeColumn(String name, IntArrayList times) {
     super(TimeColumnType.instance(), name, TimeColumnType.DEFAULT_PARSER);
     data = times;
