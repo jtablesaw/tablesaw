@@ -4,11 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
 
@@ -794,13 +790,35 @@ public class Row implements Iterator<Row> {
     return columnMap.get(columnName).type();
   }
 
+  public ColumnType getColumnType(int columnIndex) {
+    return tableSlice.column(columnIndex).type();
+  }
+
+  Column<?> column(int columnIndex) {
+    return tableSlice.column(columnIndex);
+  }
+
+  /** Returns a hash computed on the values in the backing table at this row */
+  public int rowHash() {
+    int[] values = new int[columnCount()];
+    for (int i = 0; i < columnCount(); i++) {
+      Column<?> column = tableSlice.column(i);
+      values[i] = column.valueHash(rowNumber);
+    }
+    int result = 1;
+    for (int hash : values) {
+      result = 31 * result + hash;
+    }
+    return result;
+  }
+
   @Override
   public String toString() {
     Table t = tableSlice.getTable().emptyCopy();
     if (getRowNumber() == -1) {
       return "";
     }
-    t.addRow(this);
+    t.append(this);
     return t.print();
   }
 

@@ -309,6 +309,12 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   /** {@inheritDoc} */
   @Override
+  public int valueHash(int rowNumber) {
+    return getByte(rowNumber);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public String getString(int row) {
     return formatter.format(get(row));
   }

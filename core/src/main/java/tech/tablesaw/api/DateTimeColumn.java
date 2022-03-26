@@ -70,6 +70,12 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
 
   private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
 
+  /** {@inheritDoc} */
+  @Override
+  public int valueHash(int rowNumber) {
+    return Long.hashCode(getLongInternal(rowNumber));
+  }
+
   private DateTimeColumn(String name, LongArrayList data) {
     super(DateTimeColumnType.instance(), name, DateTimeColumnType.DEFAULT_PARSER);
     this.data = data;

@@ -318,6 +318,20 @@ public class TableTest {
   }
 
   @Test
+  void dropDuplicateRows2() {
+    Table t1 =
+        Table.read()
+            .csv(CsvReadOptions.builder(new File("../data/1950-2014_torn.csv")).sample(false));
+    t1 = t1.dropDuplicateRows();
+    Table t2 = t1.copy();
+    int rowCount = t1.rowCount();
+    t1.append(t2);
+    assertEquals(2 * rowCount, t1.rowCount());
+    t1 = t1.dropDuplicateRows();
+    assertEquals(rowCount, t1.rowCount());
+  }
+
+  @Test
   void dropDuplicateRowsWithMissingValue() {
     // Add 4 rows to the table, two of which are duplicates and have missing values.
     int missing = IntColumnType.missingValueIndicator();

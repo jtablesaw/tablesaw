@@ -90,4 +90,14 @@ public interface ColumnType {
     Object o2 = temp.get(temp.size() - 1);
     return o1 == null ? o2 == null : o1.equals(o2);
   }
+
+  /**
+   * Returns true if the value at the specified index in column1 is equal to the value at the
+   * specified index in column 2
+   */
+  default boolean compare(int col1Row, Column<?> col1, int col2Row, Column<?> col2) {
+    Object o1 = col1.get(col1Row);
+    Object o2 = col2.get(col2Row);
+    return o1 == null ? o2 == null : o1.equals(o2);
+  }
 }
