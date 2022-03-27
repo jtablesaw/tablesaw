@@ -641,6 +641,9 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
   /** Returns an int suitable as a hash for the value in this column at the given index */
   int valueHash(int rowNumber);
 
+  /** Returns true if the value in this column at rowNumber1 is equal to the value at rowNumber2 */
+  boolean equals(int rowNumber1, int rowNumber2);
+
   /** Returns a new column containing the subset referenced by the {@link Selection} */
   Column<T> where(Selection selection);
 

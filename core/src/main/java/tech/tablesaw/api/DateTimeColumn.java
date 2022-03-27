@@ -76,6 +76,12 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
     return Long.hashCode(getLongInternal(rowNumber));
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getLongInternal(rowNumber1) == getLongInternal(rowNumber2);
+  }
+
   private DateTimeColumn(String name, LongArrayList data) {
     super(DateTimeColumnType.instance(), name, DateTimeColumnType.DEFAULT_PARSER);
     this.data = data;

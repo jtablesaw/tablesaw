@@ -315,6 +315,12 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
   /** {@inheritDoc} */
   @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getByte(rowNumber1) == getByte(rowNumber2);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public String getString(int row) {
     return formatter.format(get(row));
   }

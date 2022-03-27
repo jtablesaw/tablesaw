@@ -71,6 +71,12 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return Long.hashCode(getLongInternal(rowNumber));
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getLongInternal(rowNumber1) == getLongInternal(rowNumber2);
+  }
+
   private final IntComparator comparator =
       (r1, r2) -> {
         long f1 = getPackedDateTime(r1);

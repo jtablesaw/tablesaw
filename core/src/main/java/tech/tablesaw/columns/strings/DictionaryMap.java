@@ -21,6 +21,9 @@ public interface DictionaryMap {
 
   void sortAscending();
 
+  /** Returns the int that represents the string at rowNumber */
+  int getKeyAtIndex(int rowNumber);
+
   String getValueForKey(int key);
 
   int size();

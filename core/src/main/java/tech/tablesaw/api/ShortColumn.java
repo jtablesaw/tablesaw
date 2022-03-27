@@ -41,6 +41,12 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
     return getShort(rowNumber);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getShort(rowNumber1) == getShort(rowNumber2);
+  }
+
   public static ShortColumn create(final String name) {
     return new ShortColumn(name, new ShortArrayList());
   }

@@ -160,6 +160,12 @@ public class IntDictionaryMap implements DictionaryMap {
     this.values = new IntArrayList(elements);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public int getKeyAtIndex(int rowNumber) {
+    return values.getInt(rowNumber);
+  }
+
   @Override
   public String getValueForKey(int key) {
     return keyToValue.get(key);

@@ -281,6 +281,12 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
 
   /** {@inheritDoc} */
   @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getDouble(rowNumber1) == getDouble(rowNumber2);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public DoubleColumn append(Double val) {
     if (val == null) {
       appendMissing();

@@ -64,6 +64,12 @@ public class ShortDictionaryMap implements DictionaryMap {
 
   private Short2IntOpenHashMap keyToCount = new Short2IntOpenHashMap();
 
+  /** {@inheritDoc} */
+  @Override
+  public int getKeyAtIndex(int rowNumber) {
+    return values.getShort(rowNumber);
+  }
+
   /** Returns a new DictionaryMap that is a deep copy of the original */
   ShortDictionaryMap(ByteDictionaryMap original) throws NoKeysAvailableException {
     valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);

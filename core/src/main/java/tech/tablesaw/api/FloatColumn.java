@@ -39,6 +39,12 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
     return Float.hashCode(getFloat(rowNumber));
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getFloat(rowNumber1) == getFloat(rowNumber2);
+  }
+
   public static FloatColumn create(String name) {
     return new FloatColumn(name, new FloatArrayList());
   }
