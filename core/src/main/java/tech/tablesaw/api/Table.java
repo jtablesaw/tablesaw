@@ -718,13 +718,16 @@ public class Table extends Relation implements Iterable<Row> {
     Preconditions.checkArgument(!key.isEmpty());
     if (key.size() == 1) {
       IntComparator comparator = SortUtils.getComparator(this, key);
-      return sortOn(comparator);
+      return parallelSortOn(comparator);
     }
     IntComparatorChain chain = SortUtils.getChain(this, key);
-    return sortOn(chain);
+    return parallelSortOn(chain);
   }
 
-  /** Returns a copy of this table sorted using the given comparator */
+  /**
+   * Returns a copy of this table sorted using the given comparator. This method sorts in a single
+   * thread, as is required for using Comparator<Row>
+   */
   private Table sortOn(IntComparator rowComparator) {
     Table newTable = emptyCopy(rowCount());
 
@@ -735,11 +738,22 @@ public class Table extends Relation implements Iterable<Row> {
     return newTable;
   }
 
+  /** Returns a copy of this table sorted in parallel using the given comparator */
+  private Table parallelSortOn(IntComparator rowComparator) {
+    Table newTable = emptyCopy(rowCount());
+
+    int[] newRows = rows();
+    IntArrays.parallelQuickSort(newRows, rowComparator);
+
+    copyRowsToTable(newRows, newTable);
+    return newTable;
+  }
+
   /** Returns a copy of this table sorted using the given comparator */
   public Table sortOn(Comparator<Row> rowComparator) {
     Row row1 = new Row(this);
     Row row2 = new Row(this);
-    return sortOn(
+    return sortOn( // Note: Never user parallel sort here as Row isn't remotely thread-safe
         (IntComparator)
             (k1, k2) -> {
               row1.at(k1);
