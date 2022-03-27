@@ -15,8 +15,7 @@
 package tech.tablesaw.api;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
+import static tech.tablesaw.api.ColumnType.*;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
@@ -71,6 +70,12 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   @Override
   public int valueHash(int rowNumber) {
     return get(rowNumber).hashCode();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getDictionary().getKeyAtIndex(rowNumber1) == getDictionary().getKeyAtIndex(rowNumber2);
   }
 
   public static StringColumn create(String name) {

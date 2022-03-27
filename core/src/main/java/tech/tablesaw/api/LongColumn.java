@@ -36,6 +36,12 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
     return Long.hashCode(getLong(rowNumber));
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getLong(rowNumber1) == getLong(rowNumber2);
+  }
+
   public static LongColumn create(final String name) {
     return new LongColumn(name, new LongArrayList());
   }

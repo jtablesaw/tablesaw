@@ -68,6 +68,12 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
     return getIntInternal(rowNumber);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getIntInternal(rowNumber1) == getIntInternal(rowNumber2);
+  }
+
   private TimeColumn(String name, IntArrayList times) {
     super(TimeColumnType.instance(), name, TimeColumnType.DEFAULT_PARSER);
     data = times;

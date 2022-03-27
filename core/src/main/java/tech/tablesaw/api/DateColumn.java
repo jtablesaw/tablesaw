@@ -638,6 +638,12 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
     return getIntInternal(rowNumber);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getIntInternal(rowNumber1) == getIntInternal(rowNumber2);
+  }
+
   /**
    * Returns the contents of the cell at rowNumber as a byte[]
    *

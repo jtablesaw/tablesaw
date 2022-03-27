@@ -65,6 +65,12 @@ public class ByteDictionaryMap implements DictionaryMap {
   // the map with counts
   private Byte2IntOpenHashMap keyToCount = new Byte2IntOpenHashMap();
 
+  /** {@inheritDoc} */
+  @Override
+  public int getKeyAtIndex(int rowNumber) {
+    return values.getByte(rowNumber);
+  }
+
   public ByteDictionaryMap() {
     valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
     keyToCount.defaultReturnValue(0);

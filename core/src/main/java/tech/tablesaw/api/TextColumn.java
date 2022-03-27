@@ -64,6 +64,12 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
     return get(rowNumber).hashCode();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return get(rowNumber1).equals(get(rowNumber2));
+  }
+
   private TextColumn(String name, Collection<String> strings) {
     super(TextColumnType.instance(), name, TextColumnType.DEFAULT_PARSER);
     values = new ArrayList<>(strings.size());

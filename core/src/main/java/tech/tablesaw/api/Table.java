@@ -25,9 +25,7 @@ import com.google.common.collect.*;
 import com.google.common.primitives.Ints;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -559,13 +557,8 @@ public class Table extends Relation implements Iterable<Row> {
     }
     boolean result;
     for (int columnIndex = 0; columnIndex < row1.columnCount(); columnIndex++) {
-      ColumnType columnType = row1.getColumnType(columnIndex);
-      result =
-          columnType.compare(
-              row1.getRowNumber(),
-              row1.column(columnIndex),
-              row2.getRowNumber(),
-              row2.column(columnIndex));
+      Column<?> c = column(columnIndex);
+      result = c.equals(row1.getRowNumber(), row2.getRowNumber());
       if (!result) {
         return false;
       }
@@ -954,7 +947,8 @@ public class Table extends Relation implements Iterable<Row> {
   public Table dropDuplicateRows() {
 
     Table temp = emptyCopy();
-    ListMultimap<Integer, Integer> uniqueHashes = ArrayListMultimap.create();
+    Int2ObjectMap<IntArrayList> uniqueHashes = new Int2ObjectOpenHashMap<>();
+    // ListMultimap<Integer, Integer> uniqueHashes = ArrayListMultimap.create();
     for (Row row : this) {
       if (!isDuplicate(row, uniqueHashes)) {
         temp.append(row);
@@ -973,22 +967,24 @@ public class Table extends Relation implements Iterable<Row> {
    *     list, so that there are exemplars for both
    * @return true if the row's values exactly match a row that was previously seen
    */
-  private boolean isDuplicate(Row row, ListMultimap<Integer, Integer> uniqueHashes) {
-    Integer hash = row.rowHash();
+  private boolean isDuplicate(Row row, Int2ObjectMap<IntArrayList> uniqueHashes) {
+    int hash = row.rowHash();
     if (!uniqueHashes.containsKey(hash)) {
-      uniqueHashes.put(hash, row.getRowNumber());
+      IntArrayList rowNumbers = new IntArrayList();
+      rowNumbers.add(row.getRowNumber());
+      uniqueHashes.put(hash, rowNumbers);
       return false;
     }
 
     // the hashmap contains the hash, make sure the actual row values match
-    List<Integer> matchingKeys = uniqueHashes.get(hash);
+    IntArrayList matchingKeys = uniqueHashes.get(hash);
 
-    for (Integer key : matchingKeys) {
+    for (int key : matchingKeys) {
       Row oldRow = this.row(key);
       if (duplicateRows(row, oldRow)) {
         return true;
       } else {
-        uniqueHashes.put(hash, row.getRowNumber());
+        uniqueHashes.get(hash).add(row.getRowNumber());
         return false;
       }
     }

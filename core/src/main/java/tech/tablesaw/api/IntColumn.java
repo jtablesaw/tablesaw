@@ -100,6 +100,12 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
 
   /** {@inheritDoc} */
   @Override
+  public boolean equals(int rowNumber1, int rowNumber2) {
+    return getInt(rowNumber1) == getInt(rowNumber2);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void clear() {
     data.clear();
   }
