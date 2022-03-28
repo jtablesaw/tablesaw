@@ -65,8 +65,8 @@ public abstract class NumberColumn<C extends NumberColumn<C, T>, T extends Numbe
 
   /** {@inheritDoc} */
   @Override
-  public void setPrintFormatter(final NumberFormat format, final String missingValueIndicator) {
-    this.printFormatter = new NumberColumnFormatter(format, missingValueIndicator);
+  public void setPrintFormatter(NumberFormat format, String missingValueIndicator) {
+    setPrintFormatter(new NumberColumnFormatter(format, missingValueIndicator));
   }
 
   /** {@inheritDoc} */
