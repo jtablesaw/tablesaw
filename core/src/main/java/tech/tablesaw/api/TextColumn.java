@@ -136,7 +136,9 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   /** {@inheritDoc} */
   @Override
   public TextColumn emptyCopy() {
-    return create(name());
+    TextColumn empty = create(name());
+    empty.setPrintFormatter(getPrintFormatter());
+    return empty;
   }
 
   /** {@inheritDoc} */

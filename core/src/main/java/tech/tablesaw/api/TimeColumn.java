@@ -274,6 +274,7 @@ public class TimeColumn extends AbstractColumn<TimeColumn, LocalTime>
   public TimeColumn copy() {
     TimeColumn column = emptyCopy(size());
     column.data = data.clone();
+    column.printFormatter = printFormatter;
     return column;
   }
 

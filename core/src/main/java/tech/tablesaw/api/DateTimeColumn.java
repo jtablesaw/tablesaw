@@ -325,6 +325,7 @@ public class DateTimeColumn extends AbstractColumn<DateTimeColumn, LocalDateTime
   public DateTimeColumn copy() {
     DateTimeColumn column = emptyCopy(data.size());
     column.data = data.clone();
+    column.printFormatter = printFormatter;
     return column;
   }
 

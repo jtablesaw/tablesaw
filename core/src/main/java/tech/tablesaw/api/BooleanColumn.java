@@ -338,7 +338,9 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   /** {@inheritDoc} */
   @Override
   public BooleanColumn emptyCopy() {
-    return create(name());
+    BooleanColumn empty = create(name());
+    empty.setPrintFormatter(getPrintFormatter());
+    return empty;
   }
 
   /** {@inheritDoc} */

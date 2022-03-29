@@ -219,6 +219,7 @@ public class DateColumn extends AbstractColumn<DateColumn, LocalDate>
   public DateColumn copy() {
     DateColumn copy = emptyCopy(data.size());
     copy.data = data.clone();
+    copy.printFormatter = printFormatter;
     return copy;
   }
 

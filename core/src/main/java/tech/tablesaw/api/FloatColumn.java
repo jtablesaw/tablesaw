@@ -228,7 +228,10 @@ public class FloatColumn extends NumberColumn<FloatColumn, Float> {
   /** {@inheritDoc} */
   @Override
   public FloatColumn copy() {
-    return new FloatColumn(name(), data.clone());
+    FloatColumn copy = new FloatColumn(name(), data.clone());
+    copy.setPrintFormatter(getPrintFormatter());
+    copy.locale = locale;
+    return copy;
   }
 
   /** {@inheritDoc} */
