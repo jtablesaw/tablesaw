@@ -239,7 +239,10 @@ public class LongColumn extends NumberColumn<LongColumn, Long> implements Catego
   /** {@inheritDoc} */
   @Override
   public LongColumn copy() {
-    return new LongColumn(name(), data.clone());
+    LongColumn copy = new LongColumn(name(), data.clone());
+    copy.setPrintFormatter(getPrintFormatter());
+    copy.locale = locale;
+    return copy;
   }
 
   public long[] asLongArray() {

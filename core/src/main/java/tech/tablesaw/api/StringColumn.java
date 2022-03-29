@@ -140,7 +140,9 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public StringColumn emptyCopy() {
-    return create(name());
+    StringColumn empty = create(name());
+    empty.setPrintFormatter(getPrintFormatter());
+    return empty;
   }
 
   /** {@inheritDoc} */
@@ -421,6 +423,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
       newCol.set(r, string);
       r++;
     }
+    newCol.setPrintFormatter(getPrintFormatter());
     return newCol;
   }
 

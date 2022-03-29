@@ -243,7 +243,10 @@ public class ShortColumn extends NumberColumn<ShortColumn, Short>
   /** {@inheritDoc} */
   @Override
   public ShortColumn copy() {
-    return new ShortColumn(name(), data.clone());
+    ShortColumn copy = new ShortColumn(name(), data.clone());
+    copy.setPrintFormatter(getPrintFormatter());
+    copy.locale = locale;
+    return copy;
   }
 
   /** {@inheritDoc} */

@@ -225,7 +225,10 @@ public class IntColumn extends NumberColumn<IntColumn, Integer>
   /** {@inheritDoc} */
   @Override
   public IntColumn copy() {
-    return new IntColumn(name(), data.clone());
+    IntColumn copy = new IntColumn(name(), data.clone());
+    copy.setPrintFormatter(getPrintFormatter());
+    copy.locale = locale;
+    return copy;
   }
 
   /** {@inheritDoc} */

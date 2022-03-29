@@ -322,6 +322,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   public InstantColumn copy() {
     InstantColumn column = emptyCopy(data.size());
     column.data = data.clone();
+    column.printFormatter = this.printFormatter;
     return column;
   }
 
