@@ -37,5 +37,17 @@ public class ConfigTest {
       Config config = Config.builder().build();
       assertFalse(config.asJavascript().contains("responsive"));
     }
+    {
+      Config config = Config.builder().displayLogo(true).build();
+      assertTrue(config.asJavascript().contains("\"displaylogo\" : true"));
+    }
+    {
+      Config config = Config.builder().displayLogo(false).build();
+      assertTrue(config.asJavascript().contains("\"displaylogo\" : false"));
+    }
+    {
+      Config config = Config.builder().build();
+      assertFalse(config.asJavascript().contains("displaylogo"));
+    }
   }
 }
