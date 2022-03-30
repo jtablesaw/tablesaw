@@ -3,8 +3,10 @@ package tech.tablesaw.io.arrow;
 import static org.apache.arrow.vector.types.FloatingPointPrecision.DOUBLE;
 import static org.apache.arrow.vector.types.FloatingPointPrecision.SINGLE;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.types.DateUnit;
 import org.apache.arrow.vector.types.TimeUnit;
 import org.apache.arrow.vector.types.pojo.ArrowType;
@@ -13,10 +15,26 @@ import org.apache.arrow.vector.types.pojo.FieldType;
 import org.apache.arrow.vector.types.pojo.Schema;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.DataWriter;
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriterRegistry;
 
-public class ArrowWriter {
+public class ArrowWriter implements DataWriter<ArrowWriteOptions> {
 
-  private static Schema tableSchema(Table table) {
+  private static final ArrowWriter INSTANCE = new ArrowWriter();
+
+  private static final int CHUNK_SIZE = 20_000;
+
+  static {
+    register(Table.defaultWriterRegistry);
+  }
+
+  public static void register(WriterRegistry registry) {
+    registry.registerExtension("arrow", INSTANCE);
+    registry.registerOptions(ArrowWriteOptions.class, INSTANCE);
+  }
+
+  private Schema tableSchema(Table table) {
     List<Field> fields = new ArrayList<>();
     for (Column<?> column : table.columns()) {
       final String typeName = column.type().name();
@@ -84,5 +102,14 @@ public class ArrowWriter {
     return new Schema(fields);
   }
 
-  public void write(Table table) {}
+  @Override
+  public void write(Table table, Destination dest) {
+
+    new ChunkedWriter<>(CHUNK_SIZE, this::vectorizeTable).write(new File("people.arrow"), table);
+  }
+
+  private <T> void vectorizeTable(T t, int i, VectorSchemaRoot vectorSchemaRoot) {}
+
+  @Override
+  public void write(Table table, ArrowWriteOptions options) {}
 }
