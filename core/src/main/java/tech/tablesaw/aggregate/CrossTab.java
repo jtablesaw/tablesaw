@@ -60,7 +60,7 @@ public final class CrossTab {
       a = temp.column(colIndex1).getString(row);
       b = temp.column(colIndex2).getString(row);
       Integer cellValue = gTable.get(a, b);
-      Integer value;
+      int value;
       if (cellValue != null) {
         value = cellValue + 1;
       } else {
@@ -112,7 +112,7 @@ public final class CrossTab {
 
   /**
    * Returns a Table containing counts of records in the given Table grouped by the given columnName
-   * See also {@link Table:countBy()}
+   * See also {@link Table#countBy(String...)}
    */
   public static Table counts(Table table, String columnName) {
     return table.countBy(table.categoricalColumn(columnName));

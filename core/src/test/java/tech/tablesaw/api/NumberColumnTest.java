@@ -30,9 +30,11 @@ import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
 
 import com.google.common.base.Stopwatch;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
@@ -804,6 +806,14 @@ public class NumberColumnTest {
     for (int i = 0; i < expected.length; i++) {
       assertEquals(expected[i], column.get(i));
     }
+  }
+
+  @Test
+  void testSetPrintFormatter() {
+    NumberColumn<DoubleColumn, Double> numberColumn = DoubleColumn.create("test");
+    numberColumn.append(48392.2932);
+    numberColumn.setPrintFormatter(NumberFormat.getCurrencyInstance(Locale.US), "");
+    assertEquals("$48,392.29", numberColumn.getString(0));
   }
 
   @Test

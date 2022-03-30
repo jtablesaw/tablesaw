@@ -308,7 +308,10 @@ public class DoubleColumn extends NumberColumn<DoubleColumn, Double>
   /** {@inheritDoc} */
   @Override
   public DoubleColumn copy() {
-    return new DoubleColumn(name(), data.clone());
+    DoubleColumn copy = new DoubleColumn(name(), data.clone());
+    copy.setPrintFormatter(getPrintFormatter());
+    copy.locale = locale;
+    return copy;
   }
 
   /** {@inheritDoc} */

@@ -7,10 +7,12 @@ public class Config extends Component {
 
   private final Boolean displayModeBar;
   private final Boolean responsive;
+  private final Boolean displayLogo;
 
   private Config(Builder builder) {
     this.displayModeBar = builder.displayModeBar;
     this.responsive = builder.responsive;
+    this.displayLogo = builder.displayLogo;
   }
 
   public static Builder builder() {
@@ -32,6 +34,7 @@ public class Config extends Component {
     Map<String, Object> context = new HashMap<>();
     context.put("displayModeBar", displayModeBar);
     context.put("responsive", responsive);
+    context.put("displaylogo", displayLogo);
     return context;
   }
 
@@ -39,6 +42,7 @@ public class Config extends Component {
 
     Boolean displayModeBar;
     Boolean responsive;
+    Boolean displayLogo;
 
     private Builder() {}
 
@@ -49,6 +53,11 @@ public class Config extends Component {
 
     public Builder responsive(boolean responsive) {
       this.responsive = responsive;
+      return this;
+    }
+
+    public Builder displayLogo(boolean displayLogo) {
+      this.displayLogo = displayLogo;
       return this;
     }
 
