@@ -3,6 +3,8 @@ package tech.tablesaw.columns.strings;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
+import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumn;
@@ -105,4 +107,24 @@ public abstract class AbstractStringColumn<C extends AbstractColumn<C, String>>
   public int compare(String o1, String o2) {
     return o1.compareTo(o2);
   }
+
+  public abstract double getDouble(int i);
+
+  /**
+   * Returns a list of boolean columns suitable for use as dummy variables in, for example,
+   * regression analysis, select a column of categorical data must be encoded as a list of columns,
+   * such that each column represents a single category and indicates whether it is present (1) or
+   * not present (0)
+   *
+   * @return a list of {@link BooleanColumn}
+   */
+  public abstract List<BooleanColumn> getDummies();
+
+  public abstract int firstIndexOf(String value);
+
+  public abstract int countOccurrences(String value);
+
+  public abstract double[] asDoubleArray();
+
+  public abstract @Nullable DictionaryMap getDictionary();
 }
