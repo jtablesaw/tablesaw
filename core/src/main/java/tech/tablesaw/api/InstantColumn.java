@@ -574,7 +574,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return set(row, ((InstantColumn) column).getLongInternal(sourceRow));
   }
 
-  /** {@inheritDoc} */
+  /** Returns the largest instant value in the column */
   public Instant max() {
     if (isEmpty()) {
       return null;

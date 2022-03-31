@@ -1243,7 +1243,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1254,7 +1254,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1265,7 +1265,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1277,7 +1277,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1289,7 +1289,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1306,7 +1306,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1317,7 +1317,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1329,7 +1329,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1344,7 +1344,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1667,9 +1667,9 @@ public class Table extends Relation implements Iterable<Row> {
   /**
    * Melt implements the 'tidy' melt operation as described in these papers by Hadley Wickham.
    *
-   * <p>Tidy concepts: {@see https://www.jstatsoft.org/article/view/v059i10}
+   * <p>Tidy concepts: see https://www.jstatsoft.org/article/view/v059i10
    *
-   * <p>Cast function details: {@see https://www.jstatsoft.org/article/view/v021i12}
+   * <p>Cast function details: see https://www.jstatsoft.org/article/view/v021i12
    *
    * <p>In short, melt turns columns into rows, but in a particular way. Used with the cast method,
    * it can help make data tidy. In a tidy dataset, every variable is a column and every observation
@@ -1794,9 +1794,9 @@ public class Table extends Relation implements Iterable<Row> {
    * <p>Variable columns are returned in an arbitrary order. Use {@link #reorderColumns(String...)}
    * if column order is important.
    *
-   * <p>Tidy concepts: {@see https://www.jstatsoft.org/article/view/v059i10}
+   * <p>Tidy concepts: see https://www.jstatsoft.org/article/view/v059i10
    *
-   * <p>Cast function details: {@see https://www.jstatsoft.org/article/view/v021i12}
+   * <p>Cast function details: see https://www.jstatsoft.org/article/view/v021i12
    */
   public Table cast() {
     StringColumn variableNames = stringColumn(MELT_VARIABLE_COLUMN_NAME);

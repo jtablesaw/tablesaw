@@ -3,7 +3,7 @@ Tablesaw
 
 [![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/nebula-project-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Build Status](https://travis-ci.org/jtablesaw/tablesaw.svg?branch=master)](https://travis-ci.org/jtablesaw/tablesaw)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5029f48d00c24f1ea378b090210cf7da)](https://www.codacy.com/app/jtablesaw/tablesaw?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jtablesaw/tablesaw&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3ebd154b5253466b932cb17dda737293)](https://www.codacy.com/gh/jtablesaw/tablesaw/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jtablesaw/tablesaw&amp;utm_campaign=Badge_Grade)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=jtablesaw_tablesaw&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=jtablesaw_tablesaw)
 
 ### Overview
@@ -67,10 +67,17 @@ External supporting projects - **outside of this organization**:
 
 ### Integrations
 
+#### Jupyter Notebooks
+
 * We recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
+* A second way to use Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html) is with [IJava](https://github.com/SpencerPark/IJava), which has built-in support for Tablesaw. Gary Sharpe has written [an excellent tutorial](https://medium.com/@gmsharpe/java-jupyter-plotly-e1bbaa7f2be8) that shows you how to use Tablesaw plots. Gary has written a number of other tutorials that feature Tablesaw:
+  * [Tidy Data with Java & Jupyter](https://medium.com/@gmsharpe/tidy-data-with-java-jupyter-b1e131b37ab0)
+  * [Dataframes with Tablesaw — JSON](https://medium.com/@gmsharpe/dataframes-with-tablesaw-json-46dda9c8c217?source=your_stories_page----------------------------------------)
+  * [Dataframes with Tablesaw — CSV Files](https://medium.com/@gmsharpe/importing-data-with-tablesaw-part-1-csv-files-3ac6f135cf6f?source=your_stories_page----------------------------------------)
+* A third approach is to use [Google Colab](https://colab.research.google.com). Again, Gary Sharpe has an excellent tutorial:[Getting Started with Dataframes using Java and Google Colab](https://medium.com/@gmsharpe/getting-started-with-tablesaw-and-google-colab-65ef0cbe280c)
+
+#### Other integrations
 
 * Eclipse uses may find [etablesaw](https://github.com/hallvard/etablesaw) useful. It provides Eclipse integration aimed at turning Eclipse into a data workbench.   
-
 * You may utilize Tablesaw with many machine learning libraries. To see an example of using Tablesaw with [Smile](https://haifengl.github.io) check out [the sample Tablesaw Jupyter notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
-
 * You may use [quandl4j-tablesaw](http://quandl4j.org) if you'd like to load financial and economic data from [Quandl](https://www.quandl.com) into Tablesaw. This is demonstrated in [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb) as well

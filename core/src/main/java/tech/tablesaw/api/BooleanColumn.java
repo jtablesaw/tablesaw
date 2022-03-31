@@ -589,7 +589,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
    *
    * @param rowSelection the rows to be updated
    * @param newValue a byte representation of boolean values. The only valid arguments are 0, 1, and
-   *     {@link BooleanColumnType:missingValueIndicator()}
+   *     {@link BooleanColumnType#missingValueIndicator()}
    */
   public BooleanColumn set(Selection rowSelection, byte newValue) {
     for (int row : rowSelection) {
@@ -830,7 +830,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
 
     /**
      * Returns {@code true} if the iteration has more elements. (In other words, returns {@code
-     * true} if {@link #next} would return an element rather than throwing an exception.)
+     * true} if {@link #next()} would return an element rather than throwing an exception.)
      *
      * @return {@code true} if the iteration has more elements
      */

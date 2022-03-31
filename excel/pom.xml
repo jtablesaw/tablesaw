@@ -5,7 +5,7 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.42.0-SNAPSHOT</version>
+    <version>0.44.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>tablesaw-excel</artifactId>
@@ -58,6 +58,23 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
+      <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-shade-plugin</artifactId>
+           <version>3.1.0</version>
+           <configuration>
+               <shadedArtifactAttached>true</shadedArtifactAttached>
+               <shadedClassifierName>shaded</shadedClassifierName>
+           </configuration>
+           <executions>
+               <execution>
+                   <phase>package</phase>
+                   <goals>
+                       <goal>shade</goal>
+                   </goals>
+               </execution>
+           </executions>
+       </plugin>      
     </plugins>
   </build>
 
@@ -65,14 +82,14 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.42.0-SNAPSHOT</version>
+      <version>0.44.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
-      <version>4.1.1</version>
-    </dependency>
+      <dependency>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi-ooxml</artifactId>
+          <version>5.2.2</version>
+      </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>

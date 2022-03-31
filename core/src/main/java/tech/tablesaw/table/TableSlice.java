@@ -135,7 +135,7 @@ public class TableSlice extends Relation {
     return name;
   }
 
-  /** {@inheritDoc} */
+  /** Returns the backing table for this slice */
   public Table getTable() {
     return table;
   }

@@ -52,7 +52,7 @@ public class DoubleColumnType extends AbstractColumnType {
 
   /**
    * Returns the missing value indicator for this column type NOTE: Clients should use {@link
-   * DoubleColumnType:valueIsMissing()} to test for missing value indicators
+   * DoubleColumnType#valueIsMissing(double)} to test for missing value indicators
    */
   public static double missingValueIndicator() {
     return Double.NaN;
