@@ -20,7 +20,7 @@ The following figure illistrates a two-dimensional feature space that has been p
 
 As you can see, the feature space is split into three regions, and three predictions are possible: 5.00, 6.00, and 6.74. 
 
-While decision trees are easily interpretable, especially when looking at the visual of the tree on the left, basic decision trees like this one are generally less accurate than other regression/classification approaches. More advanced tree based methods, however, not only compete with other approaches, but often provide exceptional performance. 
+While decision trees are easily interpretable, especially when looking at the visual of the tree, basic decision trees like this one are generally less accurate than other regression/classification approaches. More advanced tree-based methods, however, not only compete with other approaches, but often provide exceptional performance. 
 
 ### Random Forest
 
@@ -111,7 +111,7 @@ varImportance = varImportance.sortDescendingOn("featureImportance");
 Plot.show(HorizontalBarPlot.create("Feature Importance", varImportance, "Feature", "featureImportance"));
 ```
 
-As you can see, features **Fbs** and **ExAng** have the lowest importance in the model, while **Age**, **MaxHR**, **RestBP**, and **Chol** all appear to be of great importance. 
+As you can see, features **Fbs** and **ExAng** have the lowest importance in the model, while **Age**, **MaxHR**, **RestBP**, and **Chol** are all of high importance.  
 
 <p align="center">
 <img src="https://github.com/jbsooter/tablesaw/blob/c38cc384989f3093469b860e25a193b3445f2673/docs/userguide/images/ml/random_forest/Tablesaw_Feature_Importance.png" width="650" height = "500">
@@ -194,7 +194,7 @@ RandomForest RFModel2 = smile.classification.RandomForest.fit(
 );
 ```
 
-Now, lets determine an appropriate number of trees to grow in the model. A good rule of thumb is to select a number of trees that is the least number required to achieve minimum Out of Bag error when building the model. To determine this, we can graph OOB-Error vs ntrees. 
+Now, lets determine an appropriate number of trees to grow in the model. A good rule of thumb is to select a number of trees that is the least number required to achieve minimum out-of-bag error when building the model. To determine this, we can graph OOBError vs ntrees. 
 
 ```
  for(int j = 50; j < 2000; j = j+25)
