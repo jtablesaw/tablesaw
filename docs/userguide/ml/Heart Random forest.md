@@ -168,6 +168,31 @@ Spearman's correlation metric provides a measure of feature correlation and can 
         Ca  |   0.34  |   0.13  |      -0.20  |    0.07  |   0.07  |   0.17  |     0.13  |  -0.26  |   0.22  |     0.30  |   0.10  |   1.00  |
 ```
 
+Features **Slope** and **Oldpeak** have a moderate positive correlation of 0.6, the largest in the table. I will opt to leave both features in the dataset as their correlation is likely not strong enough to distort the model. 
+
+Based on the feature importance plot, I will cut **Fbs** from the feature space. 
+
+```
+//cut variables
+dataTest.removeColumns("Fbs");
+dataTrain.removeColumns("Fbs");
+```
+
+Now, we can generate a second model using the selected features. 
+
+```
+RandomForest RFModel2 = smile.classification.RandomForest.fit(
+     Formula.lhs("AHD"),
+     dataTrain.smile().toDataFrame(),
+     50, //n
+     (int) Math.sqrt((double) (dataTrain.columnCount() - 1)), //m = sqrt(p)
+     SplitRule.GINI,
+     7, //d 
+     100, //maxNodes
+     1,
+     1
+);
+```
 
 
 
