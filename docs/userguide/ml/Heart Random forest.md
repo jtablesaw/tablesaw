@@ -219,4 +219,9 @@ Now, lets determine an appropriate number of trees to grow in the model. A good 
 Plot.show(LinePlot.create("Accuracy", AccuracyvTrees, "ntrees", "OOBerror"));
 ```
 
+The Out-of-bounds error appears to settle down after ~1,000 trees. (your plot may look slightly different due to randomness in splitting the dataset and in the model algorithm). To be conservative, we can select 1,200 trees as the parameter of our final model. 
+
+<p align="center">
+<img src="https://github.com/jbsooter/tablesaw/blob/6d83b41ec91223f1ba7f0e776a14e0af8e2f46a7/docs/userguide/images/ml/random_forest/OOBError_v_ntrees.png" width="550" height = "500">
+</p>
 
