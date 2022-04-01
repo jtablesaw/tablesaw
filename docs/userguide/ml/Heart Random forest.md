@@ -225,3 +225,41 @@ The Out-of-bounds error appears to settle down after ~1,000 trees. (your plot ma
 <img src="https://github.com/jbsooter/tablesaw/blob/6d83b41ec91223f1ba7f0e776a14e0af8e2f46a7/docs/userguide/images/ml/random_forest/OOBError_v_ntrees.png" width="550" height = "500">
 </p>
 
+We can now build and assess our final model using our new value for **ntrees**. 
+
+```
+//model with graph-selected number of trees
+RandomForest RFModelBest = smile.classification.RandomForest.fit(
+    Formula.lhs("AHD"),
+    dataTrain.smile().toDataFrame(),
+    1200,
+    (int) Math.sqrt((double) (dataTrain.columnCount() - 1)), //root p
+    SplitRule.GINI,
+    7,
+    100,
+    1,
+    1
+    );
+
+int[] predictionsBest = RFModelBest.predict(dataTest.smile().toDataFrame());
+double accuracyBest = Accuracy.of(dataTest.intColumn("AHD").asIntArray(), predictionsBest);
+System.out.println(accuracyBest);
+
+> 0.8333333333333334
+```
+
+The classification accuracy of my final model was ~83%. So, using a relatively small dataset, the Random Forest algorithm is able to correctly predict whether or not a patient has heart disease ~83% of the time. 
+
+
+### Recap
+
+We used Tablesaw to clean the Heart dataset and prepare it for the Random Forest algorithm. We generated a sensible starting model and plotted it's Gini Index importance and Spearman's correlation matrix to identify features to cut from the model. We then used out-of-bounds error to identify a large enough number of trees to include in the model to achieve maximum accuracy with limited computation time. 
+
+### Extensions
+
+While the classic method of splitting the dataset 70% test, 30% train works reasonably well, for smaller datasets your model performance metrics can experience some variation due to having a training dataset of limited size. For such datasets, validation procedures such as n-fold cross validation and leave one out cross validation may be more appropriate. Smile includes built-in functions to perform cross validation. 
+
+In addition, in this example we only tuned the **ntrees** hyperparameter; adjustments to mtry, maxDepth, maxNodes, and nodeSize could be considered as well. 
+
+
+
