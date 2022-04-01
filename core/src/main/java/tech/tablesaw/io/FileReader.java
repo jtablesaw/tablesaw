@@ -1,6 +1,6 @@
 package tech.tablesaw.io;
 
-import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.*;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -17,10 +17,10 @@ import java.util.Optional;
 import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.strings.BackingStringColumnType;
 
 public abstract class FileReader {
 
@@ -190,7 +190,15 @@ public abstract class FileReader {
         if (Strings.isNullOrEmpty(columnName)) {
           columnName = "Column " + table.columnCount();
         }
-        Column<?> newColumn = types[x].create(columnName);
+        ColumnType type = types[x];
+        Column<?> newColumn;
+        if (type.equals(STRING)) {
+          newColumn = StringColumn.create(columnName, BackingStringColumnType.BACKING_STRING);
+        } else if (type.equals(TEXT)) {
+          newColumn = StringColumn.create(columnName, BackingStringColumnType.BACKING_TEXT);
+        } else {
+          newColumn = type.create(columnName);
+        }
         table.addColumns(newColumn);
       }
     }

@@ -457,7 +457,10 @@ public class Row implements Iterator<Row> {
    * Returns a String representing the text from this Row at the column of the given name. An
    * IllegalStateException is thrown if the column is not present in the Row and an
    * IllegalArgumentException is thrown if it has a different type
+   *
+   * @deprecated Use {@link #getString(int)}
    */
+  @Deprecated
   public String getText(String columnName) {
     return stringColumnMap.get(columnName).get(getIndex(rowNumber));
   }
@@ -466,7 +469,10 @@ public class Row implements Iterator<Row> {
    * Returns a String value from this Row at the column with the given index. An
    * IllegalStateException is thrown if the column is not present in the Row and an
    * IllegalArgumentException is thrown if it has a different type type
+   *
+   * @deprecated Use {@link #getString(int)}
    */
+  @Deprecated
   public String getText(int columnIndex) {
     return getString(columnNames[columnIndex]);
   }

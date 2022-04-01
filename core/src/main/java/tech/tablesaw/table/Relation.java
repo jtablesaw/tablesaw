@@ -626,7 +626,11 @@ public abstract class Relation implements Iterable<Row> {
   /**
    * Returns the TextColumn at the given 0-based index if present. A ClassCastException is the
    * column is of a different type.
+   *
+   * @deprecated StringColumn now supports random/non-categorical text. Use {@link
+   *     #stringColumn(int)} instead
    */
+  @Deprecated
   public TextColumn textColumn(int columnIndex) {
     return (TextColumn) column(columnIndex);
   }

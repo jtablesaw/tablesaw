@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.AbstractStringColumn;
+import tech.tablesaw.columns.strings.BackingStringColumnType;
 import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -53,6 +54,10 @@ class BackingTextColumn extends AbstractStringColumn<BackingTextColumn> {
       };
 
   private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
+
+  public BackingStringColumnType backingColumnType() {
+    return BackingStringColumnType.BACKING_TEXT;
+  }
 
   /** {@inheritDoc} */
   @Override

@@ -261,8 +261,8 @@ public class RowTest {
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
-      assertEquals(table.textColumn(2).get(row.getRowNumber()), row.getText(2));
-      assertEquals(table.textColumn("who").get(row.getRowNumber()), row.getText("who"));
+      assertEquals(table.stringColumn(2).get(row.getRowNumber()), row.getText(2));
+      assertEquals(table.stringColumn("who").get(row.getRowNumber()), row.getText("who"));
     }
   }
 
@@ -461,7 +461,7 @@ public class RowTest {
     Row row = new Row(table);
     while (row.hasNext()) {
       row.next();
-      String rowVal = table.textColumn(2).get(row.getRowNumber());
+      String rowVal = table.stringColumn(2).get(row.getRowNumber());
       String updateVal1 = rowVal.concat("2");
       String updateVal2 = rowVal.concat("3");
 

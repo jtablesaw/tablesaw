@@ -23,6 +23,8 @@ public abstract class AbstractStringColumn<C extends AbstractColumn<C, String>>
     super(type, name, parser);
   }
 
+  public abstract BackingStringColumnType backingColumnType();
+
   /**
    * Sets an {@link StringColumnFormatter} which will be used to format the display of data from
    * this column when it is printed (using, for example, Table:print()) and optionally when written

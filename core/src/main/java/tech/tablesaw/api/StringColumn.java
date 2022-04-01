@@ -16,6 +16,7 @@ package tech.tablesaw.api;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.columns.strings.BackingStringColumnType.BACKING_STRING;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import javax.annotation.Nullable;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.AbstractStringColumn;
+import tech.tablesaw.columns.strings.BackingStringColumnType;
 import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -43,7 +45,7 @@ import tech.tablesaw.selection.Selection;
  */
 public class StringColumn extends AbstractStringColumn<StringColumn> {
 
-  private AbstractStringColumn<?> backingColumn;
+  private final AbstractStringColumn<?> backingColumn;
 
   public static boolean valueIsMissing(String string) {
     return StringColumnType.valueIsMissing(string);
@@ -68,12 +70,29 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
     return getDictionary().getKeyAtIndex(rowNumber1) == getDictionary().getKeyAtIndex(rowNumber2);
   }
 
+  public BackingStringColumnType backingColumnType() {
+    return backingColumn.backingColumnType();
+  }
+
   public static StringColumn create(String name) {
     return new StringColumn(name);
   }
 
+  public static StringColumn create(String name, BackingStringColumnType backingType) {
+    if (backingType.equals(BACKING_STRING)) {
+      return new StringColumn(name, BackingStringColumn.create(name));
+    } else if (backingType.equals(BackingStringColumnType.BACKING_TEXT)) {
+      return new StringColumn(name, BackingTextColumn.create(name));
+    }
+    throw new RuntimeException("Unhandled backing column type for StringColumn: " + backingType);
+  }
+
   public static StringColumn create(String name, String... strings) {
     return new StringColumn(name, strings);
+  }
+
+  public static StringColumn create(String name, AbstractStringColumn<?> backingColumn) {
+    return new StringColumn(name, backingColumn);
   }
 
   public static StringColumn create(String name, Collection<String> strings) {
@@ -85,7 +104,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   }
 
   public static StringColumn create(String name, int size) {
-    StringColumn column = new StringColumn(name, new ArrayList<>(size));
+    StringColumn column = new StringColumn(name);
     for (int i = 0; i < size; i++) {
       column.appendMissing();
     }
@@ -100,9 +119,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
 
   private StringColumn(String name, Collection<String> strings) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    for (String string : strings) {
-      append(string);
-    }
+    backingColumn = BackingStringColumn.create(name, strings);
   }
 
   private StringColumn(String name, DictionaryMap map) {
@@ -112,10 +129,17 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
 
   private StringColumn(String name) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
+    backingColumn = BackingStringColumn.create(name);
+  }
+
+  private StringColumn(String name, AbstractStringColumn<?> backingColumn) {
+    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
+    this.backingColumn = backingColumn;
   }
 
   private StringColumn(String name, String[] strings) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
+    backingColumn = BackingStringColumn.create(name);
     for (String string : strings) {
       append(string);
     }
@@ -377,7 +401,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
    */
   @Override
   public StringColumn unique() {
-    return (StringColumn) backingColumn.unique();
+    return new StringColumn(name(), (BackingStringColumn) backingColumn.unique());
   }
 
   public DoubleColumn asDoubleColumn() {
@@ -393,7 +417,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public StringColumn copy() {
-    StringColumn newCol = create(name(), size());
+    StringColumn newCol = create(name(), (AbstractStringColumn<?>) backingColumn.copy());
     int r = 0;
     for (String string : this) {
       newCol.set(r, string);

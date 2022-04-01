@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.AbstractStringColumn;
+import tech.tablesaw.columns.strings.BackingStringColumnType;
 import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -496,6 +497,11 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
     results.addRange(0, size());
     results.andNot(isIn(strings));
     return results;
+  }
+
+  @Override
+  public BackingStringColumnType backingColumnType() {
+    return BackingStringColumnType.NONE;
   }
 
   /**

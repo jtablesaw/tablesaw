@@ -58,6 +58,10 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
     return this;
   }
 
+  public BackingStringColumnType backingColumnType() {
+    return BackingStringColumnType.BACKING_STRING;
+  }
+
   /** {@inheritDoc} */
   @Override
   public int valueHash(int rowNumber) {
