@@ -20,8 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
+import java.util.Comparator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
 import tech.tablesaw.columns.booleans.BooleanParser;
 
@@ -107,6 +109,71 @@ public class BooleanColumnTest {
     BooleanColumn column1 = column.copy();
     column1.append(column);
     assertEquals(2 * column.size(), column1.size());
+  }
+
+  @Test
+  void testSortAscending() {
+    BooleanColumn column1 = BooleanColumn.create("t");
+    column1.append(false);
+    column1.append((byte) -128);
+    column1.append(false);
+    column1.append(false);
+    column1.append(true);
+    column1.append(true);
+    column1.append(false);
+
+    column1.sortAscending();
+    assertEquals(BooleanColumnType.MISSING_VALUE, column1.getByte(0));
+    assertEquals(false, column1.get(1));
+    assertEquals(false, column1.get(2));
+    assertEquals(false, column1.get(3));
+    assertEquals(false, column1.get(4));
+    assertEquals(true, column1.get(5));
+    assertEquals(true, column1.get(6));
+  }
+
+  @Test
+  void testSort() {
+    BooleanColumn column1 = BooleanColumn.create("t");
+    column1.append(false);
+    column1.append((byte) -128);
+    column1.append(false);
+    column1.append(false);
+    column1.append(true);
+    column1.append(true);
+    column1.append(false);
+
+    Comparator<Boolean> comparator = Boolean::compare;
+    Comparator<Boolean> c2 = Comparator.nullsFirst(comparator);
+    column1 = column1.sorted(c2);
+    assertEquals(BooleanColumnType.MISSING_VALUE, column1.getByte(0));
+    assertEquals(false, column1.get(1));
+    assertEquals(false, column1.get(2));
+    assertEquals(false, column1.get(3));
+    assertEquals(false, column1.get(4));
+    assertEquals(true, column1.get(5));
+    assertEquals(true, column1.get(6));
+  }
+
+  @Test
+  void testSortDescending() {
+    BooleanColumn column1 = BooleanColumn.create("t");
+    column1.append(false);
+    column1.append((byte) -128);
+    column1.append(false);
+    column1.append(false);
+    column1.append(true);
+    column1.append(true);
+    column1.append(false);
+
+    column1.sortDescending();
+    assertEquals(true, column1.get(0));
+    assertEquals(true, column1.get(1));
+    assertEquals(false, column1.get(2));
+    assertEquals(false, column1.get(3));
+    assertEquals(false, column1.get(4));
+    assertEquals(false, column1.get(5));
+    assertEquals(BooleanColumnType.MISSING_VALUE, column1.getByte(6));
   }
 
   @Test
@@ -214,9 +281,32 @@ public class BooleanColumnTest {
 
   @Test
   public void testCountUnique() {
-    column.appendMissing();
     int result = column.countUnique();
+    assertEquals(2, result);
+    column.appendMissing();
+    result = column.countUnique();
     assertEquals(3, result);
+  }
+
+  @Test
+  public void testCountMissing() {
+    int result = column.countMissing();
+    assertEquals(0, result);
+    column.appendMissing();
+    result = column.countMissing();
+    assertEquals(1, result);
+  }
+
+  @Test
+  public void countTrue() {
+    int result = column.countTrue();
+    assertEquals(2, result);
+  }
+
+  @Test
+  public void countFalse() {
+    int result = column.countFalse();
+    assertEquals(5, result);
   }
 
   @Test
