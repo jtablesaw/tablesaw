@@ -46,6 +46,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import net.jpountz.lz4.LZ4BlockInputStream;
 import org.iq80.snappy.SnappyFramedInputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -230,6 +231,9 @@ public class SawReader {
     FileInputStream fis = new FileInputStream(fileName);
     if (sawMetadata.getCompressionType().equals(CompressionType.NONE)) {
       return new DataInputStream(fis);
+    } else if (sawMetadata.getCompressionType().equals(CompressionType.LZ4)) {
+      LZ4BlockInputStream lis = new LZ4BlockInputStream(fis);
+      return new DataInputStream(lis);
     } else {
       SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
       return new DataInputStream(sis);

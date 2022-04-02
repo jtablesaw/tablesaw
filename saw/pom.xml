@@ -95,6 +95,11 @@
       <version>0.4</version>
     </dependency>
     <dependency>
+      <groupId>org.lz4</groupId>
+      <artifactId>lz4-pure-java</artifactId>
+      <version>1.8.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>

@@ -50,6 +50,8 @@ class SawStorageTest {
           IntColumn.indexColumn("index1", 100, 1),
           IntColumn.indexColumn("index2", 100, 1));
 
+  private final Table boolsOnly = Table.create("Bools only", BooleanColumn.create("bc1", 1000));
+
   private final Table intsAndStrings =
       Table.create("Ints and strings", IntColumn.indexColumn("index1", 100, 300));
 
@@ -84,6 +86,15 @@ class SawStorageTest {
 
     intsAndStrings.addColumns(intsAndStrings.intColumn("index1").asStringColumn());
     intsAndText.addColumns(intsAndText.intColumn("index1").asStringColumn().asTextColumn());
+    boolsOnly
+        .booleanColumn(0)
+        .fillWith(
+            new Supplier<Boolean>() {
+              @Override
+              public Boolean get() {
+                return true;
+              }
+            });
 
     for (int i = 0; i < COUNT; i++) {
       floatColumn.append((float) i);
@@ -163,6 +174,15 @@ class SawStorageTest {
     Table table = new SawReader(path).read();
     assertNotNull(table);
     assertEquals(intsOnly.rowCount(), table.rowCount());
+  }
+
+  @Test
+  void saveBooleansOnly() {
+    System.out.println(boolsOnly);
+    String path = new SawWriter(tempDir, boolsOnly).write();
+    Table table = new SawReader(path).read();
+    assertNotNull(table);
+    assertEquals(boolsOnly.rowCount(), table.rowCount());
   }
 
   @Test
@@ -257,7 +277,23 @@ class SawStorageTest {
   }
 
   @Test
-  void boston_roberies() {
+  void lz4Compression() {
+    String path =
+        new SawWriter(
+                "../testoutput/baseball",
+                baseball,
+                new WriteOptions().compressionType(CompressionType.LZ4))
+            .write();
+    Table bb2 = new SawReader(path, new ReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
+    assertEquals(3, bb2.columnCount());
+    assertTrue(bb2.columnNames().contains("OBP"));
+    assertTrue(bb2.columnNames().contains("SLG"));
+    assertTrue(bb2.columnNames().contains("BA"));
+    assertEquals(baseball.rowCount(), bb2.rowCount());
+  }
+
+  @Test
+  void bostonRobberies() {
     Table robereries = Table.read().csv("../data/boston-robberies.csv");
     String path = new SawWriter("../testoutput/boston_robberies", robereries).write();
     Table table = new SawReader(path).read();
