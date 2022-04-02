@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import java.util.BitSet;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 /**
  * An implementation of BooleanData where the underlying representation uses the Java BitSet class
@@ -176,6 +178,60 @@ public class BitSetBooleanData implements BooleanData {
         "The value "
             + b
             + " is not a legal byte representation of a boolean value. Only 0, 1, and -1 are valid.");
+  }
+
+  @Override
+  public Selection asSelection() {
+    Selection selection = new BitmapBackedSelection();
+    for (int i = 0; i < size(); i++) {
+      byte value = getByte(i);
+      if (value == 1) {
+        selection.add(i);
+      }
+    }
+    return selection;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Selection isFalse() {
+    Selection results = new BitmapBackedSelection();
+    int i = 0;
+    for (byte next : this) {
+      if (next == BooleanColumnType.BYTE_FALSE) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Selection isTrue() {
+    Selection results = new BitmapBackedSelection();
+    int i = 0;
+    for (byte next : this) {
+      if (next == BooleanColumnType.BYTE_FALSE) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Selection isMissing() {
+    Selection results = new BitmapBackedSelection();
+    int i = 0;
+    for (byte next : this) {
+      if (next == BooleanColumnType.BYTE_FALSE) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
   }
 
   @Override

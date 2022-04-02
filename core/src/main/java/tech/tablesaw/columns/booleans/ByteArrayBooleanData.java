@@ -2,6 +2,8 @@ package tech.tablesaw.columns.booleans;
 
 import it.unimi.dsi.fastutil.bytes.*;
 import java.util.function.IntConsumer;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 public class ByteArrayBooleanData implements BooleanData {
 
@@ -90,6 +92,60 @@ public class ByteArrayBooleanData implements BooleanData {
       count.add(next);
     }
     return count.size();
+  }
+
+  @Override
+  public Selection asSelection() {
+    Selection selection = new BitmapBackedSelection();
+    for (int i = 0; i < size(); i++) {
+      byte value = getByte(i);
+      if (value == 1) {
+        selection.add(i);
+      }
+    }
+    return selection;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Selection isFalse() {
+    Selection results = new BitmapBackedSelection();
+    int i = 0;
+    for (byte next : data) {
+      if (next == BooleanColumnType.BYTE_FALSE) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Selection isTrue() {
+    Selection results = new BitmapBackedSelection();
+    int i = 0;
+    for (byte next : data) {
+      if (next == BooleanColumnType.BYTE_FALSE) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Selection isMissing() {
+    Selection results = new BitmapBackedSelection();
+    int i = 0;
+    for (byte next : data) {
+      if (next == BooleanColumnType.BYTE_FALSE) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
   }
 
   @Override

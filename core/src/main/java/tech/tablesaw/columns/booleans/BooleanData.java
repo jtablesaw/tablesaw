@@ -3,6 +3,7 @@ package tech.tablesaw.columns.booleans;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteIterable;
+import tech.tablesaw.selection.Selection;
 
 /** A container for boolean data */
 public interface BooleanData extends ByteIterable {
@@ -44,4 +45,12 @@ public interface BooleanData extends ByteIterable {
   boolean isEmpty();
 
   boolean contains(byte b);
+
+  Selection asSelection();
+
+  Selection isFalse();
+
+  Selection isTrue();
+
+  Selection isMissing();
 }

@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import org.roaringbitmap.RoaringBitmap;
+import tech.tablesaw.selection.Selection;
 
 /** An implementation of BooleanData where the underlying representation uses a RoaringBitmap */
 public class BitMapBooleanData implements BooleanData {
@@ -30,6 +31,26 @@ public class BitMapBooleanData implements BooleanData {
   }
 
   public BitMapBooleanData() {}
+
+  @Override
+  public Selection asSelection() {
+    return Selection.fromBitmap(trueValues.clone());
+  }
+
+  @Override
+  public Selection isFalse() {
+    return Selection.fromBitmap(falseValues.clone());
+  }
+
+  @Override
+  public Selection isTrue() {
+    return Selection.fromBitmap(trueValues.clone());
+  }
+
+  @Override
+  public Selection isMissing() {
+    return Selection.fromBitmap(missingValues.clone());
+  }
 
   @Override
   public int size() {
@@ -81,9 +102,9 @@ public class BitMapBooleanData implements BooleanData {
     trueValues.clear();
     falseValues.clear();
     missingValues.clear();
-    trueValues.add(0, t);
-    falseValues.add(t, t + f);
-    missingValues.add(t + f, m + f + t);
+    trueValues.add((long) 0, t);
+    falseValues.add((long) t, t + f);
+    missingValues.add((long) t + f, m + f + t);
   }
 
   @Override
