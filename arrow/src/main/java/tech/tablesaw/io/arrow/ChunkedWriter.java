@@ -10,20 +10,23 @@ import org.apache.arrow.vector.ipc.ArrowFileWriter;
 import org.apache.arrow.vector.types.pojo.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.tablesaw.api.Table;
 
 public class ChunkedWriter<T> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ChunkedWriter.class);
 
   private final int chunkSize;
-  private final Vectorizer<T> vectorizer;
+  // private final Vectorizer<T> vectorizer;
+  // private final Table table;
 
-  public ChunkedWriter(int chunkSize, Vectorizer<T> vectorizer) {
+  public ChunkedWriter(int chunkSize) {
     this.chunkSize = chunkSize;
-    this.vectorizer = vectorizer;
+    // this.vectorizer = vectorizer;
+    // this.table = table;
   }
 
-  public void write(File file, T[] values, Schema schema) throws IOException {
+  public void write(File file, Table table, Schema schema) throws IOException {
     DictionaryProvider.MapDictionaryProvider dictProvider =
         new DictionaryProvider.MapDictionaryProvider();
 
@@ -37,10 +40,10 @@ public class ChunkedWriter<T> {
       fileWriter.start();
 
       int index = 0;
-      while (index < values.length) {
+      while (index < table.rowCount()) {
         schemaRoot.allocateNew();
         int chunkIndex = 0;
-        while (chunkIndex < chunkSize && index + chunkIndex < values.length) {
+        while (chunkIndex < chunkSize && index + chunkIndex < table.rowCount()) {
           vectorizer.vectorize(values[index + chunkIndex], chunkIndex, schemaRoot);
           chunkIndex++;
         }

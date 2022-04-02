@@ -6,13 +6,15 @@ import static org.apache.arrow.vector.types.FloatingPointPrecision.SINGLE;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.arrow.vector.VectorSchemaRoot;
+import org.apache.arrow.vector.*;
 import org.apache.arrow.vector.types.DateUnit;
 import org.apache.arrow.vector.types.TimeUnit;
 import org.apache.arrow.vector.types.pojo.ArrowType;
 import org.apache.arrow.vector.types.pojo.Field;
 import org.apache.arrow.vector.types.pojo.FieldType;
 import org.apache.arrow.vector.types.pojo.Schema;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataWriter;
@@ -102,13 +104,77 @@ public class ArrowWriter implements DataWriter<ArrowWriteOptions> {
     return new Schema(fields);
   }
 
+  private List<FieldVector> vectorizeTable(Row row, VectorSchemaRoot schemaRoot) {
+    List<String> columnNames = row.columnNames();
+    for (String colName : columnNames) {
+      ColumnType type = row.getColumnType(colName);
+      setBytes(schemaRoot, colName, type, row);
+    }
+    return new ArrayList<>();
+  }
+
+  private void setBytes(VectorSchemaRoot schemaRoot, String columnName, ColumnType type, Row row) {
+    final String typeName = type.name();
+    switch (typeName) {
+      case "STRING":
+        ((VarCharVector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getString(columnName).getBytes());
+        break;
+      case "TEXT":
+        ((VarCharVector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getText(columnName).getBytes());
+        break;
+      case "LONG":
+        ((UInt8Vector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getLong(columnName));
+        break;
+      case "INTEGER":
+        ((UInt4Vector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getInt(columnName));
+        break;
+      case "SHORT":
+        ((UInt2Vector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getShort(columnName));
+        break;
+      case "DATE":
+        ((DateDayVector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), (int) row.getDate(columnName).toEpochDay());
+        break;
+      case "DATE_TIME":
+        ((TimeStampNanoVector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getDateTime(columnName).getNano());
+        break;
+      case "TIME":
+        ((TimeMilliVector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), (int) (row.getTime(columnName).toNanoOfDay()) / 1_000_000);
+        break;
+      case "INSTANT":
+        ((TimeStampMilliVector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getInstant(columnName).toEpochMilli());
+        break;
+      case "BOOLEAN":
+        ((BitVector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getBooleanAsByte(columnName));
+        break;
+      case "FLOAT":
+        ((Float4Vector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getFloat(columnName));
+        break;
+      case "DOUBLE":
+        ((Float8Vector) schemaRoot.getVector(columnName))
+            .setSafe(row.getRowNumber(), row.getDouble(columnName));
+        break;
+    }
+  }
+
   @Override
   public void write(Table table, Destination dest) {
 
-    new ChunkedWriter<>(CHUNK_SIZE, this::vectorizeTable).write(new File("people.arrow"), table);
+    // new ChunkedWriter<>(CHUNK_SIZE, this::vectorizeTable).write(new File("people.arrow"), table);
+    new ChunkedWriter<>(CHUNK_SIZE).write(new File("people.arrow"), table, schema);
   }
 
-  private <T> void vectorizeTable(T t, int i, VectorSchemaRoot vectorSchemaRoot) {}
+  // private <T> void vectorizeTable(T t, int i, VectorSchemaRoot vectorSchemaRoot) {}
 
   @Override
   public void write(Table table, ArrowWriteOptions options) {}
