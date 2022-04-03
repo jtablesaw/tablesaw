@@ -188,7 +188,7 @@ public class TableSlice extends Relation {
     Table copy = table.emptyCopy();
     while (it.hasNext() && count < nRows) {
       int row = it.nextInt();
-      copy.addRow(table.row(row));
+      copy.append(table.row(row));
       count++;
     }
     return copy;
