@@ -14,10 +14,7 @@
 
 package tech.tablesaw.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -301,6 +298,21 @@ public class BooleanColumnTest {
   public void countTrue() {
     int result = column.countTrue();
     assertEquals(2, result);
+  }
+
+  @Test
+  public void toByteArray() {
+    column.appendMissing();
+    byte[] expected = new byte[8];
+    expected[0] = 0;
+    expected[1] = 0;
+    expected[2] = 0;
+    expected[3] = 0;
+    expected[4] = 1;
+    expected[5] = 1;
+    expected[6] = 0;
+    expected[7] = -128;
+    assertArrayEquals(expected, column.toByteArrayList().toByteArray());
   }
 
   @Test

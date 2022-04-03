@@ -74,7 +74,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
    */
   private BooleanColumn(String name, ByteArrayList values) {
     super(BooleanColumnType.instance(), name, BooleanColumnType.DEFAULT_PARSER);
-    data = new BitMapBooleanData(values);
+    data = new BitSetBooleanData(values);
   }
 
   public BooleanColumn(String name, BooleanData data) {
@@ -489,7 +489,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   }
 
   /** Returns a ByteArrayList containing 0 (false), 1 (true) or Byte.MIN_VALUE (missing) */
-  public ByteArrayList toByteArray() {
+  public ByteArrayList toByteArrayList() {
     return data.toByteArrayList();
   }
 
@@ -548,7 +548,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     System.arraycopy(data.toByteArray(), srcPos, dest, destPos, length);
 
     BooleanColumn copy = emptyCopy(size());
-    copy.data = new BitMapBooleanData(new ByteArrayList(dest));
+    copy.data = new BitSetBooleanData(new ByteArrayList(dest));
     copy.setName(name() + " lag(" + n + ")");
     return copy;
   }

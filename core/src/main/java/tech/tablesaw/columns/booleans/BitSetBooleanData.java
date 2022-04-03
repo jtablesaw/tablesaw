@@ -133,10 +133,22 @@ public class BitSetBooleanData implements BooleanData {
 
   @Override
   public ByteArrayList toByteArrayList() {
-    ByteArrayList arrayList = new ByteArrayList(size());
+    /*
+        System.out.println("False: " + falseValues.toString());
+        byte[] encoded = falseValues.toByteArray();
+        System.out.println(Arrays.toString(encoded));
+        BitSet newFalseValues = BitSet.valueOf(encoded);
+        System.out.println(newFalseValues);
+        System.out.println("True: " + trueValues.toString());
+        byte[] encoded2 = trueValues.toByteArray();
+        System.out.println(Arrays.toString(encoded2));
+        BitSet newTrueValues = BitSet.valueOf(encoded2);
+        System.out.println(newTrueValues);
+    */
+    ByteArrayList arrayList = new ByteArrayList(new byte[size()]);
     for (int i = 0; i < size(); i++) {
       if (trueValues.get(i)) arrayList.set(i, BYTE_TRUE);
-      if (missingValues.get(i)) arrayList.set(i, MISSING_VALUE);
+      else if (missingValues.get(i)) arrayList.set(i, MISSING_VALUE);
     }
     return arrayList;
   }
