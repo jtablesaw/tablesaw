@@ -53,7 +53,7 @@ class SawMetadataTest {
 
   @Test
   void getVersion() {
-    assertEquals(2, metadata1.getVersion());
+    assertEquals(3, metadata1.getVersion());
   }
 
   @Test
