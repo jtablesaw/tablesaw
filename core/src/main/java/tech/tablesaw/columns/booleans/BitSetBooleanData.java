@@ -276,6 +276,21 @@ public class BitSetBooleanData implements BooleanData {
   }
 
   @Override
+  public void setTrueBytes(byte[] bytes) {
+    trueValues = BitSet.valueOf(bytes);
+  }
+
+  @Override
+  public void setFalseBytes(byte[] bytes) {
+    falseValues = BitSet.valueOf(bytes);
+  }
+
+  @Override
+  public void setMissingBytes(byte[] bytes) {
+    missingValues = BitSet.valueOf(bytes);
+  }
+
+  @Override
   public ByteIterator iterator() {
     return new BitSetByteIterator(this);
   }

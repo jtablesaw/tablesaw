@@ -885,4 +885,28 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     }
     return output;
   }
+
+  public byte[] trueBytes() {
+    return data.trueBytes();
+  }
+
+  public byte[] falseBytes() {
+    return data.falseBytes();
+  }
+
+  public byte[] missingBytes() {
+    return data.missingBytes();
+  }
+
+  public void trueBytes(byte[] encodedValues) {
+    data.setTrueBytes(encodedValues);
+  }
+
+  public void falseBytes(byte[] encodedValues) {
+    data.setFalseBytes(encodedValues);
+  }
+
+  public void missingBytes(byte[] encodedValues) {
+    data.setMissingBytes(encodedValues);
+  }
 }

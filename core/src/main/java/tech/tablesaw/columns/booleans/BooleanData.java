@@ -59,4 +59,10 @@ public interface BooleanData extends ByteIterable {
   byte[] trueBytes();
 
   byte[] missingBytes();
+
+  void setTrueBytes(byte[] bytes);
+
+  void setFalseBytes(byte[] bytes);
+
+  void setMissingBytes(byte[] bytes);
 }

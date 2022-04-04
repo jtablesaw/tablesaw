@@ -178,7 +178,6 @@ class SawStorageTest {
 
   @Test
   void saveBooleansOnly() {
-    System.out.println(boolsOnly);
     String path = new SawWriter(tempDir, boolsOnly).write();
     Table table = new SawReader(path).read();
     assertNotNull(table);
@@ -266,7 +265,7 @@ class SawStorageTest {
         new SawWriter(
                 "../testoutput/baseball",
                 baseball,
-                new WriteOptions().compressionType(CompressionType.NONE))
+                new SawWriteOptions().compressionType(CompressionType.NONE))
             .write();
     Table bb2 = new SawReader(path, new ReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
     assertEquals(3, bb2.columnCount());
@@ -282,7 +281,7 @@ class SawStorageTest {
         new SawWriter(
                 "../testoutput/baseball",
                 baseball,
-                new WriteOptions().compressionType(CompressionType.LZ4))
+                new SawWriteOptions().compressionType(CompressionType.LZ4))
             .write();
     Table bb2 = new SawReader(path, new ReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
     assertEquals(3, bb2.columnCount());
