@@ -197,6 +197,10 @@ RandomForest RFModel2 = smile.classification.RandomForest.fit(
 Now, lets determine an appropriate number of trees to grow in the model. A good rule of thumb is to select a number of trees that is the least number required to achieve minimum out-of-bag error when building the model. To determine this, we can graph OOBError vs ntrees. 
 
 ```
+//tuning ntrees
+Table AccuracyvTrees = Table.create("OOB-Error vs nTrees");
+AccuracyvTrees.addColumns(DoubleColumn.create("OOBerror"), DoubleColumn.create("ntrees"));
+
  for(int j = 50; j < 2000; j = j+25)
        {
            RandomForest model = smile.classification.RandomForest.fit(
