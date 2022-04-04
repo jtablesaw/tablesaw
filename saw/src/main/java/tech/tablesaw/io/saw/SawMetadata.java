@@ -47,7 +47,7 @@ public class SawMetadata {
     return SawMetadata.fromJson(new String(encoded, StandardCharsets.UTF_8));
   }
 
-  public SawMetadata(Table table, WriteOptions options) {
+  public SawMetadata(Table table, SawWriteOptions options) {
     this.tableMetadata = new TableMetadata(table);
     this.version = SAW_VERSION;
     this.compressionType = options.getCompressionType();

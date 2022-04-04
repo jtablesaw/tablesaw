@@ -209,6 +209,11 @@ public class BitmapBackedSelection implements Selection {
     return selection;
   }
 
+  /** Returns a Selection containing all indexes in the array */
+  protected static Selection fromBitmap(RoaringBitmap bitmap) {
+    return new BitmapBackedSelection(bitmap);
+  }
+
   /**
    * Returns a Selection containing all indexes in the range start (inclusive) to end (exclusive),
    */
