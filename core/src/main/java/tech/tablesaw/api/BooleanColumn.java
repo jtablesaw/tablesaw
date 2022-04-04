@@ -448,29 +448,13 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   /** {@inheritDoc} */
   @Override
   public Selection isFalse() {
-    Selection results = new BitmapBackedSelection();
-    int i = 0;
-    for (byte next : data) {
-      if (next == BooleanColumnType.BYTE_FALSE) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return data.isFalse();
   }
 
   /** {@inheritDoc} */
   @Override
   public Selection isTrue() {
-    Selection results = new BitmapBackedSelection();
-    int i = 0;
-    for (byte next : data) {
-      if (next == BooleanColumnType.BYTE_TRUE) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return data.isTrue();
   }
 
   /** {@inheritDoc} */
@@ -655,14 +639,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   /** {@inheritDoc} */
   @Override
   public Selection asSelection() {
-    Selection selection = new BitmapBackedSelection();
-    for (int i = 0; i < size(); i++) {
-      byte value = getByte(i);
-      if (value == 1) {
-        selection.add(i);
-      }
-    }
-    return selection;
+    return data.asSelection();
   }
 
   /** {@inheritDoc} */
@@ -886,26 +863,56 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return output;
   }
 
+  /**
+   * Returns a byte representation of the true values, encoded in the format specified in {@link
+   * java.util.BitSet#toByteArray()}
+   */
   public byte[] trueBytes() {
     return data.trueBytes();
   }
 
+  /**
+   * Returns a byte representation of the false values, encoded in the format specified in {@link
+   * java.util.BitSet#toByteArray()}
+   */
   public byte[] falseBytes() {
     return data.falseBytes();
   }
 
+  /**
+   * Returns a byte representation of the missing values, encoded in the format specified in {@link
+   * java.util.BitSet#toByteArray()}
+   */
   public byte[] missingBytes() {
     return data.missingBytes();
   }
 
+  /**
+   * Sets the true values in the data from a byte[] encoding
+   *
+   * @param encodedValues The true values encoded in the format specified in {@link
+   *     java.util.BitSet}
+   */
   public void trueBytes(byte[] encodedValues) {
     data.setTrueBytes(encodedValues);
   }
 
+  /**
+   * Sets the false values in the data from a byte[] encoding
+   *
+   * @param encodedValues The false values encoded in the format specified in {@link
+   *     java.util.BitSet}
+   */
   public void falseBytes(byte[] encodedValues) {
     data.setFalseBytes(encodedValues);
   }
 
+  /**
+   * Sets the missing values in the data from a byte[] encoding
+   *
+   * @param encodedValues The missing values encoded in the format specified in {@link
+   *     java.util.BitSet}
+   */
   public void missingBytes(byte[] encodedValues) {
     data.setMissingBytes(encodedValues);
   }

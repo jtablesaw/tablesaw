@@ -14,16 +14,27 @@ import tech.tablesaw.selection.Selection;
  */
 public class BitSetBooleanData implements BooleanData {
 
+  /** A BitSet indicating the position of the true values in the data */
   private BitSet trueValues = new BitSet();
+
+  /** A BitSet indicating the position of the false values in the data */
   private BitSet falseValues = new BitSet();
+
+  /** A BitSet indicating the position of the missing values in the data */
   private BitSet missingValues = new BitSet();
 
+  /** Constructs a BitSetBoolean data from three BitSets, one for each possible value */
   public BitSetBooleanData(BitSet trueValues, BitSet falseValues, BitSet missingValues) {
     this.trueValues = trueValues;
     this.falseValues = falseValues;
     this.missingValues = missingValues;
   }
 
+  /**
+   * Constructs a BitSetBoolean data from the given ByteArrayList
+   *
+   * @param values The values must be encoded as 0, 1, or -128 (for missing)
+   */
   public BitSetBooleanData(ByteArrayList values) {
     for (int i = 0; i < values.size(); i++) {
       if (i == BYTE_TRUE) trueValues.set(i);
@@ -34,23 +45,26 @@ public class BitSetBooleanData implements BooleanData {
 
   public BitSetBooleanData() {}
 
+  /** {@inheritDoc} */
   @Override
   public int size() {
     return Math.max(Math.max(trueValues.length(), falseValues.length()), missingValues.length());
   }
 
+  /** {@inheritDoc} */
   @Override
   public void add(byte b) {
     int size = size();
     if (b == BYTE_TRUE) {
       trueValues.set(size);
-    } else if (b == BooleanColumnType.BYTE_FALSE) {
+    } else if (b == BYTE_FALSE) {
       falseValues.set(size);
     } else if (b == BooleanColumnType.MISSING_VALUE) {
       missingValues.set(size);
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void clear() {
     trueValues.clear();
@@ -58,9 +72,11 @@ public class BitSetBooleanData implements BooleanData {
     missingValues.clear();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void sort(ByteComparator comparator) {}
 
+  /** {@inheritDoc} */
   @Override
   public void sortAscending() {
     int t = trueValues.cardinality();
@@ -74,6 +90,7 @@ public class BitSetBooleanData implements BooleanData {
     trueValues.set(m + f, m + f + t);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void sortDescending() {
     int t = trueValues.cardinality();
@@ -87,34 +104,40 @@ public class BitSetBooleanData implements BooleanData {
     missingValues.set(t + f, m + f + t);
   }
 
+  /** {@inheritDoc} */
   @Override
   public BooleanData copy() {
     return new BitSetBooleanData(
         (BitSet) trueValues.clone(), (BitSet) falseValues.clone(), (BitSet) missingValues.clone());
   }
 
+  /** {@inheritDoc} */
   @Override
   public byte getByte(int i) {
     if (trueValues.get(i)) return BYTE_TRUE;
-    if (falseValues.get(i)) return BooleanColumnType.BYTE_FALSE;
+    if (falseValues.get(i)) return BYTE_FALSE;
     return BooleanColumnType.MISSING_VALUE;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int countFalse() {
     return falseValues.cardinality();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int countTrue() {
     return trueValues.cardinality();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int countMissing() {
     return missingValues.cardinality();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int countUnique() {
     boolean t = !trueValues.isEmpty();
@@ -126,6 +149,7 @@ public class BitSetBooleanData implements BooleanData {
     return 0;
   }
 
+  /** {@inheritDoc} */
   @Override
   public byte[] toByteArray() {
     return toByteArrayList().toByteArray();
@@ -133,18 +157,6 @@ public class BitSetBooleanData implements BooleanData {
 
   @Override
   public ByteArrayList toByteArrayList() {
-    /*
-        System.out.println("False: " + falseValues.toString());
-        byte[] encoded = falseValues.toByteArray();
-        System.out.println(Arrays.toString(encoded));
-        BitSet newFalseValues = BitSet.valueOf(encoded);
-        System.out.println(newFalseValues);
-        System.out.println("True: " + trueValues.toString());
-        byte[] encoded2 = trueValues.toByteArray();
-        System.out.println(Arrays.toString(encoded2));
-        BitSet newTrueValues = BitSet.valueOf(encoded2);
-        System.out.println(newTrueValues);
-    */
     ByteArrayList arrayList = new ByteArrayList(new byte[size()]);
     for (int i = 0; i < size(); i++) {
       if (trueValues.get(i)) arrayList.set(i, BYTE_TRUE);
@@ -153,13 +165,14 @@ public class BitSetBooleanData implements BooleanData {
     return arrayList;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void set(int i, byte b) {
     if (b == BYTE_TRUE) {
       trueValues.set(i);
       falseValues.clear(i);
       missingValues.clear(i);
-    } else if (b == BooleanColumnType.BYTE_FALSE) {
+    } else if (b == BYTE_FALSE) {
       trueValues.clear(i);
       falseValues.set(i);
       missingValues.clear(i);
@@ -170,17 +183,19 @@ public class BitSetBooleanData implements BooleanData {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isEmpty() {
     return trueValues.isEmpty() && falseValues.isEmpty();
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean contains(byte b) {
     if (b == BYTE_TRUE) {
       return !trueValues.isEmpty();
     }
-    if (b == BooleanColumnType.BYTE_FALSE) {
+    if (b == BYTE_FALSE) {
       return !falseValues.isEmpty();
     }
     if (b == BooleanColumnType.MISSING_VALUE) {
@@ -192,16 +207,10 @@ public class BitSetBooleanData implements BooleanData {
             + " is not a legal byte representation of a boolean value. Only 0, 1, and -1 are valid.");
   }
 
+  /** {@inheritDoc} */
   @Override
   public Selection asSelection() {
-    Selection selection = new BitmapBackedSelection();
-    for (int i = 0; i < size(); i++) {
-      byte value = getByte(i);
-      if (value == 1) {
-        selection.add(i);
-      }
-    }
-    return selection;
+    return isTrue();
   }
 
   /** {@inheritDoc} */
@@ -210,7 +219,7 @@ public class BitSetBooleanData implements BooleanData {
     Selection results = new BitmapBackedSelection();
     int i = 0;
     for (byte next : this) {
-      if (next == BooleanColumnType.BYTE_FALSE) {
+      if (next == BYTE_FALSE) {
         results.add(i);
       }
       i++;
@@ -224,7 +233,7 @@ public class BitSetBooleanData implements BooleanData {
     Selection results = new BitmapBackedSelection();
     int i = 0;
     for (byte next : this) {
-      if (next == BooleanColumnType.BYTE_FALSE) {
+      if (next == BYTE_TRUE) {
         results.add(i);
       }
       i++;
@@ -238,7 +247,7 @@ public class BitSetBooleanData implements BooleanData {
     Selection results = new BitmapBackedSelection();
     int i = 0;
     for (byte next : this) {
-      if (next == BooleanColumnType.BYTE_FALSE) {
+      if (next == BYTE_FALSE) {
         results.add(i);
       }
       i++;
@@ -260,36 +269,43 @@ public class BitSetBooleanData implements BooleanData {
         + "}";
   }
 
+  /** {@inheritDoc} */
   @Override
   public byte[] falseBytes() {
     return falseValues.toByteArray();
   }
 
+  /** {@inheritDoc} */
   @Override
   public byte[] trueBytes() {
     return trueValues.toByteArray();
   }
 
+  /** {@inheritDoc} */
   @Override
   public byte[] missingBytes() {
     return missingValues.toByteArray();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setTrueBytes(byte[] bytes) {
     trueValues = BitSet.valueOf(bytes);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setFalseBytes(byte[] bytes) {
     falseValues = BitSet.valueOf(bytes);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setMissingBytes(byte[] bytes) {
     missingValues = BitSet.valueOf(bytes);
   }
 
+  /** {@inheritDoc} */
   @Override
   public ByteIterator iterator() {
     return new BitSetByteIterator(this);
