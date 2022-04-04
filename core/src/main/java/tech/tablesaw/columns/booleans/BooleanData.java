@@ -1,7 +1,6 @@
 package tech.tablesaw.columns.booleans;
 
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
-import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteIterable;
 import tech.tablesaw.selection.Selection;
 
@@ -16,9 +15,6 @@ public interface BooleanData extends ByteIterable {
 
   /** Removes all data values */
   void clear();
-
-  /** Sorts the data in-place using the provided comparator */
-  void sort(ByteComparator comparator);
 
   /** Returns a copy of this BooleanData object */
   BooleanData copy();

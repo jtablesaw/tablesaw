@@ -3,7 +3,6 @@ package tech.tablesaw.columns.booleans;
 import static tech.tablesaw.columns.booleans.BooleanColumnType.*;
 
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
-import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import java.util.BitSet;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -59,7 +58,7 @@ public class BitSetBooleanData implements BooleanData {
       trueValues.set(size);
     } else if (b == BYTE_FALSE) {
       falseValues.set(size);
-    } else if (b == BooleanColumnType.MISSING_VALUE) {
+    } else if (b == MISSING_VALUE) {
       missingValues.set(size);
     }
   }
@@ -71,10 +70,6 @@ public class BitSetBooleanData implements BooleanData {
     falseValues.clear();
     missingValues.clear();
   }
-
-  /** {@inheritDoc} */
-  @Override
-  public void sort(ByteComparator comparator) {}
 
   /** {@inheritDoc} */
   @Override
@@ -116,7 +111,7 @@ public class BitSetBooleanData implements BooleanData {
   public byte getByte(int i) {
     if (trueValues.get(i)) return BYTE_TRUE;
     if (falseValues.get(i)) return BYTE_FALSE;
-    return BooleanColumnType.MISSING_VALUE;
+    return MISSING_VALUE;
   }
 
   /** {@inheritDoc} */
@@ -176,7 +171,7 @@ public class BitSetBooleanData implements BooleanData {
       trueValues.clear(i);
       falseValues.set(i);
       missingValues.clear(i);
-    } else if (b == BooleanColumnType.MISSING_VALUE) {
+    } else if (b == MISSING_VALUE) {
       trueValues.clear(i);
       falseValues.clear(i);
       missingValues.set(i);
@@ -198,7 +193,7 @@ public class BitSetBooleanData implements BooleanData {
     if (b == BYTE_FALSE) {
       return !falseValues.isEmpty();
     }
-    if (b == BooleanColumnType.MISSING_VALUE) {
+    if (b == MISSING_VALUE) {
       return !missingValues.isEmpty();
     }
     throw new IllegalArgumentException(

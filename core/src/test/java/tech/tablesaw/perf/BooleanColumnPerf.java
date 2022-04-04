@@ -1,7 +1,6 @@
 package tech.tablesaw.perf;
 
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.selection.Selection;
 import tech.tablesaw.testutil.NanoBench;
 
 public class BooleanColumnPerf {
@@ -35,8 +34,8 @@ public class BooleanColumnPerf {
       booleanColumn.countFalse();
       booleanColumn.sortAscending();
       booleanColumn.sortDescending();
-      Selection s = booleanColumn.asSelection();
-      Selection s2 = booleanColumn.isFalse();
+      booleanColumn.asSelection();
+      booleanColumn.isFalse();
     }
   }
 }
