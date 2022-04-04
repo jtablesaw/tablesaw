@@ -53,4 +53,10 @@ public interface BooleanData extends ByteIterable {
   Selection isTrue();
 
   Selection isMissing();
+
+  byte[] falseBytes();
+
+  byte[] trueBytes();
+
+  byte[] missingBytes();
 }

@@ -149,6 +149,21 @@ public class ByteArrayBooleanData implements BooleanData {
   }
 
   @Override
+  public byte[] falseBytes() {
+    return new byte[0];
+  }
+
+  @Override
+  public byte[] trueBytes() {
+    return new byte[0];
+  }
+
+  @Override
+  public byte[] missingBytes() {
+    return new byte[0];
+  }
+
+  @Override
   public void sortDescending() {
     data.sort(ByteComparators.OPPOSITE_COMPARATOR);
   }
