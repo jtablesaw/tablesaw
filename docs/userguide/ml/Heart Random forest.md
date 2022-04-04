@@ -30,7 +30,7 @@ Random Forest is an **ensemble method** that builds on basic decision trees to f
 
 The Heart dataset contains 13 qualitative and quantitative predictors for 303 patients who sought medical attention due to chest pain. The response represents a binary classification scenario as we want to predict which patients have heart disease and which do not. You can download the dataset <a href="https://github.com/jbsooter/tablesaw/blob/53358464317fbd66f8a50fe240b67765593a7659/data/Heart.csv">here</a>.
 
-As usual, you will need to add the smile, tablesaw-core, and tablesaw-jsplot dependencies. (Described in Moneyball Tutorial)
+As usual, you will need to add the smile, tablesaw-core, and tablesaw-jsplot dependencies. (Described in <a href="https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball%20Linear%20regression">Moneyball Tutorial</a>)
 
 First, load and clean the data. Qualitative features must be represented as integers to build the model. 
 
@@ -61,8 +61,9 @@ Table dataTrain = splitData[0];
 Table dataTest = splitData[1];
 ```
 
-Now build an initial RandomForest model using the training dataset and sensible parameter values. *m*, the number of features to be considered for each tree, is set to the square root of the number of features. *n*, or ntrees, is set to 50, a reasonmable starting point that will run quickly. *d*, or maxDepth, is the maximum depth of any individual decision tree, and is set to another generally accepted sensible value, 7. maxNodes is set to 100 and represents the most number of terminal decision making nodes a tree can have. All of these values are considered **Hyperparameters** and should be refined by the user to improve the accuracy of the model. 
+Now build an initial RandomForest model using the training dataset and sensible parameter values. *m*, the number of features to be considered for each tree, is set to the square root of the number of features. *n*, or ntrees, is set to 50, a reasonmable starting point that will run quickly. *d*, or maxDepth, is the maximum depth of any individual decision tree, and is set to another reasonable value, 7. maxNodes is set to 100 and represents the most number of terminal decision making nodes a tree can have. All of these values are considered **Hyperparameters** and should be refined by the user to improve the accuracy of the model. 
 
+*Note: Smile contains two RandomForest classes, one for classification tasks and one for regression tasks. Make sure you import the correct class for your problem context, in this case smile.classification.RandomForest*
 ```
 //initial model with sensible parameters
 RandomForest RFModel1 = smile.classification.RandomForest.fit(
@@ -257,7 +258,7 @@ The classification accuracy of my final model was ~83%. So, using a relatively s
 
 ### Recap
 
-We used Tablesaw to clean the Heart dataset and prepare it for the Random Forest algorithm. We generated a sensible starting model and plotted it's Gini Index importance and Spearman's correlation matrix to identify features to cut from the model. We then used out-of-bounds error to identify a large enough number of trees to include in the model to achieve maximum accuracy with limited computation time. 
+We used Tablesaw to clean the Heart dataset and prepare it for the Random Forest algorithm. We generated a sensible starting model and plotted its Gini Index importance and Spearman's correlation matrix to identify features to cut from the model. We then used out-of-bounds error to identify a large enough number of trees to include in the model to achieve maximum accuracy with limited computation time. 
 
 ### Extensions
 
