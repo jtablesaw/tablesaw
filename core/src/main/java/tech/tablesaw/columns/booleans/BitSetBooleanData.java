@@ -5,7 +5,7 @@ import static tech.tablesaw.columns.booleans.BooleanColumnType.*;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import java.util.BitSet;
-import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.BitSetBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 /**
@@ -211,43 +211,19 @@ public class BitSetBooleanData implements BooleanData {
   /** {@inheritDoc} */
   @Override
   public Selection isFalse() {
-    Selection results = new BitmapBackedSelection();
-    int i = 0;
-    for (byte next : this) {
-      if (next == BYTE_FALSE) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return new BitSetBackedSelection((BitSet) falseValues.clone());
   }
 
   /** {@inheritDoc} */
   @Override
   public Selection isTrue() {
-    Selection results = new BitmapBackedSelection();
-    int i = 0;
-    for (byte next : this) {
-      if (next == BYTE_TRUE) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return new BitSetBackedSelection((BitSet) trueValues.clone());
   }
 
   /** {@inheritDoc} */
   @Override
   public Selection isMissing() {
-    Selection results = new BitmapBackedSelection();
-    int i = 0;
-    for (byte next : this) {
-      if (next == BYTE_FALSE) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return new BitSetBackedSelection((BitSet) missingValues.clone());
   }
 
   @Override
