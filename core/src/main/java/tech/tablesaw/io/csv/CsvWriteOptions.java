@@ -170,28 +170,6 @@ public class CsvWriteOptions extends WriteOptions {
     }
 
     /**
-     * Writes date column output using the given DateFormatter
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public CsvWriteOptions.Builder dateFormatter(DateTimeFormatter dateFormatter) {
-      this.dateFormatter = dateFormatter;
-      return this;
-    }
-
-    /**
-     * Writes DateTime column output using the given DateFormatter
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public CsvWriteOptions.Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
-      this.dateTimeFormatter = dateTimeFormatter;
-      return this;
-    }
-
-    /**
      * Sets the usePrintFormatters option @link{tech.tablesaw.columns.ColumnFormatter} When true,
      * printFormatters will be used in writing the output text for any column that has one.
      */

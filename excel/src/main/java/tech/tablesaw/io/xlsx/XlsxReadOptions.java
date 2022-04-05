@@ -102,27 +102,6 @@ public class XlsxReadOptions extends ReadOptions {
     }
 
     @Override
-    @Deprecated
-    public Builder dateFormat(String dateFormat) {
-      super.dateFormat(dateFormat);
-      return this;
-    }
-
-    @Override
-    @Deprecated
-    public Builder timeFormat(String timeFormat) {
-      super.timeFormat(timeFormat);
-      return this;
-    }
-
-    @Override
-    @Deprecated
-    public Builder dateTimeFormat(String dateTimeFormat) {
-      super.dateTimeFormat(dateTimeFormat);
-      return this;
-    }
-
-    @Override
     public Builder dateFormat(DateTimeFormatter dateFormat) {
       super.dateFormat(dateFormat);
       return this;
