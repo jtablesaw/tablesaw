@@ -121,7 +121,7 @@ public class PackedInstant {
    * Returns the given packedDateTime with amtToAdd of temporal units added
    *
    * <p>TODO(lwhite): Replace with a native implementation that doesn't convert everything to
-   * LocalDateTime
+   * Instant
    */
   public static long plus(long packedDateTime, long amountToAdd, TemporalUnit unit) {
     Instant dateTime = asInstant(packedDateTime);
