@@ -71,7 +71,8 @@ public class DataFrameJoinerPerformanceTest {
     Table orders = createOrdersTable(numberOrders, 2_000);
     addFillerColumn(orders, 5, "order");
 
-    assertTimeout(Duration.ofSeconds(1), () -> orders.joinOn("customerId").leftOuter(customers));
+    assertTimeout(
+        Duration.ofSeconds(1), () -> orders.joinOn("customerId").leftOuterJoin(customers));
   }
 
   @Test

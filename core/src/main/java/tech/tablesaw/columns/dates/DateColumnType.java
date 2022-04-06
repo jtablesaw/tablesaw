@@ -30,6 +30,10 @@ public class DateColumnType extends AbstractColumnType {
     return DateColumn.create(name);
   }
 
+  public int compareValues(int x, int y) {
+    return Integer.compare(x, y);
+  }
+
   @Override
   public AbstractColumnParser<LocalDate> customParser(ReadOptions options) {
     return new DateParser(this, options);

@@ -168,6 +168,10 @@ public class Row implements Iterator<Row> {
     }
   }
 
+  public ColumnType type(int columnIndex) {
+    return tableSlice.column(columnIndex).type();
+  }
+
   /** Moves this Row to the given 0-based row index */
   public void at(int rowNumber) {
     this.rowNumber = rowNumber;

@@ -2,15 +2,27 @@ package tech.tablesaw.joining;
 
 import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.booleans.BooleanColumnType;
+import tech.tablesaw.columns.dates.DateColumnType;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
+import tech.tablesaw.columns.instant.InstantColumnType;
+import tech.tablesaw.columns.numbers.*;
+import tech.tablesaw.columns.strings.StringColumnType;
+import tech.tablesaw.columns.strings.TextColumnType;
+import tech.tablesaw.columns.times.TimeColumnType;
+import tech.tablesaw.index.*;
 import tech.tablesaw.selection.Selection;
 
 /** Implements joins between two or more Tables */
-public class DataFrameJoiner {
+public class DataFrameJoiner1 {
 
   /** The types of joins that are supported */
   private enum JoinType {
@@ -24,7 +36,7 @@ public class DataFrameJoiner {
 
   private final Table table;
   private final String[] joinColumnNames;
-  private int[] joinColumnIndexes;
+  private final List<Integer> joinColumnIndexes;
   private final AtomicInteger joinTableId = new AtomicInteger(2);
 
   /**
@@ -33,7 +45,7 @@ public class DataFrameJoiner {
    * @param table The table to join on.
    * @param joinColumnNames The join column names to join on.
    */
-  public DataFrameJoiner(Table table, String... joinColumnNames) {
+  public DataFrameJoiner1(Table table, String... joinColumnNames) {
     this.table = table;
     this.joinColumnNames = joinColumnNames;
     this.joinColumnIndexes = getJoinIndexes(table, joinColumnNames);
@@ -47,13 +59,8 @@ public class DataFrameJoiner {
    * @param columnNames the column names to find indexes of.
    * @return a list of column indexes within the table.
    */
-  private int[] getJoinIndexes(Table table, String[] columnNames) {
-    int[] results = new int[columnNames.length];
-    for (int i = 0; i < columnNames.length; i++) {
-      String nm = columnNames[i];
-      results[i] = table.columnIndex(nm);
-    }
-    return results;
+  private List<Integer> getJoinIndexes(Table table, String[] columnNames) {
+    return Arrays.stream(columnNames).map(table::columnIndex).collect(Collectors.toList());
   }
 
   /**
@@ -191,10 +198,9 @@ public class DataFrameJoiner {
       boolean keepAllJoinKeyColumns,
       String... table2JoinColumnNames) {
 
-    int[] table2JoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
-
-    table1 = table1.sortOn(joinColumnIndexes);
-    table2 = table2.sortOn(table2JoinColumnIndexes);
+    List<Integer> table2JoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
+    List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
+    List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
 
     Table result = Table.create(table1.name());
     // A set of column indexes in the result table that can be ignored. They are duplicate join
@@ -209,7 +215,7 @@ public class DataFrameJoiner {
             table2JoinColumnIndexes,
             keepAllJoinKeyColumns);
 
-    validateIndexes(table1, joinColumnIndexes, table2, table2JoinColumnIndexes);
+    validateIndexes(table1Indexes, table2Indexes);
     if (table1.rowCount() == 0 && (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
       // Handle special case of empty table here so it doesn't fall through to the behavior
       // that adds rows for full outer and right outer joins
@@ -219,71 +225,239 @@ public class DataFrameJoiner {
       return result;
     }
 
+    Selection table1DoneRows = Selection.with();
+    Selection table2DoneRows = Selection.with();
     // use table 2 for row iteration, which can significantly increase performance
     if (table1.rowCount() > table2.rowCount() && joinType == JoinType.INNER) {
-      innerJoin(result, table1, table2, resultIgnoreColIndexes, keepAllJoinKeyColumns);
-    } else if (joinType == JoinType.LEFT_OUTER) {
-      leftOuterJoin(
-          result,
-          table1,
-          table2,
-          table2JoinColumnIndexes,
-          resultIgnoreColIndexes,
-          keepAllJoinKeyColumns);
-    }
-    /* else {
-      if ((joinType == JoinType.LEFT_OUTER || joinType == JoinType.FULL_OUTER)) {
-        withMissingLeftJoin(
-            result, table1, resultIgnoreColIndexes, keepAllJoinKeyColumns);
-      } else {
+      for (Row row : table2) {
+        int ri = row.getRowNumber();
+        if (table2DoneRows.contains(ri)) {
+          // Already processed a selection of table1 that contained this row.
+          continue;
+        }
+        Selection table1Rows =
+            createMultiColSelection(
+                table2, ri, table1Indexes, table1.rowCount(), table2JoinColumnIndexes);
+        Selection table2Rows =
+            createMultiColSelection(
+                table2, ri, table2Indexes, table2.rowCount(), table2JoinColumnIndexes);
         crossProduct(
             result,
             table1,
             table2,
+            table1Rows,
+            table2Rows,
             resultIgnoreColIndexes,
             keepAllJoinKeyColumns);
-      }
 
-    if (joinType == JoinType.FULL_OUTER || joinType == JoinType.RIGHT_OUTER) {
-        // Update done rows in table2 for full Outer.
-      } else if (table1DoneRows.size() == table1.rowCount()) {
-        // Processed all the rows in table1 exit early.
-        if (!keepAllJoinKeyColumns) {
-          result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+        table2DoneRows = table2DoneRows.or(table2Rows);
+        if (table2DoneRows.size() == table2.rowCount()) {
+          // Processed all the rows in table1 exit early.
+          if (!keepAllJoinKeyColumns) {
+            result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          }
+          return result;
         }
-        return result;
       }
-    }*/
-    // return result;
-    // }
+    } else {
+      for (Row row : table1) {
+        int ri = row.getRowNumber();
+        if (table1DoneRows.contains(ri)) {
+          // Already processed a selection of table1 that contained this row.
+          continue;
+        }
+        Selection table1Rows =
+            createMultiColSelection(
+                table1, ri, table1Indexes, table1.rowCount(), joinColumnIndexes);
+        Selection table2Rows =
+            createMultiColSelection(
+                table1, ri, table2Indexes, table2.rowCount(), joinColumnIndexes);
+        if ((joinType == JoinType.LEFT_OUTER || joinType == JoinType.FULL_OUTER)
+            && table2Rows.isEmpty()) {
+          withMissingLeftJoin(
+              result, table1, table1Rows, resultIgnoreColIndexes, keepAllJoinKeyColumns);
+        } else {
+          crossProduct(
+              result,
+              table1,
+              table2,
+              table1Rows,
+              table2Rows,
+              resultIgnoreColIndexes,
+              keepAllJoinKeyColumns);
+        }
+        table1DoneRows = table1DoneRows.or(table1Rows);
+        if (joinType == JoinType.FULL_OUTER || joinType == JoinType.RIGHT_OUTER) {
+          // Update done rows in table2 for full Outer.
+          table2DoneRows = table2DoneRows.or(table2Rows);
+        } else if (table1DoneRows.size() == table1.rowCount()) {
+          // Processed all the rows in table1 exit early.
+          if (!keepAllJoinKeyColumns) {
+            result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
+          }
+          return result;
+        }
+      }
+    }
 
+    // Add all rows from table2 that were not handled already.
+    Selection table2Rows = table2DoneRows.flip(0, table2.rowCount());
+    withMissingRight(
+        result,
+        table1.columnCount(),
+        table2,
+        table2Rows,
+        joinType,
+        table2JoinColumnIndexes,
+        resultIgnoreColIndexes,
+        keepAllJoinKeyColumns);
     if (!keepAllJoinKeyColumns) {
       result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
     }
     return result;
   }
 
-  private void validateIndexes(
-      Table table1, int[] table1Indexes, Table table2, int[] table2Indexes) {
-    if (table1Indexes.length != table2Indexes.length) {
+  private void validateIndexes(List<Index> table1Indexes, List<Index> table2Indexes) {
+    if (table1Indexes.size() != table2Indexes.size()) {
       throw new IllegalArgumentException(
           "Cannot join using a different number of indices on each table: "
-              + Arrays.toString(table1Indexes)
+              + table1Indexes
               + " and "
-              + Arrays.toString(table2Indexes));
+              + table2Indexes);
     }
-    for (int i = 0; i < table1Indexes.length; i++) {
-      if (!table1
-          .column(table1Indexes[i])
-          .getClass()
-          .equals(table2.column(table2Indexes[i]).getClass())) {
+    for (int i = 0; i < table1Indexes.size(); i++) {
+      if (!table1Indexes.get(i).getClass().equals(table2Indexes.get(i).getClass())) {
         throw new IllegalArgumentException(
-            "Cannot join using different index types: "
-                + Arrays.toString(table1Indexes)
-                + " and "
-                + Arrays.toString(table2Indexes));
+            "Cannot join using different index types: " + table1Indexes + " and " + table2Indexes);
       }
     }
+  }
+
+  /** Build a reverse index for every join column in the table. */
+  private List<Index> buildIndexesForJoinColumns(List<Integer> joinColumnIndexes, Table table) {
+    return joinColumnIndexes.stream().map(c -> indexFor(table, c)).collect(Collectors.toList());
+  }
+
+  /** Create a reverse index for a given column. */
+  private Index indexFor(Table table, int colIndex) {
+    ColumnType type = table.column(colIndex).type();
+    if (type instanceof DateColumnType) {
+      return new IntIndex(table.dateColumn(colIndex));
+    } else if (type instanceof DateTimeColumnType) {
+      return new LongIndex(table.dateTimeColumn(colIndex));
+    } else if (type instanceof InstantColumnType) {
+      return new LongIndex(table.instantColumn(colIndex));
+    } else if (type instanceof TimeColumnType) {
+      return new IntIndex(table.timeColumn(colIndex));
+    } else if (type instanceof StringColumnType) {
+      return new StringIndex(table.stringColumn(colIndex));
+    } else if (type instanceof TextColumnType) {
+      return new StringIndex(table.textColumn(colIndex));
+    } else if (type instanceof IntColumnType) {
+      return new IntIndex(table.intColumn(colIndex));
+    } else if (type instanceof LongColumnType) {
+      return new LongIndex(table.longColumn(colIndex));
+    } else if (type instanceof ShortColumnType) {
+      return new ShortIndex(table.shortColumn(colIndex));
+    } else if (type instanceof BooleanColumnType) {
+      return new ByteIndex(table.booleanColumn(colIndex));
+    } else if (type instanceof DoubleColumnType) {
+      return new DoubleIndex(table.doubleColumn(colIndex));
+    } else if (type instanceof FloatColumnType) {
+      return new FloatIndex(table.floatColumn(colIndex));
+    }
+    throw new IllegalArgumentException("Joining attempted on unsupported column type " + type);
+  }
+
+  /**
+   * Given a reverse index find a selection of rows that have the same value as the supplied column
+   * does in the given row index.
+   */
+  private Selection selectionForColumn(Column<?> valueColumn, int rowIndex, Index rawIndex) {
+
+    ColumnType type = valueColumn.type();
+    if (type instanceof DateColumnType) {
+      IntIndex index = (IntIndex) rawIndex;
+      int value = ((DateColumn) valueColumn).getIntInternal(rowIndex);
+      return index.get(value);
+    } else if (type instanceof TimeColumnType) {
+      IntIndex index = (IntIndex) rawIndex;
+      int value = ((TimeColumn) valueColumn).getIntInternal(rowIndex);
+      return index.get(value);
+    } else if (type instanceof DateTimeColumnType) {
+      LongIndex index = (LongIndex) rawIndex;
+      long value = ((DateTimeColumn) valueColumn).getLongInternal(rowIndex);
+      return index.get(value);
+    } else if (type instanceof InstantColumnType) {
+      LongIndex index = (LongIndex) rawIndex;
+      long value = ((InstantColumn) valueColumn).getLongInternal(rowIndex);
+      return index.get(value);
+    } else if (type instanceof StringColumnType) {
+      StringIndex index = (StringIndex) rawIndex;
+      String value = ((StringColumn) valueColumn).get(rowIndex);
+      return index.get(value);
+    } else if (type instanceof TextColumnType) {
+      StringIndex index = (StringIndex) rawIndex;
+      String value = ((TextColumn) valueColumn).get(rowIndex);
+      return index.get(value);
+    } else if (type instanceof IntColumnType) {
+      IntIndex index = (IntIndex) rawIndex;
+      int value = ((IntColumn) valueColumn).getInt(rowIndex);
+      return index.get(value);
+    } else if (type instanceof LongColumnType) {
+      LongIndex index = (LongIndex) rawIndex;
+      long value = ((LongColumn) valueColumn).getLong(rowIndex);
+      return index.get(value);
+    } else if (type instanceof ShortColumnType) {
+      ShortIndex index = (ShortIndex) rawIndex;
+      short value = ((ShortColumn) valueColumn).getShort(rowIndex);
+      return index.get(value);
+    } else if (type instanceof BooleanColumnType) {
+      ByteIndex index = (ByteIndex) rawIndex;
+      byte value = ((BooleanColumn) valueColumn).getByte(rowIndex);
+      return index.get(value);
+    } else if (type instanceof DoubleColumnType) {
+      DoubleIndex index = (DoubleIndex) rawIndex;
+      double value = ((DoubleColumn) valueColumn).getDouble(rowIndex);
+      return index.get(value);
+    } else if (type instanceof FloatColumnType) {
+      FloatIndex index = (FloatIndex) rawIndex;
+      float value = ((FloatColumn) valueColumn).getFloat(rowIndex);
+      return index.get(value);
+    } else {
+      throw new IllegalArgumentException(
+          "Joining is supported on numeric, string, and date-like columns. Column "
+              + valueColumn.name()
+              + " is of type "
+              + valueColumn.type());
+    }
+  }
+  /**
+   * Create a big multicolumn selection for all join columns in the given table. Joins two tables.
+   *
+   * @param table the table that used to generate Selection.
+   * @param ri row number of row in table.
+   * @param indexes a reverse index for every join column in the table.
+   * @param selectionSize max size in table .
+   * @param joinColumnIndexes the column index of join key in tables
+   * @return selection created
+   */
+  private Selection createMultiColSelection(
+      Table table,
+      int ri,
+      List<Index> indexes,
+      int selectionSize,
+      List<Integer> joinColumnIndexes) {
+    Selection multiColSelection = Selection.withRange(0, selectionSize);
+    int i = 0;
+    for (Integer joinColumnIndex : joinColumnIndexes) {
+      Column<?> col = table.column(joinColumnIndex);
+      Selection oneColSelection = selectionForColumn(col, ri, indexes.get(i));
+      // and the selections.
+      multiColSelection = multiColSelection.and(oneColSelection);
+      i++;
+    }
+    return multiColSelection;
   }
 
   private String newName(String table2Alias, String columnName) {
@@ -375,8 +549,8 @@ public class DataFrameJoiner {
    * @param tables The tables to join with
    * @return The resulting table
    */
-  public Table leftOuterJoin(Table... tables) {
-    return leftOuterJoin(false, tables);
+  public Table leftOuter(Table... tables) {
+    return leftOuter(false, tables);
   }
 
   /**
@@ -388,7 +562,7 @@ public class DataFrameJoiner {
    * @param tables The tables to join with
    * @return The resulting table
    */
-  public Table leftOuterJoin(boolean allowDuplicateColumnNames, Table... tables) {
+  public Table leftOuter(boolean allowDuplicateColumnNames, Table... tables) {
     Table joined = table;
     for (Table table2 : tables) {
       joined =
@@ -412,8 +586,8 @@ public class DataFrameJoiner {
    *     performed after rounding to integers.
    * @return The resulting table
    */
-  public Table leftOuterJoin(Table table2, String[] col2Names) {
-    return leftOuterJoin(table2, false, col2Names);
+  public Table leftOuter(Table table2, String[] col2Names) {
+    return leftOuter(table2, false, col2Names);
   }
 
   /**
@@ -425,8 +599,8 @@ public class DataFrameJoiner {
    *     performed after rounding to integers.
    * @return The resulting table
    */
-  public Table leftOuterJoin(Table table2, String col2Name) {
-    return leftOuterJoin(table2, false, col2Name);
+  public Table leftOuter(Table table2, String col2Name) {
+    return leftOuter(table2, false, col2Name);
   }
 
   /**
@@ -441,7 +615,7 @@ public class DataFrameJoiner {
    *     performed after rounding to integers.
    * @return The resulting table
    */
-  public Table leftOuterJoin(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
+  public Table leftOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
     return joinInternal(
         table, table2, JoinType.LEFT_OUTER, allowDuplicateColumnNames, false, col2Names);
   }
@@ -461,7 +635,7 @@ public class DataFrameJoiner {
    *     performed after rounding to integers.
    * @return The resulting table
    */
-  public Table leftOuterJoin(
+  public Table leftOuter(
       Table table2,
       boolean allowDuplicateColumnNames,
       boolean keepAllJoinKeyColumns,
@@ -505,7 +679,8 @@ public class DataFrameJoiner {
               allowDuplicateColumnNames,
               false,
               joinColumnNames);
-      joinColumnIndexes = getJoinIndexes(joined, joinColumnNames);
+      joinColumnIndexes.clear();
+      joinColumnIndexes.addAll(getJoinIndexes(joined, joinColumnNames));
     }
     return joined;
   }
@@ -605,7 +780,7 @@ public class DataFrameJoiner {
       Table table2,
       JoinType joinType,
       boolean allowDuplicates,
-      int[] table2JoinColumnIndexes,
+      List<Integer> table2JoinColumnIndexes,
       boolean keepTable2JoinKeyColumns) {
 
     Column<?>[] cols =
@@ -620,16 +795,15 @@ public class DataFrameJoiner {
     Set<Integer> ignoreColumns = new HashSet<>();
     for (int c = 0; c < cols.length; c++) {
       if (joinType == JoinType.RIGHT_OUTER) {
-        if (c < table1.columnCount() && indexesContainsValue(joinColumnIndexes, c)) {
+        if (c < table1.columnCount() && joinColumnIndexes.contains(c)) {
           if (!keepTable2JoinKeyColumns) {
             cols[c].setName("Placeholder_" + ignoreColumns.size());
           }
           ignoreColumns.add(c);
         }
-      } else { // JoinType is LEFT, INNER, or FULL
+      } else {
         int table2Index = c - table1.columnCount();
-        if (c >= table1.columnCount()
-            && indexesContainsValue(table2JoinColumnIndexes, table2Index)) {
+        if (c >= table1.columnCount() && table2JoinColumnIndexes.contains(table2Index)) {
           if (!keepTable2JoinKeyColumns) {
             cols[c].setName("Placeholder_" + ignoreColumns.size());
           }
@@ -656,13 +830,6 @@ public class DataFrameJoiner {
       }
     }
     destination.addColumns(cols);
-    /*
-        for (String s : destination.columnNames()) {
-          if (s.startsWith("Placeholder_")) {
-            destination.removeColumns(s);
-          }
-        }
-    */
     return ignoreColumns;
   }
 
@@ -672,6 +839,8 @@ public class DataFrameJoiner {
    * @param destination the destination table.
    * @param table1 the table on left of join.
    * @param table2 the table on right of join.
+   * @param table1Rows the selection of rows in table1.
+   * @param table2Rows the selection of rows in table2.
    * @param ignoreColumns a set of column indexes in the result to ignore. They are redundant join
    *     columns.
    */
@@ -680,6 +849,8 @@ public class DataFrameJoiner {
       Table destination,
       Table table1,
       Table table2,
+      Selection table1Rows,
+      Selection table2Rows,
       Set<Integer> ignoreColumns,
       boolean keepTable2JoinKeyColumns) {
     for (int c = 0; c < table1.columnCount() + table2.columnCount(); c++) {
@@ -687,136 +858,19 @@ public class DataFrameJoiner {
         continue;
       }
       int table2Index = c - table1.columnCount();
-      for (Row r1 : table1) {
-        for (Row r2 : table2) {
+      for (int r1 : table1Rows) {
+        for (int r2 : table2Rows) {
           if (c < table1.columnCount()) {
             Column t1Col = table1.column(c);
-            destination.column(c).append(t1Col, r1.getRowNumber());
+            destination.column(c).append(t1Col, r1);
           } else {
             Column t2Col = table2.column(table2Index);
-            destination.column(c).append(t2Col, r2.getRowNumber());
+            destination.column(c).append(t2Col, r2);
           }
         }
       }
     }
   }
-
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  private void innerJoin(
-      Table destination,
-      Table table1,
-      Table table2,
-      Set<Integer> ignoreColumns,
-      boolean keepTable2JoinKeyColumns) {
-    Table joinTable = Table.create();
-    for (int i : joinColumnIndexes) {
-      joinTable.addColumns(table1.column(i).emptyCopy());
-    }
-
-    for (int c = 0; c < table1.columnCount() + table2.columnCount(); c++) {
-      if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
-        continue;
-      }
-      int table2Index = c - table1.columnCount();
-      for (Row r1 : table1) {
-        for (Row r2 : table2) {
-          if (c < table1.columnCount()) {
-            Column t1Col = table1.column(c);
-            destination.column(c).append(t1Col, r1.getRowNumber());
-          } else {
-            Column t2Col = table2.column(table2Index);
-            destination.column(c).append(t2Col, r2.getRowNumber());
-          }
-        }
-      }
-    }
-  }
-
-  private void leftOuterJoin(
-      Table destination,
-      Table left,
-      Table right,
-      int[] rightJoinColumnIndexes,
-      Set<Integer> ignoreColumns,
-      boolean keepTable2JoinKeyColumns) {
-    List<IndexPair> pairs = new ArrayList<>();
-    for (int i = 0; i < joinColumnIndexes.length; i++) {
-      IndexPair indexPair =
-          new IndexPair(left.column(i).type(), joinColumnIndexes[i], rightJoinColumnIndexes[i]);
-      pairs.add(indexPair);
-    }
-
-    // fill the destination with all values from the left table
-    withMissingLeftJoin(destination, left, ignoreColumns, keepTable2JoinKeyColumns);
-
-    Comparator<Row> comparator = SortKey.getChain(SortKey.create(pairs));
-    Row rightRow = right.row(0);
-    Row destRow = destination.row(0);
-    int mark = -1;
-    while (rightRow.hasNext() || destRow.hasNext()) {
-      if (mark == -1) {
-        int result = comparator.compare(destRow, rightRow);
-        while (result < 0 && destRow.hasNext()) {
-          destRow.next();
-          result = comparator.compare(destRow, rightRow);
-        }
-        while (result > 0 && rightRow.hasNext()) {
-          rightRow.next();
-          result = comparator.compare(destRow, rightRow);
-        }
-        mark = rightRow.getRowNumber();
-      }
-      int result = comparator.compare(rightRow, destRow);
-      if (result == 0) {
-        // add values from the right table
-        addRightValues(
-            left.columnCount(), rightRow, destRow, keepTable2JoinKeyColumns, ignoreColumns);
-        if (rightRow.hasNext()) rightRow.next();
-      } else {
-        rightRow.at(mark);
-        if (destRow.hasNext()) {
-          destRow.next();
-          mark = -1;
-        }
-      }
-    }
-  }
-
-  private void addRightValues(
-      int leftColumnCount,
-      Row rightRow,
-      Row destRow,
-      boolean keepTable2JoinKeyColumns,
-      Set<Integer> ignoreColumns) {
-    for (int c = leftColumnCount; c < leftColumnCount + rightRow.columnCount(); c++) {
-      if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
-        continue;
-      }
-      int rightIndex = c - leftColumnCount;
-      ColumnType type = destRow.getColumnType(c);
-      if (type.equals(ColumnType.INTEGER)) {
-        destRow.setInt(c, rightRow.getInt(rightIndex));
-      }
-    }
-  }
-
-  /*for (int c = 0; c < left.columnCount() + right.columnCount(); c++) {
-  if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
-    continue;
-  }
-  int table2Index = c - left.columnCount();
-  for (Row r1 : left) {
-    for (Row r2 : right) {
-      if (c < left.columnCount()) {
-        Column t1Col = left.column(c);
-        destination.column(c).append(t1Col, r1.getRowNumber());
-      } else {
-        Column t2Col = right.column(table2Index);
-        destination.column(c).append(t2Col, r2.getRowNumber());
-      }
-    }
-  }
-  */
 
   /**
    * Adds rows to destination for each row in table1 with the columns from table2 added as missing
@@ -826,17 +880,18 @@ public class DataFrameJoiner {
   private void withMissingLeftJoin(
       Table destination,
       Table table1,
+      Selection table1Rows,
       Set<Integer> ignoreColumns,
       boolean keepTable2JoinKeyColumns) {
-    Selection table1Rows = Selection.withRange(0, table1.rowCount());
-
     for (int c = 0; c < destination.columnCount(); c++) {
       if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
         continue;
       }
       if (c < table1.columnCount()) {
         Column t1Col = table1.column(c);
-        destination.column(c).append(t1Col.copy());
+        for (int index : table1Rows) {
+          destination.column(c).append(t1Col, index);
+        }
       } else {
         for (int r1 = 0; r1 < table1Rows.size(); r1++) {
           destination.column(c).appendMissing();
@@ -865,14 +920,14 @@ public class DataFrameJoiner {
       for (int i = 0; i < col2Indexes.size(); i++) {
         Column t2Col = table2.column(col2Indexes.get(i));
         for (int index : table2Rows) {
-          destination.column(joinColumnIndexes[i]).append(t2Col, index);
+          destination.column(joinColumnIndexes.get(i)).append(t2Col, index);
         }
       }
     }
 
     for (int c = 0; c < destination.columnCount(); c++) {
       if (!keepTable2JoinKeyColumns) {
-        if (ignoreColumns.contains(c) || indexesContainsValue(joinColumnIndexes, c)) {
+        if (ignoreColumns.contains(c) || joinColumnIndexes.contains(c)) {
           continue;
         }
       }
@@ -886,37 +941,6 @@ public class DataFrameJoiner {
           destination.column(c).append(t2Col, index);
         }
       }
-    }
-  }
-
-  private boolean indexesContainsValue(int[] joinColumnIndexes, int columnIndex) {
-    for (int i : joinColumnIndexes) {
-      if (columnIndex == i) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public static class IndexPair {
-    final ColumnType type;
-    final int left;
-    final int right;
-
-    public IndexPair(ColumnType type, int left, int right) {
-      this.type = type;
-      this.left = left;
-      this.right = right;
-    }
-
-    @Override
-    public String toString() {
-      final StringBuilder sb = new StringBuilder("IndexPair{");
-      sb.append("type=").append(type);
-      sb.append(", left=").append(left);
-      sb.append(", right=").append(right);
-      sb.append('}');
-      return sb.toString();
     }
   }
 }
