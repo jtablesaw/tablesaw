@@ -19,19 +19,37 @@ import java.util.*;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Row;
 
-public class SortKey implements Iterable<DataFrameJoiner.IndexPair> {
+/**
+ * SortKey is basically a specification for a sort. It defines the sort required for a
+ * merge-sort-join. The sort order is defined such that the tables being joined are both sorted
+ * independently on the join columns. All columns being sorted are sorted in ascending order
+ */
+class SortKey implements Iterable<DataFrameJoiner.ColumnIndexPair> {
 
-  private final ArrayList<DataFrameJoiner.IndexPair> sortOrder = new ArrayList<>();
+  /** Describes how the tables are to be sorted */
+  private final ArrayList<DataFrameJoiner.ColumnIndexPair> sortOrder = new ArrayList<>();
 
-  private SortKey(DataFrameJoiner.IndexPair pair) {
+  private SortKey(DataFrameJoiner.ColumnIndexPair pair) {
     next(pair);
   }
 
-  public static SortKey on(DataFrameJoiner.IndexPair pair) {
+  /**
+   * Returns a new SortKey defining the first sort (for the first join column)
+   *
+   * @param pair The details of the sort, i.e. what type of column and the index of the columns in
+   *     the respective tables.
+   */
+  public static SortKey on(DataFrameJoiner.ColumnIndexPair pair) {
     return new SortKey(pair);
   }
 
-  public SortKey next(DataFrameJoiner.IndexPair pair) {
+  /**
+   * Returns a new SortKey defining an additional sort clause
+   *
+   * @param pair The details of the sort, i.e. what type of column and the index of the columns in
+   *     the respective tables.
+   */
+  public SortKey next(DataFrameJoiner.ColumnIndexPair pair) {
     sortOrder.add(pair);
     return this;
   }
@@ -46,10 +64,14 @@ public class SortKey implements Iterable<DataFrameJoiner.IndexPair> {
     return sortOrder.size();
   }
 
-  public static SortKey create(List<DataFrameJoiner.IndexPair> pairs) {
+  /**
+   * Returns a new SortKey for the given ColumnIndexPairs. A table being sorted on three columns,
+   * will have three pairs in the SortKey
+   */
+  public static SortKey create(List<DataFrameJoiner.ColumnIndexPair> pairs) {
     SortKey key = null;
 
-    for (DataFrameJoiner.IndexPair pair : pairs) {
+    for (DataFrameJoiner.ColumnIndexPair pair : pairs) {
       if (key == null) { // key will be null the first time through
         key = new SortKey(pair);
       } else {
@@ -59,9 +81,13 @@ public class SortKey implements Iterable<DataFrameJoiner.IndexPair> {
     return key;
   }
 
-  public static RowComparatorChain getChain(SortKey key) {
-    Iterator<DataFrameJoiner.IndexPair> entries = key.iterator();
-    DataFrameJoiner.IndexPair sort = entries.next();
+  /**
+   * Returns a ComparatorChain consisting of one or more comparators as specified in the given
+   * SortKey
+   */
+  static RowComparatorChain getChain(SortKey key) {
+    Iterator<DataFrameJoiner.ColumnIndexPair> entries = key.iterator();
+    DataFrameJoiner.ColumnIndexPair sort = entries.next();
     Comparator<Row> comparator = comparator(sort);
 
     RowComparatorChain chain = new RowComparatorChain(comparator);
@@ -72,7 +98,8 @@ public class SortKey implements Iterable<DataFrameJoiner.IndexPair> {
     return chain;
   }
 
-  static Comparator<Row> comparator(DataFrameJoiner.IndexPair pair) {
+  /** Returns a comparator for a given ColumnIndexPair */
+  private static Comparator<Row> comparator(DataFrameJoiner.ColumnIndexPair pair) {
     if (pair.type.equals(ColumnType.BOOLEAN)) {
       return (r11, r21) -> {
         boolean b1 = r11.getBoolean(pair.left);
@@ -95,17 +122,14 @@ public class SortKey implements Iterable<DataFrameJoiner.IndexPair> {
     throw new RuntimeException("FINISH ME");
   }
 
+  /** Returns the iterator for the SortKey */
   @Override
-  public Iterator<DataFrameJoiner.IndexPair> iterator() {
+  public Iterator<DataFrameJoiner.ColumnIndexPair> iterator() {
     return sortOrder.iterator();
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this).add("order", sortOrder).toString();
-  }
-
-  public enum Order {
-    ASCEND,
   }
 }

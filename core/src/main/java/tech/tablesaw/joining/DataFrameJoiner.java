@@ -656,13 +656,6 @@ public class DataFrameJoiner {
       }
     }
     destination.addColumns(cols);
-    /*
-        for (String s : destination.columnNames()) {
-          if (s.startsWith("Placeholder_")) {
-            destination.removeColumns(s);
-          }
-        }
-    */
     return ignoreColumns;
   }
 
@@ -739,11 +732,13 @@ public class DataFrameJoiner {
       int[] rightJoinColumnIndexes,
       Set<Integer> ignoreColumns,
       boolean keepTable2JoinKeyColumns) {
-    List<IndexPair> pairs = new ArrayList<>();
+
+    List<ColumnIndexPair> pairs = new ArrayList<>();
     for (int i = 0; i < joinColumnIndexes.length; i++) {
-      IndexPair indexPair =
-          new IndexPair(left.column(i).type(), joinColumnIndexes[i], rightJoinColumnIndexes[i]);
-      pairs.add(indexPair);
+      ColumnIndexPair columnIndexPair =
+          new ColumnIndexPair(
+              left.column(i).type(), joinColumnIndexes[i], rightJoinColumnIndexes[i]);
+      pairs.add(columnIndexPair);
     }
 
     // fill the destination with all values from the left table
@@ -898,12 +893,17 @@ public class DataFrameJoiner {
     return false;
   }
 
-  public static class IndexPair {
+  /**
+   * Describes two columns that are to be compared in a sort The columns are expected to be
+   * referenced in two separate rows. The values of left and right provide the column index
+   * (position) in each of the two rows.
+   */
+  public static class ColumnIndexPair {
     final ColumnType type;
     final int left;
     final int right;
 
-    public IndexPair(ColumnType type, int left, int right) {
+    public ColumnIndexPair(ColumnType type, int left, int right) {
       this.type = type;
       this.left = left;
       this.right = right;

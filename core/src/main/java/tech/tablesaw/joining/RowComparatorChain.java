@@ -17,8 +17,12 @@ package tech.tablesaw.joining;
 import java.util.*;
 import tech.tablesaw.api.Row;
 
-/** The implementation is based on Apache Commons Collections */
-public class RowComparatorChain implements Comparator<Row> {
+/**
+ * A comparator for comparing two Row objects on one or more Columns. The two rows are expected to
+ * be from different tables, but they should have the same number and type of Columns being used for
+ * their sorts The implementation is based on Apache Commons Collections
+ */
+class RowComparatorChain implements Comparator<Row> {
 
   private final List<Comparator<Row>> comparatorChain;
   private BitSet orderingBits;
