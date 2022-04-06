@@ -43,10 +43,6 @@ public class BooleanColumnType extends AbstractColumnType {
     return Byte.MIN_VALUE;
   }
 
-  public int compareValues(boolean x, boolean y) {
-    return Boolean.compare(x, y);
-  }
-
   public static boolean valueIsMissing(byte value) {
     return value == missingValueIndicator();
   }

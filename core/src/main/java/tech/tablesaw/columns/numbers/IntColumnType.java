@@ -27,10 +27,6 @@ public class IntColumnType extends AbstractColumnType {
     return INSTANCE;
   }
 
-  public int compareValues(int x, int y) {
-    return Integer.compare(x, y);
-  }
-
   /** {@inheritDoc} */
   @Override
   public IntColumn create(String name) {
