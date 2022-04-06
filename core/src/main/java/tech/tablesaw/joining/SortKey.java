@@ -100,13 +100,7 @@ class SortKey implements Iterable<DataFrameJoiner.ColumnIndexPair> {
 
   /** Returns a comparator for a given ColumnIndexPair */
   private static Comparator<Row> comparator(DataFrameJoiner.ColumnIndexPair pair) {
-    if (pair.type.equals(ColumnType.BOOLEAN)) {
-      return (r11, r21) -> {
-        boolean b1 = r11.getBoolean(pair.left);
-        boolean b2 = r21.getBoolean(pair.right);
-        return Boolean.compare(b1, b2);
-      };
-    } else if (pair.type.equals(ColumnType.INTEGER)) {
+    if (pair.type.equals(ColumnType.INTEGER)) {
       return (r11, r21) -> {
         int b1 = r11.getInt(pair.left);
         int b2 = r21.getInt(pair.right);
@@ -118,8 +112,62 @@ class SortKey implements Iterable<DataFrameJoiner.ColumnIndexPair> {
         int b2 = r21.getPackedDate(pair.right);
         return Integer.compare(b1, b2);
       };
+    } else if (pair.type.equals(ColumnType.LOCAL_TIME)) {
+      return (r11, r21) -> {
+        int b1 = r11.getPackedTime(pair.left);
+        int b2 = r21.getPackedTime(pair.right);
+        return Integer.compare(b1, b2);
+      };
+    } else if (pair.type.equals(ColumnType.LONG)) {
+      return (r11, r21) -> {
+        long b1 = r11.getLong(pair.left);
+        long b2 = r21.getLong(pair.right);
+        return Long.compare(b1, b2);
+      };
+    } else if (pair.type.equals(ColumnType.LOCAL_DATE_TIME)) {
+      return (r11, r21) -> {
+        long b1 = r11.getPackedDateTime(pair.left);
+        long b2 = r21.getPackedDateTime(pair.right);
+        return Long.compare(b1, b2);
+      };
+    } else if (pair.type.equals(ColumnType.INSTANT)) {
+      return (r11, r21) -> {
+        long b1 = r11.getPackedInstant(pair.left);
+        long b2 = r21.getPackedInstant(pair.right);
+        return Long.compare(b1, b2);
+      };
+    } else if (pair.type.equals(ColumnType.DOUBLE)) {
+      return (r11, r21) -> {
+        double b1 = r11.getDouble(pair.left);
+        double b2 = r21.getDouble(pair.right);
+        return Double.compare(b1, b2);
+      };
+    } else if (pair.type.equals(ColumnType.FLOAT)) {
+      return (r11, r21) -> {
+        float b1 = r11.getFloat(pair.left);
+        float b2 = r21.getFloat(pair.right);
+        return Float.compare(b1, b2);
+      };
+    } else if (pair.type.equals(ColumnType.BOOLEAN)) {
+      return (r11, r21) -> {
+        byte b1 = r11.getBooleanAsByte(pair.left);
+        byte b2 = r21.getBooleanAsByte(pair.right);
+        return Byte.compare(b1, b2);
+      };
+    } else if (pair.type.equals(ColumnType.STRING)) {
+      return (r11, r21) -> {
+        String b1 = r11.getString(pair.left);
+        String b2 = r21.getString(pair.right);
+        return b1.compareTo(b2);
+      };
+    } else if (pair.type.equals(ColumnType.TEXT)) {
+      return (r11, r21) -> {
+        String b1 = r11.getText(pair.left);
+        String b2 = r21.getText(pair.right);
+        return b1.compareTo(b2);
+      };
     }
-    throw new RuntimeException("FINISH ME");
+    throw new RuntimeException("Unhandled ColumnType in SortKey.");
   }
 
   /** Returns the iterator for the SortKey */
