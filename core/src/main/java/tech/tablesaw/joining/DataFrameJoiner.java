@@ -733,17 +733,12 @@ public class DataFrameJoiner {
       Set<Integer> ignoreColumns,
       boolean keepTable2JoinKeyColumns) {
 
-    List<ColumnIndexPair> pairs = new ArrayList<>();
-    for (int i = 0; i < joinColumnIndexes.length; i++) {
-      ColumnIndexPair columnIndexPair =
-          new ColumnIndexPair(
-              left.column(i).type(), joinColumnIndexes[i], rightJoinColumnIndexes[i]);
-      pairs.add(columnIndexPair);
-    }
+    List<ColumnIndexPair> pairs = createJoinColumnPairs(left, rightJoinColumnIndexes);
 
     // fill the destination with all values from the left table
     withMissingLeftJoin(destination, left, ignoreColumns, keepTable2JoinKeyColumns);
 
+    // perform the merge sort
     Comparator<Row> comparator = SortKey.getChain(SortKey.create(pairs));
     Row rightRow = right.row(0);
     Row destRow = destination.row(0);
@@ -775,6 +770,17 @@ public class DataFrameJoiner {
         }
       }
     }
+  }
+
+  private List<ColumnIndexPair> createJoinColumnPairs(Table left, int[] rightJoinColumnIndexes) {
+    List<ColumnIndexPair> pairs = new ArrayList<>();
+    for (int i = 0; i < joinColumnIndexes.length; i++) {
+      ColumnIndexPair columnIndexPair =
+          new ColumnIndexPair(
+              left.column(i).type(), joinColumnIndexes[i], rightJoinColumnIndexes[i]);
+      pairs.add(columnIndexPair);
+    }
+    return pairs;
   }
 
   private void addRightValues(
@@ -841,7 +847,6 @@ public class DataFrameJoiner {
       Table table1,
       Set<Integer> ignoreColumns,
       boolean keepTable2JoinKeyColumns) {
-    Selection table1Rows = Selection.withRange(0, table1.rowCount());
 
     for (int c = 0; c < destination.columnCount(); c++) {
       if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
@@ -851,7 +856,7 @@ public class DataFrameJoiner {
         Column t1Col = table1.column(c);
         destination.column(c).append(t1Col.copy());
       } else {
-        for (int r1 = 0; r1 < table1Rows.size(); r1++) {
+        for (int r1 = 0; r1 < table1.rowCount(); r1++) {
           destination.column(c).appendMissing();
         }
       }
