@@ -86,6 +86,26 @@ class BitSetSelectionTest {
     assertEquals(53, selection3.get(0));
   }
 
+  /** Tests and where one selection uses BitSet and the other RoaringBitmap */
+  @Test
+  void roaringAnd() {
+    Selection selection = BitmapBackedSelection.with(42, 53, 111);
+    Selection selection2 = BitSetBackedSelection.with(11, 133, 53, 112);
+    Selection selection3 = selection.and(selection2);
+    assertEquals(1, selection3.size());
+    assertEquals(53, selection3.get(0));
+  }
+
+  /** Tests and where one selection uses BitSet and the other RoaringBitmap */
+  @Test
+  void roaringAnd2() {
+    Selection selection = BitSetBackedSelection.with(42, 53, 111);
+    Selection selection2 = BitmapBackedSelection.with(11, 133, 53, 112);
+    Selection selection3 = selection.and(selection2);
+    assertEquals(1, selection3.size());
+    assertEquals(53, selection3.get(0));
+  }
+
   @Test
   void or() {
     Selection selection = BitSetBackedSelection.with(42, 53, 111);
@@ -95,6 +115,30 @@ class BitSetSelectionTest {
     assertEquals(11, selection3.get(0));
     assertEquals(42, selection3.get(1));
     assertTrue(selection3.contains(53));
+  }
+
+  /** Tests or where one selection uses BitSet and the other RoaringBitmap */
+  @Test
+  void roaringOr() {
+    Selection selection = BitSetBackedSelection.with(42, 53, 111);
+    Selection selection2 = BitmapBackedSelection.with(11, 133, 53, 112);
+    Selection selection3 = selection.or(selection2);
+    assertEquals(6, selection3.size());
+    assertEquals(11, selection3.get(0));
+    assertEquals(42, selection3.get(1));
+    assertTrue(selection3.contains(53));
+  }
+
+  /** Tests andNot where one selection uses BitSet and the other RoaringBitmap */
+  @Test
+  void roaringAndNot() {
+    Selection selection = BitSetBackedSelection.with(42, 53, 111);
+    Selection selection2 = BitmapBackedSelection.with(11, 133, 53, 112);
+    Selection selection3 = selection.andNot(selection2);
+    assertEquals(2, selection3.size());
+    assertEquals(111, selection3.get(1));
+    assertEquals(42, selection3.get(0));
+    assertFalse(selection3.contains(53));
   }
 
   @Test

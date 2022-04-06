@@ -171,7 +171,6 @@ public class BitSetBackedSelection implements Selection {
       currentStep++;
       currentIndex = value + 1;
     }
-    // TODO: Check for consistency
   }
 
   @Override
