@@ -571,6 +571,10 @@ public class Row implements Iterator<Row> {
     setDate(columnNames[columnIndex], value);
   }
 
+  public void setPackedDate(int columnIndex, int value) {
+    setPackedDate(columnNames[columnIndex], value);
+  }
+
   /**
    * Sets the value of the column with the given name at this Row to the given value. An
    * IllegalStateException is * thrown if the column is not present in the Row and an
@@ -579,6 +583,42 @@ public class Row implements Iterator<Row> {
    */
   public void setDate(String columnName, LocalDate value) {
     dateColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setPackedDate(String columnName, int value) {
+    dateColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setPackedTime(int columnIndex, int value) {
+    setPackedTime(columnNames[columnIndex], value);
+  }
+
+  public void setPackedDateTime(int columnIndex, long value) {
+    setPackedDateTime(columnNames[columnIndex], value);
+  }
+
+  public void setPackedInstant(int columnIndex, long value) {
+    setPackedInstant(columnNames[columnIndex], value);
+  }
+
+  public void setPackedTime(String columnName, int value) {
+    timeColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setPackedDateTime(String columnName, long value) {
+    dateTimeColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setPackedInstant(String columnName, long value) {
+    instantColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setBooleanAsByte(String columnName, byte value) {
+    booleanColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setBooleanAsByte(int columnIndex, byte value) {
+    setBooleanAsByte(columnNames[columnIndex], value);
   }
 
   /**

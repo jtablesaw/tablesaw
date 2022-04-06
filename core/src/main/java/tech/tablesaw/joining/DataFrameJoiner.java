@@ -791,6 +791,24 @@ public class DataFrameJoiner {
       ColumnType type = destRow.getColumnType(c);
       if (type.equals(ColumnType.INTEGER)) {
         destRow.setInt(c, rightRow.getInt(rightIndex));
+      } else if (type.equals(ColumnType.STRING)) {
+        destRow.setString(c, rightRow.getString(rightIndex));
+      } else if (type.equals(ColumnType.LOCAL_DATE)) {
+        destRow.setPackedDate(c, rightRow.getPackedDate(rightIndex));
+      } else if (type.equals(ColumnType.LOCAL_TIME)) {
+        destRow.setPackedTime(c, rightRow.getPackedTime(rightIndex));
+      } else if (type.equals(ColumnType.LOCAL_DATE_TIME)) {
+        destRow.setPackedDateTime(c, rightRow.getPackedDateTime(rightIndex));
+      } else if (type.equals(ColumnType.INSTANT)) {
+        destRow.setPackedInstant(c, rightRow.getPackedInstant(rightIndex));
+      } else if (type.equals(ColumnType.DOUBLE)) {
+        destRow.setDouble(c, rightRow.getDouble(rightIndex));
+      } else if (type.equals(ColumnType.FLOAT)) {
+        destRow.setFloat(c, rightRow.getFloat(rightIndex));
+      } else if (type.equals(ColumnType.BOOLEAN)) {
+        destRow.setBooleanAsByte(c, rightRow.getBooleanAsByte(rightIndex));
+      } else if (type.equals(ColumnType.TEXT)) {
+        destRow.setText(c, rightRow.getText(rightIndex));
       }
     }
   }
