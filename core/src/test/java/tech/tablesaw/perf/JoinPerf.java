@@ -33,7 +33,8 @@ public class JoinPerf {
   @Test
   void testPerf() {
     NanoBench bench = NanoBench.create();
-    bench.warmUps(5);
+    bench.warmUps(1);
+    bench.measurements(4);
     Runnable r = new Runner();
     bench.measure("test", r);
   }
@@ -54,7 +55,6 @@ public class JoinPerf {
       a.sortDescendingOn("x", "y", "z");
       b.sortDescendingOn("x", "y", "z");
       Table result = a.joinOn("x", "y", "z").inner(b);
-      // System.out.println(result);
     }
   }
 }
