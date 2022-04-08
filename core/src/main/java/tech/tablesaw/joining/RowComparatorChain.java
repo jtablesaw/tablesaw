@@ -140,4 +140,12 @@ class RowComparatorChain implements Comparator<Row> {
       return true;
     }
   }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("RowComparatorChain{");
+    sb.append("comparatorChain=").append(comparatorChain);
+    sb.append('}');
+    return sb.toString();
+  }
 }

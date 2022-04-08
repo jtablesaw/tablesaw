@@ -53,8 +53,8 @@ public class JoinPerf {
     public void run() {
       a.sortDescendingOn("x", "y", "z");
       b.sortDescendingOn("x", "y", "z");
-      Table result = a.joinOn("x", "y", "z").leftOuterJoin(b);
-      System.out.println(result);
+      Table result = a.joinOn("x", "y", "z").inner(b);
+      // System.out.println(result);
     }
   }
 }

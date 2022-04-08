@@ -822,6 +822,14 @@ public class Row implements Iterator<Row> {
   }
 
   /**
+   * Returns the row number in the table backing the slice behind this row. This value may differ
+   * from the rowNumber() if the slice covers less than the entire table
+   */
+  public int getBackingRowNumber() {
+    return getIndex(getRowNumber());
+  }
+
+  /**
    * Returns a double representing the value held in the column with the given name at this row, for
    * any numeric column type
    */
@@ -838,7 +846,7 @@ public class Row implements Iterator<Row> {
     return tableSlice.column(columnIndex).type();
   }
 
-  Column<?> column(int columnIndex) {
+  public Column<?> column(int columnIndex) {
     return tableSlice.column(columnIndex);
   }
 
