@@ -52,31 +52,55 @@ public class DataFrameJoinerPerformanceTest {
 
   @Test
   public void innerJoinCustomersFirst() {
-    int numberOrders = 10_000;
+    int numberOrders = 50_000;
     int numberCustomers = 1_000;
     Table customers = createCustomersTable(numberCustomers);
     addFillerColumn(customers, 5, "customer");
     Table orders = createOrdersTable(numberOrders, numberCustomers);
     addFillerColumn(orders, 5, "order");
+    assertTimeout(Duration.ofMillis(500), () -> customers.joinOn("customerId").inner(orders));
+  }
 
-    assertTimeout(Duration.ofSeconds(1), () -> customers.joinOn("customerId").inner(orders));
+  @Test
+  public void innerJoinOrdersFirst() {
+    int numberOrders = 50_000;
+    int numberCustomers = 1_000;
+    Table customers = createCustomersTable(numberCustomers);
+    addFillerColumn(customers, 5, "customer");
+    Table orders = createOrdersTable(numberOrders, numberCustomers);
+    addFillerColumn(orders, 5, "order");
+    assertTimeout(Duration.ofSeconds(1), () -> orders.joinOn("customerId").inner(customers));
   }
 
   @Test
   public void leftOuterOrdersFirst() {
-    int numberOrders = 10_000;
-    Table customers = createCustomersTable(1_000);
+    int numberOrders = 50_000;
+    int numberCustomers = 1_000;
+    Table customers = createCustomersTable(numberCustomers);
     addFillerColumn(customers, 5, "customer");
     // Number customers here is larger. Will create rows orders without matching customers.
-    Table orders = createOrdersTable(numberOrders, 2_000);
+    Table orders = createOrdersTable(numberOrders, numberCustomers);
     addFillerColumn(orders, 5, "order");
 
     assertTimeout(Duration.ofSeconds(1), () -> orders.joinOn("customerId").leftOuter(customers));
   }
 
   @Test
+  public void leftOuterCustomersFirst() {
+    int numberOrders = 50_000;
+    int numberCustomers = 1_000;
+    Table customers = createCustomersTable(numberCustomers);
+    addFillerColumn(customers, 5, "customer");
+    // Number customers here is larger. Will create rows orders without matching customers.
+    Table orders = createOrdersTable(numberOrders, numberCustomers);
+    addFillerColumn(orders, 5, "order");
+
+    assertTimeout(Duration.ofSeconds(1), () -> customers.joinOn("customerId").leftOuter(orders));
+  }
+
+  @Test
   public void fullOuterJoin() {
-    int numberOrders = 10_000;
+    int numberOrders = 50_000;
     int numberCustomers = 1_000;
     Table customers = createCustomersTable(numberCustomers);
     addFillerColumn(customers, 5, "customer");

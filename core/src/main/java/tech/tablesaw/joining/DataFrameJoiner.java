@@ -242,9 +242,8 @@ public class DataFrameJoiner {
 
     if (!keepAllJoinKeyColumns) {
       result = result.removeColumns(resultIgnoreColIndexes);
-      System.out.println(result);
     } else {
-      renameColumnIndexes(result, resultIgnoreColIndexes);
+      renameColumnIndexes(result, table1, table2, resultIgnoreColIndexes);
     }
     return result;
   }
@@ -254,7 +253,8 @@ public class DataFrameJoiner {
    *
    * @param resultIgnoreColIndexes The positions of the secondary join columns
    */
-  private void renameColumnIndexes(Table result, int[] resultIgnoreColIndexes) {
+  private void renameColumnIndexes(
+      Table result, Table left, Table right, int[] resultIgnoreColIndexes) {
 
     for (int i = 0; i < resultIgnoreColIndexes.length; i++) {
       // TODO: Implement me, consider Left vs Right and possible renaming to avoid dupe names

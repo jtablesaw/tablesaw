@@ -33,8 +33,8 @@ public class JoinPerf {
   @Test
   void testPerf() {
     NanoBench bench = NanoBench.create();
-    bench.warmUps(1);
-    bench.measurements(4);
+    bench.warmUps(5);
+    bench.measurements(50);
     Runnable r = new Runner();
     bench.measure("test", r);
   }
