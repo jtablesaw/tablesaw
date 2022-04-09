@@ -26,7 +26,11 @@ public class DataFrameJoiner {
 
   private final Table table;
   private final String[] joinColumnNames;
+  // private final String[] joinColumnNames;
+
   private int[] leftJoinColumnIndexes;
+  private int[] rightJoinColumnIndexes;
+
   private final AtomicInteger joinTableId = new AtomicInteger(2);
 
   /**
@@ -193,18 +197,17 @@ public class DataFrameJoiner {
       boolean keepAllJoinKeyColumns,
       String... table2JoinColumnNames) {
 
-    int[] table2JoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
+    rightJoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
 
     table1 = table1.sortOn(leftJoinColumnIndexes);
-    table2 = table2.sortOn(table2JoinColumnIndexes);
+    table2 = table2.sortOn(rightJoinColumnIndexes);
 
     Table result = Table.create(table1.name());
 
     // A set of column indexes in the result table that can be ignored. They are duplicate join
     // keys.
     int[] resultIgnoreColIndexes =
-        emptyTableFromColumns(
-            result, table1, table2, joinType, allowDuplicates, table2JoinColumnIndexes);
+        emptyTableFromColumns(result, table1, table2, joinType, allowDuplicates);
 
     // add indexes for outer join processing
     IntColumn indexLeft = IntColumn.indexColumn(LEFT_RECORD_ID_NAME, table1.rowCount(), 0);
@@ -215,22 +218,24 @@ public class DataFrameJoiner {
     table2.addColumns(indexRight);
     result.addColumns(IntColumn.create(RIGHT_RECORD_ID_NAME));
 
-    validateIndexes(table1, leftJoinColumnIndexes, table2, table2JoinColumnIndexes);
+    validateIndexes(table1, table2);
 
+    if (table1.rowCount() == 0 && (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
+      // Handle special case of empty table here so it doesn't fall through to the behavior
+      // that adds rows for full outer and right outer joins
+      if (!keepAllJoinKeyColumns) {
+        result.removeColumns(resultIgnoreColIndexes);
+      }
+      return result;
+    }
     if (joinType == JoinType.INNER) {
-
-      joinInner(result, table1, table2, table2JoinColumnIndexes, resultIgnoreColIndexes);
-
+      joinInner(result, table1, table2, resultIgnoreColIndexes);
     } else if (joinType == JoinType.LEFT_OUTER) {
-
-      joinLeft(result, table1, table2, table2JoinColumnIndexes, resultIgnoreColIndexes);
-
+      joinLeft(result, table1, table2, resultIgnoreColIndexes);
     } else if (joinType == JoinType.RIGHT_OUTER) {
-
-      joinRight(result, table1, table2, table2JoinColumnIndexes, resultIgnoreColIndexes);
-
+      joinRight(result, table1, table2, resultIgnoreColIndexes);
     } else if (joinType == JoinType.FULL_OUTER) {
-      joinFull(result, table1, table2, table2JoinColumnIndexes, resultIgnoreColIndexes);
+      joinFull(result, table1, table2, resultIgnoreColIndexes);
     }
     // System.out.println(result);
     result.removeColumns(LEFT_RECORD_ID_NAME, RIGHT_RECORD_ID_NAME);
@@ -239,7 +244,7 @@ public class DataFrameJoiner {
       result = result.removeColumns(resultIgnoreColIndexes);
       System.out.println(result);
     } else {
-      renameColumnIndexes(result, table2JoinColumnIndexes, resultIgnoreColIndexes);
+      renameColumnIndexes(result, resultIgnoreColIndexes);
     }
     return result;
   }
@@ -249,8 +254,7 @@ public class DataFrameJoiner {
    *
    * @param resultIgnoreColIndexes The positions of the secondary join columns
    */
-  private void renameColumnIndexes(
-      Table result, int[] secondaryJoinColumnIndexes, int[] resultIgnoreColIndexes) {
+  private void renameColumnIndexes(Table result, int[] resultIgnoreColIndexes) {
 
     for (int i = 0; i < resultIgnoreColIndexes.length; i++) {
       // TODO: Implement me, consider Left vs Right and possible renaming to avoid dupe names
@@ -567,16 +571,10 @@ public class DataFrameJoiner {
    * @param allowDuplicates whether to allow duplicates. If yes rename columns in table2 that have
    *     the same name as columns in table1, with the exception of join columns in table2 when
    *     performing a right join.
-   * @param table2JoinColumnIndexes the index locations of the table2 join columns.
    * @return A
    */
   private int[] emptyTableFromColumns(
-      Table destination,
-      Table table1,
-      Table table2,
-      JoinType joinType,
-      boolean allowDuplicates,
-      int[] table2JoinColumnIndexes) {
+      Table destination, Table table1, Table table2, JoinType joinType, boolean allowDuplicates) {
 
     Column<?>[] cols =
         Streams.concat(table1.columns().stream(), table2.columns().stream())
@@ -599,7 +597,7 @@ public class DataFrameJoiner {
         }
       } else { // JoinType is LEFT, INNER, or FULL
         int table2Index = c + table1.columnCount();
-        if (indexesContainsValue(table2JoinColumnIndexes, c)) {
+        if (indexesContainsValue(rightJoinColumnIndexes, c)) {
           ignoreColumns[ignoreIndex] = table2Index;
           cols[table2Index].setName("Placeholder_" + ignoreIndex);
           ignoreIndex++;
@@ -629,21 +627,17 @@ public class DataFrameJoiner {
     return ignoreColumns;
   }
 
-  private void joinLeft(
-      Table destination,
-      Table left,
-      Table right,
-      int[] rightJoinColumnIndexes,
-      int[] ignoreColumns) {
+  private void joinLeft(Table destination, Table left, Table right, int[] ignoreColumns) {
 
-    joinInner(destination, left, right, rightJoinColumnIndexes, ignoreColumns);
+    joinInner(destination, left, right, ignoreColumns);
     Selection unmatched =
         left.intColumn(LEFT_RECORD_ID_NAME)
             .isNotIn(destination.intColumn(LEFT_RECORD_ID_NAME).unique());
-    addLeftOnlyValues(destination, left, unmatched);
+    addLeftOnlyValues(destination, left, unmatched, true);
   }
 
-  private void addLeftOnlyValues(Table destination, Table left, Selection unmatched) {
+  private void addLeftOnlyValues(
+      Table destination, Table left, Selection unmatched, boolean fullJoin) {
     for (Row leftRow : left.where(unmatched)) {
       Row destRow = destination.appendRow();
       for (int c = 0; c < leftRow.columnCount() - 1; c++) {
@@ -667,13 +661,8 @@ public class DataFrameJoiner {
     }
   }
 
-  private void joinRight(
-      Table destination,
-      Table left,
-      Table right,
-      int[] rightJoinColumnIndexes,
-      int[] ignoreColumns) {
-    joinInner(destination, left, right, rightJoinColumnIndexes, ignoreColumns);
+  private void joinRight(Table destination, Table left, Table right, int[] ignoreColumns) {
+    joinInner(destination, left, right, ignoreColumns);
     Selection unmatched =
         right
             .intColumn(RIGHT_RECORD_ID_NAME)
@@ -681,30 +670,31 @@ public class DataFrameJoiner {
     addRightOnlyValues(destination, left, right, unmatched);
   }
 
-  private void joinFull(
-      Table destination,
-      Table left,
-      Table right,
-      int[] rightJoinColumnIndexes,
-      int[] ignoreColumns) {
-    joinInner(destination, left, right, rightJoinColumnIndexes, ignoreColumns);
+  private void joinFull(Table destination, Table left, Table right, int[] ignoreColumns) {
+
+    Table tempDestination = destination.emptyCopy();
+
+    joinInner(destination, left, right, ignoreColumns);
+
     Selection unmatchedLeft =
         left.intColumn(LEFT_RECORD_ID_NAME)
             .isNotIn(destination.intColumn(LEFT_RECORD_ID_NAME).unique());
+    addLeftOnlyValues(destination, left, unmatchedLeft, true);
+
     Selection unmatchedRight =
         right
             .intColumn(RIGHT_RECORD_ID_NAME)
             .isNotIn(destination.intColumn(RIGHT_RECORD_ID_NAME).unique());
-    addLeftOnlyValues(destination, left, unmatchedLeft);
-    addRightOnlyValues(destination, left, right, unmatchedRight);
+    addRightOnlyValues(tempDestination, left, right, unmatchedRight);
+    for (int i = 0; i < ignoreColumns.length; i++) {
+      String name = tempDestination.columnNames().get(leftJoinColumnIndexes[i]);
+      tempDestination.replaceColumn(
+          leftJoinColumnIndexes[i], tempDestination.column(ignoreColumns[i]).copy().setName(name));
+    }
+    destination.append(tempDestination);
   }
 
-  private void joinInner(
-      Table destination,
-      Table left,
-      Table right,
-      int[] rightJoinColumnIndexes,
-      int[] ignoreColumns) {
+  private void joinInner(Table destination, Table left, Table right, int[] ignoreColumns) {
 
     Comparator<Row> comparator = getRowComparator(left, rightJoinColumnIndexes);
 
@@ -769,32 +759,35 @@ public class DataFrameJoiner {
   }
 
   private void updateDestinationRow(
-      Row destRow, Row sourceRow, int destColumnIndex, int sourceColumnIndex) {
-    ColumnType type = destRow.getColumnType(destColumnIndex);
+      Row destRow, Row sourceRow, int destColumnPosition, int sourceColumnPosition) {
+    ColumnType type = destRow.getColumnType(destColumnPosition);
     if (type.equals(ColumnType.INTEGER)) {
-      destRow.setInt(destColumnIndex, sourceRow.getInt(sourceColumnIndex));
+      destRow.setInt(destColumnPosition, sourceRow.getInt(sourceColumnPosition));
     } else if (type.equals(ColumnType.LONG)) {
-      destRow.setLong(destColumnIndex, sourceRow.getLong(sourceColumnIndex));
+      destRow.setLong(destColumnPosition, sourceRow.getLong(sourceColumnPosition));
     } else if (type.equals(ColumnType.SHORT)) {
-      destRow.setShort(destColumnIndex, sourceRow.getShort(sourceColumnIndex));
+      destRow.setShort(destColumnPosition, sourceRow.getShort(sourceColumnPosition));
     } else if (type.equals(ColumnType.STRING)) {
-      destRow.setString(destColumnIndex, sourceRow.getString(sourceColumnIndex));
+      destRow.setString(destColumnPosition, sourceRow.getString(sourceColumnPosition));
     } else if (type.equals(ColumnType.LOCAL_DATE)) {
-      destRow.setPackedDate(destColumnIndex, sourceRow.getPackedDate(sourceColumnIndex));
+      destRow.setPackedDate(destColumnPosition, sourceRow.getPackedDate(sourceColumnPosition));
     } else if (type.equals(ColumnType.LOCAL_TIME)) {
-      destRow.setPackedTime(destColumnIndex, sourceRow.getPackedTime(sourceColumnIndex));
+      destRow.setPackedTime(destColumnPosition, sourceRow.getPackedTime(sourceColumnPosition));
     } else if (type.equals(ColumnType.LOCAL_DATE_TIME)) {
-      destRow.setPackedDateTime(destColumnIndex, sourceRow.getPackedDateTime(sourceColumnIndex));
+      destRow.setPackedDateTime(
+          destColumnPosition, sourceRow.getPackedDateTime(sourceColumnPosition));
     } else if (type.equals(ColumnType.INSTANT)) {
-      destRow.setPackedInstant(destColumnIndex, sourceRow.getPackedInstant(sourceColumnIndex));
+      destRow.setPackedInstant(
+          destColumnPosition, sourceRow.getPackedInstant(sourceColumnPosition));
     } else if (type.equals(ColumnType.DOUBLE)) {
-      destRow.setDouble(destColumnIndex, sourceRow.getDouble(sourceColumnIndex));
+      destRow.setDouble(destColumnPosition, sourceRow.getDouble(sourceColumnPosition));
     } else if (type.equals(ColumnType.FLOAT)) {
-      destRow.setFloat(destColumnIndex, sourceRow.getFloat(sourceColumnIndex));
+      destRow.setFloat(destColumnPosition, sourceRow.getFloat(sourceColumnPosition));
     } else if (type.equals(ColumnType.BOOLEAN)) {
-      destRow.setBooleanAsByte(destColumnIndex, sourceRow.getBooleanAsByte(sourceColumnIndex));
+      destRow.setBooleanAsByte(
+          destColumnPosition, sourceRow.getBooleanAsByte(sourceColumnPosition));
     } else if (type.equals(ColumnType.TEXT)) {
-      destRow.setText(destColumnIndex, sourceRow.getText(sourceColumnIndex));
+      destRow.setText(destColumnPosition, sourceRow.getText(sourceColumnPosition));
     }
   }
 
@@ -833,25 +826,24 @@ public class DataFrameJoiner {
     return false;
   }
 
-  private void validateIndexes(
-      Table table1, int[] table1Indexes, Table table2, int[] table2Indexes) {
-    if (table1Indexes.length != table2Indexes.length) {
+  private void validateIndexes(Table table1, Table table2) {
+    if (leftJoinColumnIndexes.length != rightJoinColumnIndexes.length) {
       throw new IllegalArgumentException(
           "Cannot join using a different number of indices on each table: "
-              + Arrays.toString(table1Indexes)
+              + Arrays.toString(leftJoinColumnIndexes)
               + " and "
-              + Arrays.toString(table2Indexes));
+              + Arrays.toString(rightJoinColumnIndexes));
     }
-    for (int i = 0; i < table1Indexes.length; i++) {
+    for (int i = 0; i < leftJoinColumnIndexes.length; i++) {
       if (!table1
-          .column(table1Indexes[i])
+          .column(leftJoinColumnIndexes[i])
           .getClass()
-          .equals(table2.column(table2Indexes[i]).getClass())) {
+          .equals(table2.column(rightJoinColumnIndexes[i]).getClass())) {
         throw new IllegalArgumentException(
             "Cannot join using different index types: "
-                + Arrays.toString(table1Indexes)
+                + Arrays.toString(leftJoinColumnIndexes)
                 + " and "
-                + Arrays.toString(table2Indexes));
+                + Arrays.toString(rightJoinColumnIndexes));
       }
     }
   }
