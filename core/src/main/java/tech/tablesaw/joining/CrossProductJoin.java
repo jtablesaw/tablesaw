@@ -22,21 +22,11 @@ import tech.tablesaw.index.*;
 import tech.tablesaw.selection.Selection;
 
 /** Implements joins between two or more Tables */
-public class DataFrameJoinerOld {
-
-  /** The types of joins that are supported */
-  private enum JoinType {
-    INNER,
-    LEFT_OUTER,
-    RIGHT_OUTER,
-    FULL_OUTER
-  }
+public class CrossProductJoin implements JoinStrategy {
 
   private static final String TABLE_ALIAS = "T";
 
-  private final Table table;
-  private final String[] joinColumnNames;
-  private final List<Integer> joinColumnIndexes;
+  private List<Integer> joinColumnIndexes;
   private final AtomicInteger joinTableId = new AtomicInteger(2);
 
   /**
@@ -45,9 +35,7 @@ public class DataFrameJoinerOld {
    * @param table The table to join on.
    * @param joinColumnNames The join column names to join on.
    */
-  public DataFrameJoinerOld(Table table, String... joinColumnNames) {
-    this.table = table;
-    this.joinColumnNames = joinColumnNames;
+  public CrossProductJoin(Table table, String... joinColumnNames) {
     this.joinColumnIndexes = getJoinIndexes(table, joinColumnNames);
   }
 
@@ -61,118 +49,6 @@ public class DataFrameJoinerOld {
    */
   private List<Integer> getJoinIndexes(Table table, String[] columnNames) {
     return Arrays.stream(columnNames).map(table::columnIndex).collect(Collectors.toList());
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param tables The tables to join with
-   */
-  public Table inner(Table... tables) {
-    return inner(false, tables);
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param tables The tables to join with
-   */
-  public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
-    Table joined = table;
-    for (Table currT : tables) {
-      joined =
-          joinInternal(
-              joined, currT, JoinType.INNER, allowDuplicateColumnNames, false, joinColumnNames);
-    }
-    return joined;
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given column for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table inner(Table table2, String col2Name) {
-    return inner(table2, false, col2Name);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table inner(Table table2, String[] col2Names) {
-    return inner(table2, false, col2Names);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given column for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @return The resulting table
-   */
-  public Table inner(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
-    return inner(table2, allowDuplicateColumnNames, col2Name);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table inner(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    Table joinedTable;
-    joinedTable =
-        joinInternal(table, table2, JoinType.INNER, allowDuplicateColumnNames, false, col2Names);
-    return joinedTable;
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
-   *     table1 if {@code true} the join will return all join key columns in both table, which may
-   *     have difference when there are null values
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table inner(
-      Table table2,
-      boolean allowDuplicateColumnNames,
-      boolean keepAllJoinKeyColumns,
-      String... col2Names) {
-    return joinInternal(
-        table, table2, JoinType.INNER, allowDuplicateColumnNames, keepAllJoinKeyColumns, col2Names);
   }
 
   /**
@@ -190,14 +66,17 @@ public class DataFrameJoinerOld {
    * @param table2JoinColumnNames The names of the columns in table2 to join on.
    * @return the joined table
    */
-  private Table joinInternal(
+  public Table performJoin(
       Table table1,
       Table table2,
       JoinType joinType,
       boolean allowDuplicates,
       boolean keepAllJoinKeyColumns,
+      int[] leftJoinColumnIndexes,
       String... table2JoinColumnNames) {
 
+    this.joinColumnIndexes =
+        Arrays.stream(leftJoinColumnIndexes).boxed().collect(Collectors.toList());
     List<Integer> table2JoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
     List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
     List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
@@ -462,299 +341,6 @@ public class DataFrameJoinerOld {
 
   private String newName(String table2Alias, String columnName) {
     return table2Alias + "." + columnName;
-  }
-
-  /**
-   * Full outer join to the given tables assuming that they have a column of the name we're joining
-   * on
-   *
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table fullOuter(Table... tables) {
-    return fullOuter(false, tables);
-  }
-
-  /**
-   * Full outer join to the given tables assuming that they have a column of the name we're joining
-   * on
-   *
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table fullOuter(boolean allowDuplicateColumnNames, Table... tables) {
-    Table joined = table;
-
-    for (Table currT : tables) {
-      joined =
-          joinInternal(
-              joined,
-              currT,
-              JoinType.FULL_OUTER,
-              allowDuplicateColumnNames,
-              false,
-              joinColumnNames);
-    }
-    return joined;
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
-   *     table1 if {@code true} the join will return all join key columns in both table, which may
-   *     have difference when there are null values
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table fullOuter(
-      Table table2,
-      boolean allowDuplicateColumnNames,
-      boolean keepAllJoinKeyColumns,
-      String... col2Names) {
-    return joinInternal(
-        table,
-        table2,
-        JoinType.FULL_OUTER,
-        allowDuplicateColumnNames,
-        keepAllJoinKeyColumns,
-        col2Names);
-  }
-
-  /**
-   * Full outer join the joiner to the table2, using the given column for the second table and
-   * returns the resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table fullOuter(Table table2, String col2Name) {
-    return joinInternal(table, table2, JoinType.FULL_OUTER, false, false, col2Name);
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table leftOuter(Table... tables) {
-    return leftOuter(false, tables);
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table leftOuter(boolean allowDuplicateColumnNames, Table... tables) {
-    Table joined = table;
-    for (Table table2 : tables) {
-      joined =
-          joinInternal(
-              joined,
-              table2,
-              JoinType.LEFT_OUTER,
-              allowDuplicateColumnNames,
-              false,
-              joinColumnNames);
-    }
-    return joined;
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table leftOuter(Table table2, String[] col2Names) {
-    return leftOuter(table2, false, col2Names);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given column for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table leftOuter(Table table2, String col2Name) {
-    return leftOuter(table2, false, col2Name);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table leftOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    return joinInternal(
-        table, table2, JoinType.LEFT_OUTER, allowDuplicateColumnNames, false, col2Names);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
-   *     table1 if {@code true} the join will return all join key columns in both table, which may
-   *     have difference when there are null values
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table leftOuter(
-      Table table2,
-      boolean allowDuplicateColumnNames,
-      boolean keepAllJoinKeyColumns,
-      String... col2Names) {
-    return joinInternal(
-        table,
-        table2,
-        JoinType.LEFT_OUTER,
-        allowDuplicateColumnNames,
-        keepAllJoinKeyColumns,
-        col2Names);
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table rightOuter(Table... tables) {
-    return rightOuter(false, tables);
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table rightOuter(boolean allowDuplicateColumnNames, Table... tables) {
-    Table joined = table;
-    for (Table table2 : tables) {
-      joined =
-          joinInternal(
-              joined,
-              table2,
-              JoinType.RIGHT_OUTER,
-              allowDuplicateColumnNames,
-              false,
-              joinColumnNames);
-      joinColumnIndexes.clear();
-      joinColumnIndexes.addAll(getJoinIndexes(joined, joinColumnNames));
-    }
-    return joined;
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given column for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table rightOuter(Table table2, String col2Name) {
-    return rightOuter(table2, false, col2Name);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table rightOuter(Table table2, String[] col2Names) {
-    return rightOuter(table2, false, col2Names);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table rightOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    return joinInternal(
-        table, table2, JoinType.RIGHT_OUTER, allowDuplicateColumnNames, false, col2Names);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
-   *     table1 if {@code true} the join will return all join key columns in both table, which may
-   *     have difference when there are null values
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table rightOuter(
-      Table table2,
-      boolean allowDuplicateColumnNames,
-      boolean keepAllJoinKeyColumns,
-      String... col2Names) {
-    return joinInternal(
-        table,
-        table2,
-        JoinType.RIGHT_OUTER,
-        allowDuplicateColumnNames,
-        keepAllJoinKeyColumns,
-        col2Names);
   }
 
   /**
