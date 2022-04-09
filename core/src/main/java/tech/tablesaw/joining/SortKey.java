@@ -24,12 +24,12 @@ import tech.tablesaw.api.Row;
  * merge-sort-join. The sort order is defined such that the tables being joined are both sorted
  * independently on the join columns. All columns being sorted are sorted in ascending order
  */
-class SortKey implements Iterable<DataFrameJoinerNew.ColumnIndexPair> {
+class SortKey implements Iterable<DataFrameJoiner.ColumnIndexPair> {
 
   /** Describes how the tables are to be sorted */
-  private final ArrayList<DataFrameJoinerNew.ColumnIndexPair> sortOrder = new ArrayList<>();
+  private final ArrayList<DataFrameJoiner.ColumnIndexPair> sortOrder = new ArrayList<>();
 
-  private SortKey(DataFrameJoinerNew.ColumnIndexPair pair) {
+  private SortKey(DataFrameJoiner.ColumnIndexPair pair) {
     next(pair);
   }
 
@@ -39,7 +39,7 @@ class SortKey implements Iterable<DataFrameJoinerNew.ColumnIndexPair> {
    * @param pair The details of the sort, i.e. what type of column and the index of the columns in
    *     the respective tables.
    */
-  public static SortKey on(DataFrameJoinerNew.ColumnIndexPair pair) {
+  public static SortKey on(DataFrameJoiner.ColumnIndexPair pair) {
     return new SortKey(pair);
   }
 
@@ -49,7 +49,7 @@ class SortKey implements Iterable<DataFrameJoinerNew.ColumnIndexPair> {
    * @param pair The details of the sort, i.e. what type of column and the index of the columns in
    *     the respective tables.
    */
-  public SortKey next(DataFrameJoinerNew.ColumnIndexPair pair) {
+  public SortKey next(DataFrameJoiner.ColumnIndexPair pair) {
     sortOrder.add(pair);
     return this;
   }
@@ -68,10 +68,10 @@ class SortKey implements Iterable<DataFrameJoinerNew.ColumnIndexPair> {
    * Returns a new SortKey for the given ColumnIndexPairs. A table being sorted on three columns,
    * will have three pairs in the SortKey
    */
-  public static SortKey create(List<DataFrameJoinerNew.ColumnIndexPair> pairs) {
+  public static SortKey create(List<DataFrameJoiner.ColumnIndexPair> pairs) {
     SortKey key = null;
 
-    for (DataFrameJoinerNew.ColumnIndexPair pair : pairs) {
+    for (DataFrameJoiner.ColumnIndexPair pair : pairs) {
       if (key == null) { // key will be null the first time through
         key = new SortKey(pair);
       } else {
@@ -86,8 +86,8 @@ class SortKey implements Iterable<DataFrameJoinerNew.ColumnIndexPair> {
    * SortKey
    */
   static RowComparatorChain getChain(SortKey key) {
-    Iterator<DataFrameJoinerNew.ColumnIndexPair> entries = key.iterator();
-    DataFrameJoinerNew.ColumnIndexPair sort = entries.next();
+    Iterator<DataFrameJoiner.ColumnIndexPair> entries = key.iterator();
+    DataFrameJoiner.ColumnIndexPair sort = entries.next();
     Comparator<Row> comparator = comparator(sort);
 
     RowComparatorChain chain = new RowComparatorChain(comparator);
@@ -99,7 +99,7 @@ class SortKey implements Iterable<DataFrameJoinerNew.ColumnIndexPair> {
   }
 
   /** Returns a comparator for a given ColumnIndexPair */
-  private static Comparator<Row> comparator(DataFrameJoinerNew.ColumnIndexPair pair) {
+  private static Comparator<Row> comparator(DataFrameJoiner.ColumnIndexPair pair) {
     if (pair.type.equals(ColumnType.INTEGER)) {
       return (r11, r21) -> {
         int b1 = r11.getInt(pair.left);
@@ -172,7 +172,7 @@ class SortKey implements Iterable<DataFrameJoinerNew.ColumnIndexPair> {
 
   /** Returns the iterator for the SortKey */
   @Override
-  public Iterator<DataFrameJoinerNew.ColumnIndexPair> iterator() {
+  public Iterator<DataFrameJoiner.ColumnIndexPair> iterator() {
     return sortOrder.iterator();
   }
 
