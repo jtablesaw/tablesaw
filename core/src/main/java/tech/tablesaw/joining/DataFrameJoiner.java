@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import tech.tablesaw.api.*;
 
 /** Implements joins between two or more Tables */
-public class DataFrameJoiner {
+public class DataFrameJoiner extends AbstractJoiner {
 
   private final JoinStrategy strategy;
 
@@ -109,7 +109,7 @@ public class DataFrameJoiner {
     }
   }
 
-  private Table joinInternal(
+  Table joinInternal(
       Table table1,
       Table table2,
       JoinType joinType,
