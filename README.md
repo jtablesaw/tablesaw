@@ -8,16 +8,16 @@ Tablesaw
 
 ### Overview
 
-__Tablesaw__ is a dataframe and visualization library, as well as utilities for loading, transforming, filtering, and summarizing data. It's fast and careful with memory. If you work with data in Java, it may save you time and effort. Tablesaw also supports descriptive statistics and integrates well with the Smile machine learning library.
+__Tablesaw__ is a dataframe and visualization library that supports loading, cleaning, transforming, filtering, and summarizing data. If you work with data in Java, it may save you time and effort. Tablesaw also supports descriptive statistics and can be used to prepare data for working with machine learning libraries like Smile, Tribuo, H20.ai, DL4J.
 
 ### Tablesaw features
 
 #### Data processing & transformation
-* Import data from RDBMS, Excel, CSV, JSON, HTML, or Fixed Width text files, whether they are local or remote (http, S3, etc.)
+* Import data from RDBMS, Excel, CSV, TSV, JSON, HTML, or Fixed Width text files, whether they are local or remote (http, S3, etc.)
 * Export data to CSV, JSON, HTML or Fixed Width files.
 * Combine tables by appending or joining
 * Add and remove columns or rows
-* Sort, Group, Query
+* Sort, Group, Filter, Edit, Transpose, etc.
 * Map/Reduce operations
 * Handle missing values
 
