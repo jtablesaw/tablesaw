@@ -203,21 +203,6 @@ public abstract class Relation implements Iterable<Row> {
   /**
    * Returns an array of the column types of all columns in the relation, including duplicates as
    * appropriate, and maintaining order
-   *
-   * @deprecated for API name consistency. Use {@link #typeArray()} instead.
-   */
-  @Deprecated
-  public ColumnType[] columnTypes() {
-    ColumnType[] columnTypes = new ColumnType[columnCount()];
-    for (int i = 0; i < columnCount(); i++) {
-      columnTypes[i] = columns().get(i).type();
-    }
-    return columnTypes;
-  }
-
-  /**
-   * Returns an array of the column types of all columns in the relation, including duplicates as
-   * appropriate, and maintaining order
    */
   public ColumnType[] typeArray() {
     ColumnType[] columnTypes = new ColumnType[columnCount()];

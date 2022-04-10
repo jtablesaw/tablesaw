@@ -16,7 +16,7 @@ public abstract class Component {
 
   protected static final ObjectMapper mapper = new ObjectMapper();
 
-  {
+  static {
     mapper.enable(SerializationFeature.INDENT_OUTPUT);
     mapper.setSerializationInclusion(Include.NON_NULL);
     mapper.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);

@@ -275,13 +275,6 @@ public class ReadOptions {
       return this;
     }
 
-    /** Deprecated. Use dateFormat(DateTimeFormatter dateFormat) instead */
-    @Deprecated
-    public Builder dateFormat(String dateFormat) {
-      this.dateFormat = dateFormat;
-      return this;
-    }
-
     public Builder dateFormat(DateTimeFormatter dateFormat) {
       this.dateFormatter = dateFormat;
       return this;
@@ -292,22 +285,8 @@ public class ReadOptions {
       return this;
     }
 
-    /** Deprecated. Use timeFormat(DateTimeFormatter dateFormat) instead */
-    @Deprecated
-    public Builder timeFormat(String timeFormat) {
-      this.timeFormat = timeFormat;
-      return this;
-    }
-
     public Builder timeFormat(DateTimeFormatter dateFormat) {
       this.timeFormatter = dateFormat;
-      return this;
-    }
-
-    /** Deprecated. Use dateTimeFormat(DateTimeFormatter dateFormat) instead */
-    @Deprecated
-    public Builder dateTimeFormat(String dateTimeFormat) {
-      this.dateTimeFormat = dateTimeFormat;
       return this;
     }
 

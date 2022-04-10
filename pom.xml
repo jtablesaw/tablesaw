@@ -4,7 +4,7 @@
 
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.44.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Tablesaw</name>
     <description>High-performance Java Dataframe</description>
     <url>https://github.com/jtablesaw/tablesaw</url>
@@ -85,7 +85,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.1.1</version>
                     <configuration>
-                        <source>1.8</source>
+                        <source>11</source>
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
@@ -187,8 +187,8 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>11</source>
+                        <target>11</target>
                         <compilerArgument>-Xlint:all</compilerArgument>
                     </configuration>
                 </plugin>

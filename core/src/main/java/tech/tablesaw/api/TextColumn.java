@@ -18,6 +18,7 @@ import static tech.tablesaw.api.ColumnType.STRING;
 import static tech.tablesaw.api.ColumnType.TEXT;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
@@ -360,16 +361,11 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
     return subset(selection.toArray());
   }
 
-  // TODO (lwhite): This could avoid the append and do a list copy
   /** {@inheritDoc} */
   @Override
   public TextColumn copy() {
-    TextColumn newCol = create(name(), size());
-    int r = 0;
-    for (String string : this) {
-      newCol.set(r, string);
-      r++;
-    }
+    TextColumn newCol = create(name());
+    newCol.values = Lists.newArrayList(values);
     return newCol;
   }
 

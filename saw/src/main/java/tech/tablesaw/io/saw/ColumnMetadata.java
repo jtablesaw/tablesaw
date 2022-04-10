@@ -16,6 +16,7 @@ package tech.tablesaw.io.saw;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Objects;
+import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
@@ -38,6 +39,11 @@ public class ColumnMetadata {
   private String stringColumnKeySize;
   private int nextStringKey;
 
+  // these attributes are specific to boolean columns
+  private int trueBytesLength;
+  private int falseBytesLength;
+  private int missingBytesLength;
+
   ColumnMetadata(Column<?> column) {
     this.id = SawUtils.makeName(column.name());
     this.name = column.name();
@@ -58,6 +64,13 @@ public class ColumnMetadata {
       }
     } else {
       stringColumnKeySize = "";
+
+      if (column instanceof BooleanColumn) {
+        BooleanColumn bc = (BooleanColumn) column;
+        trueBytesLength = bc.trueBytes().length;
+        falseBytesLength = bc.falseBytes().length;
+        missingBytesLength = bc.missingBytes().length;
+      }
     }
   }
 
@@ -121,5 +134,29 @@ public class ColumnMetadata {
 
   public int getCardinality() {
     return cardinality;
+  }
+
+  /**
+   * For BooleanColumn only Returns the length of the byte array used for true values before it is
+   * compressed
+   */
+  public int getTrueBytesLength() {
+    return trueBytesLength;
+  }
+
+  /**
+   * For BooleanColumn only Returns the length of the byte array used for false values before it is
+   * compressed
+   */
+  public int getFalseBytesLength() {
+    return falseBytesLength;
+  }
+
+  /**
+   * For BooleanColumn only Returns the length of the byte array used for missing values before it
+   * is compressed
+   */
+  public int getMissingBytesLength() {
+    return missingBytesLength;
   }
 }

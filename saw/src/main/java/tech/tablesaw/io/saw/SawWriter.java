@@ -18,7 +18,6 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
-import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -47,6 +46,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
+import net.jpountz.lz4.LZ4BlockOutputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -75,24 +75,24 @@ public class SawWriter {
 
   private final SawMetadata sawMetadata;
   private final Table table;
-  private final WriteOptions writeOptions;
+  private final SawWriteOptions writeOptions;
   private final Path path;
 
-  public SawWriter(Path path, Table table, WriteOptions options) {
+  public SawWriter(Path path, Table table, SawWriteOptions options) {
     this.path = path;
     this.sawMetadata = new SawMetadata(table, options);
     this.table = table;
     this.writeOptions = options;
   }
 
-  public SawWriter(String path, Table table, WriteOptions options) {
+  public SawWriter(String path, Table table, SawWriteOptions options) {
     this.path = setPath(path);
     this.sawMetadata = new SawMetadata(table, options);
     this.table = table;
     this.writeOptions = options;
   }
 
-  public SawWriter(File file, Table table, WriteOptions options) {
+  public SawWriter(File file, Table table, SawWriteOptions options) {
     this.path = file.toPath();
     this.sawMetadata = new SawMetadata(table, options);
     this.table = table;
@@ -102,21 +102,21 @@ public class SawWriter {
   public SawWriter(Path path, Table table) {
     this.path = path;
     this.table = table;
-    this.writeOptions = WriteOptions.defaultOptions();
+    this.writeOptions = SawWriteOptions.defaultOptions();
     this.sawMetadata = new SawMetadata(table, writeOptions);
   }
 
   public SawWriter(File file, Table table) {
     this.path = file.toPath();
     this.table = table;
-    this.writeOptions = WriteOptions.defaultOptions();
+    this.writeOptions = SawWriteOptions.defaultOptions();
     this.sawMetadata = new SawMetadata(table, writeOptions);
   }
 
   public SawWriter(String path, Table table) {
     this.path = setPath(path);
     this.table = table;
-    this.writeOptions = WriteOptions.defaultOptions();
+    this.writeOptions = SawWriteOptions.defaultOptions();
     this.sawMetadata = new SawMetadata(table, writeOptions);
   }
 
@@ -440,6 +440,9 @@ public class SawWriter {
     FileOutputStream fos = new FileOutputStream(fileName);
     if (sawMetadata.getCompressionType().equals(CompressionType.NONE)) {
       return new DataOutputStream(fos);
+    } else if (sawMetadata.getCompressionType().equals(CompressionType.LZ4)) {
+      LZ4BlockOutputStream los = new LZ4BlockOutputStream(fos);
+      return new DataOutputStream(los);
     } else {
       SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
       return new DataOutputStream(sos);
@@ -544,18 +547,23 @@ public class SawWriter {
     }
   }
 
-  // TODO(lwhite): save the column using compressed bitmap?
   private void writeColumn(String fileName, BooleanColumn column) throws IOException {
+
+    byte[] trueBytes = column.trueBytes();
+    byte[] falseBytes = column.falseBytes();
+    byte[] missingBytes = column.missingBytes();
+    // write the data out
     try (DataOutputStream dos = columnOutputStream(fileName)) {
-      int i = 0;
-      ByteIterator iterator = column.byteIterator();
-      while (iterator.hasNext()) {
-        dos.writeByte(iterator.nextByte());
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
+      for (byte trueByte : trueBytes) {
+        dos.writeByte(trueByte);
+      }
+      dos.flush();
+      for (byte falseByte : falseBytes) {
+        dos.writeByte(falseByte);
+      }
+      dos.flush();
+      for (byte missingByte : missingBytes) {
+        dos.writeByte(missingByte);
       }
       dos.flush();
     }

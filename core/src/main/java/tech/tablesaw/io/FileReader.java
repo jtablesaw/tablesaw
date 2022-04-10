@@ -28,14 +28,6 @@ public abstract class FileReader {
   private static final int UNLIMITED_SAMPLE_SIZE = -1;
 
   /**
-   * @deprecated Use {@link #getColumnTypes(Reader, ReadOptions, int, AbstractParser, String[])} }
-   */
-  @Deprecated
-  public ColumnType[] getColumnTypes(
-      Reader reader, ReadOptions options, int linesToSkip, AbstractParser<?> parser) {
-    return getColumnTypes(reader, options, linesToSkip, parser, null);
-  }
-  /**
    * Returns an array containing the inferred columnTypes for the file being read, as calculated by
    * the ColumnType inference logic. These types may not be correct.
    */

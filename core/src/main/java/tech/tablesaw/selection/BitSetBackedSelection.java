@@ -14,17 +14,18 @@
 
 package tech.tablesaw.selection;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.BitSet;
+import java.util.PrimitiveIterator;
 import java.util.Random;
-import org.roaringbitmap.RoaringBitmap;
 
-/** A Selection implemented using bitmaps */
-public class BitmapBackedSelection implements Selection {
+/** A Selection implemented using java.util.BitSet */
+public class BitSetBackedSelection implements Selection {
 
   private static final Random random = new Random();
-  private final RoaringBitmap bitmap;
+  private final BitSet bitmap;
 
   /**
    * Returns a selection initialized from 0 to the given size, which cane be used for queries that
@@ -32,72 +33,73 @@ public class BitmapBackedSelection implements Selection {
    *
    * @param size The size The end point, exclusive
    */
-  public BitmapBackedSelection(int size) {
-    this.bitmap = new RoaringBitmap();
-    addRange(0, size);
+  public BitSetBackedSelection(int size) {
+    this.bitmap = new BitSet(size);
   }
 
   /** Constructs a selection containing the elements in the given array */
-  public BitmapBackedSelection(int[] arr) {
-    this.bitmap = new RoaringBitmap();
+  public BitSetBackedSelection(int[] arr) {
+    this.bitmap = new BitSet(arr.length);
     add(arr);
   }
 
   /** Constructs a selection containing the elements in the given bitmap */
-  public BitmapBackedSelection(RoaringBitmap bitmap) {
+  public BitSetBackedSelection(BitSet bitmap) {
     this.bitmap = bitmap;
   }
 
   /** Constructs an empty Selection */
-  public BitmapBackedSelection() {
-    this.bitmap = new RoaringBitmap();
+  public BitSetBackedSelection() {
+    this.bitmap = new BitSet();
   }
 
   /** {@inheritDoc} */
   @Override
-  public Selection removeRange(long start, long end) {
-    this.bitmap.remove(start, end);
+  public BitSetBackedSelection removeRange(long start, long end) {
+    this.bitmap.clear((int) start, (int) end);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public Selection flip(int rangeStart, int rangeEnd) {
-    this.bitmap.flip((long) rangeStart, rangeEnd);
+  public BitSetBackedSelection flip(int rangeStart, int rangeEnd) {
+    this.bitmap.flip(rangeStart, rangeEnd);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public Selection add(int... ints) {
-    bitmap.add(ints);
+  public BitSetBackedSelection add(int... ints) {
+    for (int i : ints) {
+      bitmap.set(i);
+    }
     return this;
   }
 
   @Override
   public String toString() {
-    return "Selection of size: " + bitmap.getCardinality();
+    return "Selection of size: " + bitmap.cardinality();
   }
 
   /** {@inheritDoc} */
   @Override
   public int size() {
-    return bitmap.getCardinality();
+    return bitmap.cardinality();
   }
 
   /** {@inheritDoc} */
   @Override
   public int[] toArray() {
-    return bitmap.toArray();
+    return bitmap.stream().toArray();
   }
 
-  private RoaringBitmap toBitmap(Selection otherSelection) {
-    if (otherSelection instanceof BitmapBackedSelection) {
-      return ((BitmapBackedSelection) otherSelection).bitmap.clone();
+  private BitSet toBitmap(Selection otherSelection) {
+    if (otherSelection instanceof BitSetBackedSelection) {
+      return (BitSet) ((BitSetBackedSelection) otherSelection).bitmap.clone();
     }
-    RoaringBitmap bits = new RoaringBitmap();
+    BitSet bits = new BitSet();
     for (int i : otherSelection) {
-      bits.add(i);
+      bits.set(i);
     }
     return bits;
   }
@@ -139,7 +141,7 @@ public class BitmapBackedSelection implements Selection {
   /** {@inheritDoc} */
   @Override
   public boolean contains(int i) {
-    return bitmap.contains(i);
+    return bitmap.get(i);
   }
 
   /**
@@ -150,14 +152,25 @@ public class BitmapBackedSelection implements Selection {
    */
   @Override
   public Selection addRange(int start, int end) {
-    bitmap.add((long) start, end);
+    bitmap.set(start, end);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public int get(int i) {
-    return bitmap.select(i);
+  public int get(int indexToFind) {
+    if (indexToFind >= size())
+      throw new IndexOutOfBoundsException("The requested index is larger than the selection");
+    int currentStep = 0;
+    int currentIndex = 0;
+    while (true) {
+      int value = bitmap.nextSetBit(currentIndex);
+      if (indexToFind == currentStep) {
+        return value;
+      }
+      currentStep++;
+      currentIndex = value + 1;
+    }
   }
 
   @Override
@@ -165,7 +178,7 @@ public class BitmapBackedSelection implements Selection {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    BitmapBackedSelection integers = (BitmapBackedSelection) o;
+    BitSetBackedSelection integers = (BitSetBackedSelection) o;
 
     return bitmap.equals(integers.bitmap);
   }
@@ -181,7 +194,7 @@ public class BitmapBackedSelection implements Selection {
 
     return new IntIterator() {
 
-      private final org.roaringbitmap.IntIterator iterator = bitmap.getIntIterator();
+      private final PrimitiveIterator.OfInt iterator = bitmap.stream().iterator();
 
       @Override
       public int nextInt() {
@@ -201,24 +214,19 @@ public class BitmapBackedSelection implements Selection {
   }
 
   /** Returns a Selection containing all indexes in the array */
-  protected static Selection with(int... rows) {
-    BitmapBackedSelection selection = new BitmapBackedSelection();
+  public static BitSetBackedSelection with(int... rows) {
+    BitSetBackedSelection selection = new BitSetBackedSelection();
     for (int i : rows) {
       selection.add(i);
     }
     return selection;
   }
 
-  /** Returns a Selection containing all indexes in the array */
-  protected static Selection fromBitmap(RoaringBitmap bitmap) {
-    return new BitmapBackedSelection(bitmap);
-  }
-
   /**
    * Returns a Selection containing all indexes in the range start (inclusive) to end (exclusive),
    */
-  protected static Selection withRange(int start, int end) {
-    BitmapBackedSelection selection = new BitmapBackedSelection();
+  public static BitSetBackedSelection withRange(int start, int end) {
+    BitSetBackedSelection selection = new BitSetBackedSelection();
     selection.addRange(start, end);
     return selection;
   }
@@ -234,15 +242,15 @@ public class BitmapBackedSelection implements Selection {
     Preconditions.checkArgument(excludedRangeEnd <= totalRangeEnd);
     Preconditions.checkArgument(totalRangeEnd >= totalRangeStart);
     Preconditions.checkArgument(excludedRangeEnd >= excludedRangeStart);
-    Selection selection = Selection.withRange(totalRangeStart, totalRangeEnd);
-    Selection exclusion = Selection.withRange(excludedRangeStart, excludedRangeEnd);
+    Selection selection = BitSetBackedSelection.withRange(totalRangeStart, totalRangeEnd);
+    Selection exclusion = BitSetBackedSelection.withRange(excludedRangeStart, excludedRangeEnd);
     selection.andNot(exclusion);
     return selection;
   }
 
   /** Returns an randomly generated selection of size N where Max is the largest possible value */
-  protected static Selection selectNRowsAtRandom(int n, int max) {
-    Selection selection = new BitmapBackedSelection();
+  protected static BitSetBackedSelection selectNRowsAtRandom(int n, int max) {
+    BitSetBackedSelection selection = new BitSetBackedSelection();
     if (n > max) {
       throw new IllegalArgumentException(
           "Illegal arguments: N (" + n + ") greater than Max (" + max + ")");
@@ -273,5 +281,10 @@ public class BitmapBackedSelection implements Selection {
       selection.add(row);
     }
     return selection;
+  }
+
+  @VisibleForTesting
+  BitSet bitSet() {
+    return bitmap;
   }
 }

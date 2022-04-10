@@ -730,7 +730,7 @@ public class CsvReaderTest {
   }
 
   @Test
-  public void testReadFailure() throws IOException {
+  public void testReadFailure() {
     // TODO (lwhite): These tests don't fail. What was their intent?
     Table table1 =
         Table.read()
