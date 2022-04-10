@@ -18,11 +18,12 @@ public class SortMergeJoin implements JoinStrategy {
   private static final String RIGHT_RECORD_ID_NAME = "_right_record_id_";
 
   private static final String TABLE_ALIAS = "T";
+  public static final String PLACEHOLDER_COL_PREFIX = "Placeholder_";
 
-  private int[] leftJoinColumnIndexes;
-  private int[] rightJoinColumnIndexes;
+  private int[] leftJoinColumnPositions;
+  private int[] rightJoinColumnPositions;
 
-  private final AtomicInteger joinTableId = new AtomicInteger(2);
+  private final AtomicInteger joinTableId = new AtomicInteger(1);
 
   /**
    * Constructor.
@@ -31,7 +32,7 @@ public class SortMergeJoin implements JoinStrategy {
    * @param joinColumnNames The join column names to join on.
    */
   public SortMergeJoin(Table table, String... joinColumnNames) {
-    this.leftJoinColumnIndexes = getJoinIndexes(table, joinColumnNames);
+    this.leftJoinColumnPositions = getJoinIndexes(table, joinColumnNames);
   }
 
   /**
@@ -75,11 +76,13 @@ public class SortMergeJoin implements JoinStrategy {
       int[] leftJoinColumnIndexes,
       String... table2JoinColumnNames) {
 
-    this.leftJoinColumnIndexes = leftJoinColumnIndexes;
-    rightJoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
+    this.leftJoinColumnPositions = leftJoinColumnIndexes;
+    rightJoinColumnPositions = getJoinIndexes(table2, table2JoinColumnNames);
 
     table1 = table1.sortOn(leftJoinColumnIndexes);
-    table2 = table2.sortOn(rightJoinColumnIndexes);
+    System.out.println(table1);
+    table2 = table2.sortOn(rightJoinColumnPositions);
+    System.out.println(table2);
 
     Table result = Table.create(table1.name());
 
@@ -97,7 +100,7 @@ public class SortMergeJoin implements JoinStrategy {
     table2.addColumns(indexRight);
     result.addColumns(IntColumn.create(RIGHT_RECORD_ID_NAME));
 
-    validateIndexes(table1, table2);
+    validateJoinColumns(table1, table2);
 
     if (table1.rowCount() == 0 && (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
       // Handle special case of empty table here so it doesn't fall through to the behavior
@@ -122,7 +125,7 @@ public class SortMergeJoin implements JoinStrategy {
     if (!keepAllJoinKeyColumns) {
       result = result.removeColumns(resultIgnoreColIndexes);
     } else {
-      renameColumnIndexes(result, table1, table2, resultIgnoreColIndexes);
+      renameJoinColumns(result, table1, table2, resultIgnoreColIndexes);
     }
     return result;
   }
@@ -132,12 +135,22 @@ public class SortMergeJoin implements JoinStrategy {
    *
    * @param resultIgnoreColIndexes The positions of the secondary join columns
    */
-  private void renameColumnIndexes(
+  private void renameJoinColumns(
       Table result, Table left, Table right, int[] resultIgnoreColIndexes) {
 
-    for (int i = 0; i < resultIgnoreColIndexes.length; i++) {
-      // TODO: Implement me, consider Left vs Right and possible renaming to avoid dupe names
-      // Column c = result.column(resultIgnoreColIndexes.)
+    String table2Alias = TABLE_ALIAS + joinTableId.get();
+
+    for (int position : resultIgnoreColIndexes) {
+      String realName = result.column(position).name().replace(PLACEHOLDER_COL_PREFIX, "");
+      if (position >= left.columnCount()) {
+        if (result.containsColumn(realName.toLowerCase())) {
+          result.column(position).setName(newName(table2Alias, realName));
+        } else {
+          result.column(position).setName(realName);
+        }
+      } else {
+        result.column(position).setName(realName);
+      }
     }
   }
 
@@ -173,20 +186,20 @@ public class SortMergeJoin implements JoinStrategy {
     // placeholders.
     // For right join, mark the join columns in table1 as placeholders.
     // Keep track of which join columns are placeholders so they can be ignored.
-    int[] ignoreColumns = new int[leftJoinColumnIndexes.length];
+    int[] ignoreColumns = new int[leftJoinColumnPositions.length];
     int ignoreIndex = 0;
     for (int c = 0; c < cols.length; c++) {
       if (joinType == JoinType.RIGHT_OUTER) {
-        if (c < table1.columnCount() && indexesContainsValue(leftJoinColumnIndexes, c)) {
+        if (c < table1.columnCount() && indexesContainsValue(leftJoinColumnPositions, c)) {
           ignoreColumns[ignoreIndex] = c;
-          cols[c].setName("Placeholder_" + ignoreIndex);
+          cols[c].setName(PLACEHOLDER_COL_PREFIX + cols[c].name());
           ignoreIndex++;
         }
       } else { // JoinType is LEFT, INNER, or FULL
         int table2Index = c + table1.columnCount();
-        if (indexesContainsValue(rightJoinColumnIndexes, c)) {
+        if (indexesContainsValue(rightJoinColumnPositions, c)) {
           ignoreColumns[ignoreIndex] = table2Index;
-          cols[table2Index].setName("Placeholder_" + ignoreIndex);
+          cols[table2Index].setName(PLACEHOLDER_COL_PREFIX + cols[table2Index].name());
           ignoreIndex++;
         }
       }
@@ -198,10 +211,11 @@ public class SortMergeJoin implements JoinStrategy {
           Arrays.stream(cols)
               .map(Column::name)
               .map(String::toLowerCase)
+              .map(e -> e.replaceFirst(PLACEHOLDER_COL_PREFIX.toLowerCase(), ""))
               .limit(table1.columnCount())
               .collect(Collectors.toSet());
 
-      String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
+      String table2Alias = TABLE_ALIAS + joinTableId.incrementAndGet();
       for (int c = table1.columnCount(); c < cols.length; c++) {
         String columnName = cols[c].name();
         if (table1ColNames.contains(columnName.toLowerCase())) {
@@ -213,17 +227,97 @@ public class SortMergeJoin implements JoinStrategy {
     return ignoreColumns;
   }
 
+  private void joinInner(Table destination, Table left, Table right, int[] ignoreColumns) {
+
+    Comparator<Row> comparator = getRowComparator(left, rightJoinColumnPositions);
+
+    Row leftRow = left.row(0);
+    Row rightRow = right.row(0);
+
+    // Marks the position of the first record in right table that matches a specific join value
+    int mark = -1;
+
+    while (leftRow.hasNext() || rightRow.hasNext()) {
+      if (mark == -1) {
+        while (comparator.compare(leftRow, rightRow) < 0 && leftRow.hasNext()) leftRow.next();
+        while (comparator.compare(leftRow, rightRow) > 0 && rightRow.hasNext()) rightRow.next();
+        // set the position of the first matching record on the right side
+        mark = rightRow.getRowNumber();
+      }
+      if (comparator.compare(leftRow, rightRow) == 0 && (leftRow.hasNext() || rightRow.hasNext())) {
+        addValues(destination, leftRow, rightRow, ignoreColumns);
+        if (rightRow.hasNext()) {
+          rightRow.next();
+        } else {
+          rightRow.at(mark);
+          if (leftRow.hasNext()) {
+            leftRow.next();
+          }
+          mark = -1;
+        }
+      } else {
+        if (rightRow.hasNext() && leftRow.hasNext()) {
+          rightRow.at(mark);
+          leftRow.next();
+          mark = -1;
+        } else {
+          if (leftRow.hasNext()) leftRow.next();
+          if (!leftRow.hasNext()) {
+            break;
+          }
+        }
+      }
+    }
+    // add the last value if you end on a match
+    if (comparator.compare(leftRow, rightRow) == 0) {
+      addValues(destination, leftRow, rightRow, ignoreColumns);
+    }
+  }
+
   private void joinLeft(Table destination, Table left, Table right, int[] ignoreColumns) {
 
     joinInner(destination, left, right, ignoreColumns);
     Selection unmatched =
         left.intColumn(LEFT_RECORD_ID_NAME)
             .isNotIn(destination.intColumn(LEFT_RECORD_ID_NAME).unique());
-    addLeftOnlyValues(destination, left, unmatched, true);
+    addLeftOnlyValues(destination, left, unmatched);
   }
 
-  private void addLeftOnlyValues(
-      Table destination, Table left, Selection unmatched, boolean fullJoin) {
+  private void joinRight(Table destination, Table left, Table right, int[] ignoreColumns) {
+    joinInner(destination, left, right, ignoreColumns);
+    Selection unmatched =
+        right
+            .intColumn(RIGHT_RECORD_ID_NAME)
+            .isNotIn(destination.intColumn(RIGHT_RECORD_ID_NAME).unique());
+    addRightOnlyValues(destination, left, right, unmatched);
+  }
+
+  private void joinFull(Table destination, Table left, Table right, int[] ignoreColumns) {
+
+    Table tempDestination = destination.emptyCopy();
+
+    joinInner(destination, left, right, ignoreColumns);
+
+    Selection unmatchedLeft =
+        left.intColumn(LEFT_RECORD_ID_NAME)
+            .isNotIn(destination.intColumn(LEFT_RECORD_ID_NAME).unique());
+    addLeftOnlyValues(destination, left, unmatchedLeft);
+
+    Selection unmatchedRight =
+        right
+            .intColumn(RIGHT_RECORD_ID_NAME)
+            .isNotIn(destination.intColumn(RIGHT_RECORD_ID_NAME).unique());
+    addRightOnlyValues(tempDestination, left, right, unmatchedRight);
+    for (int i = 0; i < ignoreColumns.length; i++) {
+      String name = tempDestination.columnNames().get(leftJoinColumnPositions[i]);
+      tempDestination.replaceColumn(
+          leftJoinColumnPositions[i],
+          tempDestination.column(ignoreColumns[i]).copy().setName(name));
+    }
+    destination.append(tempDestination);
+  }
+
+  private void addLeftOnlyValues(Table destination, Table left, Selection unmatched) {
     for (Row leftRow : left.where(unmatched)) {
       Row destRow = destination.appendRow();
       for (int c = 0; c < leftRow.columnCount() - 1; c++) {
@@ -247,85 +341,6 @@ public class SortMergeJoin implements JoinStrategy {
     }
   }
 
-  private void joinRight(Table destination, Table left, Table right, int[] ignoreColumns) {
-    joinInner(destination, left, right, ignoreColumns);
-    Selection unmatched =
-        right
-            .intColumn(RIGHT_RECORD_ID_NAME)
-            .isNotIn(destination.intColumn(RIGHT_RECORD_ID_NAME).unique());
-    addRightOnlyValues(destination, left, right, unmatched);
-  }
-
-  private void joinFull(Table destination, Table left, Table right, int[] ignoreColumns) {
-
-    Table tempDestination = destination.emptyCopy();
-
-    joinInner(destination, left, right, ignoreColumns);
-
-    Selection unmatchedLeft =
-        left.intColumn(LEFT_RECORD_ID_NAME)
-            .isNotIn(destination.intColumn(LEFT_RECORD_ID_NAME).unique());
-    addLeftOnlyValues(destination, left, unmatchedLeft, true);
-
-    Selection unmatchedRight =
-        right
-            .intColumn(RIGHT_RECORD_ID_NAME)
-            .isNotIn(destination.intColumn(RIGHT_RECORD_ID_NAME).unique());
-    addRightOnlyValues(tempDestination, left, right, unmatchedRight);
-    for (int i = 0; i < ignoreColumns.length; i++) {
-      String name = tempDestination.columnNames().get(leftJoinColumnIndexes[i]);
-      tempDestination.replaceColumn(
-          leftJoinColumnIndexes[i], tempDestination.column(ignoreColumns[i]).copy().setName(name));
-    }
-    destination.append(tempDestination);
-  }
-
-  private void joinInner(Table destination, Table left, Table right, int[] ignoreColumns) {
-
-    Comparator<Row> comparator = getRowComparator(left, rightJoinColumnIndexes);
-
-    Row leftRow = left.row(0);
-    Row rightRow = right.row(0);
-
-    // Marks the position of the first record in right table that matches a specific join value
-    int mark = -1;
-
-    while (leftRow.hasNext() || rightRow.hasNext()) {
-      if (mark == -1) {
-        while (comparator.compare(leftRow, rightRow) < 0 && leftRow.hasNext()) leftRow.next();
-        while (comparator.compare(leftRow, rightRow) > 0 && rightRow.hasNext()) rightRow.next();
-        mark =
-            rightRow
-                .getRowNumber(); // set the position of the first matching record on the right side
-      }
-      if (comparator.compare(leftRow, rightRow) == 0 && (leftRow.hasNext() || rightRow.hasNext())) {
-        addValues(destination, leftRow, rightRow, ignoreColumns);
-        if (rightRow.hasNext()) {
-          rightRow.next();
-        } else {
-          rightRow.at(mark);
-          if (leftRow.hasNext()) {
-            leftRow.next();
-          }
-          mark = -1;
-        }
-      } else {
-        if (rightRow.hasNext() && leftRow.hasNext()) {
-          rightRow.at(mark);
-          leftRow.next();
-          mark = -1;
-        } else {
-          if (leftRow.hasNext()) leftRow.next();
-          break;
-        }
-      }
-    }
-    // add the last value if you end on a match
-    if (comparator.compare(leftRow, rightRow) == 0) {
-      addValues(destination, leftRow, rightRow, ignoreColumns);
-    }
-  }
-
   private Comparator<Row> getRowComparator(Table left, int[] rightJoinColumnIndexes) {
     List<ColumnIndexPair> pairs = createJoinColumnPairs(left, rightJoinColumnIndexes);
     return SortKey.getChain(SortKey.create(pairs));
@@ -333,11 +348,11 @@ public class SortMergeJoin implements JoinStrategy {
 
   private List<ColumnIndexPair> createJoinColumnPairs(Table left, int[] rightJoinColumnIndexes) {
     List<ColumnIndexPair> pairs = new ArrayList<>();
-    for (int i = 0; i < leftJoinColumnIndexes.length; i++) {
+    for (int i = 0; i < leftJoinColumnPositions.length; i++) {
       ColumnIndexPair columnIndexPair =
           new ColumnIndexPair(
-              left.column(leftJoinColumnIndexes[i]).type(),
-              leftJoinColumnIndexes[i],
+              left.column(leftJoinColumnPositions[i]).type(),
+              leftJoinColumnPositions[i],
               rightJoinColumnIndexes[i]);
       pairs.add(columnIndexPair);
     }
@@ -380,8 +395,8 @@ public class SortMergeJoin implements JoinStrategy {
   private void addValues(Table destination, Row leftRow, Row rightRow, int[] ignoreColumns) {
 
     Row destRow = destination.appendRow();
-    // update positionally, but take into account the RECORD_ID COLUMNS at the end of the dest table
 
+    // update positionally, but take into account the RECORD_ID COLUMNS at the end of the dest table
     int leftColumnCount = leftRow.columnCount();
     int rightColumnCount = rightRow.columnCount();
 
@@ -412,24 +427,24 @@ public class SortMergeJoin implements JoinStrategy {
     return false;
   }
 
-  private void validateIndexes(Table table1, Table table2) {
-    if (leftJoinColumnIndexes.length != rightJoinColumnIndexes.length) {
+  private void validateJoinColumns(Table table1, Table table2) {
+    if (leftJoinColumnPositions.length != rightJoinColumnPositions.length) {
       throw new IllegalArgumentException(
           "Cannot join using a different number of indices on each table: "
-              + Arrays.toString(leftJoinColumnIndexes)
+              + Arrays.toString(leftJoinColumnPositions)
               + " and "
-              + Arrays.toString(rightJoinColumnIndexes));
+              + Arrays.toString(rightJoinColumnPositions));
     }
-    for (int i = 0; i < leftJoinColumnIndexes.length; i++) {
+    for (int i = 0; i < leftJoinColumnPositions.length; i++) {
       if (!table1
-          .column(leftJoinColumnIndexes[i])
+          .column(leftJoinColumnPositions[i])
           .getClass()
-          .equals(table2.column(rightJoinColumnIndexes[i]).getClass())) {
+          .equals(table2.column(rightJoinColumnPositions[i]).getClass())) {
         throw new IllegalArgumentException(
             "Cannot join using different index types: "
-                + Arrays.toString(leftJoinColumnIndexes)
+                + Arrays.toString(leftJoinColumnPositions)
                 + " and "
-                + Arrays.toString(rightJoinColumnIndexes));
+                + Arrays.toString(rightJoinColumnPositions));
       }
     }
   }

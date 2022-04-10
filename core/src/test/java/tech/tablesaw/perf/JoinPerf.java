@@ -27,7 +27,7 @@ public class JoinPerf {
   void testTimeout() {
     Table a = createXYZTable("a", 500);
     Table b = createXYZTable("b", 500);
-    assertTimeout(Duration.ofSeconds(1), () -> a.joinOn("x", "y", "z").inner(b));
+    assertTimeout(Duration.ofSeconds(1), () -> a.joinOn("x", "y", "z").with(b).join());
   }
 
   @Test
@@ -54,7 +54,7 @@ public class JoinPerf {
     public void run() {
       a.sortDescendingOn("x", "y", "z");
       b.sortDescendingOn("x", "y", "z");
-      Table result = a.joinOn("x", "y", "z").inner(b);
+      Table result = a.joinOn("x", "y", "z").with(b).join();
     }
   }
 }

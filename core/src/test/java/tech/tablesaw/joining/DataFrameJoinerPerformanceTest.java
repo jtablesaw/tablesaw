@@ -1,6 +1,8 @@
 package tech.tablesaw.joining;
 
 import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static tech.tablesaw.joining.JoinType.FULL_OUTER;
+import static tech.tablesaw.joining.JoinType.LEFT_OUTER;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -58,7 +60,7 @@ public class DataFrameJoinerPerformanceTest {
     addFillerColumn(customers, 5, "customer");
     Table orders = createOrdersTable(numberOrders, numberCustomers);
     addFillerColumn(orders, 5, "order");
-    assertTimeout(Duration.ofMillis(500), () -> customers.joinOn("customerId").inner(orders));
+    assertTimeout(Duration.ofMillis(500), () -> customers.joinOn("customerId").with(orders).join());
   }
 
   @Test
@@ -69,7 +71,7 @@ public class DataFrameJoinerPerformanceTest {
     addFillerColumn(customers, 5, "customer");
     Table orders = createOrdersTable(numberOrders, numberCustomers);
     addFillerColumn(orders, 5, "order");
-    assertTimeout(Duration.ofSeconds(1), () -> orders.joinOn("customerId").inner(customers));
+    assertTimeout(Duration.ofSeconds(1), () -> orders.joinOn("customerId").with(customers).join());
   }
 
   @Test
@@ -81,8 +83,9 @@ public class DataFrameJoinerPerformanceTest {
     // Number customers here is larger. Will create rows orders without matching customers.
     Table orders = createOrdersTable(numberOrders, numberCustomers);
     addFillerColumn(orders, 5, "order");
-
-    assertTimeout(Duration.ofSeconds(1), () -> orders.joinOn("customerId").leftOuter(customers));
+    assertTimeout(
+        Duration.ofSeconds(1),
+        () -> orders.joinOn("customerId").with(customers).type(LEFT_OUTER).join());
   }
 
   @Test
@@ -95,7 +98,9 @@ public class DataFrameJoinerPerformanceTest {
     Table orders = createOrdersTable(numberOrders, numberCustomers);
     addFillerColumn(orders, 5, "order");
 
-    assertTimeout(Duration.ofSeconds(1), () -> customers.joinOn("customerId").leftOuter(orders));
+    assertTimeout(
+        Duration.ofSeconds(1),
+        () -> customers.joinOn("customerId").with(orders).type(LEFT_OUTER).join());
   }
 
   @Test
@@ -108,6 +113,8 @@ public class DataFrameJoinerPerformanceTest {
     Table orders = createOrdersTable(numberOrders, 2_000);
     addFillerColumn(orders, 5, "order");
 
-    assertTimeout(Duration.ofSeconds(1), () -> customers.joinOn("customerId").fullOuter(orders));
+    assertTimeout(
+        Duration.ofSeconds(1),
+        () -> customers.joinOn("customerId").with(orders).type(FULL_OUTER).join());
   }
 }
