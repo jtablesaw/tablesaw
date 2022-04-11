@@ -82,8 +82,9 @@ Plot.show(ScatterPlot.create("K=3", plot_data, "lon", "lat", "cluster"));
  
  Your plot should look similiar to the following. You can clearly see the three chosen clusters represented by the color of each pickup location. (Notice that the data mirrors the shape of Manhatten and the surrounding area)
  
- TODO Insert image(s) here
- 
+ <p align="center">
+<img src="https://github.com/jbsooter/tablesaw/blob/721e8c71d5d524252b4fe6e82dd2aa094552cfb4/docs/userguide/images/ml/k_means/Uber_NYC_K3.png" width="650" height = "500">
+</p>
  
  A practical issue encountered when using the K-means algorithm is the choice of the number of clusters, K. A common approach is to create an "Elbow Curve", which is a plot of the distortion (sum of squared distances from the centroid of a cluster) against chosen values of k. Let's create an Elbow Curve for each value of k from 2,10). 
  
