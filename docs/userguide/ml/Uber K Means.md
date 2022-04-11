@@ -138,52 +138,56 @@ So far in our analysis, we have sought to develop a general recommendation for w
 **Late Night (11 pm-5 am)**
 
 ```Java
-\\Late Night (11 pm-5 am)
+//Late Night (11 pm-5 am)
 Table lateNight = pickups.where(pickups.timeColumn("PickupTime").isAfter(LocalTime.of(23,0)).or(pickups.timeColumn("PickupTime").isBefore(LocalTime.of(5,0))));
-KMeans modelLateNight = KMeans.fit(lateNight.as().doubleMatrix(),4);
+KMeans modelLateNight = KMeans.fit(lateNight.as().doubleMatrix(),5);
 Table plot_data_lateNight = lateNight.copy();
 plot_data_lateNight.addColumns(IntColumn.create("cluster",modelLateNight.y));
-Plot.show(ScatterPlot.create("Late Night, K=4", plot_data_lateNight, "lon", "lat", "cluster"));
+Plot.show(ScatterPlot.create("Late Night, K=5", plot_data_lateNight, "lon", "lat", "cluster"));
 ```
 
 **Weekday Mornings and Evenings**
 ```Java
-Table weekdays = pickups.where(pickups.dateTimeColumn("PickupDateTime")
+  Table weekdays = pickups.where(pickups.dateTimeColumn("PickupDateTime")
                 .isMonday()
                 .or(pickups.dateTimeColumn("PickupDateTime").isTuesday())
                 .or(pickups.dateTimeColumn("PickupDateTime").isWednesday())
                 .or(pickups.dateTimeColumn("PickupDateTime").isThursday()));
-                
-\\Weekday Morning (M-Th, 6 am-10 am)
+
+//Weekday Morning (M-Th, 6 am-10 am)
 Table weekdayMorning = weekdays.where(weekdays.timeColumn("PickupTime").isAfter(LocalTime.of(6, 0))
-                .and(weekdays.timeColumn("PickupTime").isBefore(LocalTime.of(10,0)));
-KMeans modelWeekdayMorning = KMeans.fit(weekdayMorning.as().doubleMatrix(),4);
+   .and(weekdays.timeColumn("PickupTime").isBefore(LocalTime.of(10,0))));
+KMeans modelWeekdayMorning = KMeans.fit(weekdayMorning.as().doubleMatrix(),5);
 Table plot_data_WeekdayMorning = weekdayMorning.copy();
 plot_data_WeekdayMorning.addColumns(IntColumn.create("cluster",modelWeekdayMorning.y));
-Plot.show(ScatterPlot.create("Weekday Morning, K=4", plot_data_WeekdayMorning, "lon", "lat", "cluster"));               
-\\Weekday Evening (M-Th, 5 pm-10 pm)
+Plot.show(ScatterPlot.create("Weekday Morning, K=5", plot_data_WeekdayMorning, "lon", "lat", "cluster"));
+//Weekday Evening (M-Th, 5 pm-10 pm)
 Table weekdayEvening =  weekdays.where(weekdays.timeColumn("PickupTime").isAfter(LocalTime.of(17, 0))
-                .and(weekdays.timeColumn("PickupTime").isBefore(LocalTime.of(22,0)));
-                
-KMeans modelWeekdayEvening = KMeans.fit(weekdayEvening.as().doubleMatrix(),4);
+   .and(weekdays.timeColumn("PickupTime").isBefore(LocalTime.of(22,0))));
+
+KMeans modelWeekdayEvening = KMeans.fit(weekdayEvening.as().doubleMatrix(),5);
 Table plot_data_WeekdayEvening = weekdayEvening.copy();
 plot_data_WeekdayEvening.addColumns(IntColumn.create("cluster",modelWeekdayEvening.y));
-Plot.show(ScatterPlot.create("Weekday Evening, K=4", plot_data_WeekdayEvening, "lon", "lat", "cluster"));    
+Plot.show(ScatterPlot.create("Weekday Evening, K=5", plot_data_WeekdayEvening, "lon", "lat", "cluster")); 
 ```
 
 **Weekends**
 ```Java
-\\Weekend
+ //Weekend
 Table weekend =  pickups.where(pickups.dateTimeColumn("PickupDateTime")
-                .isSaturday()
-                .or(pickups.dateTimeColumn("PickupDateTime").isSunday())
-                
-KMeans modelWeekend = KMeans.fit(weekend.as().doubleMatrix(),4);
+                 .isSaturday()
+                 .or(pickups.dateTimeColumn("PickupDateTime").isSunday()));
+
+KMeans modelWeekend = KMeans.fit(weekend.as().doubleMatrix(),5);
 Table plot_data_Weekend = weekend.copy();
 plot_data_Weekend.addColumns(IntColumn.create("cluster",modelWeekend.y));
-Plot.show(ScatterPlot.create("Weekend, K=4", plot_data_Weekend, "lon", "lat", "cluster"));                
- 
+Plot.show(ScatterPlot.create("Weekend, K=5", plot_data_Weekend, "lon", "lat", "cluster"));              
  ```
- 
-//TODO add pictures of all 4 model plots
- 
+
+  <p align="center">
+ <img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekday_Morning_K5.png" width="325" height = "250"><img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekday_Evening_K5.png" width="325" height = "250">
+</p>
+
+  <p align="center">
+ <img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Late_Night_K5.png" width="325" height = "250"><img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekend_K5.png" width="325" height = "250">
+</p>
