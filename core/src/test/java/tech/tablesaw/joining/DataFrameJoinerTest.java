@@ -2,6 +2,7 @@ package tech.tablesaw.joining;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.joining.JoinType.*;
 
 import com.google.common.base.Joiner;
 import java.util.Arrays;
@@ -514,7 +515,11 @@ public class DataFrameJoinerTest {
   @Test
   public void innerJoinWithDoubleBirdsCatsFishDouble() {
     Table joined =
-        DOUBLE_INDEXED_BIRDS.joinOn("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_FISH);
+        DOUBLE_INDEXED_BIRDS
+            .joinOn("ID")
+            .type(INNER)
+            .with(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_FISH)
+            .join();
     assertEquals(4, joined.columnCount());
     assertEquals(1, joined.rowCount());
   }
@@ -522,21 +527,26 @@ public class DataFrameJoinerTest {
   @Test
   public void innerJoinWithDoubleDogsCatsBirdsDouble() {
     Table joined =
-        DOUBLE_INDEXED_FISH.joinOn("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_BIRDS);
+        DOUBLE_INDEXED_FISH
+            .joinOn("ID")
+            .type(INNER)
+            .with(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_BIRDS)
+            .join();
     assertEquals(4, joined.columnCount());
     assertEquals(1, joined.rowCount());
   }
 
   @Test
   public void innerJoinWithDoubleDogsCatsFishVarargs() {
-    Table joined = DOUBLE_INDEXED_MICE.joinOn("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_FISH);
+    Table joined =
+        DOUBLE_INDEXED_MICE.joinOn("ID").with(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_FISH).join();
     assertEquals(4, joined.columnCount());
     assertEquals(2, joined.rowCount());
   }
 
   @Test
   public void innerJoinWithDoublesSimple() {
-    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").inner(DOUBLE_INDEXED_DOGS);
+    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").with(DOUBLE_INDEXED_DOGS).join();
     assertEquals(3, joined.columnCount());
     assertEquals(3, joined.rowCount());
     assertEquals(3, joined.column("ID").size());
@@ -544,7 +554,8 @@ public class DataFrameJoinerTest {
 
   @Test
   public void innerJoinWithDoubles() {
-    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").inner(DOUBLE_INDEXED_DOGS, "ID");
+    Table joined =
+        DOUBLE_INDEXED_PEOPLE.joinOn("ID").with(DOUBLE_INDEXED_DOGS).rightJoinColumns("ID").join();
     assertEquals(3, joined.columnCount());
     assertEquals(3, joined.rowCount());
   }
@@ -556,7 +567,13 @@ public class DataFrameJoinerTest {
     Table table2 =
         DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isFalse());
 
-    Table joined = table1.joinOn("ID").inner(table2, "ID", true);
+    Table joined =
+        table1
+            .joinOn("ID")
+            .with(table2)
+            .rightJoinColumns("ID")
+            .allowDuplicateColumnNames(true)
+            .join();
     assertEquals(5, joined.columnCount());
     assertEquals(4, joined.rowCount());
   }
@@ -568,27 +585,47 @@ public class DataFrameJoinerTest {
     Table table2 =
         DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isFalse());
 
-    Table joined = table1.joinOn("ID").rightOuter(table2, true, "ID");
+    Table joined =
+        table1
+            .joinOn("ID")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .rightJoinColumns("ID")
+            .type(RIGHT_OUTER)
+            .join();
     assertEquals(5, joined.columnCount());
     assertEquals(4, joined.rowCount());
   }
 
   @Test
-  public void leftOuterJoinWithDuplicateColumnNames() {
+  public void leftOuterWithDuplicateColumnNames() {
     Table table1 =
         DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isTrue());
     Table table2 =
         DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isFalse());
 
-    Table joined = table1.joinOn("ID").leftOuter(table2, true, "ID");
+    Table joined =
+        table1
+            .joinOn("ID")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .type(LEFT_OUTER)
+            .rightJoinColumns("ID")
+            .join();
     assertEquals(5, joined.columnCount());
     assertEquals(4, joined.rowCount());
     assertEquals(4, joined.column("ID").size());
   }
 
   @Test
-  public void leftOuterJoinWithDoubles() {
-    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").leftOuter(DOUBLE_INDEXED_DOGS, "ID");
+  public void leftOuterWithDoubles() {
+    Table joined =
+        DOUBLE_INDEXED_PEOPLE
+            .joinOn("ID")
+            .with(DOUBLE_INDEXED_DOGS)
+            .rightJoinColumns("ID")
+            .type(LEFT_OUTER)
+            .join();
     assertEquals(3, joined.columnCount());
     assertEquals(4, joined.rowCount());
     assertEquals(4, joined.column("ID").size());
@@ -596,15 +633,23 @@ public class DataFrameJoinerTest {
 
   @Test
   public void rightOuterJoinWithDoubles() {
-    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").rightOuter(DOUBLE_INDEXED_DOGS, "ID");
+    Table joined =
+        DOUBLE_INDEXED_PEOPLE
+            .joinOn("ID")
+            .with(DOUBLE_INDEXED_DOGS)
+            .type(RIGHT_OUTER)
+            .rightJoinColumns("ID")
+            .join();
     assertEquals(3, joined.columnCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(4, joined.rowCount());
     assertEquals(4, joined.column("ID").size());
   }
 
   @Test
   public void rightOuterJoinWithDoubles2() {
-    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").rightOuter(DOUBLE_INDEXED_DOGS);
+    Table joined =
+        DOUBLE_INDEXED_PEOPLE.joinOn("ID").with(DOUBLE_INDEXED_DOGS).type(RIGHT_OUTER).join();
     assertEquals(3, joined.columnCount());
     assertEquals(4, joined.rowCount());
     assertEquals(4, joined.column("ID").size());
@@ -612,7 +657,12 @@ public class DataFrameJoinerTest {
 
   @Test
   public void rightOuterJoinWithDoubles2Reverse() {
-    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").rightOuter(DOUBLE_INDEXED_DOGS_REVERSE);
+    Table joined =
+        DOUBLE_INDEXED_PEOPLE
+            .joinOn("ID")
+            .with(DOUBLE_INDEXED_DOGS_REVERSE)
+            .type(RIGHT_OUTER)
+            .join();
     assertEquals(3, joined.columnCount());
     assertEquals(4, joined.rowCount());
     assertEquals(4, joined.column("ID").size());
@@ -621,7 +671,11 @@ public class DataFrameJoinerTest {
   @Test
   public void rightOuterJoinWithDoubles3() {
     Table joined =
-        DOUBLE_INDEXED_PEOPLE.joinOn("ID").rightOuter(DOUBLE_INDEXED_DOGS, DOUBLE_INDEXED_CATS);
+        DOUBLE_INDEXED_PEOPLE
+            .joinOn("ID")
+            .with(DOUBLE_INDEXED_DOGS, DOUBLE_INDEXED_CATS)
+            .type(RIGHT_OUTER)
+            .join();
     assertTrue(
         joined.columnNames().containsAll(Arrays.asList("ID", "Name", "Dog Name", "Cat Name")));
     assertEquals(4, joined.rowCount());
@@ -637,7 +691,8 @@ public class DataFrameJoinerTest {
 
   @Test
   public void rightOuterJoinWithDoubles4() {
-    Table joined = DOUBLE_INDEXED_PEOPLE.joinOn("ID").rightOuter(DOUBLE_INDEXED_DOGS);
+    Table joined =
+        DOUBLE_INDEXED_PEOPLE.joinOn("ID").with(DOUBLE_INDEXED_DOGS).type(RIGHT_OUTER).join();
     assertTrue(joined.columnNames().containsAll(Arrays.asList("ID", "Name", "Dog Name")));
     assertEquals(4, joined.rowCount());
     assertEquals(4, joined.column("ID").size());
@@ -649,25 +704,36 @@ public class DataFrameJoinerTest {
   }
 
   @Test
-  public void leftOuterJoinWithDoubles2() {
-    Table joined = DOUBLE_INDEXED_DOGS.joinOn("ID").leftOuter(DOUBLE_INDEXED_PEOPLE, "ID");
-    assertEquals(3, joined.columnCount());
-    assertEquals(4, joined.rowCount());
-    assertEquals(4, joined.column("ID").size());
-  }
-
-  @Test
-  public void leftOuterJoinWithDoubles3() {
-    Table joined = DOUBLE_INDEXED_DOGS.joinOn("ID").leftOuter(DOUBLE_INDEXED_PEOPLE);
-    assertEquals(3, joined.columnCount());
-    assertEquals(4, joined.rowCount());
-    assertEquals(4, joined.column("ID").size());
-  }
-
-  @Test
-  public void leftOuterJoinWithDoubles4() {
+  public void leftOuterWithDoubles2() {
     Table joined =
-        DOUBLE_INDEXED_DOGS.joinOn("ID").leftOuter(DOUBLE_INDEXED_PEOPLE, DOUBLE_INDEXED_CATS);
+        DOUBLE_INDEXED_DOGS
+            .joinOn("ID")
+            .with(DOUBLE_INDEXED_PEOPLE)
+            .rightJoinColumns("ID")
+            .type(LEFT_OUTER)
+            .join();
+    assertEquals(3, joined.columnCount());
+    assertEquals(4, joined.rowCount());
+    assertEquals(4, joined.column("ID").size());
+  }
+
+  @Test
+  public void leftOuterWithDoubles3() {
+    Table joined =
+        DOUBLE_INDEXED_DOGS.joinOn("ID").with(DOUBLE_INDEXED_PEOPLE).type(LEFT_OUTER).join();
+    assertEquals(3, joined.columnCount());
+    assertEquals(4, joined.rowCount());
+    assertEquals(4, joined.column("ID").size());
+  }
+
+  @Test
+  public void leftOuterWithDoubles4() {
+    Table joined =
+        DOUBLE_INDEXED_DOGS
+            .joinOn("ID")
+            .with(DOUBLE_INDEXED_PEOPLE, DOUBLE_INDEXED_CATS)
+            .type(LEFT_OUTER)
+            .join();
     assertTrue(
         joined.columnNames().containsAll(Arrays.asList("ID", "Dog Name", "Name", "Cat Name")));
     assertEquals(4, joined.column("ID").size());
@@ -682,22 +748,26 @@ public class DataFrameJoinerTest {
 
   @Test
   public void innerJoin() {
-    Table joined = SP500.joinOn("Date").inner(ONE_YEAR, "Date");
+    Table joined = SP500.joinOn("Date").with(ONE_YEAR).rightJoinColumns("Date").join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(3, joined.columnCount());
     assertEquals(5, joined.rowCount());
   }
 
   @Test
   public void innerJoinSingleColumn() {
-    Table joined = SP500.selectColumns("Date").joinOn("Date").inner(ONE_YEAR.selectColumns("Date"));
+    Table joined =
+        SP500.selectColumns("Date").joinOn("Date").with(ONE_YEAR.selectColumns("Date")).join();
     assertEquals(5, joined.rowCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(1, joined.columnCount());
   }
 
   @Test
   public void innerJoinSingleColumnOnRight() {
-    Table joined = SP500.joinOn("Date").inner(ONE_YEAR.selectColumns("Date"));
+    Table joined = SP500.joinOn("Date").with(ONE_YEAR.selectColumns("Date")).join();
     assertEquals(5, joined.rowCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(2, joined.columnCount());
   }
 
@@ -709,7 +779,8 @@ public class DataFrameJoinerTest {
         Table.create(
             ONE_YEAR.dateColumn("Date"), ONE_YEAR.dateColumn("Date").copy().setName("Date2"));
 
-    Table joined = table1.joinOn("Date", "Date2").inner(table2);
+    Table joined = table1.joinOn("Date", "Date2").with(table2).join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(5, joined.rowCount());
     assertEquals(2, joined.columnCount());
   }
@@ -717,29 +788,43 @@ public class DataFrameJoinerTest {
   @Test
   public void innerJoinWithBoolean() {
     Table joined =
-        DUPLICATE_COL_NAME_DOGS.joinOn("Good").inner(true, DUPLICATE_COL_NAME_DOGS.copy());
+        DUPLICATE_COL_NAME_DOGS
+            .joinOn("Good")
+            .allowDuplicateColumnNames(true)
+            .with(DUPLICATE_COL_NAME_DOGS)
+            .join();
     assertEquals(5, joined.columnCount());
     assertEquals(32, joined.rowCount());
   }
 
   @Test
-  public void leftOuterJoin() {
-    Table joined = SP500.joinOn("Date").leftOuter(ONE_YEAR, "Date");
+  public void leftOuter() {
+    Table joined =
+        SP500.joinOn("Date").with(ONE_YEAR).rightJoinColumns("Date").type(LEFT_OUTER).join();
     assertEquals(3, joined.columnCount());
     assertEquals(6, joined.rowCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(6, joined.column("Date").size());
   }
 
   @Test
   public void innerJoinDuplicateKeysFirstTable() {
-    Table joined = ANIMAL_NAMES.joinOn("Animal").inner(ANIMAL_FEED, "Animal");
+    Table joined =
+        ANIMAL_NAMES.joinOn("Animal").with(ANIMAL_FEED).rightJoinColumns("Animal").join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(3, joined.columnCount());
     assertEquals(4, joined.rowCount());
   }
 
   @Test
-  public void leftOuterJoinDuplicateKeysFirstTable() {
-    Table joined = ANIMAL_NAMES.joinOn("Animal").leftOuter(ANIMAL_FEED, "Animal");
+  public void leftOuterDuplicateKeysFirstTable() {
+    Table joined =
+        ANIMAL_NAMES
+            .joinOn("Animal")
+            .with(ANIMAL_FEED)
+            .type(LEFT_OUTER)
+            .rightJoinColumns("Animal")
+            .join();
     assertEquals(3, joined.columnCount());
     assertEquals(6, joined.rowCount());
     assertEquals(6, joined.column("Animal").size());
@@ -747,7 +832,9 @@ public class DataFrameJoinerTest {
 
   @Test
   public void innerJoinDuplicateKeysSecondTable() {
-    Table joined = ANIMAL_FEED.joinOn("Animal").inner(ANIMAL_NAMES, "Animal");
+    Table joined =
+        ANIMAL_FEED.joinOn("Animal").with(ANIMAL_NAMES).rightJoinColumns("Animal").join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(3, joined.columnCount());
     assertEquals(4, joined.rowCount());
   }
@@ -760,14 +847,22 @@ public class DataFrameJoinerTest {
     TextColumn nameCol = names.stringColumn("Animal").asTextColumn();
     nameCol = nameCol.where(Selection.withRange(0, feed.rowCount()));
     feed.replaceColumn("Animal", nameCol);
-    Table joined = ANIMAL_FEED.joinOn("Animal").inner(ANIMAL_NAMES, "Animal");
+    Table joined =
+        ANIMAL_FEED.joinOn("Animal").with(ANIMAL_NAMES).rightJoinColumns("Animal").join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(3, joined.columnCount());
     assertEquals(4, joined.rowCount());
   }
 
   @Test
-  public void leftOuterJoinDuplicateKeysSecondTable() {
-    Table joined = ANIMAL_FEED.joinOn("Animal").leftOuter(ANIMAL_NAMES, "Animal");
+  public void leftOuterDuplicateKeysSecondTable() {
+    Table joined =
+        ANIMAL_FEED
+            .joinOn("Animal")
+            .with(ANIMAL_NAMES)
+            .rightJoinColumns("Animal")
+            .type(LEFT_OUTER)
+            .join();
     assertEquals(3, joined.columnCount());
     assertEquals(6, joined.rowCount());
     assertEquals(6, joined.column("Animal").size());
@@ -775,7 +870,7 @@ public class DataFrameJoinerTest {
 
   @Test
   public void fullOuterJoinJustTable() {
-    Table joined = ANIMAL_FEED.joinOn("Animal").fullOuter(ANIMAL_NAMES);
+    Table joined = ANIMAL_FEED.joinOn("Animal").with(ANIMAL_NAMES).type(FULL_OUTER).join();
     assertEquals(3, joined.columnCount());
     assertEquals(8, joined.rowCount());
     assertEquals(8, joined.column("Animal").size());
@@ -788,7 +883,13 @@ public class DataFrameJoinerTest {
 
   @Test
   public void fullOuterJoin() {
-    Table joined = ANIMAL_FEED.joinOn("Animal").fullOuter(ANIMAL_NAMES, "Animal");
+    Table joined =
+        ANIMAL_FEED
+            .joinOn("Animal")
+            .with(ANIMAL_NAMES)
+            .type(FULL_OUTER)
+            .rightJoinColumns("Animal")
+            .join();
     assertEquals(3, joined.columnCount());
     assertEquals(8, joined.rowCount());
     assertEquals(8, joined.column("Animal").size());
@@ -801,14 +902,25 @@ public class DataFrameJoinerTest {
 
   @Test
   public void fullOuterJoinColTwoOnlyJoinKeys() {
-    Table joined = ANIMAL_FEED.joinOn("Animal").fullOuter(ANIMAL_NAMES.selectColumns("Animal"));
+    Table joined =
+        ANIMAL_FEED
+            .joinOn("Animal")
+            .with(ANIMAL_NAMES.selectColumns("Animal"))
+            .type(FULL_OUTER)
+            .join();
     assertEquals(2, joined.columnCount());
     assertEquals(8, joined.rowCount());
   }
 
   @Test
   public void fullOuterJoinNew() {
-    Table joined = ANIMAL_FEED.joinOn("Animal").fullOuter(true, ANIMAL_NAMES);
+    Table joined =
+        ANIMAL_FEED
+            .joinOn("Animal")
+            .allowDuplicateColumnNames(true)
+            .type(FULL_OUTER)
+            .with(ANIMAL_NAMES)
+            .join();
     assertEquals(3, joined.columnCount());
     assertEquals(8, joined.rowCount());
     assertEquals(8, joined.column("Animal").size());
@@ -824,7 +936,13 @@ public class DataFrameJoinerTest {
     Table table1 = createGOODS1();
     Table table2 = createGOODS2();
     Table table3 = createGOODS3();
-    Table joined = table1.joinOn("Name").fullOuter(true, table2, table3);
+    Table joined =
+        table1
+            .joinOn("Name")
+            .allowDuplicateColumnNames(true)
+            .with(table2, table3)
+            .type(FULL_OUTER)
+            .join();
     assertEquals(7, joined.columnCount());
     assertTrue(
         joined
@@ -850,7 +968,13 @@ public class DataFrameJoinerTest {
     Table table3 = createGOODS3();
     Table table2 = createGOODS2();
     Table table1 = createGOODS1();
-    Table joined = table3.joinOn("Name").fullOuter(true, table2, table1);
+    Table joined =
+        table3
+            .joinOn("Name")
+            .allowDuplicateColumnNames(true)
+            .type(FULL_OUTER)
+            .with(table2, table1)
+            .join();
     assertEquals(7, joined.columnCount());
     assertTrue(
         joined
@@ -876,7 +1000,13 @@ public class DataFrameJoinerTest {
     Table table2 = createGOODS2();
     Table table3 = createGOODS3();
     Table table1 = createGOODS1();
-    Table joined = table2.joinOn("Name").fullOuter(true, table3, table1);
+    Table joined =
+        table2
+            .joinOn("Name")
+            .allowDuplicateColumnNames(true)
+            .type(FULL_OUTER)
+            .with(table3, table1)
+            .join();
     assertEquals(7, joined.columnCount());
     assertTrue(
         joined
@@ -901,7 +1031,7 @@ public class DataFrameJoinerTest {
   public void innerJoinStudentInstructorOnAge() {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
-    Table joined = table1.joinOn("Age").inner(true, table2);
+    Table joined = table1.joinOn("Age").allowDuplicateColumnNames(true).with(table2).join();
     assert (joined
         .columnNames()
         .containsAll(Arrays.asList("T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear")));
@@ -916,7 +1046,7 @@ public class DataFrameJoinerTest {
     List<String> originalColumns =
         table2.columns().stream().map(Column::name).collect(Collectors.toList());
 
-    table1.joinOn("Age").inner(true, table2);
+    table1.joinOn("Age").with(table2).allowDuplicateColumnNames(true).join();
 
     List<String> newColumns =
         table2.columns().stream().map(Column::name).collect(Collectors.toList());
@@ -927,10 +1057,11 @@ public class DataFrameJoinerTest {
   public void innerJoinInstructorStudentOnAge() {
     Table table1 = createINSTRUCTOR();
     Table table2 = createSTUDENT();
-    Table joined = table1.joinOn("Age").inner(true, table2);
+    Table joined = table1.joinOn("Age").with(table2).allowDuplicateColumnNames(true).join();
     assert (joined
         .columnNames()
         .containsAll(Arrays.asList("T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear")));
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(16, joined.columnCount());
     assertEquals(14, joined.rowCount());
   }
@@ -940,12 +1071,13 @@ public class DataFrameJoinerTest {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
     Table table3 = createCLASS();
-    Table joined = table1.joinOn("Age").inner(true, table2, table3);
+    Table joined = table1.joinOn("Age").with(table2, table3).allowDuplicateColumnNames(true).join();
     assert (joined
         .columnNames()
         .containsAll(
             Arrays.asList("T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear", "T3.ID")));
     assertEquals(24, joined.columnCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(14, joined.rowCount());
   }
 
@@ -955,7 +1087,8 @@ public class DataFrameJoinerTest {
     Table table2 = createINSTRUCTOR();
     Table table3 = createCLASS();
     Table table4 = createDEPTHEAD();
-    Table joined = table1.joinOn("Age").inner(true, table2, table3, table4);
+    Table joined =
+        table1.joinOn("Age").with(table2, table3, table4).allowDuplicateColumnNames(true).join();
     assert (joined
         .columnNames()
         .containsAll(
@@ -971,6 +1104,7 @@ public class DataFrameJoinerTest {
                 "T4.Last",
                 "T4.City",
                 "T4.State")));
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(30, joined.columnCount());
     assertEquals(14, joined.rowCount());
   }
@@ -981,7 +1115,8 @@ public class DataFrameJoinerTest {
     Table table2 = createINSTRUCTOR();
     Table table3 = createCLASS();
     Table table4 = createDEPTHEAD();
-    Table joined = table1.joinOn("Age").inner(true, table2, table3, table4);
+    Table joined =
+        table1.joinOn("Age").with(table2, table3, table4).allowDuplicateColumnNames(true).join();
     List<String> expectedCol =
         Arrays.asList(
             "ID",
@@ -1016,6 +1151,7 @@ public class DataFrameJoinerTest {
             "T4.State");
     assert (String.join("", joined.columnNames()).equals(String.join("", expectedCol)));
     assertEquals(30, joined.columnCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(28, joined.rowCount());
   }
 
@@ -1024,7 +1160,8 @@ public class DataFrameJoinerTest {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
     Table table3 = createDEPTHEAD();
-    Table joined = table1.joinOn("State", "Age").inner(true, table2, table3);
+    Table joined =
+        table1.joinOn("State", "Age").with(table2, table3).allowDuplicateColumnNames(true).join();
     assert (joined
         .columnNames()
         .containsAll(
@@ -1038,6 +1175,7 @@ public class DataFrameJoinerTest {
                 "T3.Last",
                 "T3.City")));
     assertEquals(20, joined.columnCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(1, joined.rowCount());
   }
   // Tests for left table is larger than right table, multiple cols
@@ -1048,7 +1186,8 @@ public class DataFrameJoinerTest {
     Table table3 = createDEPTHEAD();
     // table1 join table 2 will have 6 rows, so drop last 5 rows of table3 for test
     table3 = table3.dropRows(5, 6, 7, 8, 9);
-    Table joined = table1.joinOn("State", "Age").inner(true, table2, table3);
+    Table joined =
+        table1.joinOn("State", "Age").with(table2, table3).allowDuplicateColumnNames(true).join();
     List<String> expectedCol =
         Arrays.asList(
             "ID",
@@ -1072,6 +1211,7 @@ public class DataFrameJoinerTest {
             "Dept",
             "T3.City");
     // test for col order
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assert (String.join("", joined.columnNames()).equals(String.join("", expectedCol)));
     assertEquals(20, joined.columnCount());
     assertEquals(2, joined.rowCount());
@@ -1081,7 +1221,9 @@ public class DataFrameJoinerTest {
   public void innerJoinStudentInstructorOnStateAge() {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
-    Table joined = table1.joinOn("State", "Age").inner(true, table2);
+    Table joined =
+        table1.joinOn("State", "Age").with(table2).allowDuplicateColumnNames(true).join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(15, joined.columnCount());
     assertEquals(3, joined.rowCount());
   }
@@ -1090,7 +1232,12 @@ public class DataFrameJoinerTest {
   public void innerJoinStudentInstructorOnStateAgeGradYear() {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
-    Table joined = table1.joinOn("State", "Age", "GradYear").inner(true, table2);
+    Table joined =
+        table1
+            .joinOn("State", "Age", "GradYear")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .join();
     assertEquals(14, joined.columnCount());
     assertEquals(2, joined.rowCount());
   }
@@ -1099,7 +1246,13 @@ public class DataFrameJoinerTest {
   public void leftJoinStudentInstructorOnStateAge() {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
-    Table joined = table1.joinOn("State", "Age").leftOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("State", "Age")
+            .allowDuplicateColumnNames(true)
+            .with(table2)
+            .type(LEFT_OUTER)
+            .join();
     assertEquals(15, joined.columnCount());
     assertEquals(10, joined.rowCount());
     assertEquals(10, joined.column("State").size());
@@ -1111,7 +1264,13 @@ public class DataFrameJoinerTest {
     Table table1 = createGOODS1();
     Table table2 = createGOODS2();
     Table table3 = createGOODS3();
-    Table joined = table1.joinOn("Name").leftOuter(true, table2, table3);
+    Table joined =
+        table1
+            .joinOn("Name")
+            .allowDuplicateColumnNames(true)
+            .with(table2, table3)
+            .type(LEFT_OUTER)
+            .join();
     assertEquals(7, joined.columnCount());
     assertTrue(
         joined
@@ -1119,6 +1278,7 @@ public class DataFrameJoinerTest {
             .containsAll(
                 Arrays.asList("ID", "Name", "Price", "T2.ID", "T2.Price", "T3.ID", "T3.Price")));
     assertEquals(6, joined.rowCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(6, joined.column("Price").size());
     assertEquals(6, joined.column("T2.ID").size());
     assertEquals(2, joined.column("T2.ID").countMissing());
@@ -1131,8 +1291,14 @@ public class DataFrameJoinerTest {
     Table table1 = createHOUSE();
     Table table2 = createBOAT();
     Table joined =
-        table1.joinOn("Bedrooms", "Owner").inner(table2, new String[] {"Bedrooms", "Owner"});
+        table1
+            .joinOn("Bedrooms", "Owner")
+            .with(table2)
+            .rightJoinColumns("Bedrooms", "Owner")
+            .join();
     assertEquals(6, joined.columnCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(2, joined.rowCount());
     assertEquals(2, joined.column("Bedrooms").size());
   }
@@ -1144,7 +1310,11 @@ public class DataFrameJoinerTest {
     Table joined =
         table1
             .joinOn("Style", "Bedrooms", "Owner")
-            .inner(table2, new String[] {"Type", "Bedrooms", "Owner"});
+            .with(table2)
+            .rightJoinColumns("Type", "Bedrooms", "Owner")
+            .join();
+
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(5, joined.columnCount());
     assertEquals(1, joined.rowCount());
   }
@@ -1153,7 +1323,14 @@ public class DataFrameJoinerTest {
   public void fullJoinHouseBoatOnBedroomsOwner() {
     Table table1 = createHOUSE();
     Table table2 = createBOAT();
-    Table joined = table1.joinOn("Bedrooms", "Owner").fullOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("Bedrooms", "Owner")
+            .allowDuplicateColumnNames(true)
+            .with(table2)
+            .type(FULL_OUTER)
+            .join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(6, joined.columnCount());
     assertEquals(7, joined.rowCount());
     assertEquals(7, joined.column("Style").size());
@@ -1174,7 +1351,13 @@ public class DataFrameJoinerTest {
   public void fullJoinHouse10Boat10OnBedroomsOwner() {
     Table table1 = createHOUSE10();
     Table table2 = createBOAT10();
-    Table joined = table1.joinOn("Bedrooms", "Owner").fullOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("Bedrooms", "Owner")
+            .allowDuplicateColumnNames(true)
+            .with(table2)
+            .type(FULL_OUTER)
+            .join();
     assertEquals(6, joined.columnCount());
     assertEquals(11, joined.rowCount());
     assertEquals(11, joined.column("Bedrooms").size());
@@ -1195,7 +1378,13 @@ public class DataFrameJoinerTest {
   public void fullJoinBnBBoat10OnBedroomsOwner() {
     Table table1 = createBEDANDBREAKFAST();
     Table table2 = createBOAT10();
-    Table joined = table1.joinOn("Bedrooms", "SoldDate").fullOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("Bedrooms", "SoldDate")
+            .allowDuplicateColumnNames(true)
+            .with(table2)
+            .type(FULL_OUTER)
+            .join();
     assertEquals(6, joined.columnCount());
     assertEquals(11, joined.rowCount());
     assertEquals(11, joined.column("Design").size());
@@ -1217,7 +1406,12 @@ public class DataFrameJoinerTest {
     Table table1 = createHOUSE();
     Table table2 = createBOAT();
     Table joined =
-        table1.joinOn("Bedrooms", "Owner").leftOuter(table2, new String[] {"Bedrooms", "Owner"});
+        table1
+            .joinOn("Bedrooms", "Owner")
+            .with(table2)
+            .type(LEFT_OUTER)
+            .rightJoinColumns("Bedrooms", "Owner")
+            .join();
     assertEquals(6, joined.columnCount());
     assertEquals(4, joined.rowCount());
   }
@@ -1229,7 +1423,10 @@ public class DataFrameJoinerTest {
     Table joined =
         table1
             .joinOn("Style", "Bedrooms", "Owner")
-            .leftOuter(table2, new String[] {"Type", "Bedrooms", "Owner"});
+            .with(table2)
+            .type(LEFT_OUTER)
+            .rightJoinColumns("Type", "Bedrooms", "Owner")
+            .join();
     assertEquals(5, joined.columnCount());
     assertEquals(4, joined.rowCount());
   }
@@ -1239,7 +1436,12 @@ public class DataFrameJoinerTest {
     Table table1 = createHOUSE();
     Table table2 = createBOAT();
     Table joined =
-        table1.joinOn("Bedrooms", "Owner").rightOuter(table2, new String[] {"Bedrooms", "Owner"});
+        table1
+            .joinOn("Bedrooms", "Owner")
+            .with(table2)
+            .type(RIGHT_OUTER)
+            .rightJoinColumns("Bedrooms", "Owner")
+            .join();
     assertEquals(6, joined.columnCount());
     assertEquals(5, joined.rowCount());
   }
@@ -1251,7 +1453,10 @@ public class DataFrameJoinerTest {
     Table joined =
         table1
             .joinOn("Style", "Bedrooms", "Owner")
-            .rightOuter(table2, new String[] {"Type", "Bedrooms", "Owner"});
+            .with(table2)
+            .type(RIGHT_OUTER)
+            .rightJoinColumns("Type", "Bedrooms", "Owner")
+            .join();
     assertEquals(5, joined.columnCount());
     assertEquals(5, joined.rowCount());
   }
@@ -1260,7 +1465,13 @@ public class DataFrameJoinerTest {
   public void rightJoinStudentInstructorOnStateAge() {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
-    Table joined = table1.joinOn("State", "Age").rightOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("State", "Age")
+            .with(table2)
+            .type(RIGHT_OUTER)
+            .allowDuplicateColumnNames(true)
+            .join();
     assertEquals(15, joined.columnCount());
     assertEquals(10, joined.rowCount());
   }
@@ -1269,7 +1480,13 @@ public class DataFrameJoinerTest {
   public void innerJoinStudentInstructorOnStateName() {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
-    Table joined = table1.joinOn("State", "FirstName").inner(table2, true, "State", "First");
+    Table joined =
+        table1
+            .joinOn("State", "FirstName")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .rightJoinColumns("State", "First")
+            .join();
     assertEquals(15, joined.columnCount());
     assertEquals(5, joined.rowCount());
   }
@@ -1278,7 +1495,14 @@ public class DataFrameJoinerTest {
   public void leftJoinStudentInstructorOnStateName() {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
-    Table joined = table1.joinOn("State", "FirstName").leftOuter(table2, true, "State", "First");
+    Table joined =
+        table1
+            .joinOn("State", "FirstName")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .type(LEFT_OUTER)
+            .rightJoinColumns("State", "First")
+            .join();
     assertEquals(15, joined.columnCount());
     assertEquals(10, joined.rowCount());
   }
@@ -1287,7 +1511,14 @@ public class DataFrameJoinerTest {
   public void rightJoinStudentInstructorOnStateName() {
     Table table1 = createSTUDENT();
     Table table2 = createINSTRUCTOR();
-    Table joined = table1.joinOn("State", "FirstName").rightOuter(table2, true, "State", "First");
+    Table joined =
+        table1
+            .joinOn("State", "FirstName")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .rightJoinColumns("State", "First")
+            .type(RIGHT_OUTER)
+            .join();
     assertEquals(15, joined.columnCount());
     assertEquals(10, joined.rowCount());
   }
@@ -1296,7 +1527,14 @@ public class DataFrameJoinerTest {
   public void innerJoinOnAge() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    Table joined = table1.joinOn("Age").inner(table2, "Age", true);
+    Table joined =
+        table1
+            .joinOn("Age")
+            .with(table2)
+            .rightJoinColumns("Age")
+            .allowDuplicateColumnNames(true)
+            .join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(9, joined.columnCount());
     assertEquals(18, joined.rowCount());
   }
@@ -1305,7 +1543,8 @@ public class DataFrameJoinerTest {
   public void innerJoinAnimalPeopleOnAge() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    Table joined = table1.joinOn("Age").inner(true, table2);
+    Table joined = table1.joinOn("Age").with(table2).allowDuplicateColumnNames(true).join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(9, joined.columnCount());
     assertEquals(18, joined.rowCount());
   }
@@ -1314,7 +1553,8 @@ public class DataFrameJoinerTest {
   public void innerJoinAnimalTreeOnAge() {
     Table table1 = createANIMALHOMES();
     Table table2 = createTREE();
-    Table joined = table1.joinOn("Age").inner(true, table2);
+    Table joined = table1.joinOn("Age").with(table2).allowDuplicateColumnNames(true).join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(7, joined.columnCount());
     assertEquals(8, joined.rowCount());
   }
@@ -1325,7 +1565,8 @@ public class DataFrameJoinerTest {
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table table3 = createTREE();
     Table table4 = createFLOWER();
-    Table joined = table1.joinOn("Age").inner(true, table2, table3, table4);
+    Table joined =
+        table1.joinOn("Age").with(table2, table3, table4).allowDuplicateColumnNames(true).join();
     assert (joined
         .columnNames()
         .containsAll(
@@ -1338,6 +1579,8 @@ public class DataFrameJoinerTest {
                 "T4.Name",
                 "T4.Home",
                 "Color")));
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(14, joined.columnCount());
     assertEquals(18, joined.rowCount());
   }
@@ -1348,7 +1591,12 @@ public class DataFrameJoinerTest {
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table table3 = createTREE();
     Table table4 = createFLOWER();
-    Table joined = table1.joinOn("Age", "Home").inner(true, table2, table3, table4);
+    Table joined =
+        table1
+            .joinOn("Age", "Home")
+            .with(table2, table3, table4)
+            .allowDuplicateColumnNames(true)
+            .join();
     assert (joined
         .columnNames()
         .containsAll(
@@ -1364,6 +1612,7 @@ public class DataFrameJoinerTest {
                 "T3.Name",
                 "T4.Name",
                 "Color")));
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(11, joined.columnCount());
     assertEquals(2, joined.rowCount());
   }
@@ -1372,7 +1621,9 @@ public class DataFrameJoinerTest {
   public void innerJoinOnNameHomeAge() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    Table joined = table1.joinOn("Name", "Home", "Age").inner(true, table2);
+    Table joined =
+        table1.joinOn("Name", "Home", "Age").with(table2).allowDuplicateColumnNames(true).join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(7, joined.columnCount());
     assertEquals(1, joined.rowCount());
   }
@@ -1382,7 +1633,13 @@ public class DataFrameJoinerTest {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENicknameDwellingYearsMoveInDate();
     Table joined =
-        table1.joinOn("Name", "Home", "Age").inner(table2, true, "Nickname", "Dwelling", "Years");
+        table1
+            .joinOn("Name", "Home", "Age")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .rightJoinColumns("Nickname", "Dwelling", "Years")
+            .join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(7, joined.columnCount());
     assertEquals(2, joined.rowCount());
   }
@@ -1392,18 +1649,30 @@ public class DataFrameJoinerTest {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameDwellingYearsMoveInDate();
     Table joined =
-        table1.joinOn("Name", "Home", "Age").inner(table2, true, "Name", "Dwelling", "Years");
+        table1
+            .joinOn("Name", "Home", "Age")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .rightJoinColumns("Name", "Dwelling", "Years")
+            .join();
     assert (joined.columnNames().containsAll(Arrays.asList("Name", "Home", "Age")));
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(7, joined.columnCount());
     assertEquals(2, joined.rowCount());
   }
 
   @Test
-  public void leftOuterJoinOnPartiallyMismatchedColNames() {
+  public void leftOuterOnPartiallyMismatchedColNames() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameDwellingYearsMoveInDate();
     Table joined =
-        table1.joinOn("Name", "Home", "Age").leftOuter(table2, true, "Name", "Dwelling", "Years");
+        table1
+            .joinOn("Name", "Home", "Age")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .type(LEFT_OUTER)
+            .rightJoinColumns("Name", "Dwelling", "Years")
+            .join();
     assert (joined.columnNames().containsAll(Arrays.asList("Name", "Home", "Age")));
     assertEquals(7, joined.columnCount());
     assertEquals(8, joined.rowCount());
@@ -1414,7 +1683,13 @@ public class DataFrameJoinerTest {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameDwellingYearsMoveInDate();
     Table joined =
-        table1.joinOn("Name", "Home", "Age").rightOuter(table2, true, "Name", "Dwelling", "Years");
+        table1
+            .joinOn("Name", "Home", "Age")
+            .with(table2)
+            .type(RIGHT_OUTER)
+            .allowDuplicateColumnNames(true)
+            .rightJoinColumns("Name", "Dwelling", "Years")
+            .join();
     assert (joined.columnNames().containsAll(Arrays.asList("Name", "Dwelling", "Years")));
     assertEquals(7, joined.columnCount());
     assertEquals(6, joined.rowCount());
@@ -1424,26 +1699,41 @@ public class DataFrameJoinerTest {
   public void innerJoinOnAgeMoveInDate() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    Table joined = table1.joinOn("Age", "MoveInDate").inner(true, table2);
+    Table joined =
+        table1.joinOn("Age", "MoveInDate").with(table2).allowDuplicateColumnNames(true).join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(8, joined.columnCount());
     assertEquals(3, joined.rowCount());
   }
 
   @Test
-  public void leftOuterJoinOnAgeMoveInDate() {
+  public void leftOuterOnAgeMoveInDate() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    Table joined = table1.joinOn("Age", "MoveInDate").leftOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("Age", "MoveInDate")
+            .type(LEFT_OUTER)
+            .allowDuplicateColumnNames(true)
+            .with(table2)
+            .join();
     assertEquals(8, joined.columnCount());
     assertEquals(9, joined.rowCount());
   }
 
   @Test
-  public void leftOuterJoin_keepAllJoinKeyColumns() {
+  public void leftOuterKeepAllJoinKeyColumns() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table joined =
-        table1.joinOn("Age", "MoveInDate").leftOuter(table2, true, true, "Age", "MoveInDate");
+        table1
+            .joinOn("Age", "MoveInDate")
+            .with(table2)
+            .type(LEFT_OUTER)
+            .allowDuplicateColumnNames(true)
+            .keepAllJoinKeyColumns(true)
+            .rightJoinColumns("Age", "MoveInDate")
+            .join();
     assertEquals(10, joined.columnCount());
     assertEquals(9, joined.rowCount());
   }
@@ -1453,7 +1743,14 @@ public class DataFrameJoinerTest {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table joined =
-        table1.joinOn("Age", "MoveInDate").rightOuter(table2, true, true, "Age", "MoveInDate");
+        table1
+            .joinOn("Age", "MoveInDate")
+            .with(table2)
+            .type(RIGHT_OUTER)
+            .allowDuplicateColumnNames(true)
+            .keepAllJoinKeyColumns(true)
+            .rightJoinColumns("Age", "MoveInDate")
+            .join();
     assertEquals(10, joined.columnCount());
     assertEquals(6, joined.rowCount());
   }
@@ -1463,7 +1760,14 @@ public class DataFrameJoinerTest {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table joined =
-        table1.joinOn("Age", "MoveInDate").fullOuter(table2, true, true, "Age", "MoveInDate");
+        table1
+            .joinOn("Age", "MoveInDate")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .keepAllJoinKeyColumns(true)
+            .type(FULL_OUTER)
+            .rightJoinColumns("Age", "MoveInDate")
+            .join();
     assertEquals(10, joined.columnCount());
     assertEquals(12, joined.rowCount());
   }
@@ -1473,8 +1777,15 @@ public class DataFrameJoinerTest {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table joined =
-        table1.joinOn("Name", "Home", "Age").inner(table2, true, true, "Name", "Home", "Age");
+        table1
+            .joinOn("Name", "Home", "Age")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .keepAllJoinKeyColumns(true)
+            .rightJoinColumns("Name", "Home", "Age")
+            .join();
     assertEquals(10, joined.columnCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(1, joined.rowCount());
   }
 
@@ -1482,7 +1793,13 @@ public class DataFrameJoinerTest {
   public void rightOuterJoinOnAgeMoveInDate() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    Table joined = table1.joinOn("Age", "MoveInDate").rightOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("Age", "MoveInDate")
+            .with(table2)
+            .type(RIGHT_OUTER)
+            .allowDuplicateColumnNames(true)
+            .join();
     assertEquals(8, joined.columnCount());
     assertEquals(6, joined.rowCount());
   }
@@ -1491,7 +1808,8 @@ public class DataFrameJoinerTest {
   public void innerJoinFootballSoccerOnPlayDate() {
     Table table1 = createFOOTBALLSCHEDULE();
     Table table2 = createSOCCERSCHEDULE();
-    Table joined = table1.joinOn("PlayDate").inner(true, table2);
+    Table joined = table1.joinOn("PlayDate").with(table2).allowDuplicateColumnNames(true).join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(8, joined.columnCount());
     assertEquals(5, joined.rowCount());
   }
@@ -1500,7 +1818,8 @@ public class DataFrameJoinerTest {
   public void innerJoinFootballSoccerOnPlayTime() {
     Table table1 = createFOOTBALLSCHEDULE();
     Table table2 = createSOCCERSCHEDULE();
-    Table joined = table1.joinOn("PlayTime").inner(true, table2);
+    Table joined = table1.joinOn("PlayTime").with(table2).allowDuplicateColumnNames(true).join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(8, joined.columnCount());
     assertEquals(3, joined.rowCount());
   }
@@ -1509,7 +1828,8 @@ public class DataFrameJoinerTest {
   public void innerJoinFootballSoccerOnPlayDatePlayTime() {
     Table table1 = createFOOTBALLSCHEDULE();
     Table table2 = createSOCCERSCHEDULE();
-    Table joined = table1.joinOn("PlayDate", "PlayTime").inner(true, table2);
+    Table joined =
+        table1.joinOn("PlayDate", "PlayTime").with(table2).allowDuplicateColumnNames(true).join();
     assertEquals(7, joined.columnCount());
     assertEquals(2, joined.rowCount());
   }
@@ -1518,7 +1838,13 @@ public class DataFrameJoinerTest {
   public void fullOuterJoinFootballSoccerOnPlayTime() {
     Table table1 = createFOOTBALLSCHEDULE();
     Table table2 = createSOCCERSCHEDULE();
-    Table joined = table1.joinOn("PlayTime").fullOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("PlayTime")
+            .allowDuplicateColumnNames(true)
+            .type(FULL_OUTER)
+            .with(table2)
+            .join();
     assertEquals(8, joined.columnCount());
     assertEquals(5, joined.rowCount());
   }
@@ -1527,7 +1853,9 @@ public class DataFrameJoinerTest {
   public void innerJoinFootballSoccerOnPlayDatePlayDateTime() {
     Table table1 = createFOOTBALLSCHEDULEDateTime();
     Table table2 = createSOCCERSCHEDULEDateTime();
-    Table joined = table1.joinOn("PlayDateTime").inner(true, table2);
+    Table joined =
+        table1.joinOn("PlayDateTime").with(table2).allowDuplicateColumnNames(true).join();
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(10, joined.columnCount());
     assertEquals(2, joined.rowCount());
   }
@@ -1536,8 +1864,14 @@ public class DataFrameJoinerTest {
   public void innerJoinFootballSoccerOnSeasonRevenue() {
     Table table1 = createFOOTBALLSCHEDULEDateTime();
     Table table2 = createSOCCERSCHEDULEDateTime();
-    Table joined = table1.joinOn("SeasonRevenue", "AllTimeRevenue").inner(true, table2);
+    Table joined =
+        table1
+            .joinOn("SeasonRevenue", "AllTimeRevenue")
+            .with(table2)
+            .allowDuplicateColumnNames(true)
+            .join();
     assertEquals(9, joined.columnCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(1, joined.rowCount());
   }
 
@@ -1545,7 +1879,13 @@ public class DataFrameJoinerTest {
   public void fullOuterJoinFootballSoccerOnPlayDateTimeSeasonRevenue() {
     Table table1 = createFOOTBALLSCHEDULEDateTime();
     Table table2 = createSOCCERSCHEDULEDateTime();
-    Table joined = table1.joinOn("PlayDateTime", "SeasonRevenue").fullOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("PlayDateTime", "SeasonRevenue")
+            .allowDuplicateColumnNames(true)
+            .with(table2)
+            .type(FULL_OUTER)
+            .join();
     assertEquals(9, joined.columnCount());
     assertEquals(6, joined.rowCount());
     assertEquals(6, joined.column("TeamName").size());
@@ -1565,10 +1905,16 @@ public class DataFrameJoinerTest {
   }
 
   @Test
-  public void fullOuterJoinFootballSoccerOnPlayDateTimeAllTimeRevenue() {
+  public void fullOuterJoinFootballSoccerOnAllTimeRevenue() {
     Table table1 = createFOOTBALLSCHEDULEDateTime();
     Table table2 = createSOCCERSCHEDULEDateTime();
-    Table joined = table1.joinOn("AllTimeRevenue").fullOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("AllTimeRevenue")
+            .allowDuplicateColumnNames(true)
+            .with(table2)
+            .type(FULL_OUTER)
+            .join();
     assertEquals(10, joined.columnCount());
     assertEquals(5, joined.rowCount());
     assertEquals(5, joined.column("TeamName").size());
@@ -1594,39 +1940,72 @@ public class DataFrameJoinerTest {
   }
 
   @Test
+  public void rightOuterJoinFootballSoccerOnAllTimeRevenue() {
+    Table table1 = createFOOTBALLSCHEDULEDateTime();
+    Table table2 = createSOCCERSCHEDULEDateTime();
+    Table joined =
+        table1
+            .joinOn("AllTimeRevenue")
+            .with(table2)
+            .type(RIGHT_OUTER)
+            .allowDuplicateColumnNames(true)
+            .join();
+    assertEquals(10, joined.columnCount());
+    assertEquals(4, joined.rowCount());
+    assertEquals(4, joined.column("SeasonRevenue").size());
+    assertEquals(1, joined.column("SeasonRevenue").countMissing());
+  }
+
+  @Test
+  public void innerJoinFootballSoccerOnAllTimeRevenue() {
+    Table table1 = createFOOTBALLSCHEDULEDateTime();
+    Table table2 = createSOCCERSCHEDULEDateTime();
+    Table joined =
+        table1.joinOn("AllTimeRevenue").with(table2).allowDuplicateColumnNames(true).join();
+    assertEquals(10, joined.columnCount());
+    assertEquals(3, joined.rowCount());
+    assertEquals(3, joined.column("SeasonRevenue").size());
+  }
+
+  @Test
   public void fullOuterJoinFootballBaseballBoolean() {
     Table table1 = createFOOTBALLSCHEDULE();
     Table table2 = createBASEBALLSCHEDULEDateTime();
-    Table joined = table1.joinOn("HomeGame").fullOuter(true, table2);
+    Table joined =
+        table1
+            .joinOn("HomeGame")
+            .allowDuplicateColumnNames(true)
+            .with(table2)
+            .type(FULL_OUTER)
+            .join();
     assertEquals(10, joined.columnCount());
     assertEquals(8, joined.rowCount());
   }
 
   @Test
   public void differentColumnTypes() {
-    Table table1 = STRING_INDEXED_PEOPLE;
-    Table table2 = DOUBLE_INDEXED_PEOPLE;
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          table1.joinOn("ID").inner(table2);
+          STRING_INDEXED_PEOPLE.joinOn("ID").with(DOUBLE_INDEXED_PEOPLE).join();
         });
   }
 
   @Test
   public void innerJoinEmptyLeftTable() {
     Table leftTable = Table.create(StringColumn.create("Animal"));
-    Table joined = leftTable.joinOn("Animal").inner(ANIMAL_NAMES);
+    Table joined = leftTable.joinOn("Animal").with(ANIMAL_NAMES).join();
     assertEquals(0, joined.rowCount());
+    assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     for (Column<?> column : joined.columnArray()) {
       assertEquals(0, column.size());
     }
   }
 
   @Test
-  public void leftOuterJoinEmptyLeftTable() {
+  public void leftOuterEmptyLeftTable() {
     Table leftTable = Table.create(StringColumn.create("Animal"));
-    Table joined = leftTable.joinOn("Animal").inner(ANIMAL_NAMES);
+    Table joined = leftTable.joinOn("Animal").with(ANIMAL_NAMES).join();
     assertEquals(0, joined.rowCount());
     for (Column<?> column : joined.columnArray()) {
       assertEquals(0, column.size());
