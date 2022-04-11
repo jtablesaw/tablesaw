@@ -57,8 +57,8 @@ class SortMergeJoin implements JoinStrategy {
   /**
    * Joins two tables.
    *
-   * @param table1 the table on the left side of the join.
-   * @param table2 the table on the right side of the join.
+   * @param t1 the table on the left side of the join.
+   * @param t2 the table on the right side of the join.
    * @param joinType the type of join.
    * @param allowDuplicates if {@code false} the join will fail if any columns other than the join
    *     column have the same name if {@code true} the join will succeed and duplicate columns are
@@ -70,8 +70,8 @@ class SortMergeJoin implements JoinStrategy {
    * @return the joined table
    */
   public Table performJoin(
-      Table table1,
-      Table table2,
+      Table t1,
+      Table t2,
       JoinType joinType,
       boolean allowDuplicates,
       boolean keepAllJoinKeyColumns,
@@ -79,10 +79,10 @@ class SortMergeJoin implements JoinStrategy {
       String... table2JoinColumnNames) {
 
     this.leftJoinColumnPositions = leftJoinColumnIndexes;
-    rightJoinColumnPositions = getJoinIndexes(table2, table2JoinColumnNames);
+    rightJoinColumnPositions = getJoinIndexes(t2, table2JoinColumnNames);
 
-    table1 = table1.sortAscendingOn(leftjoinColumnNames);
-    table2 = table2.sortAscendingOn(table2JoinColumnNames);
+    Table table1 = t1.sortAscendingOn(leftjoinColumnNames);
+    Table table2 = t2.sortAscendingOn(table2JoinColumnNames);
 
     Column<?>[] cols =
         Streams.concat(table1.columns().stream(), table2.columns().stream())
@@ -249,7 +249,7 @@ class SortMergeJoin implements JoinStrategy {
         mark = rightRow.getRowNumber();
       }
       if (comparator.compare(leftRow, rightRow) == 0 && (leftRow.hasNext() || rightRow.hasNext())) {
-        addValues(destination, leftRow, rightRow, ignoreColumns);
+        addValues(destination, leftRow, rightRow);
         if (rightRow.hasNext()) {
           rightRow.next();
         } else {
@@ -274,7 +274,7 @@ class SortMergeJoin implements JoinStrategy {
     }
     // add the last value if you end on a match
     if (comparator.compare(leftRow, rightRow) == 0) {
-      addValues(destination, leftRow, rightRow, ignoreColumns);
+      addValues(destination, leftRow, rightRow);
     }
   }
 
@@ -396,7 +396,7 @@ class SortMergeJoin implements JoinStrategy {
     }
   }
 
-  private void addValues(Table destination, Row leftRow, Row rightRow, int[] ignoreColumns) {
+  private void addValues(Table destination, Row leftRow, Row rightRow) {
 
     Row destRow = destination.appendRow();
 

@@ -1722,7 +1722,7 @@ public class DataFrameJoinerTest {
   }
 
   @Test
-  public void leftOuter_keepAllJoinKeyColumns() {
+  public void leftOuterKeepAllJoinKeyColumns() {
     Table table1 = createANIMALHOMES();
     Table table2 = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     Table joined =
