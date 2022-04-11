@@ -39,7 +39,7 @@ pickups = pickups.dropWhere(pickups.doubleColumn("lon").isLessThan(-74.05));
  
  ```Java
  pickups = pickups.sampleN(100000);
- ``
+ ```
  
  Format the existing Date/Time Text Column as two new columns, a LocalDateTimeColumn and a LocalTime Column. 
  
