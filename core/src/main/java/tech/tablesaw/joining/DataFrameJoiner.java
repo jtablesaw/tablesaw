@@ -11,7 +11,7 @@ import tech.tablesaw.api.*;
 public class DataFrameJoiner extends AbstractJoiner {
 
   /** The join algorithm to be used */
-  private final JoinStrategy strategy;
+  private JoinStrategy strategy;
 
   /** The first (left) table named in the join statement */
   private final Table table;
@@ -72,10 +72,6 @@ public class DataFrameJoiner extends AbstractJoiner {
     this.rightJoinColumnNames = leftJoinColumnNames;
 
     this.leftJoinColumnPositions = getJoinIndexes(table, leftJoinColumnNames);
-
-    // TODO: Move this decision to the join() method?
-    this.strategy = new SortMergeJoin(table, leftJoinColumnNames);
-    // this.strategy = new CrossProductJoin(table, leftJoinColumnNames);
   }
 
   /**
@@ -160,6 +156,8 @@ public class DataFrameJoiner extends AbstractJoiner {
    */
   public Table join() {
 
+    selectJoinStrategy();
+
     if (!allowDuplicateColumnNames) {
       Set<String> rightJoinColumns = Set.of(rightJoinColumnNames);
       Set<String> leftJoinColumns = Set.of(leftJoinColumnNames);
@@ -188,6 +186,41 @@ public class DataFrameJoiner extends AbstractJoiner {
       }
     }
     return performJoin(table, rightTables);
+  }
+
+  private void selectJoinStrategy() {
+    // System.out.println(table);
+    // System.out.println(rightTables.get(0));
+
+    int leftRowCount = table.rowCount();
+    int rightRowCount = rightTables.get(0).rowCount();
+
+    int minCardinalityLeft = Integer.MAX_VALUE;
+    int minCardinalityRight = Integer.MAX_VALUE;
+
+    for (int i = 0; i < rightJoinColumnNames.length; i++) {
+      int cardinality = table.column(leftJoinColumnNames[i]).countUnique();
+      if (cardinality < minCardinalityLeft) {
+        minCardinalityLeft = cardinality;
+      }
+    }
+    for (String rightJoinColumnName : rightJoinColumnNames) {
+      int cardinality = rightTables.get(0).column(rightJoinColumnName).countUnique();
+      if (cardinality < minCardinalityRight) {
+        minCardinalityRight = cardinality;
+      }
+    }
+    //    System.out.println("min cardinality left " + minCardinalityLeft);
+    //    System.out.println("min cardinality right " + minCardinalityRight);
+    //    System.out.println("Avg values left " + (leftRowCount/(minCardinalityLeft * 1.0)));
+    //    System.out.println("Avg values right " + rightRowCount / minCardinalityRight);
+    if ((leftRowCount / (minCardinalityLeft * 1.0)) > 1000
+        || (rightRowCount / (minCardinalityRight * 1.0) > 1000)) {
+      this.strategy = new SortMergeJoin(table, leftJoinColumnNames);
+    } else {
+      this.strategy = new CrossProductJoin(table, leftJoinColumnNames);
+    }
+    //    System.out.println(strategy + " selected.");
   }
 
   /**

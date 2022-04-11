@@ -20,6 +20,7 @@ class SortMergeJoin implements JoinStrategy {
   private static final String TABLE_ALIAS = "T";
   public static final String PLACEHOLDER_COL_PREFIX = "Placeholder_";
 
+  private final String[] leftjoinColumnNames;
   private int[] leftJoinColumnPositions;
   private int[] rightJoinColumnPositions;
 
@@ -33,6 +34,7 @@ class SortMergeJoin implements JoinStrategy {
    */
   public SortMergeJoin(Table table, String... joinColumnNames) {
     this.leftJoinColumnPositions = getJoinIndexes(table, joinColumnNames);
+    this.leftjoinColumnNames = joinColumnNames;
   }
 
   /**
@@ -79,8 +81,8 @@ class SortMergeJoin implements JoinStrategy {
     this.leftJoinColumnPositions = leftJoinColumnIndexes;
     rightJoinColumnPositions = getJoinIndexes(table2, table2JoinColumnNames);
 
-    table1 = table1.sortOn(leftJoinColumnIndexes);
-    table2 = table2.sortOn(rightJoinColumnPositions);
+    table1 = table1.sortAscendingOn(leftjoinColumnNames);
+    table2 = table2.sortAscendingOn(table2JoinColumnNames);
 
     Column<?>[] cols =
         Streams.concat(table1.columns().stream(), table2.columns().stream())
@@ -449,5 +451,10 @@ class SortMergeJoin implements JoinStrategy {
                 + Arrays.toString(rightJoinColumnPositions));
       }
     }
+  }
+
+  @Override
+  public String toString() {
+    return "SortMergeJoin";
   }
 }

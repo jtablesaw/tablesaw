@@ -520,4 +520,9 @@ public class CrossProductJoin implements JoinStrategy {
       }
     }
   }
+
+  @Override
+  public String toString() {
+    return "CrossProductJoin";
+  }
 }

@@ -19,6 +19,7 @@ public class JoinPerfTest {
     IntColumn x = IntColumn.create("x", IntStream.range(0, cardinality).toArray());
     IntColumn y = IntColumn.create("y", IntStream.range(0, cardinality).toArray());
     IntColumn z = IntColumn.create("z", filler);
+    // IntColumn z = IntColumn.create("z", IntStream.range(0, cardinality).toArray());
     table.addColumns(x, y, z);
     return table;
   }
