@@ -130,7 +130,7 @@ Plot.show(ScatterPlot.create("centroids", centTable, "lon", "lat"));
  
 
  <p align="center">
- <img src="https://github.com/jbsooter/tablesaw/blob/38172eaece582d581421fe1a5e5e30e31bd8a4b3/docs/userguide/images/ml/k_means/Uber_NYC_K4.png" width="325" height = "250"><img src="https://github.com/jbsooter/tablesaw/blob/cdcb0c6d16437a6fa1ed8b771ddeddb418ad8d5a/docs/userguide/images/ml/k_means/Centroids_K_4.png" width="325" height = "250">
+ <img src="https://github.com/jbsooter/tablesaw/blob/38172eaece582d581421fe1a5e5e30e31bd8a4b3/docs/userguide/images/ml/k_means/Uber_NYC_K4.png" width="446.875" height = "343.75"><img src="https://github.com/jbsooter/tablesaw/blob/cdcb0c6d16437a6fa1ed8b771ddeddb418ad8d5a/docs/userguide/images/ml/k_means/Centroids_K_4.png" width="446.875" height = "343.75">
 </p>
  
 So far in our analysis, we have sought to develop a general recommendation for where a driver should idle irrespective of the day of the week or time of the day. Now, let's look at how these factors influence the ideal location. 
@@ -185,9 +185,9 @@ Plot.show(ScatterPlot.create("Weekend, K=5", plot_data_Weekend, "lon", "lat", "c
  ```
 
   <p align="center">
- <img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekday_Morning_K5.png" width="325" height = "250"><img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekday_Evening_K5.png" width="325" height = "250">
+ <img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekday_Morning_K5.png" width="446.875" height = "343.75"><img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekday_Evening_K5.png" width="446.875" height = "343.75">
 </p>
 
   <p align="center">
- <img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Late_Night_K5.png" width="325" height = "250"><img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekend_K5.png" width="325" height = "250">
+ <img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Late_Night_K5.png" width="446.875" height = "343.75"><img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekend_K5.png" width="446.875" height = "343.75">
 </p>
