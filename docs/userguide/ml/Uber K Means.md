@@ -46,16 +46,17 @@ pickups = pickups.dropWhere(pickups.doubleColumn("lon").isLessThan(-74.05));
  ```Java
  List<String> dateTimes = pickups.textColumn("Date/Time").asList();
 
-        DateTimeColumn dateTimesAsLocalDateTime = DateTimeColumn.create("PickupDateTime");
-        TimeColumn timeAsTimeColumn = TimeColumn.create("PickupTime");
+DateTimeColumn dateTimesAsLocalDateTime = DateTimeColumn.create("PickupDateTime");
+TimeColumn timeAsTimeColumn = TimeColumn.create("PickupTime");
 
-        for(String dt: dateTimes)
-        {
-            dateTimesAsLocalDateTime.append(LocalDateTime.parse(dt, DateTimeFormatter.ofPattern("M/d/yyyy H:m")));
-            timeAsTimeColumn.append(LocalDateTime.parse(dt, DateTimeFormatter.ofPattern("M/d/yyyy H:m")).toLocalTime());
-        }
-        pickups = pickups.replaceColumn("Date/Time", dateTimesAsLocalDateTime);
-        pickups.addColumns(timeAsTimeColumn);
+for(String dt: dateTimes)
+ {
+   dateTimesAsLocalDateTime.append(LocalDateTime.parse(dt, DateTimeFormatter.ofPattern("M/d/yyyy H:m")));
+   timeAsTimeColumn.append(LocalDateTime.parse(dt, DateTimeFormatter.ofPattern("M/d/yyyy H:m")).toLocalTime());
+ }
+ 
+ pickups = pickups.replaceColumn("Date/Time", dateTimesAsLocalDateTime);
+ pickups.addColumns(timeAsTimeColumn);
  ```
  
  Print out a portion of your data to verify that it is in the correct format. 
@@ -92,11 +93,11 @@ Plot.show(ScatterPlot.create("K=3", plot_data, "lon", "lat", "cluster"));
 Table elbowTable = Table.create("Elbow", DoubleColumn.create("Distortion", 10));
 elbowTable.addColumns(IntColumn.create("k", 10));
 for(int k = 2; k < 10; k++)
-   {
+ {
    KMeans model2 = KMeans.fit(pickups.as().doubleMatrix(),k);
    elbowTable.doubleColumn("Distortion").set(k, model2.distortion);
    elbowTable.intColumn("k").set(k, k);
-   }
+ }
 
 Plot.show(LinePlot.create("Distortion vs K", elbowTable, "k", "distortion"));
  ```
@@ -111,17 +112,17 @@ Plot.show(LinePlot.create("Distortion vs K", elbowTable, "k", "distortion"));
  
  ```Java
  KMeans modelBest = KMeans.fit(pickups.as().doubleMatrix(),4);
-  Table plot_data_best = pickups.copy();
+Table plot_data_best = pickups.copy();
 plot_data_best.addColumns(IntColumn.create("cluster",modelBest.y));
 Plot.show(ScatterPlot.create("K=4", plot_data_best, "lon", "lat", "cluster"));
 
 Table centTable = Table.create("Centroids",DoubleColumn.create("lat", modelBest.centroids.length), DoubleColumn.create("lon", modelBest.centroids.length));
 
 for(int i = 0; i < modelBest.centroids.length; i++)
-{
-centTable.doubleColumn("lat").set(i, modelBest.centroids[i][0]);
-centTable.doubleColumn("lon").set(i, modelBest.centroids[i][1]);
-}
+ {
+  centTable.doubleColumn("lat").set(i, modelBest.centroids[i][0]);
+  centTable.doubleColumn("lon").set(i, modelBest.centroids[i][1]);
+ }
 
 Plot.show(ScatterPlot.create("centroids", centTable, "lon", "lat"));
  ```
