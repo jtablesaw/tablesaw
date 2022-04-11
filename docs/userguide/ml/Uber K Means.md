@@ -1,4 +1,4 @@
-# New York City Uber Pickups: K-Means Clustering with Smile + Tablesaw
+# New York City Uber Demand: K-Means Clustering with Smile + Tablesaw
 
 In previous tutorials, we have covered two popular **supervised** learning techniques, linear regression and random forest classification. These take a defined set of features to predict a response. 
 
