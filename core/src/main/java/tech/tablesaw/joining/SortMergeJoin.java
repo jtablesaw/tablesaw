@@ -80,16 +80,19 @@ class SortMergeJoin implements JoinStrategy {
     rightJoinColumnPositions = getJoinIndexes(table2, table2JoinColumnNames);
 
     table1 = table1.sortOn(leftJoinColumnIndexes);
-    System.out.println(table1);
     table2 = table2.sortOn(rightJoinColumnPositions);
-    System.out.println(table2);
 
-    Table result = Table.create(table1.name());
+    Column<?>[] cols =
+        Streams.concat(table1.columns().stream(), table2.columns().stream())
+            .map(Column::emptyCopy)
+            .toArray(Column[]::new);
 
     // A set of column indexes in the result table that can be ignored. They are duplicate join
     // keys.
     int[] resultIgnoreColIndexes =
-        emptyTableFromColumns(result, table1, table2, joinType, allowDuplicates);
+        keepAllJoinKeyColumns ? new int[0] : getIgnoredColumns(table1, joinType, cols);
+
+    Table result = emptyTableFromColumns(table1, allowDuplicates, cols);
 
     // add indexes for outer join processing
     IntColumn indexLeft = IntColumn.indexColumn(LEFT_RECORD_ID_NAME, table1.rowCount(), 0);
@@ -119,13 +122,12 @@ class SortMergeJoin implements JoinStrategy {
     } else if (joinType == JoinType.FULL_OUTER) {
       joinFull(result, table1, table2, resultIgnoreColIndexes);
     }
-    // System.out.println(result);
     result.removeColumns(LEFT_RECORD_ID_NAME, RIGHT_RECORD_ID_NAME);
 
     if (!keepAllJoinKeyColumns) {
       result = result.removeColumns(resultIgnoreColIndexes);
     } else {
-      renameJoinColumns(result, table1, table2, resultIgnoreColIndexes);
+      renameJoinColumns(result, table1, resultIgnoreColIndexes);
     }
     return result;
   }
@@ -135,8 +137,7 @@ class SortMergeJoin implements JoinStrategy {
    *
    * @param resultIgnoreColIndexes The positions of the secondary join columns
    */
-  private void renameJoinColumns(
-      Table result, Table left, Table right, int[] resultIgnoreColIndexes) {
+  private void renameJoinColumns(Table result, Table left, int[] resultIgnoreColIndexes) {
 
     String table2Alias = TABLE_ALIAS + joinTableId.get();
 
@@ -165,27 +166,48 @@ class SortMergeJoin implements JoinStrategy {
    * be marked as placeholders. The indexes of those columns will be returned. The downstream logic
    * is easier if we wait to remove the redundant columns until the last step.
    *
-   * @param destination the table to fill up with columns. Will be mutated in place.
    * @param table1 the table on left side of the join.
-   * @param table2 the table on the right side of the join.
-   * @param joinType the type of join.
    * @param allowDuplicates whether to allow duplicates. If yes rename columns in table2 that have
    *     the same name as columns in table1, with the exception of join columns in table2 when
    *     performing a right join.
-   * @return A
+   * @param cols An array of columns from both join tables
+   * @return the table to use for the join results
    */
-  private int[] emptyTableFromColumns(
-      Table destination, Table table1, Table table2, JoinType joinType, boolean allowDuplicates) {
+  Table emptyTableFromColumns(Table table1, boolean allowDuplicates, Column<?>[] cols) {
 
-    Column<?>[] cols =
-        Streams.concat(table1.columns().stream(), table2.columns().stream())
-            .map(Column::emptyCopy)
-            .toArray(Column[]::new);
+    Table destination = Table.create(table1.name());
 
-    // For inner join, left join and full outer join mark the join columns in table2 as
-    // placeholders.
-    // For right join, mark the join columns in table1 as placeholders.
-    // Keep track of which join columns are placeholders so they can be ignored.
+    // Rename duplicate columns in second table
+    if (allowDuplicates) {
+      Set<String> table1ColNames =
+          Arrays.stream(cols)
+              .map(Column::name)
+              .map(String::toLowerCase)
+              .limit(table1.columnCount())
+              .collect(Collectors.toSet());
+
+      String table2Alias = TABLE_ALIAS + joinTableId.incrementAndGet();
+      for (int c = table1.columnCount(); c < cols.length; c++) {
+        String columnName = cols[c].name();
+        if (table1ColNames.contains(columnName.toLowerCase())) {
+          cols[c].setName(newName(table2Alias, columnName));
+        }
+      }
+    }
+    destination.addColumns(cols);
+    return destination;
+  }
+
+  /**
+   * Returns the positions of columns that can be ignored in the result table
+   *
+   * <p>For inner join, left join and full outer join mark the join columns in table2 as
+   * placeholders.
+   *
+   * <p>For right join, mark the join columns in table1 as placeholders. Keep track of which join
+   * columns are placeholders so they can be ignored.
+   */
+  private int[] getIgnoredColumns(Table table1, JoinType joinType, Column<?>[] cols) {
     int[] ignoreColumns = new int[leftJoinColumnPositions.length];
     int ignoreIndex = 0;
     for (int c = 0; c < cols.length; c++) {
@@ -204,26 +226,6 @@ class SortMergeJoin implements JoinStrategy {
         }
       }
     }
-
-    // Rename duplicate columns in second table
-    if (allowDuplicates) {
-      Set<String> table1ColNames =
-          Arrays.stream(cols)
-              .map(Column::name)
-              .map(String::toLowerCase)
-              .map(e -> e.replaceFirst(PLACEHOLDER_COL_PREFIX.toLowerCase(), ""))
-              .limit(table1.columnCount())
-              .collect(Collectors.toSet());
-
-      String table2Alias = TABLE_ALIAS + joinTableId.incrementAndGet();
-      for (int c = table1.columnCount(); c < cols.length; c++) {
-        String columnName = cols[c].name();
-        if (table1ColNames.contains(columnName.toLowerCase())) {
-          cols[c].setName(newName(table2Alias, columnName));
-        }
-      }
-    }
-    destination.addColumns(cols);
     return ignoreColumns;
   }
 
