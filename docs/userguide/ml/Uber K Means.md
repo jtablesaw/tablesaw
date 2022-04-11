@@ -89,31 +89,31 @@ Plot.show(ScatterPlot.create("K=3", plot_data, "lon", "lat", "cluster"));
  A practical issue encountered when using the K-means algorithm is the choice of the number of clusters, K. A common approach is to create an "Elbow Curve", which is a plot of the distortion (sum of squared distances from the centroid of a cluster) against chosen values of k. Let's create an Elbow Curve for each value of k from 2,10). 
  
  ```Java
- Table plot_data = pickups.copy();
-plot_data.addColumns(IntColumn.create("cluster",model.y));
-Plot.show(ScatterPlot.create("K=3", plot_data, "lon", "lat", "cluster"));
-
-Table elbowTable = Table.create("Elbow", DoubleColumn.create("Distortion", 9));
+Table elbowTable = Table.create("Elbow", DoubleColumn.create("Distortion", 10));
 elbowTable.addColumns(IntColumn.create("k", 10));
 for(int k = 2; k < 10; k++)
-  {
-KMeans model2 = KMeans.fit(pickups.as().doubleMatrix(),k);
-elbowTable.doubleColumn("Distortion").set(k, model2.distortion);
-elbowTable.intColumn("k").set(k, k);
+   {
+   KMeans model2 = KMeans.fit(pickups.as().doubleMatrix(),k);
+   elbowTable.doubleColumn("Distortion").set(k, model2.distortion);
+   elbowTable.intColumn("k").set(k, k);
    }
+
+Plot.show(LinePlot.create("Distortion vs K", elbowTable, "k", "distortion"));
  ```
  
  Your curve should look something like the image below. We are looking for a hard break in the curve at a value of k where the distortion flattens out. (Hence the name, *Elbow Curve*)
  
- INSERT IMAGE
+<p align="center">
+<img src="https://github.com/jbsooter/tablesaw/blob/dfcaac4dc3d2d99d86c1134a027ca95b2e415631/docs/userguide/images/ml/k_means/Distortion.png" width="650" height = "500">
+</p>
  
- Based on this curve, I will choose k=5. Generate a new model with k=5. This time, generate an additional plot showing the centroids of each region. 
+ Based on this curve, I will choose k=4. Generate a new model with k=4. This time, generate an additional plot showing the centroids of each region. 
  
  ```Java
- KMeans modelBest = KMeans.fit(pickups.as().doubleMatrix(),5);
+ KMeans modelBest = KMeans.fit(pickups.as().doubleMatrix(),4);
   Table plot_data_best = pickups.copy();
 plot_data_best.addColumns(IntColumn.create("cluster",modelBest.y));
-Plot.show(ScatterPlot.create("K=5", plot_data_best, "lon", "lat", "cluster"));
+Plot.show(ScatterPlot.create("K=4", plot_data_best, "lon", "lat", "cluster"));
 
 Table centTable = Table.create("Centroids",DoubleColumn.create("lat", modelBest.centroids.length), DoubleColumn.create("lon", modelBest.centroids.length));
 
@@ -138,10 +138,10 @@ So far in our analysis, we have sought to develop a general recommendation for w
 ```Java
 \\Late Night (11 pm-5 am)
 Table lateNight = pickups.where(pickups.timeColumn("PickupTime").isAfter(LocalTime.of(23,0)).or(pickups.timeColumn("PickupTime").isBefore(LocalTime.of(5,0))));
-KMeans modelLateNight = KMeans.fit(lateNight.as().doubleMatrix(),5);
+KMeans modelLateNight = KMeans.fit(lateNight.as().doubleMatrix(),4);
 Table plot_data_lateNight = lateNight.copy();
 plot_data_lateNight.addColumns(IntColumn.create("cluster",modelLateNight.y));
-Plot.show(ScatterPlot.create("Late Night, K=5", plot_data_lateNight, "lon", "lat", "cluster"));
+Plot.show(ScatterPlot.create("Late Night, K=4", plot_data_lateNight, "lon", "lat", "cluster"));
 ```
 
 **Weekday Mornings and Evenings**
@@ -155,18 +155,18 @@ Table weekdays = pickups.where(pickups.dateTimeColumn("PickupDateTime")
 \\Weekday Morning (M-Th, 6 am-10 am)
 Table weekdayMorning = weekdays.where(weekdays.timeColumn("PickupTime").isAfter(LocalTime.of(6, 0))
                 .and(weekdays.timeColumn("PickupTime").isBefore(LocalTime.of(10,0)));
-KMeans modelWeekdayMorning = KMeans.fit(weekdayMorning.as().doubleMatrix(),5);
+KMeans modelWeekdayMorning = KMeans.fit(weekdayMorning.as().doubleMatrix(),4);
 Table plot_data_WeekdayMorning = weekdayMorning.copy();
 plot_data_WeekdayMorning.addColumns(IntColumn.create("cluster",modelWeekdayMorning.y));
-Plot.show(ScatterPlot.create("Weekday Morning, K=5", plot_data_WeekdayMorning, "lon", "lat", "cluster"));               
+Plot.show(ScatterPlot.create("Weekday Morning, K=4", plot_data_WeekdayMorning, "lon", "lat", "cluster"));               
 \\Weekday Evening (M-Th, 5 pm-10 pm)
 Table weekdayEvening =  weekdays.where(weekdays.timeColumn("PickupTime").isAfter(LocalTime.of(17, 0))
                 .and(weekdays.timeColumn("PickupTime").isBefore(LocalTime.of(22,0)));
                 
-KMeans modelWeekdayEvening = KMeans.fit(weekdayEvening.as().doubleMatrix(),5);
+KMeans modelWeekdayEvening = KMeans.fit(weekdayEvening.as().doubleMatrix(),4);
 Table plot_data_WeekdayEvening = weekdayEvening.copy();
 plot_data_WeekdayEvening.addColumns(IntColumn.create("cluster",modelWeekdayEvening.y));
-Plot.show(ScatterPlot.create("Weekday Evening, K=5", plot_data_WeekdayEvening, "lon", "lat", "cluster"));    
+Plot.show(ScatterPlot.create("Weekday Evening, K=4", plot_data_WeekdayEvening, "lon", "lat", "cluster"));    
 ```
 
 **Weekends**
@@ -176,10 +176,10 @@ Table weekend =  pickups.where(pickups.dateTimeColumn("PickupDateTime")
                 .isSaturday()
                 .or(pickups.dateTimeColumn("PickupDateTime").isSunday())
                 
-KMeans modelWeekend = KMeans.fit(weekend.as().doubleMatrix(),5);
+KMeans modelWeekend = KMeans.fit(weekend.as().doubleMatrix(),4);
 Table plot_data_Weekend = weekend.copy();
 plot_data_Weekend.addColumns(IntColumn.create("cluster",modelWeekend.y));
-Plot.show(ScatterPlot.create("Weekend, K=5", plot_data_Weekend, "lon", "lat", "cluster"));                
+Plot.show(ScatterPlot.create("Weekend, K=4", plot_data_Weekend, "lon", "lat", "cluster"));                
  
  ```
  
