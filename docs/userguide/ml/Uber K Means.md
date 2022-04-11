@@ -1,13 +1,13 @@
 # New York City Uber Pickups: K-Means Clustering with Smile + Tablesaw
 
-In previous tutorials, we have covered the popular supervised learning techniques, linear regression and Random Forest classification, that take a defined set of features to predict a response. 
+In previous tutorials, we have covered two popular **supervised** learning techniques, linear regression and random forest classification. These take a defined set of features to predict a response. 
 
-With K-Means, we introduce the notion of an unsupervised learning task, in this case with the desire to cluster observations into similiar groups without the defined input-output structure of regression or classification. 
+With K-Means, we introduce the notion of an **unsupervised** learning task, in this case with the desire to cluster observations into similiar groups without the defined input-output structure of regression or classification. 
 
 Our reference text for this tutorial is Chapter 12 (Unsupervised Learning) of the widely used and freely available textbook, <a href="https://www.statlearning.com/">An Introduction to Statistical Learning, Second Edition</a>. The dataset comes from the <a href="https://data.fivethirtyeight.com/">FiveThirtyEight Repository</a> and additional tutorials covering this dataset can be found <a href="https://towardsdatascience.com/how-does-uber-use-clustering-43b21e3e6b7d">here</a> and <a href="https://www.linkedin.com/pulse/uber-trip-segmentation-using-k-means-clustering-khatre-csm-pmp/">here</a> . 
 
 
-In K-Means, every observation is assigned to 1, and only 1, cluster, and a good cluster is one where within-cluster variation is as low as possible. 
+In K-Means clustering, every observation is assigned to a single cluster and a good cluster is one where the within-cluster variation is as low as possible. 
 
 ### K-Means Algorithm Intuition
 ```
@@ -19,11 +19,11 @@ In K-Means, every observation is assigned to 1, and only 1, cluster, and a good 
       b. Reassign each observation to the cluster with the closest centroid. 
 ```
  
- Essentially, this becomes a computationally-intensive optimization problem to which K-means provides a local optimal solution. Because K-means provides a local optimal, its results change based on the random assignment in step 1. (In practice, Smile uses a variation of the algorithm known as <a href="https://en.wikipedia.org/wiki/K-means%2B%2B?msclkid=4118fed8b9c211ecb86802b7ac83b079#Improved_initialization_algorithm">K-means++</a> that strategically selects initial clusters)
+Essentially, this becomes a computationally-intensive optimization problem to which K-means provides a locally optimal solution. Because K-means provides a local optimal via a greedy algorithm, its results may be heavily influenced by the random assignment in step 1. (In practice, Smile uses a variation of the algorithm known as <a href="https://en.wikipedia.org/wiki/K-means%2B%2B?msclkid=4118fed8b9c211ecb86802b7ac83b079#Improved_initialization_algorithm">K-means++</a> that strategically selects initial clusters to minimize this initial bias)
  
  ### K-Means with NYC Uber Data
  
- Because the K-means algorithm clusters datapoints, we can use it to determine ideal locations for Uber drivers to wait in between customer pickups. The data in uber-pickups-april14.csv represents all Uber pickups in New York City during April 2014. To start, create a bounding box around the data to focus on Manhatten and the immediate vicinity. 
+Because the K-means algorithm clusters datapoints, we can use it to determine ideal locations for Uber drivers to idle between customer pickups. The data in uber-pickups-april14.csv represents all Uber pickups in New York City during April 2014. To start, create a bounding box around the data to focus on Manhatten and the immediate vicinity. 
  
  ```Java
  Table pickups = Table.read().csv("uber-pickups-apr14.csv");
@@ -35,7 +35,7 @@ pickups = pickups.dropWhere(pickups.doubleColumn("lon").isGreaterThan(-73.8));
 pickups = pickups.dropWhere(pickups.doubleColumn("lon").isLessThan(-74.05));
  ```
  
- Now, randomly select a subset of the data to work with. (This is purely to speed up graphing of the clusters later). 
+ Now, randomly select a subset of 100,000 records to work with. (This is purely to speed up plotting of the clusters). 
  
  ```Java
  pickups = pickups.sampleN(100000);
@@ -81,13 +81,13 @@ plot_data.addColumns(IntColumn.create("cluster",model.y));
 Plot.show(ScatterPlot.create("K=3", plot_data, "lon", "lat", "cluster"));
  ```
  
- Your plot should look similiar to the following. You can clearly see the three chosen clusters represented by the color of each pickup location. (Notice that the data mirrors the shape of Manhatten and the surrounding area)
+Your plot should look similiar to the following. You can clearly see the three selected clusters represented by the color of each pickup location. (Notice that the data mirrors the shape of Manhatten and the surrounding area)
  
  <p align="center">
 <img src="https://github.com/jbsooter/tablesaw/blob/721e8c71d5d524252b4fe6e82dd2aa094552cfb4/docs/userguide/images/ml/k_means/Uber_NYC_K3.png" width="650" height = "500">
 </p>
  
- A practical issue encountered when using the K-means algorithm is the choice of the number of clusters, K. A common approach is to create an "Elbow Curve", which is a plot of the distortion (sum of squared distances from the centroid of a cluster) against chosen values of k. Let's create an Elbow Curve for each value of k from 2,10). 
+A practical issue encountered when using the K-means algorithm is the choice of the number of clusters, k. A common approach is to create an "Elbow Curve", which is a plot of the distortion (sum of squared distances from the centroid of a cluster) against chosen values of k. Let's create an Elbow Curve for each value of k from 2,10). 
  
  ```Java
 Table elbowTable = Table.create("Elbow", DoubleColumn.create("Distortion", 10));
@@ -102,7 +102,7 @@ for(int k = 2; k < 10; k++)
 Plot.show(LinePlot.create("Distortion vs K", elbowTable, "k", "distortion"));
  ```
  
- Your curve should look something like the image below. We are looking for a hard break in the curve at a value of k where the distortion flattens out. (Hence the name, *Elbow Curve*)
+Your curve should look something like the image below. We are looking for a hard break in the curve at a value of k where the distortion flattens out. (Hence the name, *Elbow Curve*)
  
 <p align="center">
 <img src="https://github.com/jbsooter/tablesaw/blob/dfcaac4dc3d2d99d86c1134a027ca95b2e415631/docs/userguide/images/ml/k_means/Distortion.png" width="650" height = "500">
@@ -127,14 +127,14 @@ for(int i = 0; i < modelBest.centroids.length; i++)
 Plot.show(ScatterPlot.create("centroids", centTable, "lon", "lat"));
  ```
  
- We now have a reasonable assessment of where idled Uber drivers should congregated as they wait for their next pickup: the centroids of our 5 regions. 
+ We now have a reasonable assessment of where idled Uber drivers should congregated as they wait for their next pickup: the centroids of our 4 regions. 
  
 
  <p align="center">
  <img src="https://github.com/jbsooter/tablesaw/blob/38172eaece582d581421fe1a5e5e30e31bd8a4b3/docs/userguide/images/ml/k_means/Uber_NYC_K4.png" width="446.875" height = "343.75"><img src="https://github.com/jbsooter/tablesaw/blob/cdcb0c6d16437a6fa1ed8b771ddeddb418ad8d5a/docs/userguide/images/ml/k_means/Centroids_K_4.png" width="446.875" height = "343.75">
 </p>
  
-So far in our analysis, we have sought to develop a general recommendation for where a driver should idle irrespective of the day of the week or time of the day. Now, let's look at how these factors influence the ideal location. 
+So far in our analysis, we have sought to develop a general recommendation for where a driver should idle irrespective of the day of the week or time of the day. Now, let's look at how day of week and time of day impact customer pickup requests. For brevity, I will use k=5 for all of these scenarios. In practice, one would ideally generate an Elbow curve for each subset of the data. 
 
 **Late Night (11 pm-5 am)**
 
@@ -192,3 +192,5 @@ Plot.show(ScatterPlot.create("Weekend, K=5", plot_data_Weekend, "lon", "lat", "c
   <p align="center">
  <img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Late_Night_K5.png" width="446.875" height = "343.75"><img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekend_K5.png" width="446.875" height = "343.75">
 </p>
+
+
