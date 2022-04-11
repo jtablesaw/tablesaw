@@ -219,7 +219,7 @@ public class Table extends Relation implements Iterable<Row> {
     return key;
   }
 
-  /** Returns an object that an be used to read data from a file into a new Table */
+  /** Returns an object that can be used to read data from a file into a new Table */
   public static DataFrameReader read() {
     return new DataFrameReader(defaultReaderRegistry);
   }

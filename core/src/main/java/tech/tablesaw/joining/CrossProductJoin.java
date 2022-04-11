@@ -81,18 +81,21 @@ public class CrossProductJoin implements JoinStrategy {
     List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
     List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
 
-    Table result = Table.create(table1.name());
     // A set of column indexes in the result table that can be ignored. They are duplicate join
     // keys.
-    Set<Integer> resultIgnoreColIndexes =
-        emptyTableFromColumns(
-            result,
-            table1,
-            table2,
-            joinType,
-            allowDuplicates,
-            table2JoinColumnIndexes,
-            keepAllJoinKeyColumns);
+
+    // collect all the column name in both tables
+    Column<?>[] cols =
+        Streams.concat(table1.columns().stream(), table2.columns().stream())
+            .map(Column::emptyCopy)
+            .toArray(Column[]::new);
+
+    Set<Integer> resultIgnoreColIndexes = new HashSet<>();
+    if (!keepAllJoinKeyColumns) {
+      resultIgnoreColIndexes = getIgnoreColumns(table1, joinType, table2JoinColumnIndexes, cols);
+    }
+
+    Table result = emptyTableFromColumns(table1, allowDuplicates, cols);
 
     validateIndexes(table1Indexes, table2Indexes);
     if (table1.rowCount() == 0 && (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
@@ -350,53 +353,15 @@ public class CrossProductJoin implements JoinStrategy {
    * be marked as placeholders. The indexes of those columns will be returned. The downstream logic
    * is easier if we wait to remove the redundant columns until the last step.
    *
-   * @param destination the table to fill up with columns. Will be mutated in place.
    * @param table1 the table on left side of the join.
-   * @param table2 the table on the right side of the join.
-   * @param joinType the type of join.
    * @param allowDuplicates whether to allow duplicates. If yes rename columns in table2 that have
    *     the same name as columns in table1 with the exception of join columns in table2 when
    *     performing a right join.
-   * @param table2JoinColumnIndexes the index locations of the table2 join columns.
    * @return A
    */
-  private Set<Integer> emptyTableFromColumns(
-      Table destination,
-      Table table1,
-      Table table2,
-      JoinType joinType,
-      boolean allowDuplicates,
-      List<Integer> table2JoinColumnIndexes,
-      boolean keepTable2JoinKeyColumns) {
+  private Table emptyTableFromColumns(Table table1, boolean allowDuplicates, Column<?>[] cols) {
 
-    Column<?>[] cols =
-        Streams.concat(table1.columns().stream(), table2.columns().stream())
-            .map(Column::emptyCopy)
-            .toArray(Column[]::new);
-
-    // For inner join, left join and full outer join mark the join columns in table2 as
-    // placeholders.
-    // For right join mark the join columns in table1 as placeholders.
-    // Keep track of which join columns are placeholders so they can be ignored.
-    Set<Integer> ignoreColumns = new HashSet<>();
-    for (int c = 0; c < cols.length; c++) {
-      if (joinType == JoinType.RIGHT_OUTER) {
-        if (c < table1.columnCount() && joinColumnIndexes.contains(c)) {
-          if (!keepTable2JoinKeyColumns) {
-            cols[c].setName("Placeholder_" + ignoreColumns.size());
-          }
-          ignoreColumns.add(c);
-        }
-      } else {
-        int table2Index = c - table1.columnCount();
-        if (c >= table1.columnCount() && table2JoinColumnIndexes.contains(table2Index)) {
-          if (!keepTable2JoinKeyColumns) {
-            cols[c].setName("Placeholder_" + ignoreColumns.size());
-          }
-          ignoreColumns.add(c);
-        }
-      }
-    }
+    Table destination = Table.create(table1.name());
 
     // Rename duplicate columns in second table
     if (allowDuplicates) {
@@ -416,6 +381,32 @@ public class CrossProductJoin implements JoinStrategy {
       }
     }
     destination.addColumns(cols);
+    return destination;
+  }
+
+  /**
+   * For inner join, left join and full outer join mark the join columns in table2 as placeholders.
+   *
+   * <p>For right join mark the join columns in table1 as placeholders. Keep track of which join
+   * columns are placeholders so they can be ignored.
+   */
+  private Set<Integer> getIgnoreColumns(
+      Table table1, JoinType joinType, List<Integer> table2JoinColumnIndexes, Column<?>[] cols) {
+    Set<Integer> ignoreColumns = new HashSet<>();
+    for (int c = 0; c < cols.length; c++) {
+      if (joinType == JoinType.RIGHT_OUTER) {
+        if (c < table1.columnCount() && joinColumnIndexes.contains(c)) {
+          cols[c].setName("Placeholder_" + ignoreColumns.size());
+          ignoreColumns.add(c);
+        }
+      } else {
+        int table2Index = c - table1.columnCount();
+        if (c >= table1.columnCount() && table2JoinColumnIndexes.contains(table2Index)) {
+          cols[c].setName("Placeholder_" + ignoreColumns.size());
+          ignoreColumns.add(c);
+        }
+      }
+    }
     return ignoreColumns;
   }
 

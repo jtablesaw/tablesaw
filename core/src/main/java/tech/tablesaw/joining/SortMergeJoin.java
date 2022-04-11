@@ -12,7 +12,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
 
 /** Implements joins between two or more Tables */
-public class SortMergeJoin implements JoinStrategy {
+class SortMergeJoin implements JoinStrategy {
 
   private static final String LEFT_RECORD_ID_NAME = "_left_record_id_";
   private static final String RIGHT_RECORD_ID_NAME = "_right_record_id_";
