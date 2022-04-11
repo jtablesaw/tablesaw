@@ -19,8 +19,8 @@ public class DataFrameJoinerPerformanceTest {
 
   private static final long SEED = 200L;
 
-  private static final int CUSTOMER_COUNT = 50_000;
-  private static final int ORDER_COUNT = 50_000;
+  private static final int CUSTOMER_COUNT = 1_000;
+  private static final int ORDER_COUNT = 10_000;
 
   private static final int CUSTOMER_FILL_COL_COUNT = 5;
   private static final int ORDER_FILL_COL_COUNT = 5;
