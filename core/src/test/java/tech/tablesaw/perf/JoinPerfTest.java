@@ -10,7 +10,7 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.testutil.NanoBench;
 
-public class JoinPerf {
+public class JoinPerfTest {
 
   private static Table createXYZTable(String name, int cardinality) {
     Table table = Table.create(name);
@@ -48,13 +48,12 @@ public class JoinPerf {
         a.addColumns(IntColumn.indexColumn(String.valueOf(i), a.rowCount(), 1));
       }
       b.addColumns(IntColumn.indexColumn("1", b.rowCount(), 0));
-      // System.out.println(b.intColumn("1").max());
     }
 
     public void run() {
       a.sortDescendingOn("x", "y", "z");
       b.sortDescendingOn("x", "y", "z");
-      Table result = a.joinOn("x", "y", "z").with(b).join();
+      a.joinOn("x", "y", "z").with(b).join();
     }
   }
 }
