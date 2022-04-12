@@ -492,7 +492,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   }
 
   /** Sets the value at i to b, and returns this column */
-  private BooleanColumn set(int i, byte b) {
+  public BooleanColumn set(int i, byte b) {
     data.set(i, b);
     return this;
   }

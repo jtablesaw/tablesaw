@@ -14,6 +14,8 @@
 
 package tech.tablesaw.table;
 
+import static tech.tablesaw.joining.JoinType.FULL_OUTER;
+
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import java.io.ByteArrayOutputStream;
@@ -299,7 +301,12 @@ public abstract class Relation implements Iterable<Row> {
       Table columnSummary = this.column(i).summary();
       columnSummary.column(1).setName(this.column(i).name());
       summaryTable =
-          summaryTable.joinOn("Measure").fullOuter(columnSummary, columnSummary.column(0).name());
+          summaryTable
+              .joinOn("Measure")
+              .with(columnSummary)
+              .rightJoinColumns(columnSummary.column(0).name())
+              .type(FULL_OUTER)
+              .join();
     }
     summaryTable.column(0).setName("Summary");
     return summaryTable;

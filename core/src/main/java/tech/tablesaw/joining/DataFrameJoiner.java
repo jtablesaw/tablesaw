@@ -1,946 +1,285 @@
 package tech.tablesaw.joining;
 
-import com.google.common.collect.Streams;
-import com.google.common.primitives.Ints;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import static tech.tablesaw.joining.JoinType.INNER;
+
+import com.google.common.base.Preconditions;
+import java.util.*;
 import java.util.stream.Collectors;
 import tech.tablesaw.api.*;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.booleans.BooleanColumnType;
-import tech.tablesaw.columns.dates.DateColumnType;
-import tech.tablesaw.columns.datetimes.DateTimeColumnType;
-import tech.tablesaw.columns.instant.InstantColumnType;
-import tech.tablesaw.columns.numbers.*;
-import tech.tablesaw.columns.strings.StringColumnType;
-import tech.tablesaw.columns.strings.TextColumnType;
-import tech.tablesaw.columns.times.TimeColumnType;
-import tech.tablesaw.index.*;
-import tech.tablesaw.selection.Selection;
 
 /** Implements joins between two or more Tables */
-public class DataFrameJoiner {
+public class DataFrameJoiner extends AbstractJoiner {
 
-  /** The types of joins that are supported */
-  private enum JoinType {
-    INNER,
-    LEFT_OUTER,
-    RIGHT_OUTER,
-    FULL_OUTER
-  }
+  /** The join algorithm to be used */
+  private JoinStrategy strategy;
 
-  private static final String TABLE_ALIAS = "T";
-
+  /** The first (left) table named in the join statement */
   private final Table table;
-  private final String[] joinColumnNames;
-  private final List<Integer> joinColumnIndexes;
-  private final AtomicInteger joinTableId = new AtomicInteger(2);
+
+  /** The names of the columns to be used for the first (left) table */
+  private final String[] leftJoinColumnNames;
+
+  /**
+   * The names of the columns to be joined on in the second (right) table. If these are not
+   * explicitly provided, they default to the names used for the left table.
+   */
+  private String[] rightJoinColumnNames;
+
+  /** The positions (indexes) in the table of the columns used in the first table */
+  private int[] leftJoinColumnPositions;
+
+  /**
+   * The table(s) to be used on the right side. If more than one table is provided, the join is
+   * executed repeatedly, merging the next right table with the prior results
+   */
+  private List<Table> rightTables = new ArrayList<>();
+
+  /** The type of join to be performed (INNER, LEFT_OUTER, RIGHT_OUTER, or FULL_OUTER */
+  private JoinType joinType = INNER;
+
+  /**
+   * When this is false, columns in the second (and subsequent) join tables are excluded from the
+   * results if they have the same name as a column in the any prior table. When it is true, they
+   * are give a prefix and included. The prefix used is "Tn." where n is the number of the table in
+   * the join. The second table is (T2.column_name), for example.
+   */
+  private boolean allowDuplicateColumnNames = false;
+
+  /**
+   * When this is true, the columns of the second (and subsequent) join tables are included in the
+   * results, even when they're identical in name and data with the first join table. When false,
+   * only the first join columns are retained.
+   *
+   * <p>If the second (or any subsequent) table has the same join column names as the first (or any
+   * prior) table, the same scheme used for non-join columns is used, and each column with a
+   * duplicate name gets a prefix of "Tn." where n is the number of the table in the join.
+   */
+  private boolean keepAllJoinKeyColumns = false;
 
   /**
    * Constructor.
    *
    * @param table The table to join on.
-   * @param joinColumnNames The join column names to join on.
+   * @param leftJoinColumnNames The join column names in that table to be used. These names also
+   *     serve as the default for the second table, unless other names are explicitly provided.
    */
-  public DataFrameJoiner(Table table, String... joinColumnNames) {
+  public DataFrameJoiner(Table table, String... leftJoinColumnNames) {
     this.table = table;
-    this.joinColumnNames = joinColumnNames;
-    this.joinColumnIndexes = getJoinIndexes(table, joinColumnNames);
+    this.leftJoinColumnNames = leftJoinColumnNames;
+
+    // we assume the join columns for both tables have the same names,
+    // unless names for the right table are explicitly set
+    this.rightJoinColumnNames = leftJoinColumnNames;
+
+    this.leftJoinColumnPositions = getJoinIndexes(table, leftJoinColumnNames);
   }
 
   /**
-   * Finds the index of the columns corresponding to the columnNames. E.G. The column named "ID" is
-   * located at index 5 in table.
+   * Sets the type of join, which defaults to INNER if not provided.
    *
-   * @param table the table that contains the columns.
-   * @param columnNames the column names to find indexes of.
-   * @return a list of column indexes within the table.
+   * @param joinType The type of join to perform (INNER, LEFT_OUTER, RIGHT_OUTER, FULL_OUTER)
+   * @return This joiner object.
    */
-  private List<Integer> getJoinIndexes(Table table, String[] columnNames) {
-    return Arrays.stream(columnNames).map(table::columnIndex).collect(Collectors.toList());
+  public DataFrameJoiner type(JoinType joinType) {
+    this.joinType = joinType;
+    return this;
   }
 
   /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
+   * When the argument is true, the join columns of the second (and subsequent) tables are included
+   * in the results, even when they're identical in name and data with the first join table. When
+   * false, only one set of join columns is retained in the result.
    *
-   * @param tables The tables to join with
+   * <p>Note that if the second (or any subsequent) table has the same join column names as the
+   * first (or any prior) table, the same scheme used for non-join columns is used, and each column
+   * with a duplicate name gets a prefix of "Tn." where n is the number of the table in the join.
+   *
+   * <p>If this method is not called, the default is false
+   *
+   * @param keep true or false
+   * @return this DataFrameJoiner instance
    */
-  public Table inner(Table... tables) {
-    return inner(false, tables);
+  public DataFrameJoiner keepAllJoinKeyColumns(boolean keep) {
+    this.keepAllJoinKeyColumns = keep;
+    return this;
   }
 
   /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
+   * if {@code false} the join will fail if any columns other than the join column have the same
+   * name; if {@code true} the join will succeed and duplicate columns are renamed and included in
+   * the results. Specifically, the renamed columns are given a are give a prefix and the prefix
+   * used is "Tn." where n is the number of the table in the join. The second table is
+   * (T2.column_name), for example.
    *
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param tables The tables to join with
+   * <p>See also {@link DataFrameJoiner#keepAllJoinKeyColumns(boolean)} to determine whether to
+   * retain the join columns from the second table
+   *
+   * @param allow true, if columns with duplicate names are to be retained; false otherwise. Default
+   *     is false
+   * @return this DataFrameJoiner instance
    */
-  public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
-    Table joined = table;
-    for (Table currT : tables) {
-      joined =
-          joinInternal(
-              joined, currT, JoinType.INNER, allowDuplicateColumnNames, false, joinColumnNames);
-    }
-    return joined;
+  public DataFrameJoiner allowDuplicateColumnNames(boolean allow) {
+    this.allowDuplicateColumnNames = allow;
+    return this;
   }
 
   /**
-   * Joins the joiner to the table2, using the given column for the second table and returns the
-   * resulting table
+   * The names of the columns to be joined on in the second (right) table. If this method is not
+   * called, they default to the names used for the left table.
    *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
+   * @param rightJoinColumnNames The names to be used
+   * @return This DataFrameJoiner instance
    */
-  public Table inner(Table table2, String col2Name) {
-    return inner(table2, false, col2Name);
+  public DataFrameJoiner rightJoinColumns(String... rightJoinColumnNames) {
+    Preconditions.checkNotNull(rightJoinColumnNames);
+    this.rightJoinColumnNames = rightJoinColumnNames;
+    return this;
   }
 
   /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
+   * The table or tables to be used on the right side of the join. If more than one table is
+   * provided, the join is executed repeatedly, merging the next right table with the prior results
    *
-   * @param table2 The table to join with
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
+   * @param tables The table or tables to be used on the right side
+   * @return This DataFrameJoiner instance
    */
-  public Table inner(Table table2, String[] col2Names) {
-    return inner(table2, false, col2Names);
+  public DataFrameJoiner with(Table... tables) {
+    Preconditions.checkNotNull(tables);
+    this.rightTables = Arrays.stream(tables).collect(Collectors.toList());
+    return this;
   }
 
   /**
-   * Joins the joiner to the table2, using the given column for the second table and returns the
-   * resulting table
+   * Performs the actual join and returns the results
    *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @return The resulting table
+   * @return The combined table
    */
-  public Table inner(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
-    return inner(table2, allowDuplicateColumnNames, col2Name);
-  }
+  public Table join() {
 
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table inner(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    Table joinedTable;
-    joinedTable =
-        joinInternal(table, table2, JoinType.INNER, allowDuplicateColumnNames, false, col2Names);
-    return joinedTable;
-  }
+    selectJoinStrategy();
 
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
-   *     table1 if {@code true} the join will return all join key columns in both table, which may
-   *     have difference when there are null values
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table inner(
-      Table table2,
-      boolean allowDuplicateColumnNames,
-      boolean keepAllJoinKeyColumns,
-      String... col2Names) {
-    return joinInternal(
-        table, table2, JoinType.INNER, allowDuplicateColumnNames, keepAllJoinKeyColumns, col2Names);
-  }
-
-  /**
-   * Joins two tables.
-   *
-   * @param table1 the table on the left side of the join.
-   * @param table2 the table on the right side of the join.
-   * @param joinType the type of join.
-   * @param allowDuplicates if {@code false} the join will fail if any columns other than the join
-   *     column have the same name if {@code true} the join will succeed and duplicate columns are
-   *     renamed
-   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
-   *     table1 if {@code true} the join will return all join key columns in both table, which may
-   *     have difference when there are null values
-   * @param table2JoinColumnNames The names of the columns in table2 to join on.
-   * @return the joined table
-   */
-  private Table joinInternal(
-      Table table1,
-      Table table2,
-      JoinType joinType,
-      boolean allowDuplicates,
-      boolean keepAllJoinKeyColumns,
-      String... table2JoinColumnNames) {
-
-    List<Integer> table2JoinColumnIndexes = getJoinIndexes(table2, table2JoinColumnNames);
-    List<Index> table1Indexes = buildIndexesForJoinColumns(joinColumnIndexes, table1);
-    List<Index> table2Indexes = buildIndexesForJoinColumns(table2JoinColumnIndexes, table2);
-
-    Table result = Table.create(table1.name());
-    // A set of column indexes in the result table that can be ignored. They are duplicate join
-    // keys.
-    Set<Integer> resultIgnoreColIndexes =
-        emptyTableFromColumns(
-            result,
-            table1,
-            table2,
-            joinType,
-            allowDuplicates,
-            table2JoinColumnIndexes,
-            keepAllJoinKeyColumns);
-
-    validateIndexes(table1Indexes, table2Indexes);
-    if (table1.rowCount() == 0 && (joinType == JoinType.LEFT_OUTER || joinType == JoinType.INNER)) {
-      // Handle special case of empty table here so it doesn't fall through to the behavior
-      // that adds rows for full outer and right outer joins
-      if (!keepAllJoinKeyColumns) {
-        result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
-      }
-      return result;
-    }
-
-    Selection table1DoneRows = Selection.with();
-    Selection table2DoneRows = Selection.with();
-    // use table 2 for row iteration, which can significantly increase performance
-    if (table1.rowCount() > table2.rowCount() && joinType == JoinType.INNER) {
-      for (Row row : table2) {
-        int ri = row.getRowNumber();
-        if (table2DoneRows.contains(ri)) {
-          // Already processed a selection of table1 that contained this row.
-          continue;
-        }
-        Selection table1Rows =
-            createMultiColSelection(
-                table2, ri, table1Indexes, table1.rowCount(), table2JoinColumnIndexes);
-        Selection table2Rows =
-            createMultiColSelection(
-                table2, ri, table2Indexes, table2.rowCount(), table2JoinColumnIndexes);
-        crossProduct(
-            result,
-            table1,
-            table2,
-            table1Rows,
-            table2Rows,
-            resultIgnoreColIndexes,
-            keepAllJoinKeyColumns);
-
-        table2DoneRows = table2DoneRows.or(table2Rows);
-        if (table2DoneRows.size() == table2.rowCount()) {
-          // Processed all the rows in table1 exit early.
-          if (!keepAllJoinKeyColumns) {
-            result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
-          }
-          return result;
-        }
-      }
-    } else {
-      for (Row row : table1) {
-        int ri = row.getRowNumber();
-        if (table1DoneRows.contains(ri)) {
-          // Already processed a selection of table1 that contained this row.
-          continue;
-        }
-        Selection table1Rows =
-            createMultiColSelection(
-                table1, ri, table1Indexes, table1.rowCount(), joinColumnIndexes);
-        Selection table2Rows =
-            createMultiColSelection(
-                table1, ri, table2Indexes, table2.rowCount(), joinColumnIndexes);
-        if ((joinType == JoinType.LEFT_OUTER || joinType == JoinType.FULL_OUTER)
-            && table2Rows.isEmpty()) {
-          withMissingLeftJoin(
-              result, table1, table1Rows, resultIgnoreColIndexes, keepAllJoinKeyColumns);
-        } else {
-          crossProduct(
-              result,
-              table1,
-              table2,
-              table1Rows,
-              table2Rows,
-              resultIgnoreColIndexes,
-              keepAllJoinKeyColumns);
-        }
-        table1DoneRows = table1DoneRows.or(table1Rows);
-        if (joinType == JoinType.FULL_OUTER || joinType == JoinType.RIGHT_OUTER) {
-          // Update done rows in table2 for full Outer.
-          table2DoneRows = table2DoneRows.or(table2Rows);
-        } else if (table1DoneRows.size() == table1.rowCount()) {
-          // Processed all the rows in table1 exit early.
-          if (!keepAllJoinKeyColumns) {
-            result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
-          }
-          return result;
-        }
-      }
-    }
-
-    // Add all rows from table2 that were not handled already.
-    Selection table2Rows = table2DoneRows.flip(0, table2.rowCount());
-    withMissingRight(
-        result,
-        table1.columnCount(),
-        table2,
-        table2Rows,
-        joinType,
-        table2JoinColumnIndexes,
-        resultIgnoreColIndexes,
-        keepAllJoinKeyColumns);
-    if (!keepAllJoinKeyColumns) {
-      result.removeColumns(Ints.toArray(resultIgnoreColIndexes));
-    }
-    return result;
-  }
-
-  private void validateIndexes(List<Index> table1Indexes, List<Index> table2Indexes) {
-    if (table1Indexes.size() != table2Indexes.size()) {
-      throw new IllegalArgumentException(
-          "Cannot join using a different number of indices on each table: "
-              + table1Indexes
-              + " and "
-              + table2Indexes);
-    }
-    for (int i = 0; i < table1Indexes.size(); i++) {
-      if (!table1Indexes.get(i).getClass().equals(table2Indexes.get(i).getClass())) {
-        throw new IllegalArgumentException(
-            "Cannot join using different index types: " + table1Indexes + " and " + table2Indexes);
-      }
-    }
-  }
-
-  /** Build a reverse index for every join column in the table. */
-  private List<Index> buildIndexesForJoinColumns(List<Integer> joinColumnIndexes, Table table) {
-    return joinColumnIndexes.stream().map(c -> indexFor(table, c)).collect(Collectors.toList());
-  }
-
-  /** Create a reverse index for a given column. */
-  private Index indexFor(Table table, int colIndex) {
-    ColumnType type = table.column(colIndex).type();
-    if (type instanceof DateColumnType) {
-      return new IntIndex(table.dateColumn(colIndex));
-    } else if (type instanceof DateTimeColumnType) {
-      return new LongIndex(table.dateTimeColumn(colIndex));
-    } else if (type instanceof InstantColumnType) {
-      return new LongIndex(table.instantColumn(colIndex));
-    } else if (type instanceof TimeColumnType) {
-      return new IntIndex(table.timeColumn(colIndex));
-    } else if (type instanceof StringColumnType) {
-      return new StringIndex(table.stringColumn(colIndex));
-    } else if (type instanceof TextColumnType) {
-      return new StringIndex(table.textColumn(colIndex));
-    } else if (type instanceof IntColumnType) {
-      return new IntIndex(table.intColumn(colIndex));
-    } else if (type instanceof LongColumnType) {
-      return new LongIndex(table.longColumn(colIndex));
-    } else if (type instanceof ShortColumnType) {
-      return new ShortIndex(table.shortColumn(colIndex));
-    } else if (type instanceof BooleanColumnType) {
-      return new ByteIndex(table.booleanColumn(colIndex));
-    } else if (type instanceof DoubleColumnType) {
-      return new DoubleIndex(table.doubleColumn(colIndex));
-    } else if (type instanceof FloatColumnType) {
-      return new FloatIndex(table.floatColumn(colIndex));
-    }
-    throw new IllegalArgumentException("Joining attempted on unsupported column type " + type);
-  }
-
-  /**
-   * Given a reverse index find a selection of rows that have the same value as the supplied column
-   * does in the given row index.
-   */
-  private Selection selectionForColumn(Column<?> valueColumn, int rowIndex, Index rawIndex) {
-
-    ColumnType type = valueColumn.type();
-    if (type instanceof DateColumnType) {
-      IntIndex index = (IntIndex) rawIndex;
-      int value = ((DateColumn) valueColumn).getIntInternal(rowIndex);
-      return index.get(value);
-    } else if (type instanceof TimeColumnType) {
-      IntIndex index = (IntIndex) rawIndex;
-      int value = ((TimeColumn) valueColumn).getIntInternal(rowIndex);
-      return index.get(value);
-    } else if (type instanceof DateTimeColumnType) {
-      LongIndex index = (LongIndex) rawIndex;
-      long value = ((DateTimeColumn) valueColumn).getLongInternal(rowIndex);
-      return index.get(value);
-    } else if (type instanceof InstantColumnType) {
-      LongIndex index = (LongIndex) rawIndex;
-      long value = ((InstantColumn) valueColumn).getLongInternal(rowIndex);
-      return index.get(value);
-    } else if (type instanceof StringColumnType) {
-      StringIndex index = (StringIndex) rawIndex;
-      String value = ((StringColumn) valueColumn).get(rowIndex);
-      return index.get(value);
-    } else if (type instanceof TextColumnType) {
-      StringIndex index = (StringIndex) rawIndex;
-      String value = ((TextColumn) valueColumn).get(rowIndex);
-      return index.get(value);
-    } else if (type instanceof IntColumnType) {
-      IntIndex index = (IntIndex) rawIndex;
-      int value = ((IntColumn) valueColumn).getInt(rowIndex);
-      return index.get(value);
-    } else if (type instanceof LongColumnType) {
-      LongIndex index = (LongIndex) rawIndex;
-      long value = ((LongColumn) valueColumn).getLong(rowIndex);
-      return index.get(value);
-    } else if (type instanceof ShortColumnType) {
-      ShortIndex index = (ShortIndex) rawIndex;
-      short value = ((ShortColumn) valueColumn).getShort(rowIndex);
-      return index.get(value);
-    } else if (type instanceof BooleanColumnType) {
-      ByteIndex index = (ByteIndex) rawIndex;
-      byte value = ((BooleanColumn) valueColumn).getByte(rowIndex);
-      return index.get(value);
-    } else if (type instanceof DoubleColumnType) {
-      DoubleIndex index = (DoubleIndex) rawIndex;
-      double value = ((DoubleColumn) valueColumn).getDouble(rowIndex);
-      return index.get(value);
-    } else if (type instanceof FloatColumnType) {
-      FloatIndex index = (FloatIndex) rawIndex;
-      float value = ((FloatColumn) valueColumn).getFloat(rowIndex);
-      return index.get(value);
-    } else {
-      throw new IllegalArgumentException(
-          "Joining is supported on numeric, string, and date-like columns. Column "
-              + valueColumn.name()
-              + " is of type "
-              + valueColumn.type());
-    }
-  }
-  /**
-   * Create a big multicolumn selection for all join columns in the given table. Joins two tables.
-   *
-   * @param table the table that used to generate Selection.
-   * @param ri row number of row in table.
-   * @param indexes a reverse index for every join column in the table.
-   * @param selectionSize max size in table .
-   * @param joinColumnIndexes the column index of join key in tables
-   * @return selection created
-   */
-  private Selection createMultiColSelection(
-      Table table,
-      int ri,
-      List<Index> indexes,
-      int selectionSize,
-      List<Integer> joinColumnIndexes) {
-    Selection multiColSelection = Selection.withRange(0, selectionSize);
-    int i = 0;
-    for (Integer joinColumnIndex : joinColumnIndexes) {
-      Column<?> col = table.column(joinColumnIndex);
-      Selection oneColSelection = selectionForColumn(col, ri, indexes.get(i));
-      // and the selections.
-      multiColSelection = multiColSelection.and(oneColSelection);
-      i++;
-    }
-    return multiColSelection;
-  }
-
-  private String newName(String table2Alias, String columnName) {
-    return table2Alias + "." + columnName;
-  }
-
-  /**
-   * Full outer join to the given tables assuming that they have a column of the name we're joining
-   * on
-   *
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table fullOuter(Table... tables) {
-    return fullOuter(false, tables);
-  }
-
-  /**
-   * Full outer join to the given tables assuming that they have a column of the name we're joining
-   * on
-   *
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table fullOuter(boolean allowDuplicateColumnNames, Table... tables) {
-    Table joined = table;
-
-    for (Table currT : tables) {
-      joined =
-          joinInternal(
-              joined,
-              currT,
-              JoinType.FULL_OUTER,
-              allowDuplicateColumnNames,
-              false,
-              joinColumnNames);
-    }
-    return joined;
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
-   *     table1 if {@code true} the join will return all join key columns in both table, which may
-   *     have difference when there are null values
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table fullOuter(
-      Table table2,
-      boolean allowDuplicateColumnNames,
-      boolean keepAllJoinKeyColumns,
-      String... col2Names) {
-    return joinInternal(
-        table,
-        table2,
-        JoinType.FULL_OUTER,
-        allowDuplicateColumnNames,
-        keepAllJoinKeyColumns,
-        col2Names);
-  }
-
-  /**
-   * Full outer join the joiner to the table2, using the given column for the second table and
-   * returns the resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table fullOuter(Table table2, String col2Name) {
-    return joinInternal(table, table2, JoinType.FULL_OUTER, false, false, col2Name);
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table leftOuter(Table... tables) {
-    return leftOuter(false, tables);
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed*
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table leftOuter(boolean allowDuplicateColumnNames, Table... tables) {
-    Table joined = table;
-    for (Table table2 : tables) {
-      joined =
-          joinInternal(
-              joined,
-              table2,
-              JoinType.LEFT_OUTER,
-              allowDuplicateColumnNames,
-              false,
-              joinColumnNames);
-    }
-    return joined;
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table leftOuter(Table table2, String[] col2Names) {
-    return leftOuter(table2, false, col2Names);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given column for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table leftOuter(Table table2, String col2Name) {
-    return leftOuter(table2, false, col2Name);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table leftOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    return joinInternal(
-        table, table2, JoinType.LEFT_OUTER, allowDuplicateColumnNames, false, col2Names);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
-   *     table1 if {@code true} the join will return all join key columns in both table, which may
-   *     have difference when there are null values
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table leftOuter(
-      Table table2,
-      boolean allowDuplicateColumnNames,
-      boolean keepAllJoinKeyColumns,
-      String... col2Names) {
-    return joinInternal(
-        table,
-        table2,
-        JoinType.LEFT_OUTER,
-        allowDuplicateColumnNames,
-        keepAllJoinKeyColumns,
-        col2Names);
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table rightOuter(Table... tables) {
-    return rightOuter(false, tables);
-  }
-
-  /**
-   * Joins to the given tables assuming that they have a column of the name we're joining on
-   *
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param tables The tables to join with
-   * @return The resulting table
-   */
-  public Table rightOuter(boolean allowDuplicateColumnNames, Table... tables) {
-    Table joined = table;
-    for (Table table2 : tables) {
-      joined =
-          joinInternal(
-              joined,
-              table2,
-              JoinType.RIGHT_OUTER,
-              allowDuplicateColumnNames,
-              false,
-              joinColumnNames);
-      joinColumnIndexes.clear();
-      joinColumnIndexes.addAll(getJoinIndexes(joined, joinColumnNames));
-    }
-    return joined;
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given column for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Name The column to join on. If col2Name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table rightOuter(Table table2, String col2Name) {
-    return rightOuter(table2, false, col2Name);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table rightOuter(Table table2, String[] col2Names) {
-    return rightOuter(table2, false, col2Names);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table rightOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
-    return joinInternal(
-        table, table2, JoinType.RIGHT_OUTER, allowDuplicateColumnNames, false, col2Names);
-  }
-
-  /**
-   * Joins the joiner to the table2, using the given columns for the second table and returns the
-   * resulting table
-   *
-   * @param table2 The table to join with
-   * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than
-   *     the join column have the same name if {@code true} the join will succeed and duplicate
-   *     columns are renamed
-   * @param keepAllJoinKeyColumns if {@code false} the join will only keep join key columns in
-   *     table1 if {@code true} the join will return all join key columns in both table, which may
-   *     have difference when there are null values
-   * @param col2Names The columns to join on. If a name refers to a double column, the join is
-   *     performed after rounding to integers.
-   * @return The resulting table
-   */
-  public Table rightOuter(
-      Table table2,
-      boolean allowDuplicateColumnNames,
-      boolean keepAllJoinKeyColumns,
-      String... col2Names) {
-    return joinInternal(
-        table,
-        table2,
-        JoinType.RIGHT_OUTER,
-        allowDuplicateColumnNames,
-        keepAllJoinKeyColumns,
-        col2Names);
-  }
-
-  /**
-   * Adds empty columns to the destination table with the same type as columns in table1 and table2.
-   *
-   * <p>For inner, left and full outer join types the join columns in table2 are not needed and will
-   * be marked as placeholders. The indexes of those columns will be returned. The downstream logic
-   * is easier if we wait to remove the redundant columns until the last step.
-   *
-   * @param destination the table to fill up with columns. Will be mutated in place.
-   * @param table1 the table on left side of the join.
-   * @param table2 the table on the right side of the join.
-   * @param joinType the type of join.
-   * @param allowDuplicates whether to allow duplicates. If yes rename columns in table2 that have
-   *     the same name as columns in table1 with the exception of join columns in table2 when
-   *     performing a right join.
-   * @param table2JoinColumnIndexes the index locations of the table2 join columns.
-   * @return A
-   */
-  private Set<Integer> emptyTableFromColumns(
-      Table destination,
-      Table table1,
-      Table table2,
-      JoinType joinType,
-      boolean allowDuplicates,
-      List<Integer> table2JoinColumnIndexes,
-      boolean keepTable2JoinKeyColumns) {
-
-    Column<?>[] cols =
-        Streams.concat(table1.columns().stream(), table2.columns().stream())
-            .map(Column::emptyCopy)
-            .toArray(Column[]::new);
-
-    // For inner join, left join and full outer join mark the join columns in table2 as
-    // placeholders.
-    // For right join mark the join columns in table1 as placeholders.
-    // Keep track of which join columns are placeholders so they can be ignored.
-    Set<Integer> ignoreColumns = new HashSet<>();
-    for (int c = 0; c < cols.length; c++) {
-      if (joinType == JoinType.RIGHT_OUTER) {
-        if (c < table1.columnCount() && joinColumnIndexes.contains(c)) {
-          if (!keepTable2JoinKeyColumns) {
-            cols[c].setName("Placeholder_" + ignoreColumns.size());
-          }
-          ignoreColumns.add(c);
-        }
-      } else {
-        int table2Index = c - table1.columnCount();
-        if (c >= table1.columnCount() && table2JoinColumnIndexes.contains(table2Index)) {
-          if (!keepTable2JoinKeyColumns) {
-            cols[c].setName("Placeholder_" + ignoreColumns.size());
-          }
-          ignoreColumns.add(c);
-        }
-      }
-    }
-
-    // Rename duplicate columns in second table
-    if (allowDuplicates) {
-      Set<String> table1ColNames =
-          Arrays.stream(cols)
-              .map(Column::name)
-              .map(String::toLowerCase)
-              .limit(table1.columnCount())
+    if (!allowDuplicateColumnNames) {
+      Set<String> rightJoinColumns = Set.of(rightJoinColumnNames);
+      Set<String> leftJoinColumns = Set.of(leftJoinColumnNames);
+      Set<String> nonJoinColumns =
+          table.columnNames().stream()
+              .filter(e -> !leftJoinColumns.contains(e))
               .collect(Collectors.toSet());
 
-      String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
-      for (int c = table1.columnCount(); c < cols.length; c++) {
-        String columnName = cols[c].name();
-        if (table1ColNames.contains(columnName.toLowerCase())) {
-          cols[c].setName(newName(table2Alias, columnName));
-        }
-      }
-    }
-    destination.addColumns(cols);
-    return ignoreColumns;
-  }
-
-  /**
-   * Creates cross product for the selection of two tables.
-   *
-   * @param destination the destination table.
-   * @param table1 the table on left of join.
-   * @param table2 the table on right of join.
-   * @param table1Rows the selection of rows in table1.
-   * @param table2Rows the selection of rows in table2.
-   * @param ignoreColumns a set of column indexes in the result to ignore. They are redundant join
-   *     columns.
-   */
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  private void crossProduct(
-      Table destination,
-      Table table1,
-      Table table2,
-      Selection table1Rows,
-      Selection table2Rows,
-      Set<Integer> ignoreColumns,
-      boolean keepTable2JoinKeyColumns) {
-    for (int c = 0; c < table1.columnCount() + table2.columnCount(); c++) {
-      if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
-        continue;
-      }
-      int table2Index = c - table1.columnCount();
-      for (int r1 : table1Rows) {
-        for (int r2 : table2Rows) {
-          if (c < table1.columnCount()) {
-            Column t1Col = table1.column(c);
-            destination.column(c).append(t1Col, r1);
+      for (Table t : rightTables) {
+        List<String> names =
+            t.columnNames().stream()
+                .filter(e -> !rightJoinColumns.contains(e))
+                .collect(Collectors.toList());
+        for (String nm : names) {
+          if (!nonJoinColumns.contains(nm)) {
+            nonJoinColumns.add(nm);
           } else {
-            Column t2Col = table2.column(table2Index);
-            destination.column(c).append(t2Col, r2);
+            throw new IllegalArgumentException(
+                "Attempting to join tables containing non-join columns with at least one name: "
+                    + nm
+                    + " appears in more than one table. "
+                    + "If you would like to join tables containing columns with duplicate names, "
+                    + " the value of 'allowDuplicateColumnNames' must be true");
           }
         }
       }
     }
+    return performJoin(table, rightTables);
+  }
+
+  private void selectJoinStrategy() {
+    // System.out.println(table);
+    // System.out.println(rightTables.get(0));
+
+    int leftRowCount = table.rowCount();
+    int rightRowCount = rightTables.get(0).rowCount();
+
+    int minCardinalityLeft = Integer.MAX_VALUE;
+    int minCardinalityRight = Integer.MAX_VALUE;
+
+    for (int i = 0; i < rightJoinColumnNames.length; i++) {
+      int cardinality = table.column(leftJoinColumnNames[i]).countUnique();
+      if (cardinality < minCardinalityLeft) {
+        minCardinalityLeft = cardinality;
+      }
+    }
+    for (String rightJoinColumnName : rightJoinColumnNames) {
+      int cardinality = rightTables.get(0).column(rightJoinColumnName).countUnique();
+      if (cardinality < minCardinalityRight) {
+        minCardinalityRight = cardinality;
+      }
+    }
+    //    System.out.println("min cardinality left " + minCardinalityLeft);
+    //    System.out.println("min cardinality right " + minCardinalityRight);
+    //    System.out.println("Avg values left " + (leftRowCount/(minCardinalityLeft * 1.0)));
+    //    System.out.println("Avg values right " + rightRowCount / minCardinalityRight);
+    if ((leftRowCount / (minCardinalityLeft * 1.0)) > 1000
+        || (rightRowCount / (minCardinalityRight * 1.0) > 1000)) {
+      this.strategy = new SortMergeJoin(table, leftJoinColumnNames);
+    } else {
+      this.strategy = new CrossProductJoin(table, leftJoinColumnNames);
+    }
+    //    System.out.println(strategy + " selected.");
   }
 
   /**
-   * Adds rows to destination for each row in table1 with the columns from table2 added as missing
-   * values.
+   * Finds the position of the columns corresponding to the columnNames. E.G. The column named "ID"
+   * is located at position 5 (0-based) in the table.
+   *
+   * @param table the table that contains the columns.
+   * @param columnNames the column names to find position of.
+   * @return a list of column indexes within the table.
    */
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  private void withMissingLeftJoin(
-      Table destination,
+  private int[] getJoinIndexes(Table table, String[] columnNames) {
+    int[] results = new int[columnNames.length];
+    for (int i = 0; i < columnNames.length; i++) {
+      String nm = columnNames[i];
+      results[i] = table.columnIndex(nm);
+    }
+    return results;
+  }
+
+  /**
+   * Recursively joins the table on the left with each of the tables on the right, substituting the
+   * result of the nth join as the left table for the nth + 1 join
+   *
+   * @param left The first (left) table participating in the join
+   * @param rightTables One or more tables to be joined with the first (left) table
+   * @return this DataFrameJoiner instance
+   */
+  private Table performJoin(Table left, List<Table> rightTables) {
+    Table result =
+        joinInternal(
+            left,
+            rightTables.remove(0),
+            joinType,
+            allowDuplicateColumnNames,
+            keepAllJoinKeyColumns,
+            rightJoinColumnNames);
+    if (rightTables.isEmpty()) {
+      return result;
+    } else {
+      // on subsequent calls, the left column may have a new structure
+      this.leftJoinColumnPositions = getJoinIndexes(result, leftJoinColumnNames);
+      return performJoin(result, rightTables);
+    }
+  }
+
+  Table joinInternal(
       Table table1,
-      Selection table1Rows,
-      Set<Integer> ignoreColumns,
-      boolean keepTable2JoinKeyColumns) {
-    for (int c = 0; c < destination.columnCount(); c++) {
-      if (!keepTable2JoinKeyColumns && ignoreColumns.contains(c)) {
-        continue;
-      }
-      if (c < table1.columnCount()) {
-        Column t1Col = table1.column(c);
-        for (int index : table1Rows) {
-          destination.column(c).append(t1Col, index);
-        }
-      } else {
-        for (int r1 = 0; r1 < table1Rows.size(); r1++) {
-          destination.column(c).appendMissing();
-        }
-      }
-    }
-  }
-
-  /**
-   * Adds rows to destination for each row in table2 with the columns from table1 added as missing
-   * values.
-   */
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  private void withMissingRight(
-      Table destination,
-      int table1ColCount,
       Table table2,
-      Selection table2Rows,
       JoinType joinType,
-      List<Integer> col2Indexes,
-      Set<Integer> ignoreColumns,
-      boolean keepTable2JoinKeyColumns) {
-
-    // Add index data from table2 into join column positions in table one.
-    if (joinType == JoinType.FULL_OUTER) {
-      for (int i = 0; i < col2Indexes.size(); i++) {
-        Column t2Col = table2.column(col2Indexes.get(i));
-        for (int index : table2Rows) {
-          destination.column(joinColumnIndexes.get(i)).append(t2Col, index);
-        }
-      }
-    }
-
-    for (int c = 0; c < destination.columnCount(); c++) {
-      if (!keepTable2JoinKeyColumns) {
-        if (ignoreColumns.contains(c) || joinColumnIndexes.contains(c)) {
-          continue;
-        }
-      }
-      if (c < table1ColCount) {
-        for (int r1 = 0; r1 < table2Rows.size(); r1++) {
-          destination.column(c).appendMissing();
-        }
-      } else {
-        Column t2Col = table2.column(c - table1ColCount);
-        for (int index : table2Rows) {
-          destination.column(c).append(t2Col, index);
-        }
-      }
-    }
+      boolean allowDuplicates,
+      boolean keepAllJoinKeyColumns,
+      String... rightJoinColumnPositions) {
+    return strategy.performJoin(
+        table1,
+        table2,
+        joinType,
+        allowDuplicates,
+        keepAllJoinKeyColumns,
+        leftJoinColumnPositions,
+        rightJoinColumnPositions);
   }
 }

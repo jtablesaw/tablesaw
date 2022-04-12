@@ -168,6 +168,10 @@ public class Row implements Iterator<Row> {
     }
   }
 
+  public ColumnType type(int columnIndex) {
+    return tableSlice.column(columnIndex).type();
+  }
+
   /** Moves this Row to the given 0-based row index */
   public void at(int rowNumber) {
     this.rowNumber = rowNumber;
@@ -573,6 +577,10 @@ public class Row implements Iterator<Row> {
     setDate(columnNames[columnIndex], value);
   }
 
+  public void setPackedDate(int columnIndex, int value) {
+    setPackedDate(columnNames[columnIndex], value);
+  }
+
   /**
    * Sets the value of the column with the given name at this Row to the given value. An
    * IllegalStateException is * thrown if the column is not present in the Row and an
@@ -581,6 +589,42 @@ public class Row implements Iterator<Row> {
    */
   public void setDate(String columnName, LocalDate value) {
     dateColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setPackedDate(String columnName, int value) {
+    dateColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setPackedTime(int columnIndex, int value) {
+    setPackedTime(columnNames[columnIndex], value);
+  }
+
+  public void setPackedDateTime(int columnIndex, long value) {
+    setPackedDateTime(columnNames[columnIndex], value);
+  }
+
+  public void setPackedInstant(int columnIndex, long value) {
+    setPackedInstant(columnNames[columnIndex], value);
+  }
+
+  public void setPackedTime(String columnName, int value) {
+    timeColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setPackedDateTime(String columnName, long value) {
+    dateTimeColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setPackedInstant(String columnName, long value) {
+    instantColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setBooleanAsByte(String columnName, byte value) {
+    booleanColumnMap.get(columnName).set(getIndex(rowNumber), value);
+  }
+
+  public void setBooleanAsByte(int columnIndex, byte value) {
+    setBooleanAsByte(columnNames[columnIndex], value);
   }
 
   /**
@@ -784,6 +828,14 @@ public class Row implements Iterator<Row> {
   }
 
   /**
+   * Returns the row number in the table backing the slice behind this row. This value may differ
+   * from the rowNumber() if the slice covers less than the entire table
+   */
+  public int getBackingRowNumber() {
+    return getIndex(getRowNumber());
+  }
+
+  /**
    * Returns a double representing the value held in the column with the given name at this row, for
    * any numeric column type
    */
@@ -800,7 +852,7 @@ public class Row implements Iterator<Row> {
     return tableSlice.column(columnIndex).type();
   }
 
-  Column<?> column(int columnIndex) {
+  public Column<?> column(int columnIndex) {
     return tableSlice.column(columnIndex);
   }
 

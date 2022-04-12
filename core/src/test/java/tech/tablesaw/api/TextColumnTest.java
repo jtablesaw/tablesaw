@@ -31,6 +31,7 @@ import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.joining.JoinType;
 import tech.tablesaw.selection.Selection;
 
 public class TextColumnTest {
@@ -107,7 +108,7 @@ public class TextColumnTest {
                                 "13:21:52.451,26.1"))
                     .columnTypesToDetect(Arrays.asList(ColumnType.DOUBLE, ColumnType.TEXT)));
 
-    Table joined = t1.joinOn("TIME").fullOuter(t2);
+    Table joined = t1.joinOn("TIME").with(t2).type(JoinType.FULL_OUTER).join();
     assertEquals(3, joined.columnCount());
   }
 
