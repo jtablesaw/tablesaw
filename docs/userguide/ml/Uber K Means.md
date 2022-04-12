@@ -23,7 +23,7 @@ Essentially, this becomes a computationally-intensive optimization problem to wh
  
  ### K-Means with NYC Uber Data
  
-Because the K-means algorithm clusters datapoints, we can use it to determine ideal locations for Uber drivers to idle between customer pickups. The data in uber-pickups-april14.csv represents all Uber pickups in New York City during April 2014. To start, create a bounding box around the data to focus on Manhatten and the immediate vicinity. 
+Because the K-means algorithm clusters datapoints, we can use it to determine ideal locations for Uber drivers to idle between customer pickups. The data in uber-pickups-april14.csv represents all Uber pickups in New York City during April 2014. To start, create a bounding box around the data to focus on Manhatten and the immediate vicinity. Download the data <a href="https://github.com/jbsooter/tablesaw/blob/1e4d6969850203f3bba0d8cf1a6671c191a1fa53/data/uber-pickups-apr14.csv">here</a>. 
  
  ```Java
  Table pickups = Table.read().csv("uber-pickups-apr14.csv");
