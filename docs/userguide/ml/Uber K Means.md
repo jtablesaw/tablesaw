@@ -185,6 +185,7 @@ plot_data_Weekend.addColumns(IntColumn.create("cluster",modelWeekend.y));
 Plot.show(ScatterPlot.create("Weekend, K=5", plot_data_Weekend, "lon", "lat", "cluster"));              
  ```
 
+### Time Based Clusters
   <p align="center">
  <img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekday_Morning_K5.png" width="446.875" height = "343.75"><img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekday_Evening_K5.png" width="446.875" height = "343.75">
 </p>
@@ -193,4 +194,13 @@ Plot.show(ScatterPlot.create("Weekend, K=5", plot_data_Weekend, "lon", "lat", "c
  <img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Late_Night_K5.png" width="446.875" height = "343.75"><img src="https://github.com/jbsooter/tablesaw/blob/cf4419857d356d4e6080e3470d13312386c66537/docs/userguide/images/ml/k_means/Weekend_K5.png" width="446.875" height = "343.75">
 </p>
 
+### Conclusions
+These clusters reveal some interesting trends. Weekday mornings and evenings, for example, the algorithm suggests that most drivers should be awaiting passengers in Lower Manhatten. This is consistent with a weekday rushhour in the financial district of the city. Late night, however, is a very different story. The number of clusters in Manhatten drops from 3 to 2, and the largest geographic extent of demand in Manhatten is clustered around upper Manhatten and tourist/leisure areas such as Times Square and 5th Avenue. There are certainly a variety of potential explanations beyond what has been offered here for this variation, but regardless of the underlying reason for these variations the K-means algorithm has effectively addressed our question of interest--where do Uber drivers need to be at certain time/day to efficiently serve demand for Ubers in NYC. 
 
+### Extensions
+
+**Possible areas for further exploration:**
+
+1. Alternative time windows/k-values to search for other time-based variations. 
+2. Apply Smile's extensions of K-means, (<a href="https://haifengl.github.io/clustering.html?msclkid=fad0d344ba5f11ecb024703bc12a87be">X-means</a> and <a href="https://haifengl.github.io/clustering.html?msclkid=fad0d344ba5f11ecb024703bc12a87be">G-means</a>) that attempt to address the issue of determining k.
+3. K-means can be thought of as a version of the classical facility location problem in the field of Operations Research where the candidate facility locations are undefined. One shortcoming of the K-means approach, however, is that it does not consider geographical constraints that make driving from one place to another more difficult than Euclidean distance would suggest. Use K-means to identify potential facility locations and then model this problem as the <a href="https://haifengl.github.io/clustering.html?msclkid=fad0d344ba5f11ecb024703bc12a87be">uncapacitated facility location</a> problem with additional constraints preventing pickups from one side of a waterway being served by a centroid on the other. Open source packages such as <a href="https://developers.google.com/optimization/?msclkid=4c2e5150ba6211ecbbb3ff46615f0eb3">Google OR-Tools</a> can be used to formulate and solve such problems in a Java environment. 
