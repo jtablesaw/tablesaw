@@ -27,7 +27,7 @@ public class HistogramExample {
     Table baseball = Table.read().csv("../data/baseball.csv");
 
     Layout layout = Layout.builder().title("Distribution of team batting averages").build();
-    HistogramTrace trace = HistogramTrace.builder(baseball.nCol("BA")).build();
+    HistogramTrace trace = HistogramTrace.builder(baseball.nCol("BA").asDoubleArray()).build();
 
     Plot.show(new Figure(layout, trace));
   }

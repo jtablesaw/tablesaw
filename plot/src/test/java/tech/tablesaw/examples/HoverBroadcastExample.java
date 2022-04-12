@@ -11,7 +11,6 @@ import tech.tablesaw.plotly.components.Figure.FigureBuilder;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.event.HoverBroadcastBody;
 import tech.tablesaw.plotly.event.HoverEventHandler;
-import tech.tablesaw.plotly.wrappers.Scatter;
 
 public class HoverBroadcastExample {
 
@@ -38,20 +37,20 @@ public class HoverBroadcastExample {
     DoubleColumn y2 = DoubleColumn.create("price", prices);
     IntColumn y1 = IntColumn.create("volume", volumes);
 
-    Scatter trace0 =
-        Scatter.builder(x, y2)
+    ScatterTrace trace0 =
+        ScatterTrace.builder(x, y2)
             .showLegend(true)
             .name("Price")
-            .mode(Scatter.Mode.LINE)
-            .yAxis(Scatter.YAxis.Y2)
+            .mode(ScatterTrace.Mode.LINE)
+            .yAxis(ScatterTrace.YAxis.Y2)
             .build();
 
-    Scatter trace1 =
-        Scatter.builder(x, y1)
+    ScatterTrace trace1 =
+        ScatterTrace.builder(x, y1)
             .showLegend(true)
             .name("Volume")
-            .mode(Scatter.Mode.LINE)
-            .yAxis(Scatter.YAxis.Y)
+            .mode(ScatterTrace.Mode.LINE)
+            .yAxis(ScatterTrace.YAxis.Y)
             .build();
 
     Layout layout =

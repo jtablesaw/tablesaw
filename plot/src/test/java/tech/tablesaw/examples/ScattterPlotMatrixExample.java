@@ -22,7 +22,6 @@ import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Grid;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
-import tech.tablesaw.plotly.wrappers.Scatter;
 import tech.tablesaw.plotly.traces.Trace;
 
 /** Renders a scatter plot matrix for the first 6 numeric columns in the tornado dataset */
@@ -37,7 +36,7 @@ public class ScattterPlotMatrixExample {
     for (int i = 0; i < columns.size(); i++) {
       for (NumericColumn<?> column : columns) {
         Trace t =
-            Scatter.builder(column.asDoubleArray(), columns.get(i).asDoubleArray())
+            ScatterTrace.builder(column.asDoubleArray(), columns.get(i).asDoubleArray())
                 .xAxis("x" + count)
                 .yAxis("y" + count)
                 .name(columns.get(i).name() + " x " + column.name())

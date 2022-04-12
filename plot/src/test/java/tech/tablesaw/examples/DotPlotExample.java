@@ -10,7 +10,7 @@ import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.components.Symbol;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 public class DotPlotExample {
 
@@ -23,7 +23,7 @@ public class DotPlotExample {
 
     Layout layout = Layout.builder().title("Approval ratings by agency").build();
 
-    Scatter trace = Scatter.builder(x, y).mode(Scatter.Mode.MARKERS).build();
+    ScatterTrace trace = ScatterTrace.builder(x.asObjectArray(), y.asObjectArray()).mode(ScatterTrace.Mode.MARKERS).build();
     Plot.show(new Figure(layout, trace));
 
     // A more complex example involving two traces
@@ -40,17 +40,18 @@ public class DotPlotExample {
 
     Table year1 = summary.where(summary.intColumn("year").isEqualTo(2001));
     Table year2 = summary.where(summary.intColumn("year").isEqualTo(2002));
-    Scatter trace2 =
-        Scatter.builder(year1.nCol("Mean [approval]"), year1.stringColumn("who"))
+    ScatterTrace trace2 =
+        ScatterTrace.builder(year1.nCol("Mean [approval]").asObjectArray(), year1.stringColumn("who").asObjectArray())
             .name("2001")
-            .mode(Scatter.Mode.MARKERS)
+            .mode(ScatterTrace.Mode.MARKERS)
             .marker(Marker.builder().symbol(Symbol.DIAMOND).color("red").size(10).build())
             .build();
 
-    Scatter trace3 =
-        Scatter.builder(year2.nCol("Mean [approval]"), year2.stringColumn("who"))
+    ScatterTrace trace3 =
+        ScatterTrace.builder(year2.nCol("Mean [approval]").asObjectArray(),
+                        year2.stringColumn("who").asObjectArray())
             .name("2002")
-            .mode(Scatter.Mode.MARKERS)
+            .mode(ScatterTrace.Mode.MARKERS)
             .marker(Marker.builder().symbol(Symbol.STAR).size(10).color("blue").build())
             .build();
 

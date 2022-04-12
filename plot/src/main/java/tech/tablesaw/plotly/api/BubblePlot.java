@@ -9,7 +9,7 @@ import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.components.Marker.MarkerBuilder;
 import tech.tablesaw.plotly.components.Marker.SizeMode;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.table.TableSliceGroup;
 
 public class BubblePlot {
@@ -20,19 +20,20 @@ public class BubblePlot {
     TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
     Layout layout = Layout.builder(title, xCol, yCol).showLegend(true).build();
 
-    Scatter[] traces = new Scatter[tables.size()];
+    ScatterTrace[] traces = new ScatterTrace[tables.size()];
     for (int i = 0; i < tables.size(); i++) {
       List<Table> tableList = tables.asTableList();
 
       Marker marker =
           Marker.builder()
-              .size(tableList.get(i).numberColumn(sizeColumn))
+              .size(tableList.get(i).numberColumn(sizeColumn).asDoubleArray())
               // .opacity(.75)
               .build();
 
       traces[i] =
-          Scatter.builder(
-                  tableList.get(i).numberColumn(xCol), tableList.get(i).numberColumn(yCol))
+          ScatterTrace.builder(
+                  tableList.get(i).numberColumn(xCol).asDoubleArray()
+                          , tableList.get(i).numberColumn(yCol).asDoubleArray())
               .showLegend(true)
               .marker(marker)
               .name(tableList.get(i).name())
@@ -67,7 +68,7 @@ public class BubblePlot {
     Marker marker = null;
     MarkerBuilder builder = Marker.builder();
     if (sizeColumn != null) {
-      builder.size(sizeColumn);
+      builder.size(sizeColumn.asDoubleArray());
     }
     if (opacity != null) {
       builder.opacity(opacity);
@@ -80,7 +81,7 @@ public class BubblePlot {
     }
     marker = builder.build();
 
-    Scatter trace = Scatter.builder(xColumn, yColumn).marker(marker).build();
+    ScatterTrace trace = ScatterTrace.builder(xColumn.asObjectArray(), yColumn.asObjectArray()).marker(marker).build();
     return new Figure(layout, trace);
   }
 
@@ -104,7 +105,7 @@ public class BubblePlot {
   public static Figure create(
       String title, String xTitle, double[] xCol, String yTitle, double[] yCol) {
     Layout layout = Layout.builder(title, xTitle, yTitle).build();
-    Scatter trace = Scatter.builder(xCol, yCol).build();
+    ScatterTrace trace = ScatterTrace.builder(xCol, yCol).build();
     return new Figure(layout, trace);
   }
 }

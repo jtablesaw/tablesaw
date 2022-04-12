@@ -74,7 +74,8 @@ public class BarExample {
     for (int i = 0; i < 2; i++) {
       String name = numberColNames[i];
       BarTrace trace =
-          BarTrace.builder(summaryTable.categoricalColumn("scale"), summaryTable.numberColumn(name))
+          BarTrace.builder(summaryTable.categoricalColumn("scale").asObjectArray(),
+                          summaryTable.numberColumn(name).asDoubleArray())
               .orientation(BarTrace.Orientation.VERTICAL)
               .marker(Marker.builder().color(colors[i]).build())
               .showLegend(true)

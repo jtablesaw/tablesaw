@@ -19,7 +19,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 public class LinePlotExample {
 
@@ -30,7 +30,7 @@ public class LinePlotExample {
 
     Layout layout =
         Layout.builder().title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975").build();
-    Scatter trace = Scatter.builder(x, y).mode(Scatter.Mode.LINE).build();
+    ScatterTrace trace = ScatterTrace.builder(x.asObjectArray(), y.asObjectArray()).mode(ScatterTrace.Mode.LINE).build();
     Plot.show(new Figure(layout, trace));
   }
 }

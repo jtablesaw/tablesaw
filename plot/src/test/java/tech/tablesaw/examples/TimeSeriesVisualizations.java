@@ -10,7 +10,6 @@ import tech.tablesaw.plotly.api.TimeSeriesPlot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
-import tech.tablesaw.plotly.wrappers.Scatter;
 
 public class TimeSeriesVisualizations {
 
@@ -32,11 +31,11 @@ public class TimeSeriesVisualizations {
     Layout layout =
         Layout.builder("Boston Robberies by month: Jan 1966-Oct 1975", "year", "robberies").build();
 
-    Scatter trace =
-        Scatter.builder(robberies.numberColumn("Record"), robberies.numberColumn("Robberies"))
-            .mode(Scatter.Mode.LINE)
+    ScatterTrace trace =
+        ScatterTrace.builder(robberies.numberColumn("Record"), robberies.numberColumn("Robberies"))
+            .mode(ScatterTrace.Mode.LINE)
             .marker(Marker.builder().color("#3D9970").build())
-            .fill(Scatter.Fill.TO_NEXT_Y)
+            .fill(ScatterTrace.Fill.TO_NEXT_Y)
             .build();
     Plot.show(new Figure(layout, trace));
 

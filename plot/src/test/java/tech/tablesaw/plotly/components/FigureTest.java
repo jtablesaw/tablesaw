@@ -3,21 +3,21 @@ package tech.tablesaw.plotly.components;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.plotly.traces.Trace;
 
 class FigureTest {
 
   private static final String LINE_END = System.lineSeparator();
-  private String divName = "target";
+  private final String divName = "target";
 
-  private double[] x = {1, 2, 3, 4, 5};
-  private double[] y = {1, 4, 9, 16, 25};
+  private final double[] x = {1, 2, 3, 4, 5};
+  private final double[] y = {1, 4, 9, 16, 25};
 
   @Test
   void asJavascript() {
 
-    Trace trace = Scatter.builder(x, y).build();
+    Trace trace = ScatterTrace.builder(x, y).build();
     Figure figure = new Figure(trace);
 
     assertEquals(
@@ -59,7 +59,7 @@ class FigureTest {
   @Test
   void asJavascript2() {
 
-    Trace trace = Scatter.builder(x, y).build();
+    Trace trace = ScatterTrace.builder(x, y).build();
 
     Layout layout =
         Layout.builder()
@@ -167,7 +167,7 @@ class FigureTest {
     String title = "A test title";
     Layout layout = Layout.builder().title(title).showLegend(true).build();
 
-    Trace trace = Scatter.builder(x, y).build();
+    Trace trace = ScatterTrace.builder(x, y).build();
 
     Figure figure = Figure.builder().layout(layout).addTraces(trace).build();
 

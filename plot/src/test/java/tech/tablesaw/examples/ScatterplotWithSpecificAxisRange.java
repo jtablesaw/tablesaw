@@ -21,7 +21,6 @@ import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
-import tech.tablesaw.plotly.wrappers.Scatter;
 import tech.tablesaw.plotly.traces.Trace;
 
 /** Create a scatter plot with an explicit range for an axis (the y axis, here) */
@@ -40,7 +39,7 @@ public class ScatterplotWithSpecificAxisRange {
             .yAxis(Axis.builder().range(20, 60).build())
             .build();
     Trace trace =
-        Scatter.builder(x, y).marker(Marker.builder().size(1).build()).name("lat/lon").build();
+        ScatterTrace.builder(x, y).marker(Marker.builder().size(1).build()).name("lat/lon").build();
     Plot.show(new Figure(layout, trace));
   }
 }

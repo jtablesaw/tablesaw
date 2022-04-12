@@ -8,7 +8,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 /**
  * A Tukey Mean-Difference Plot (AKA a Bland-Altman plot) is a kind of scatter plot used frequently
@@ -85,15 +85,15 @@ public class TukeyMeanDifferencePlot {
     double[] zeroLineY = {0, 0};
 
     // Draw the line indicating equal distributions (this is zero in this plot)
-    Scatter trace1 =
-        Scatter.builder(zeroLineX, zeroLineY)
-            .mode(Scatter.Mode.LINE)
+    ScatterTrace trace1 =
+        ScatterTrace.builder(zeroLineX, zeroLineY)
+            .mode(ScatterTrace.Mode.LINE)
             .name("y = x")
             .build();
 
     // Draw the actual data points
-    Scatter trace2 =
-        Scatter.builder(averagePoints, differencePoints).name("mean x difference").build();
+    ScatterTrace trace2 =
+        ScatterTrace.builder(averagePoints, differencePoints).name("mean x difference").build();
 
     Layout layout =
         Layout.builder()

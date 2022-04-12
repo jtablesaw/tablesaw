@@ -27,9 +27,9 @@ public class Scatter3DPlot {
       List<Table> tableList = tables.asTableList();
       traces[i] =
           Scatter3DTrace.builder(
-                  tableList.get(i).numberColumn(xCol),
-                  tableList.get(i).numberColumn(yCol),
-                  tableList.get(i).numberColumn(zCol))
+                  tableList.get(i).numberColumn(xCol).asDoubleArray(),
+                  tableList.get(i).numberColumn(yCol).asDoubleArray(),
+                  tableList.get(i).numberColumn(zCol).asDoubleArray())
               .showLegend(true)
               .name(tableList.get(i).name())
               .build();
@@ -43,7 +43,9 @@ public class Scatter3DPlot {
 
     Scatter3DTrace trace =
         Scatter3DTrace.builder(
-                table.numberColumn(xCol), table.numberColumn(yCol), table.numberColumn(zCol))
+                table.numberColumn(xCol).asDoubleArray(),
+                        table.numberColumn(yCol).asDoubleArray(),
+                        table.numberColumn(zCol).asDoubleArray())
             .build();
     return new Figure(layout, trace);
   }
@@ -67,15 +69,15 @@ public class Scatter3DPlot {
       List<Table> tableList = tables.asTableList();
       Marker marker =
           Marker.builder()
-              .size(tableList.get(i).numberColumn(sizeColumn))
+              .size(tableList.get(i).numberColumn(sizeColumn).asDoubleArray())
               // .opacity(.75)
               .build();
 
       traces[i] =
           Scatter3DTrace.builder(
-                  tableList.get(i).numberColumn(xCol),
-                  tableList.get(i).numberColumn(yCol),
-                  tableList.get(i).numberColumn(zCol))
+                  tableList.get(i).numberColumn(xCol).asDoubleArray(),
+                  tableList.get(i).numberColumn(yCol).asDoubleArray(),
+                  tableList.get(i).numberColumn(zCol).asDoubleArray())
               .marker(marker)
               .showLegend(true)
               .name(tableList.get(i).name())

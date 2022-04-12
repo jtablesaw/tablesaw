@@ -4,7 +4,7 @@ import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 public class QuantilePlot {
 
@@ -30,7 +30,7 @@ public class QuantilePlot {
     NumericColumn<?> copy = xCol.copy();
     copy.sortAscending();
 
-    Scatter trace = Scatter.builder(x, copy.asDoubleArray()).build();
+    ScatterTrace trace = ScatterTrace.builder(x, copy.asDoubleArray()).build();
     Layout layout = Layout.builder().title(title).build();
     return new Figure(layout, trace);
   }

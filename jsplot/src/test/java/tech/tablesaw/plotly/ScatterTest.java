@@ -12,7 +12,7 @@ import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.components.Symbol;
 import tech.tablesaw.plotly.components.TickSettings;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 @Disabled
 public class ScatterTest {
@@ -27,7 +27,7 @@ public class ScatterTest {
 
   @Test
   public void testAsJavascript() {
-    Scatter trace = Scatter.builder(x, y).text(labels).build();
+    ScatterTrace trace = ScatterTrace.builder(x, y).text(labels).build();
 
     System.out.println(trace.asJavascript(1));
   }
@@ -35,11 +35,11 @@ public class ScatterTest {
   @Test
   public void showScatter() {
 
-    Scatter trace =
-        Scatter.builder(x, y)
+    ScatterTrace trace =
+        ScatterTrace.builder(x, y)
             .marker(
                 Marker.builder().size(12.0).symbol(Symbol.DIAMOND_TALL).color("#c68486").build())
-            .mode(Scatter.Mode.MARKERS)
+            .mode(ScatterTrace.Mode.MARKERS)
             .text(labels)
             .build();
 
@@ -59,9 +59,9 @@ public class ScatterTest {
             .width(1200)
             .build();
 
-    Scatter trace =
-        Scatter.builder(x, y)
-            .mode(Scatter.Mode.LINE)
+    ScatterTrace trace =
+        ScatterTrace.builder(x, y)
+            .mode(ScatterTrace.Mode.LINE)
             .hoverLabel(
                 HoverLabel.builder().bgColor("red").font(Font.builder().size(24).build()).build())
             .showLegend(true)
@@ -111,11 +111,11 @@ public class ScatterTest {
             .hoverMode(Layout.HoverMode.CLOSEST)
             .build();
 
-    Scatter trace1 = Scatter.builder(x, y).mode(Scatter.Mode.LINE).build();
+    ScatterTrace trace1 = ScatterTrace.builder(x, y).mode(ScatterTrace.Mode.LINE).build();
 
-    Scatter trace3 = Scatter.builder(x1, y1).mode(Scatter.Mode.LINE).build();
+    ScatterTrace trace3 = ScatterTrace.builder(x1, y1).mode(ScatterTrace.Mode.LINE).build();
 
-    Scatter trace2 = Scatter.builder(x2, y2).mode(Scatter.Mode.LINE).build();
+    ScatterTrace trace2 = ScatterTrace.builder(x2, y2).mode(ScatterTrace.Mode.LINE).build();
 
     Figure figure = new Figure(layout, trace1, trace2, trace3);
     File outputFile = Paths.get("testoutput/output.html").toFile();
@@ -125,8 +125,8 @@ public class ScatterTest {
   @Test
   public void showLineAndMarkers() {
 
-    Scatter trace =
-        Scatter.builder(x, y).mode(Scatter.Mode.LINE_AND_MARKERS).build();
+    ScatterTrace trace =
+        ScatterTrace.builder(x, y).mode(ScatterTrace.Mode.LINE_AND_MARKERS).build();
 
     Figure figure = new Figure(trace);
     File outputFile = Paths.get("testoutput/output.html").toFile();
@@ -137,8 +137,8 @@ public class ScatterTest {
   @Test
   public void showText() {
 
-    Scatter trace =
-        Scatter.builder(x, y).mode(Scatter.Mode.TEXT).text(labels).build();
+    ScatterTrace trace =
+        ScatterTrace.builder(x, y).mode(ScatterTrace.Mode.TEXT).text(labels).build();
 
     Figure figure = new Figure(trace);
     File outputFile = Paths.get("testoutput/output.html").toFile();

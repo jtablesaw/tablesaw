@@ -22,7 +22,7 @@ class BarPlot {
     Layout layout = standardLayout(title).build();
 
     BarTrace trace =
-        BarTrace.builder(table.categoricalColumn(groupColName), table.numberColumn(numberColName))
+        BarTrace.builder(table.categoricalColumn(groupColName).asObjectArray(), table.numberColumn(numberColName).asDoubleArray())
             .orientation(orientation)
             .build();
     return new Figure(layout, trace);
@@ -42,7 +42,7 @@ class BarPlot {
     for (int i = 0; i < numberColNames.length; i++) {
       String name = numberColNames[i];
       BarTrace trace =
-          BarTrace.builder(table.categoricalColumn(groupColName), table.numberColumn(name))
+          BarTrace.builder(table.categoricalColumn(groupColName).asObjectArray(), table.numberColumn(name).asDoubleArray())
               .orientation(orientation)
               .showLegend(true)
               .name(name)

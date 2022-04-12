@@ -32,7 +32,7 @@ public class BoxExample {
     Layout layout = Layout.builder().title("Tornado Injuries by Scale").build();
 
     BoxTrace trace =
-        BoxTrace.builder(table.categoricalColumn("scale"), table.nCol("injuries")).build();
+        BoxTrace.builder(table.categoricalColumn("scale").asObjectArray(), table.nCol("injuries").asDoubleArray()).build();
     Plot.show(new Figure(layout, trace));
   }
 }

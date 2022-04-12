@@ -55,7 +55,7 @@ public class BarPieAndParetoExample {
 
     t2 = t2.sortDescendingOn(t2.column(1).name());
     Layout layout = Layout.builder().title("Tornado Fatalities by State").build();
-    BarTrace trace = BarTrace.builder(t2.categoricalColumn(0), t2.numberColumn(1)).build();
+    BarTrace trace = BarTrace.builder(t2.categoricalColumn(0).asObjectArray(), t2.numberColumn(1).asDoubleArray()).build();
     Plot.show(new Figure(layout, trace));
   }
 }

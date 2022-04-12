@@ -83,6 +83,25 @@ public class ScatterTrace extends AbstractTrace {
     return new ScatterBuilder(x, y);
   }
 
+  public static ScatterBuilder builder(Object[] x, Object[] y) {
+    return new ScatterBuilder(x, y);
+  }
+
+  /**
+   * A ScatterTrace.Builder specialized for candlestick and OHLC plots
+   *
+   * @param x The x axis (time)
+   * @param open Opening price in the time period
+   * @param high High price in the time period
+   * @param low Low price
+   * @param close Closing price
+   * @return An initialized ScatterTrace.Builder
+   */
+  public static ScatterBuilder builder(
+      Object[] x, double[] open, double[] high, double[] low, double[] close) {
+    return new ScatterBuilder(x, open, high, low, close);
+  }
+
   private ScatterTrace(ScatterBuilder builder) {
     super(builder);
     this.mode = builder.mode;
@@ -254,25 +273,18 @@ public class ScatterTrace extends AbstractTrace {
       this.y = y1;
     }
 
-    /*
-        private ScatterBuilder(Column<?> x, Column<?> y) {
-          this.x = x.asObjectArray();
-          this.y = y.asObjectArray();
-        }
+    ScatterBuilder(Object[] x, double[] open, double[] high, double[] low, double[] close) {
+      this.x = x;
+      this.open = open;
+      this.high = high;
+      this.low = low;
+      this.close = close;
+    }
 
-        private ScatterBuilder(
-            Column<?> x,
-            NumericColumn<? extends Number> open,
-            NumericColumn<? extends Number> high,
-            NumericColumn<? extends Number> low,
-            NumericColumn<? extends Number> close) {
-          this.x = x.asObjectArray();
-          this.open = open.asDoubleArray();
-          this.high = high.asDoubleArray();
-          this.low = low.asDoubleArray();
-          this.close = close.asDoubleArray();
-        }
-    */
+    public ScatterBuilder(Object[] x, Object[] y) {
+      this.x = x;
+      this.y = y;
+    }
 
     public ScatterBuilder mode(Mode mode) {
       this.mode = mode;

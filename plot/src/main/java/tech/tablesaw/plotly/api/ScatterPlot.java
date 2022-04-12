@@ -5,7 +5,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.table.TableSliceGroup;
 
 public class ScatterPlot {
@@ -19,13 +19,14 @@ public class ScatterPlot {
 
     Layout layout = Layout.builder(title, xCol, yCol).showLegend(true).build();
 
-    Scatter[] traces = new Scatter[tables.size()];
+    ScatterTrace[] traces = new ScatterTrace[tables.size()];
     Marker marker = Marker.builder().opacity(OPACITY).build();
     for (int i = 0; i < tables.size(); i++) {
       List<Table> tableList = tables.asTableList();
+      double[] x = tableList.get(i).numberColumn(xCol).asDoubleArray();
+      double[] y = tableList.get(i).numberColumn(yCol).asDoubleArray();
       traces[i] =
-          Scatter.builder(
-                  tableList.get(i).numberColumn(xCol), tableList.get(i).numberColumn(yCol))
+          ScatterTrace.builder(x, y)
               .showLegend(true)
               .marker(marker)
               .name(tableList.get(i).name())
@@ -36,15 +37,16 @@ public class ScatterPlot {
 
   public static Figure create(String title, Table table, String xCol, String yCol) {
     Layout layout = Layout.builder(title, xCol, yCol).build();
-    Scatter trace =
-        Scatter.builder(table.numberColumn(xCol), table.numberColumn(yCol)).build();
+    ScatterTrace trace =
+        ScatterTrace.builder(table.numberColumn(xCol).asDoubleArray(),
+                table.numberColumn(yCol).asDoubleArray()).build();
     return new Figure(layout, trace);
   }
 
   public static Figure create(
       String title, String xTitle, double[] xCol, String yTitle, double[] yCol) {
     Layout layout = Layout.builder(title, xTitle, yTitle).build();
-    Scatter trace = Scatter.builder(xCol, yCol).build();
+    ScatterTrace trace = ScatterTrace.builder(xCol, yCol).build();
     return new Figure(layout, trace);
   }
 }

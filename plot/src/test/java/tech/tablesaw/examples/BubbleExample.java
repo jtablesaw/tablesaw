@@ -20,7 +20,7 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.selection.Selection;
 
 /** */
@@ -34,8 +34,8 @@ public class BubbleExample {
     NumericColumn<?> data = sub.nCol("Market_Share");
 
     Layout layout = Layout.builder().title("Market Share").build();
-    Marker marker = Marker.builder().size(data).sizeMode(Marker.SizeMode.AREA).build();
-    Scatter trace = Scatter.builder(x, y).marker(marker).build();
+    Marker marker = Marker.builder().size(data.asDoubleArray()).sizeMode(Marker.SizeMode.AREA).build();
+    ScatterTrace trace = ScatterTrace.builder(x.asDoubleArray(), y.asDoubleArray()).marker(marker).build();
 
     Plot.show(new Figure(layout, trace));
   }

@@ -21,7 +21,6 @@ import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
-import tech.tablesaw.plotly.wrappers.Scatter;
 import tech.tablesaw.plotly.traces.Trace;
 
 /**
@@ -51,19 +50,19 @@ public class ScatterplotWithTwoYAxes {
                 Axis.builder()
                     .title("SLG")
                     .side(Axis.Side.right)
-                    .overlaying(Scatter.YAxis.Y)
+                    .overlaying(ScatterTrace.YAxis.Y)
                     .build())
             .build();
 
     Trace trace =
-        Scatter.builder(x, y)
+        ScatterTrace.builder(x, y)
             .name("Batting avg.")
             .marker(Marker.builder().opacity(.7).color("#01FF70").build())
             .build();
 
     Trace trace2 =
-        Scatter.builder(x, y2)
-            .yAxis(Scatter.YAxis.Y2)
+        ScatterTrace.builder(x, y2)
+            .yAxis(ScatterTrace.YAxis.Y2)
             .name("Slugging pct.")
             .marker(Marker.builder().opacity(.7).color("rgb(17, 157, 255)").build())
             .build();

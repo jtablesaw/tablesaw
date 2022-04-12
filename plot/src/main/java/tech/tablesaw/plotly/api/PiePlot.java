@@ -13,7 +13,7 @@ public class PiePlot {
     Layout layout = Layout.builder(title).build();
 
     PieTrace trace =
-        PieTrace.builder(table.column(groupColName), table.numberColumn(numberColName))
+        PieTrace.builder(table.column(groupColName).asObjectArray(), table.numberColumn(numberColName).asDoubleArray())
             .showLegend(true)
             .build();
     return new Figure(layout, trace);

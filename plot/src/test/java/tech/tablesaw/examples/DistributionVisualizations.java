@@ -28,7 +28,7 @@ public class DistributionVisualizations extends AbstractExample {
 
     Layout layout = Layout.builder().title("Distribution of property sizes").build();
     HistogramTrace trace =
-        HistogramTrace.builder(property.numberColumn("sq__ft"))
+        HistogramTrace.builder(property.numberColumn("sq__ft").asDoubleArray())
             .marker(Marker.builder().color("#B10DC9").opacity(.70).build())
             .build();
     Plot.show(new Figure(layout, trace));

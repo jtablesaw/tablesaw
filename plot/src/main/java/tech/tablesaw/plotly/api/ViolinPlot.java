@@ -3,7 +3,6 @@ package tech.tablesaw.plotly.api;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.BoxTrace;
 import tech.tablesaw.plotly.traces.ViolinTrace;
 
 public class ViolinPlot {
@@ -14,8 +13,10 @@ public class ViolinPlot {
     public static Figure create(
             String title, Table table, String groupingColumn, String numericColumn, boolean showBoxPlot, boolean showMeanLine) {
         Layout layout = Layout.builder().title(title).height(HEIGHT).width(WIDTH).build();
+        Object[] x = table.column(groupingColumn).asObjectArray();
+        double[] y = table.numberColumn(numericColumn).asDoubleArray();
         ViolinTrace trace =
-                ViolinTrace.builder(table.categoricalColumn(groupingColumn), table.nCol(numericColumn))
+                ViolinTrace.builder(x, y)
                         .boxPlot(showBoxPlot)
                         .meanLine(showMeanLine)
                         .build();

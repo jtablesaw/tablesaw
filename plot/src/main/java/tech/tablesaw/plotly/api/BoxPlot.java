@@ -15,7 +15,7 @@ public class BoxPlot {
     Layout layout = Layout.builder().title(title).height(HEIGHT).width(WIDTH).build();
 
     BoxTrace trace =
-        BoxTrace.builder(table.categoricalColumn(groupingColumn), table.nCol(numericColumn))
+        BoxTrace.builder(table.categoricalColumn(groupingColumn).asObjectArray(), table.nCol(numericColumn).asDoubleArray())
             .build();
     return new Figure(layout, trace);
   }

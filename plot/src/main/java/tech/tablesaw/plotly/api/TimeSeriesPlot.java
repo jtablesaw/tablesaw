@@ -8,7 +8,7 @@ import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.table.TableSliceGroup;
 
 public class TimeSeriesPlot {
@@ -20,15 +20,15 @@ public class TimeSeriesPlot {
 
     Layout layout = Layout.builder(title, dateColX, yCol).build();
 
-    Scatter[] traces = new Scatter[tables.size()];
+    ScatterTrace[] traces = new ScatterTrace[tables.size()];
     for (int i = 0; i < tables.size(); i++) {
       List<Table> tableList = tables.asTableList();
       Table t = tableList.get(i).sortOn(dateColX);
       traces[i] =
-          Scatter.builder(t.dateColumn(dateColX), t.numberColumn(yCol))
+          ScatterTrace.builder(t.dateColumn(dateColX).asObjectArray(), t.numberColumn(yCol).asObjectArray())
               .showLegend(true)
               .name(tableList.get(i).name())
-              .mode(Scatter.Mode.LINE)
+              .mode(ScatterTrace.Mode.LINE)
               .build();
     }
     return new Figure(layout, traces);
@@ -36,9 +36,9 @@ public class TimeSeriesPlot {
 
   public static Figure create(String title, Table table, String dateColXName, String yColName) {
     Layout layout = Layout.builder(title, dateColXName, yColName).build();
-    Scatter trace =
-        Scatter.builder(table.column(dateColXName), table.numberColumn(yColName))
-            .mode(Scatter.Mode.LINE)
+    ScatterTrace trace =
+        ScatterTrace.builder(table.column(dateColXName).asObjectArray(), table.numberColumn(yColName).asObjectArray())
+            .mode(ScatterTrace.Mode.LINE)
             .build();
     return new Figure(layout, trace);
   }
@@ -46,21 +46,21 @@ public class TimeSeriesPlot {
   public static Figure create(
       String title, String xTitle, DateColumn xCol, String yTitle, NumericColumn<?> yCol) {
     Layout layout = Layout.builder(title, xTitle, yTitle).build();
-    Scatter trace = Scatter.builder(xCol, yCol).mode(Scatter.Mode.LINE).build();
+    ScatterTrace trace = ScatterTrace.builder(xCol.asObjectArray(), yCol.asObjectArray()).mode(ScatterTrace.Mode.LINE).build();
     return new Figure(layout, trace);
   }
 
   public static Figure create(
       String title, String xTitle, DateTimeColumn xCol, String yTitle, NumericColumn<?> yCol) {
     Layout layout = Layout.builder(title, xTitle, yTitle).build();
-    Scatter trace = Scatter.builder(xCol, yCol).mode(Scatter.Mode.LINE).build();
+    ScatterTrace trace = ScatterTrace.builder(xCol.asObjectArray(), yCol.asObjectArray()).mode(ScatterTrace.Mode.LINE).build();
     return new Figure(layout, trace);
   }
 
   public static Figure create(
       String title, String xTitle, InstantColumn xCol, String yTitle, NumericColumn<?> yCol) {
     Layout layout = Layout.builder(title, xTitle, yTitle).build();
-    Scatter trace = Scatter.builder(xCol, yCol).mode(Scatter.Mode.LINE).build();
+    ScatterTrace trace = ScatterTrace.builder(xCol.asObjectArray(), yCol.asObjectArray()).mode(ScatterTrace.Mode.LINE).build();
     return new Figure(layout, trace);
   }
 
@@ -81,7 +81,7 @@ public class TimeSeriesPlot {
 
     Layout layout = Layout.builder(title, xCol.name(), yCol.name()).build();
 
-    Scatter trace = Scatter.builder(xCol, yCol).mode(Scatter.Mode.LINE).build();
+    ScatterTrace trace = ScatterTrace.builder(xCol.asObjectArray(), yCol.asObjectArray()).mode(ScatterTrace.Mode.LINE).build();
     return new Figure(layout, trace);
   }
 }

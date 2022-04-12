@@ -8,7 +8,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 public class QQPlot {
 
@@ -65,11 +65,11 @@ public class QQPlot {
     double[] line = {min, max};
 
     // Draw the 45 degree line indicating equal distributions
-    Scatter trace1 =
-        Scatter.builder(line, line).mode(Scatter.Mode.LINE).name("y = x").build();
+    ScatterTrace trace1 =
+        ScatterTrace.builder(line, line).mode(ScatterTrace.Mode.LINE).name("y = x").build();
 
     // Draw the actual data points
-    Scatter trace2 = Scatter.builder(xData, yData).name("distributions").build();
+    ScatterTrace trace2 = ScatterTrace.builder(xData, yData).name("distributions").build();
 
     Layout layout =
         Layout.builder()

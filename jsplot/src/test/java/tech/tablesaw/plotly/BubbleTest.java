@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.components.Symbol;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 @Disabled
 public class BubbleTest {
@@ -29,16 +29,16 @@ public class BubbleTest {
 
   @Test
   public void testAsJavascript() {
-    Scatter trace =
-        Scatter.builder(x, y).marker(Marker.builder().size(size).build()).build();
+    ScatterTrace trace =
+        ScatterTrace.builder(x, y).marker(Marker.builder().size(size).build()).build();
     System.out.println(trace.asJavascript(1));
   }
 
   @Test
   public void showScatter() {
-    Scatter trace =
-        Scatter.builder(x, y)
-            .mode(Scatter.Mode.MARKERS)
+    ScatterTrace trace =
+        ScatterTrace.builder(x, y)
+            .mode(ScatterTrace.Mode.MARKERS)
             .marker(
                 Marker.builder()
                     .size(size)

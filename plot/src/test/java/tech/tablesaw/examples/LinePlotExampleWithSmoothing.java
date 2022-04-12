@@ -20,7 +20,6 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Line;
-import tech.tablesaw.plotly.wrappers.Scatter;
 
 /** */
 public class LinePlotExampleWithSmoothing {
@@ -33,9 +32,9 @@ public class LinePlotExampleWithSmoothing {
     Layout layout =
         Layout.builder().title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975").build();
 
-    Scatter trace =
-        Scatter.builder(x, y)
-            .mode(Scatter.Mode.LINE)
+    ScatterTrace trace =
+        ScatterTrace.builder(x, y)
+            .mode(ScatterTrace.Mode.LINE)
             .line(Line.builder().shape(Line.Shape.SPLINE).smoothing(1.2).build())
             .build();
 

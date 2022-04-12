@@ -12,7 +12,6 @@ import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.components.Symbol;
-import tech.tablesaw.plotly.wrappers.Scatter;
 import tech.tablesaw.plotly.traces.Trace;
 
 public class MarkerOptionsExample {
@@ -53,7 +52,7 @@ public class MarkerOptionsExample {
             .yAxis(Axis.builder().title("Wins").build())
             .build();
 
-    Trace trace = Scatter.builder(x, y).marker(Marker.builder().color("red").build()).build();
+    Trace trace = ScatterTrace.builder(x, y).marker(Marker.builder().color("red").build()).build();
     Plot.show(new Figure(layout, trace));
   }
 
@@ -73,7 +72,7 @@ public class MarkerOptionsExample {
 
     IntColumn wins = baseball.intColumn("W");
     Trace trace =
-        Scatter.builder(x, y)
+        ScatterTrace.builder(x, y)
             .marker(
                 Marker.builder()
                     .color(wins.asDoubleArray())
@@ -100,7 +99,7 @@ public class MarkerOptionsExample {
 
     IntColumn wins = baseball.intColumn("W");
     Trace trace =
-        Scatter.builder(x, y)
+        ScatterTrace.builder(x, y)
             .marker(
                 Marker.builder()
                     .color(wins.asDoubleArray())
@@ -128,7 +127,7 @@ public class MarkerOptionsExample {
 
     IntColumn wins = baseball.intColumn("W");
     Trace trace =
-        Scatter.builder(x, y)
+        ScatterTrace.builder(x, y)
             .marker(
                 Marker.builder()
                     .color(wins.asDoubleArray())
@@ -166,7 +165,7 @@ public class MarkerOptionsExample {
             .build();
 
     Trace trace =
-        Scatter.builder(x, y)
+        ScatterTrace.builder(x, y)
             .marker(
                 Marker.builder()
                     .size(10)
@@ -187,7 +186,7 @@ public class MarkerOptionsExample {
             .build();
 
     Trace trace =
-        Scatter.builder(x, y)
+        ScatterTrace.builder(x, y)
             .marker(
                 Marker.builder()
                     .line(Line.builder().color("rgb(231, 99, 250)").width(1).build())
@@ -209,7 +208,7 @@ public class MarkerOptionsExample {
             .build();
 
     Trace trace =
-        Scatter.builder(x, y).marker(Marker.builder().symbol(Symbol.BOWTIE).build()).build();
+        ScatterTrace.builder(x, y).marker(Marker.builder().symbol(Symbol.BOWTIE).build()).build();
     Plot.show(new Figure(layout, trace));
   }
 
@@ -222,7 +221,7 @@ public class MarkerOptionsExample {
             .yAxis(Axis.builder().title("Wins").build())
             .build();
 
-    Trace trace = Scatter.builder(x, y).marker(Marker.builder().opacity(.5).build()).build();
+    Trace trace = ScatterTrace.builder(x, y).marker(Marker.builder().opacity(.5).build()).build();
     Plot.show(new Figure(layout, trace));
   }
 
@@ -235,7 +234,7 @@ public class MarkerOptionsExample {
             .yAxis(Axis.builder().title("Wins").build())
             .build();
 
-    Trace trace = Scatter.builder(x, y).marker(Marker.builder().size(9).build()).build();
+    Trace trace = ScatterTrace.builder(x, y).marker(Marker.builder().size(9).build()).build();
     Plot.show(new Figure(layout, trace));
   }
 
@@ -249,7 +248,7 @@ public class MarkerOptionsExample {
             .build();
 
     Trace trace =
-        Scatter.builder(x, y)
+        ScatterTrace.builder(x, y)
             .marker(Marker.builder().color("rgb(17, 157, 255)").build())
             .build();
     Plot.show(new Figure(layout, trace));
@@ -264,7 +263,7 @@ public class MarkerOptionsExample {
             .yAxis(Axis.builder().title("Wins").build())
             .build();
 
-    Trace trace = Scatter.builder(x, y).build();
+    Trace trace = ScatterTrace.builder(x, y).build();
     Plot.show(new Figure(layout, trace));
   }
 }

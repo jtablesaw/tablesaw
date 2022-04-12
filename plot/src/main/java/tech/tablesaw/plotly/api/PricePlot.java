@@ -6,7 +6,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.wrappers.Scatter;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 /** Abstract superclass for time series plots that have open-high-low-close data */
 public abstract class PricePlot {
@@ -26,20 +26,35 @@ public abstract class PricePlot {
     NumericColumn<?> high = table.numberColumn(highCol);
     NumericColumn<?> low = table.numberColumn(lowCol);
     NumericColumn<?> close = table.numberColumn(closeCol);
-    Scatter trace;
+    ScatterTrace trace;
     if (x.type() == ColumnType.LOCAL_DATE) {
       trace =
-          Scatter.builder(table.dateColumn(xCol), open, high, low, close)
+          ScatterTrace.builder(
+                  table.dateColumn(xCol).asObjectArray(),
+                          open.asDoubleArray(),
+                          high.asDoubleArray(),
+                          low.asDoubleArray(),
+                          close.asDoubleArray())
               .type(plotType)
               .build();
     } else if (x.type() == ColumnType.LOCAL_DATE_TIME) {
       trace =
-          Scatter.builder(table.dateTimeColumn(xCol), open, high, low, close)
+              ScatterTrace.builder(
+                              table.dateColumn(xCol).asObjectArray(),
+                              open.asDoubleArray(),
+                              high.asDoubleArray(),
+                              low.asDoubleArray(),
+                              close.asDoubleArray())
               .type(plotType)
               .build();
     } else if (x.type() == ColumnType.INSTANT) {
       trace =
-          Scatter.builder(table.instantColumn(xCol), open, high, low, close)
+              ScatterTrace.builder(
+                              table.dateColumn(xCol).asObjectArray(),
+                              open.asDoubleArray(),
+                              high.asDoubleArray(),
+                              low.asDoubleArray(),
+                              close.asDoubleArray())
               .type(plotType)
               .build();
     } else {
