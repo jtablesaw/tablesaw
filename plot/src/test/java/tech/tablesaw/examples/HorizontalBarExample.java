@@ -30,7 +30,7 @@ public class HorizontalBarExample {
     Table s = table.summarize("fatalities", count).by("State");
 
     BarTrace trace =
-        BarTrace.builder(s.categoricalColumn(0), s.numberColumn(1))
+        BarTrace.builder(s.categoricalColumn(0).asObjectArray(), s.numberColumn(1).asDoubleArray())
             .orientation(BarTrace.Orientation.HORIZONTAL)
             .build();
 

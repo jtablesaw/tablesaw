@@ -28,7 +28,7 @@ public class HistogramProbabilityExample {
 
     Layout layout = Layout.builder().title("Probability Histogram of team batting averages").build();
     HistogramTrace trace = HistogramTrace.
-            builder(baseball.nCol("BA"))
+            builder(baseball.nCol("BA").asDoubleArray())
             .histNorm(HistogramTrace.HistNorm.PROBABILITY)
             .build();
 

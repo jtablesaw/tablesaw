@@ -41,7 +41,7 @@ public class HistogramHorizontalExample {
     Table t2 = groups.get(1).asTable();
 
     HistogramTrace trace1 =
-        HistogramTrace.builder(t1.nCol("BA"))
+        HistogramTrace.builder(t1.nCol("BA").asDoubleArray())
             .name("American League")
             .opacity(.75)
             .nBinsY(24)
@@ -50,7 +50,7 @@ public class HistogramHorizontalExample {
             .build();
 
     HistogramTrace trace2 =
-        HistogramTrace.builder(t2.nCol("BA"))
+        HistogramTrace.builder(t2.nCol("BA").asDoubleArray())
             .name("National League")
             .opacity(.75)
             .nBinsY(24)

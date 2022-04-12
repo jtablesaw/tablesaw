@@ -29,7 +29,7 @@ public class PieExample {
     Table t2 = table.countBy(table.categoricalColumn("Scale"));
 
     PieTrace trace =
-        PieTrace.builder(t2.categoricalColumn("Category"), t2.numberColumn("Count")).build();
+        PieTrace.builder(t2.categoricalColumn("Category").asObjectArray(), t2.numberColumn("Count").asDoubleArray()).build();
     Layout layout = Layout.builder().title("Total fatalities by scale").build();
 
     Plot.show(new Figure(layout, trace));

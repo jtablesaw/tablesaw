@@ -35,7 +35,7 @@ public class HistogramFuncExample {
 
     Layout layout1 = Layout.builder().title("Histogram COUNT Test (team batting averages)").build();
     HistogramTrace trace = HistogramTrace.
-            builder(test.stringColumn("type").asObjectArray(), test.intColumn("num").asObjectArray())
+            builder(test.stringColumn("type").asObjectArray(), test.intColumn("num").asDoubleArray())
             .histFunc(COUNT)
             .build();
 

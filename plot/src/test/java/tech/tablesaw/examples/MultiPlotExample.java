@@ -6,6 +6,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.plotly.traces.Trace;
 
 public class MultiPlotExample {
@@ -88,8 +89,8 @@ public class MultiPlotExample {
             .build();
 
     // 5. Create the traces for each plot
-    Trace trace1 = ScatterTrace.builder(x1, y1).build();
-    Trace trace2 = ScatterTrace.builder(x2, y2).build();
+    Trace trace1 = ScatterTrace.builder(x1.asObjectArray(), y1.asObjectArray()).build();
+    Trace trace2 = ScatterTrace.builder(x2.asObjectArray(), y2.asObjectArray()).build();
 
     // 6. Build a Figure for each plot from the layout and trace
     Figure figure1 = new Figure(layout1, trace1);

@@ -65,6 +65,10 @@ public class HistogramTrace extends AbstractTrace {
     return new HistogramBuilder(values);
   }
 
+  public static HistogramBuilder builder(Object[] xValues, double[] yValues) {
+    return new HistogramBuilder(xValues, yValues);
+  }
+
   private HistogramTrace(HistogramBuilder builder) {
     super(builder);
     if (builder.horizontal) {

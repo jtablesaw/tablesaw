@@ -11,6 +11,7 @@ import tech.tablesaw.plotly.components.Figure.FigureBuilder;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.event.HoverBroadcastBody;
 import tech.tablesaw.plotly.event.HoverEventHandler;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 public class HoverBroadcastExample {
 
@@ -38,7 +39,7 @@ public class HoverBroadcastExample {
     IntColumn y1 = IntColumn.create("volume", volumes);
 
     ScatterTrace trace0 =
-        ScatterTrace.builder(x, y2)
+        ScatterTrace.builder(x.asObjectArray(), y2.asObjectArray())
             .showLegend(true)
             .name("Price")
             .mode(ScatterTrace.Mode.LINE)
@@ -46,7 +47,7 @@ public class HoverBroadcastExample {
             .build();
 
     ScatterTrace trace1 =
-        ScatterTrace.builder(x, y1)
+        ScatterTrace.builder(x.asObjectArray(), y1.asObjectArray())
             .showLegend(true)
             .name("Volume")
             .mode(ScatterTrace.Mode.LINE)

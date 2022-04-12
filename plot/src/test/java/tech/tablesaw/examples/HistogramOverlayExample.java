@@ -39,7 +39,7 @@ public class HistogramOverlayExample {
     Table t1 = groups.get(0).asTable();
 
     HistogramTrace trace1 =
-        HistogramTrace.builder(t1.nCol("BA"))
+        HistogramTrace.builder(t1.nCol("BA").asDoubleArray())
             .name("American Leage")
             .opacity(.75)
             .nBinsX(24)
@@ -48,7 +48,7 @@ public class HistogramOverlayExample {
 
     Table t2 = groups.get(1).asTable();
     HistogramTrace trace2 =
-        HistogramTrace.builder(t2.nCol("BA"))
+        HistogramTrace.builder(t2.nCol("BA").asDoubleArray())
             .name("National League")
             .opacity(.75)
             .nBinsX(24)
