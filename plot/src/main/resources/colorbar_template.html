@@ -1,0 +1,75 @@
+{
+{% if thicknessMode is not null %}
+    thicknessmode: '{{thicknessMode | raw}}',
+{% endif %}
+{% if lenMode is not null %}
+    lenmode: '{{lenMode | raw}}',
+{% endif %}
+{% if borderWidth is not null %}
+    borderwidth: {{borderWidth}},
+{% endif %}
+{% if outlineWidth is not null %}
+    outlinewidth: {{outlinerWidth}},
+{% endif %}
+{% if x is not null %}
+    x: {{x}},
+{% endif %}
+{% if y is not null %}
+    y: {{y}},
+{% endif %}
+{% if xPad is not null %}
+    xpad: {{xPad}},
+{% endif %}
+{% if yPad is not null %}
+    ypad: {{yPad}},
+{% endif %}
+{% if borderColor is not null %}
+    bordercolor: '{{borderColor}}',
+{% endif %}
+{% if bgColor is not null %}
+    bgcolor: '{{bgColor}}',
+{% endif %}
+{% if outlineColor is not null %}
+    outlinecolor: '{{outlineColor}}',
+{% endif %}
+{% if tickSettings is not null %}
+    ticksettings: '{{tickSettings}}',
+{% endif %}
+{% if thickness is not null %}
+    thickness: {{thickness}},
+{% endif %}
+{% if len is not null %}
+    len: {{len}},
+{% endif %}
+{% if xAnchor is not null %}
+    xanchor: '{{xAnchor | raw}}',
+{% endif %}
+{% if yAnchor is not null %}
+    yanchor: '{{yAnchor | raw}}',
+{% endif %}
+{% if tickMode is not null %}
+    tickmode: '{{tickMode}}',
+    tickcolor: '{{tickColor}}',
+    ticklen: {{tickLength}},
+    tickwidth: {{tickWidth}},
+    showticklabels: {{showTickLabels}},
+{% endif %}
+{% if tickFont is not null %}
+    tickfont: {{tickFont | raw}},
+{% endif %}
+{% if tickText is not null %}
+    ticktext: {{tickText | raw}},
+{% endif %}
+{% if tickValues is not null %}
+    tickvals: {{tickValues}},
+{% endif %}
+{% if dTick is not null %}
+    dtick: '{{dTick}}',
+{% endif %}
+{% if nTicks is not null %}
+    nticks: '{{nTicks}}',
+{% endif %}
+{% if tick0 is not null %}
+    tick0: '{{tick0}}',
+{% endif %}
+}

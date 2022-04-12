@@ -1,7 +1,6 @@
 package tech.tablesaw.plotly.traces;
 
 import com.google.common.base.Preconditions;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.HoverLabel;
 
 public abstract class TraceBuilder {
@@ -77,14 +76,6 @@ public abstract class TraceBuilder {
   protected TraceBuilder hoverLabel(HoverLabel hoverLabel) {
     this.hoverLabel = hoverLabel;
     return this;
-  }
-
-  protected static String[] columnToStringArray(Column<?> column) {
-    String[] x = new String[column.size()];
-    for (int i = 0; i < column.size(); i++) {
-      x[i] = column.getString(i);
-    }
-    return x;
   }
 
   public TraceBuilder xAxis(String xAxis) {

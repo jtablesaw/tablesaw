@@ -7,8 +7,6 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
-import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.Utils;
 import tech.tablesaw.plotly.components.Marker;
 
@@ -65,15 +63,6 @@ public class HistogramTrace extends AbstractTrace {
 
   public static HistogramBuilder builder(double[] values) {
     return new HistogramBuilder(values);
-  }
-
-  public static HistogramBuilder builder(NumericColumn<? extends Number> values) {
-    return new HistogramBuilder(values.asDoubleArray());
-  }
-
-  public static HistogramBuilder builder(
-      Column<?> xValues, NumericColumn<? extends Number> values) {
-    return new HistogramBuilder(xValues.asObjectArray(), values.asDoubleArray());
   }
 
   private HistogramTrace(HistogramBuilder builder) {
@@ -265,11 +254,6 @@ public class HistogramTrace extends AbstractTrace {
 
     public HistogramBuilder y(double[] y) {
       this.y = doublesToObjects(y);
-      return this;
-    }
-
-    public HistogramBuilder y(NumericColumn<? extends Number> values) {
-      this.y = values.asObjectArray();
       return this;
     }
 

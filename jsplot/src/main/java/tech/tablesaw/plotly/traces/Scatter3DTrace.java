@@ -10,7 +10,6 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
-import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.plotly.components.HoverLabel;
 import tech.tablesaw.plotly.components.Marker;
 
@@ -25,13 +24,6 @@ public class Scatter3DTrace extends AbstractTrace {
   private final Marker marker;
 
   public static Scatter3DBuilder builder(double[] x, double[] y, double[] z) {
-    return new Scatter3DBuilder(x, y, z);
-  }
-
-  public static Scatter3DBuilder builder(
-      NumericColumn<? extends Number> x,
-      NumericColumn<? extends Number> y,
-      NumericColumn<? extends Number> z) {
     return new Scatter3DBuilder(x, y, z);
   }
 
@@ -119,15 +111,6 @@ public class Scatter3DTrace extends AbstractTrace {
       this.x = x;
       this.y = y;
       this.z = z;
-    }
-
-    private Scatter3DBuilder(
-        NumericColumn<? extends Number> x,
-        NumericColumn<? extends Number> y,
-        NumericColumn<? extends Number> z) {
-      this.x = x.asDoubleArray();
-      this.y = y.asDoubleArray();
-      this.z = z.asDoubleArray();
     }
 
     public Scatter3DBuilder mode(Mode mode) {

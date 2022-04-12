@@ -1,0 +1,95 @@
+var {{variableName}} =
+{
+{% if x is not null %}
+x: {{x | raw}},
+{% endif %}
+{% if y is not null %}
+y: {{y | raw}},
+{% endif %}
+{% if open is not null %}
+open: {{open | raw}},
+{% endif %}
+{% if high is not null %}
+high: {{high | raw}},
+{% endif %}
+{% if low is not null %}
+low: {{low | raw}},
+{% endif %}
+{% if close is not null %}
+close: {{close | raw}},
+{% endif %}
+{% if increasing is not null %}
+increasing: {{increasing | raw}},
+{% endif %}
+{% if decreasing is not null %}
+decreasing: {{decreasing | raw}},
+{% endif %}
+{% if z is not null %}
+z: {{z | raw}},
+{% endif %}
+{% if showLegend is not null %}
+showlegend: {{showLegend}},
+{% endif %}
+{% if hoverlabel is not null %}
+hoverlabel: {{hoverlabel | raw }},
+{% endif %}
+{% if marker is not null %}
+marker: {{marker | raw }},
+{% endif %}
+{% if text is not null %}
+text: {{text | raw }},
+{% endif %}
+{% if mode is not null %}
+mode: '{{mode}}',
+{% endif %}
+{% if line is not null %}
+line: {{line | raw }},
+{% endif %}
+{% if orientation is not null %}
+orientation: '{{orientation}}',
+{% endif %}
+{% if opacity is not null %}
+opacity: '{{opacity}}',
+{% endif %}
+{% if nBinsX is not null %}
+nbinsx: {{nBinsX}},
+{% endif %}
+{% if autoBinX is not null %}
+autobinx: {{autoBinX}},
+{% endif %}
+{% if nBinsY is not null %}
+nbinsy: {{nBinsY}},
+{% endif %}
+{% if autoBinY is not null %}
+autobiny: {{autoBinY}},
+{% endif %}
+{% if histnorm is not null %}
+    histnorm: '{{histnorm}}',
+{% endif %}
+{% if histfunc is not null %}
+    histfunc: '{{histfunc}}',
+{% endif %}
+{% if visible is not null %}
+visible: '{{visible}}',
+{% endif %}
+{% if fill is not null %}
+fill: '{{fill}}',
+{% endif %}
+{% if xAxis is not null %}
+xaxis: '{{xAxis}}',
+{% endif %}
+{% if yAxis is not null %}
+yaxis: '{{yAxis}}',
+{% endif %}
+{% if fillColor is not null %}
+fillcolor: '{{fillColor}}',
+{% endif %}
+type: '{{type}}',
+name: '{{name}}',
+{% if box is not null %}
+box: {{box}},
+{% endif %}
+{% if meanLine is not null %}
+meanline: {{meanLine}},
+{% endif %}
+};

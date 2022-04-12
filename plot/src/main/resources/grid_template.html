@@ -1,0 +1,26 @@
+{
+{% if rows > 0 %}
+    rows: {{rows}},
+{% endif %}
+{% if columns > 0 %}
+    columns: {{columns}},
+{% endif %}
+{% if xGap is not null %}
+    xgap: {{xGap}},
+{% endif %}
+{% if yGap is not null %}
+    ygap: {{yGap}},
+{% endif %}
+{% if rowOrder is not null %}
+    roworder: '{{rowOrder}}',
+{% endif %}
+{% if xSide is not null %}
+    xside: '{{xSide}}',
+{% endif %}
+{% if ySide is not null %}
+    yside: '{{ySide}}',
+{% endif %}
+{% if pattern is not null %}
+    pattern: '{{pattern}}'
+{% endif %}
+}

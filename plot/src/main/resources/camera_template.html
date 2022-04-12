@@ -1,0 +1,11 @@
+{
+{% if eye is not null %}
+    eye: {{eye | raw}},
+{% endif %}
+{% if center is not null %}
+    center: {{center | raw}},
+{% endif %}
+{% if up is not null %}
+    up: {{up | raw}},
+{% endif %}
+}

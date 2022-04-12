@@ -7,8 +7,6 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
-import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.Utils;
 import tech.tablesaw.plotly.components.Domain;
 
@@ -57,10 +55,6 @@ public class PieTrace extends AbstractTrace {
 
   public static PieBuilder builder(Object[] labels, double[] values) {
     return new PieBuilder(labels, values);
-  }
-
-  public static PieBuilder builder(Column<?> labels, NumericColumn<? extends Number> values) {
-    return new PieBuilder(TraceBuilder.columnToStringArray(labels), values.asDoubleArray());
   }
 
   public static class PieBuilder extends TraceBuilder {

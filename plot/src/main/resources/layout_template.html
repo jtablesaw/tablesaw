@@ -1,0 +1,76 @@
+var layout = {
+{% if title is not null %}
+    title: '{{title}}',
+{% endif %}
+{% if titlefont is not null %}
+    titlefont: {{titlefont | raw}},
+{% endif %}
+{% if height is not null %}
+    height: {{height}},
+{% endif %}
+{% if width is not null %}
+    width: {{width}},
+{% endif %}
+{% if showlegend is not null %}
+    showlegend: {{showlegend}},
+{% endif %}
+{% if autosize is not null %}
+    autosize: {{autosize}},
+{% endif %}
+{% if plot_bgcolor is not null %}
+    plot_bgcolor: '{{plotbgcolor}}',
+{% endif %}
+{% if paper_bgcolor is not null %}
+    paper_bgcolor: '{{paperbgcolor}}',
+{% endif %}
+{% if font is not null %}
+    font: {{font | raw}},
+{% endif %}
+{% if margin is not null %}
+    margin: {{margin | raw}},
+{% endif %}
+{% if hoverMode is not null %}
+    hovermode: '{{hoverMode}}',
+{% endif %}
+{% if hoverdistance is not null %}
+    hoverdistance: {{hoverdistance}},
+{% endif %}
+{% if scene is not null %}
+    scene: {{scene | raw}},
+{% endif %}
+{% if xAxis is not null %}
+    xaxis: {{xAxis | raw}},
+{% endif %}
+
+{% if yAxis is not null %}
+    yaxis: {{yAxis | raw}},
+{% endif %}
+{% if yAxis1 is not null %}
+    yaxis1: {{yAxis1 | raw}},
+{% endif %}
+{% if yAxis2 is not null %}
+    yaxis2: {{yAxis2 | raw}},
+{% endif %}
+{% if yAxis3 is not null %}
+    yaxis3: {{yAxis3 | raw}},
+{% endif %}
+
+{% if zAxis is not null %}
+    zaxis: {{zAxis | raw}},
+{% endif %}
+{% if dragmode is not null %}
+    dragmode: '{{dragmode}}',
+{% endif %}
+{% if decimalSeparator is not null %}
+    decimalseparator: '{{decimalSeparator}}',
+{% endif %}
+{% if thousandsSeparator is not null %}
+    thousandsseparator: '{{thousandsSeparator}}',
+{% endif %}
+{% if barMode is not null %}
+    barmode: '{{barMode}}',
+{% endif %}
+{% if grid is not null %}
+    grid:  {{grid | raw}}
+{% endif %}
+};

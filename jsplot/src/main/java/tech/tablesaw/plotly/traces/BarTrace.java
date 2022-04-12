@@ -9,8 +9,6 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
-import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.plotly.components.Marker;
 
 public class BarTrace extends AbstractTrace {
@@ -29,10 +27,6 @@ public class BarTrace extends AbstractTrace {
   }
 
   public static BarBuilder builder(Object[] x, double[] y) {
-    return new BarBuilder(x, y);
-  }
-
-  public static BarBuilder builder(CategoricalColumn<?> x, NumericColumn<? extends Number> y) {
     return new BarBuilder(x, y);
   }
 
@@ -97,12 +91,6 @@ public class BarTrace extends AbstractTrace {
     BarBuilder(Object[] x, double[] y) {
       this.x = x;
       this.y = y;
-    }
-
-    BarBuilder(CategoricalColumn<?> x, NumericColumn<? extends Number> y) {
-
-      this.x = TraceBuilder.columnToStringArray(x);
-      this.y = y.asDoubleArray();
     }
 
     public BarTrace build() {

@@ -1,0 +1,14 @@
+{
+{% if xAxis is not null %}
+    xaxis: {{xAxis | raw}},
+{% endif %}
+{% if yAxis is not null %}
+    yaxis: {{yAxis | raw}},
+{% endif %}
+{% if zAxis is not null %}
+    zaxis: {{zAxis | raw}},
+{% endif %}
+{% if camera is not null %}
+    camera: {{camera | raw}},
+{% endif %}
+}

@@ -5,7 +5,6 @@ import static tech.tablesaw.plotly.components.Marker.SizeMode.DIAMETER;
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
-import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.plotly.Utils;
 
 public class Marker extends Component {
@@ -171,10 +170,6 @@ public class Marker extends Component {
       }
       this.size = size;
       return this;
-    }
-
-    public MarkerBuilder size(NumericColumn<?> size) {
-      return size(size.asDoubleArray());
     }
 
     /**

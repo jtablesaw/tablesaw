@@ -1,0 +1,108 @@
+{
+    title: '{{title}}',
+{% if titleFont is not null %}
+        titlefont: {{titleFont.asJavascript() | raw}},
+{% endif %}
+{% if tickMode is not null %}
+    tickmode: '{{tickMode}}',
+    tickcolor: '{{tickColor}}',
+    ticklen: {{tickLength}},
+    tickwidth: {{tickWidth}},
+    showticklabels: {{showTickLabels}},
+{% endif %}
+{% if tickFont is not null %}
+    tickfont: {{tickFont | raw}},
+{% endif %}
+{% if tickText is not null %}
+    ticktext: {{tickText | raw}},
+{% endif %}
+{% if tickValues is not null %}
+    tickvals: {{tickValues}},
+{% endif %}
+{% if dTick is not null %}
+    dtick: '{{dTick}}',
+{% endif %}
+{% if nTicks is not null %}
+    nticks: '{{nTicks}}',
+{% endif %}
+{% if tick0 is not null %}
+    tick0: '{{tick0}}',
+{% endif %}
+{% if showExponent is not null %}
+    showExponent: '{{showExponent}}',
+{% endif %}
+{% if exponentFormat is not null %}
+    exponentformat: '{{exponentFormat}}',
+{% endif %}
+{% if autoRange is not null %}
+    autorange: '{{autoRange}}',
+{% endif %}
+{% if showSpikes is not null %}
+    showspike: {{showSpikes}},
+    spikemode: '{{spikeMode}}',
+    spikethickness: {{spikeThickness}},
+    spikesnap: '{{spikeSnap}}',
+    spikecolor: '{{spikeColor}}',
+    spikedash: '{{spikeDash}}',
+{% endif %}
+{% if lineColor is not null %}
+    linecolor: '{{lineColor}}',
+{% endif %}
+{% if lineWidth is not null %}
+    linewidth: {{lineWidth}},
+{% endif %}
+{% if showLine is not null %}
+    showline: {{showLine}},
+{% endif %}
+{% if gridColor is not null %}
+    gridcolor: '{{gridColor}}',
+{% endif %}
+{% if gridWidth is not null %}
+    gridwidth: {{gridWidth}},
+{% endif %}
+{% if showGrid is not null %}
+    showgrid: {{showGrid}},
+{% endif %}
+{% if zeroLineColor is not null %}
+    zerolinecolor: '{{zeroLineColor}}',
+{% endif %}
+{% if zeroLineWidth is not null %}
+    zerolinewidth: {{zeroLineWidth}},
+{% endif %}
+{% if zeroLine is not null %}
+    zeroline: {{zeroLine}},
+{% endif %}
+{% if scaleRatio is not null %}
+    scaleratio: '{{scaleRatio}}',
+{% endif %}
+{% if constrain is not null %}
+    constrain: '{{constrain}}',
+{% endif %}
+{% if constrainToward is not null %}
+    constraintoward: '{{constrainToward}}',
+{% endif %}
+{% if type is not null %}
+    type: '{{type}}',
+{% endif %}
+{% if range is not null %}
+    range: {{range | raw}}
+{% endif %}
+{% if visible is not null %}
+    visible: {{visible}},
+{% endif %}
+{% if side is not null %}
+    side: '{{side}}',
+{% endif %}
+{% if overlaying is not null %}
+    overlaying: '{{overlaying}}',
+{% endif %}
+{% if categoryOrder is not null %}
+    categoryorder: '{{categoryOrder}}',
+{% endif %}
+{% if domain is not null %}
+    domain: {{domain}},
+{% endif %}
+{% if rangeslider is not null %}
+    rangeslider: {{rangeslider}},
+{% endif %}
+    }

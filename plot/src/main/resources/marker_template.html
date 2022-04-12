@@ -1,0 +1,50 @@
+{
+{% if size is not null %}
+    size: {{size}},
+{% endif %}
+{% if color is not null %}
+    color: {{color | raw}},
+{% endif %}
+{% if colorArray is not null %}
+    color: {{colorArray | raw}},
+{% endif %}
+{% if colorScale is not null %}
+    colorscale: '{{colorScale | raw}}',
+{% endif %}
+{% if colorBar is not null %}
+    colorbar: {{colorBar | raw}},
+{% endif %}
+{% if gradient is not null %}
+    gradient: {{gradient | raw}},
+{% endif %}
+{% if cMax is not null %}
+    cmax: {{cMax}},
+{% endif %}
+{% if cMin is not null %}
+    cmin: {{cMin}},
+{% endif %}
+{% if symbol is not null %}
+    symbol: '{{symbol | raw}}',
+{% endif %}
+{% if line is not null %}
+    line: {{line | raw}},
+{% endif %}
+{% if cAuto is not null %}
+    cauto: {{cAuto}},
+{% endif %}
+{% if autoColorScale is not null %}
+    autocolorscale: {{autoColorScale}},
+{% endif %}
+{% if showScale is not null %}
+    showscale: {{showScale}},
+{% endif %}
+{% if reverseScale is not null %}
+    reversescale: {{reverseScale}},
+{% endif %}
+{% if opacity is not null %}
+    opacity: {{opacity}},
+{% endif %}
+{% if sizeMode is not null %}
+    sizemode: '{{sizeMode}}',
+{% endif %}
+}

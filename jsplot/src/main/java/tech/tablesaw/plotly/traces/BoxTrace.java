@@ -9,8 +9,6 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Map;
-import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.NumericColumn;
 
 public class BoxTrace extends AbstractTrace {
 
@@ -24,10 +22,6 @@ public class BoxTrace extends AbstractTrace {
   }
 
   public static BoxBuilder builder(Object[] x, double[] y) {
-    return new BoxBuilder(x, y);
-  }
-
-  public static BoxBuilder builder(CategoricalColumn<?> x, NumericColumn<? extends Number> y) {
     return new BoxBuilder(x, y);
   }
 
@@ -79,11 +73,6 @@ public class BoxTrace extends AbstractTrace {
     public BoxBuilder name(String name) {
       super.name(name);
       return this;
-    }
-
-    BoxBuilder(CategoricalColumn<?> x, NumericColumn<? extends Number> y) {
-      this.x = columnToStringArray(x);
-      this.y = y.asDoubleArray();
     }
 
     public BoxTrace build() {
