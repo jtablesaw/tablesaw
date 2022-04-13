@@ -11,7 +11,7 @@ The basic idea of a decision tree is simple: use a defined, algorithmic approach
 The following figure illistrates a two-dimensional feature space that has been partitioned according to a greedy algorithm that minimizes the residual sum of squares. 
 
 <p align="center">
-<img src="https://github.com/jbsooter/tablesaw/blob/6856ae9e92648ad1dfbb62f1ff09e744eebe4154/docs/userguide/images/ml/random_forest/Decision_Tree_8.1.jpg" width="300" height = "300"><img src="https://github.com/jbsooter/tablesaw/blob/6856ae9e92648ad1dfbb62f1ff09e744eebe4154/docs/userguide/images/ml/random_forest/Decision_Tree_8.2.jpg" width="300" height = "300">
+<img src="/docs/userguide/images/ml/random_forest/Decision_Tree_8.1.jpg" width="300" height = "300"><img src="/docs/userguide/images/ml/random_forest/Decision_Tree_8.2.jpg" width="300" height = "300">
 </p>
 
 <p align="center">
@@ -28,7 +28,7 @@ Random Forest is an **ensemble method** that builds on basic decision trees to f
 
 ### Implementing Random Forest for the Heart dataset using Tablesaw + Smile
 
-The Heart dataset contains 13 qualitative and quantitative predictors for 303 patients who sought medical attention due to chest pain. The response represents a binary classification scenario as we want to predict which patients have heart disease and which do not. You can download the dataset <a href="https://github.com/jbsooter/tablesaw/blob/53358464317fbd66f8a50fe240b67765593a7659/data/Heart.csv">here</a>.
+The Heart dataset contains 13 qualitative and quantitative predictors for 303 patients who sought medical attention due to chest pain. The response represents a binary classification scenario as we want to predict which patients have heart disease and which do not. You can download the dataset <a href="/data/Heart.csv">here</a>.
 
 As usual, you will need to add the smile, tablesaw-core, and tablesaw-jsplot dependencies. (Described in <a href="https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball%20Linear%20regression">Moneyball Tutorial</a>)
 
@@ -115,7 +115,7 @@ Plot.show(HorizontalBarPlot.create("Feature Importance", varImportance, "Feature
 As you can see, features **Fbs** and **ExAng** have the lowest importance in the model, while **Age**, **MaxHR**, **RestBP**, and **Chol** are all of high importance.  
 
 <p align="center">
-<img src="https://github.com/jbsooter/tablesaw/blob/c38cc384989f3093469b860e25a193b3445f2673/docs/userguide/images/ml/random_forest/Tablesaw_Feature_Importance.png" width="650" height = "500">
+<img src="/docs/userguide/images/ml/random_forest/Tablesaw_Feature_Importance.png" width="650" height = "500">
 </p>
 
 Another (lesser) concern when selecting features to include in the model is having two features that are highly correlated with one another. At best, including all of such features is redundant, at worst, it could negatively impact model performance. 
@@ -227,7 +227,7 @@ Plot.show(LinePlot.create("Accuracy", AccuracyvTrees, "ntrees", "OOBerror"));
 The Out-of-bounds error appears to settle down after ~1,000 trees. (your plot may look slightly different due to randomness in splitting the dataset and in the model algorithm). To be conservative, we can select 1,200 trees as the parameter of our final model. 
 
 <p align="center">
-<img src="https://github.com/jbsooter/tablesaw/blob/6d83b41ec91223f1ba7f0e776a14e0af8e2f46a7/docs/userguide/images/ml/random_forest/OOBError_v_ntrees.png" width="550" height = "500">
+<img src="/docs/userguide/images/ml/random_forest/OOBError_v_ntrees.png" width="550" height = "500">
 </p>
 
 We can now build and assess our final model using our new value for **ntrees**. 
