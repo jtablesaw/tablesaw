@@ -46,6 +46,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import net.jpountz.lz4.*;
 import org.iq80.snappy.SnappyFramedInputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -230,6 +231,15 @@ public class SawReader {
     FileInputStream fis = new FileInputStream(fileName);
     if (sawMetadata.getCompressionType().equals(CompressionType.NONE)) {
       return new DataInputStream(fis);
+    } else if (sawMetadata.getCompressionType().equals(CompressionType.LZ4)) {
+      // TODO: Figure out how to provide the pre-compression size of the byte array
+      //  so we can use the fast decompressor
+      // LZ4Factory factory = LZ4Factory.fastestInstance();
+      // LZ4FastDecompressor decompressor = factory.fastDecompressor();
+      // final int decompressedLength = sawMetadata.getColumnMetadataList()..length;
+      // LZ4BlockInputStream lis = new LZ4BlockInputStream(fis, decompressor);
+      LZ4BlockInputStream lis = new LZ4BlockInputStream(fis);
+      return new DataInputStream(lis);
     } else {
       SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
       return new DataInputStream(sis);
@@ -488,10 +498,31 @@ public class SawReader {
       throws IOException {
 
     BooleanColumn column = BooleanColumn.create(metadata.getName());
+    int trueBytesLength = metadata.getTrueBytesLength();
+    int falseBytesLength = metadata.getFalseBytesLength();
+    int missingBytesLength = metadata.getMissingBytesLength();
+    int trueAndFalseLength = trueBytesLength + falseBytesLength;
+    int allBytesLength = trueAndFalseLength + missingBytesLength;
+    byte[] trueBytes = new byte[trueBytesLength];
+    byte[] falseBytes = new byte[falseBytesLength];
+    byte[] missingBytes = new byte[missingBytesLength];
     try (DataInputStream dis = inputStream(fileName)) {
-      for (int i = 0; i < rowcount; i++) {
-        column.append(dis.readByte());
+      for (int i = 0; i < trueBytesLength; i++) {
+        trueBytes[i] = dis.readByte();
       }
+      column.trueBytes(trueBytes);
+      int j = 0;
+      for (int i = trueBytesLength; i < trueAndFalseLength; i++) {
+        falseBytes[j] = dis.readByte();
+        j++;
+      }
+      column.falseBytes(falseBytes);
+      int k = 0;
+      for (int i = trueAndFalseLength; i < allBytesLength; i++) {
+        missingBytes[k] = dis.readByte();
+        k++;
+      }
+      column.missingBytes(missingBytes);
     }
     return column;
   }

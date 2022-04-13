@@ -46,13 +46,9 @@ public class CsvWriterTest {
   @Test
   void dateFormatter() throws IOException {
     Table table = Table.read().csv("../data/bush.csv").rows(1);
+    table.dateColumn("date").setPrintFormatter(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
     StringWriter writer = new StringWriter();
-    table
-        .write()
-        .usingOptions(
-            CsvWriteOptions.builder(writer)
-                .dateFormatter(DateTimeFormatter.ofPattern("MMM dd, yyyy"))
-                .build());
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
         "date,approval,who\n" + "\"Jan 21, 2004\",53,fox\n",
         writer.toString().replaceAll("\\r\\n", "\n"));
@@ -255,13 +251,11 @@ public class CsvWriterTest {
   void dateTimeFormatter() throws IOException {
     Table table = Table.create("test", DateTimeColumn.create("dt"));
     table.dateTimeColumn(0).append(LocalDateTime.of(2011, 1, 1, 4, 30));
-    StringWriter writer = new StringWriter();
     table
-        .write()
-        .usingOptions(
-            CsvWriteOptions.builder(writer)
-                .dateTimeFormatter(DateTimeFormatter.ofPattern("MMM d, yyyy - hh:mm"))
-                .build());
+        .dateTimeColumn("dt")
+        .setPrintFormatter(DateTimeFormatter.ofPattern("MMM d, yyyy - hh:mm"));
+    StringWriter writer = new StringWriter();
+    table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
         "dt\n" + "\"Jan 1, 2011 - 04:30\"\n", writer.toString().replaceAll("\\r\\n", "\n"));
   }

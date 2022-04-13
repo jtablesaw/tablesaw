@@ -2,7 +2,7 @@ package tech.tablesaw.io.saw;
 
 import com.google.common.base.Preconditions;
 
-public class WriteOptions {
+public class SawWriteOptions {
 
   private static final int DEFAULT_POOL_SIZE = 10;
 
@@ -10,17 +10,17 @@ public class WriteOptions {
   private CompressionType compressionType = CompressionType.SNAPPY;
   private EncryptionType encryptionType = EncryptionType.NONE;
 
-  public static WriteOptions defaultOptions() {
-    return new WriteOptions();
+  public static SawWriteOptions defaultOptions() {
+    return new SawWriteOptions();
   }
 
-  public WriteOptions threadPoolSize(int size) {
+  public SawWriteOptions threadPoolSize(int size) {
     Preconditions.checkArgument(size > 0);
     this.threadPoolSize = size;
     return this;
   }
 
-  public WriteOptions compressionType(CompressionType compressionType) {
+  public SawWriteOptions compressionType(CompressionType compressionType) {
     this.compressionType = compressionType;
     return this;
   }
@@ -29,7 +29,7 @@ public class WriteOptions {
    * Sets the encryption type for the storage NOTE: This is a placeholder-only, to allow for adding
    * encryption support later without changing the format of the metadata file
    */
-  public WriteOptions encryptionType(EncryptionType type) {
+  public SawWriteOptions encryptionType(EncryptionType type) {
     this.encryptionType = type;
     return this;
   }

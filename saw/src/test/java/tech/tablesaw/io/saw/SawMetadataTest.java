@@ -17,7 +17,7 @@ class SawMetadataTest {
   @BeforeEach
   void setUp() throws Exception {
     table1 = Table.read().csv("../data/bush.csv");
-    metadata1 = new SawMetadata(table1, new WriteOptions());
+    metadata1 = new SawMetadata(table1, new SawWriteOptions());
   }
 
   @Test
@@ -53,7 +53,7 @@ class SawMetadataTest {
 
   @Test
   void getVersion() {
-    assertEquals(2, metadata1.getVersion());
+    assertEquals(3, metadata1.getVersion());
   }
 
   @Test
