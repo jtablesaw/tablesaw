@@ -1703,9 +1703,6 @@ public class Table extends Relation implements Iterable<Row> {
       if (columnType.equals(ColumnType.STRING)) {
         StringColumn sc = (StringColumn) resultColumn;
         sc.append(row.getString(resultColumn.name()));
-      } else if (columnType.equals(ColumnType.TEXT)) {
-        TextColumn sc = (TextColumn) resultColumn;
-        sc.append(row.getString(resultColumn.name()));
       } else if (columnType.equals(ColumnType.INTEGER)) {
         IntColumn ic = (IntColumn) resultColumn;
         ic.append(row.getInt(resultColumn.name()));
@@ -1787,10 +1784,6 @@ public class Table extends Relation implements Iterable<Row> {
         if (columnType.equals(ColumnType.STRING)) {
           StringColumn source = (StringColumn) sliceTable.column(idColumn.name());
           StringColumn dest = (StringColumn) result.column(idColumn.name());
-          dest.append(source.get(0));
-        } else if (columnType.equals(ColumnType.TEXT)) {
-          TextColumn source = (TextColumn) sliceTable.column(idColumn.name());
-          TextColumn dest = (TextColumn) result.column(idColumn.name());
           dest.append(source.get(0));
         } else if (columnType.equals(ColumnType.INTEGER)) {
           IntColumn source = (IntColumn) sliceTable.column(idColumn.name());

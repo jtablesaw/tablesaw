@@ -16,7 +16,6 @@ import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.instant.InstantColumnType;
 import tech.tablesaw.columns.numbers.*;
 import tech.tablesaw.columns.strings.StringColumnType;
-import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.index.*;
 import tech.tablesaw.selection.Selection;
@@ -233,8 +232,6 @@ public class CrossProductJoin implements JoinStrategy {
       return new IntIndex(table.timeColumn(colIndex));
     } else if (type instanceof StringColumnType) {
       return new StringIndex(table.stringColumn(colIndex));
-    } else if (type instanceof TextColumnType) {
-      return new StringIndex(table.textColumn(colIndex));
     } else if (type instanceof IntColumnType) {
       return new IntIndex(table.intColumn(colIndex));
     } else if (type instanceof LongColumnType) {
@@ -277,10 +274,6 @@ public class CrossProductJoin implements JoinStrategy {
     } else if (type instanceof StringColumnType) {
       StringIndex index = (StringIndex) rawIndex;
       String value = ((StringColumn) valueColumn).get(rowIndex);
-      return index.get(value);
-    } else if (type instanceof TextColumnType) {
-      StringIndex index = (StringIndex) rawIndex;
-      String value = ((TextColumn) valueColumn).get(rowIndex);
       return index.get(value);
     } else if (type instanceof IntColumnType) {
       IntIndex index = (IntIndex) rawIndex;

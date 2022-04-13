@@ -1,11 +1,9 @@
 package tech.tablesaw.columns.strings;
 
 /** A type indicator for a column "backing" a StringColumn */
-public enum BackingStringColumnType {
+public enum StringDataType {
   // A dictionary encoded representation for categorical data
-  BACKING_STRING,
+  CATEGORICAL,
   // A List<String> representation for non-categorical strings
-  BACKING_TEXT,
-  // For legacy TextColumn
-  NONE
+  TEXTUAL,
 }

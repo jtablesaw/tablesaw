@@ -20,7 +20,6 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 
 public class ColumnAppendTest {

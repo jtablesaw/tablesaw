@@ -38,7 +38,6 @@ import tech.tablesaw.api.Row;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.conversion.TableConverter;
@@ -605,26 +604,6 @@ public abstract class Relation implements Iterable<Row> {
    */
   public StringColumn stringColumn(int columnIndex) {
     return (StringColumn) column(columnIndex);
-  }
-
-  /**
-   * Returns a TextColumn with the given name if it is present in this Relation. If the column has a
-   * different type, a ClassCastException is thrown.
-   */
-  public TextColumn textColumn(String columnName) {
-    return (TextColumn) column(columnName);
-  }
-
-  /**
-   * Returns the TextColumn at the given 0-based index if present. A ClassCastException is the
-   * column is of a different type.
-   *
-   * @deprecated StringColumn now supports random/non-categorical text. Use {@link
-   *     #stringColumn(int)} instead
-   */
-  @Deprecated
-  public TextColumn textColumn(int columnIndex) {
-    return (TextColumn) column(columnIndex);
   }
 
   /**

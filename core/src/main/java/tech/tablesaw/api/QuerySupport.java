@@ -9,7 +9,6 @@ import tech.tablesaw.filtering.DeferredDateTimeColumn;
 import tech.tablesaw.filtering.DeferredInstantColumn;
 import tech.tablesaw.filtering.DeferredNumberColumn;
 import tech.tablesaw.filtering.DeferredStringColumn;
-import tech.tablesaw.filtering.DeferredTextColumn;
 import tech.tablesaw.filtering.DeferredTimeColumn;
 import tech.tablesaw.filtering.Not;
 import tech.tablesaw.filtering.Or;
@@ -118,14 +117,6 @@ public class QuerySupport {
 
   public static DeferredStringColumn str(String columnName) {
     return new DeferredStringColumn(columnName);
-  }
-
-  public static DeferredTextColumn text(String columnName) {
-    return new DeferredTextColumn(columnName);
-  }
-
-  public static DeferredTextColumn textColumn(String columnName) {
-    return new DeferredTextColumn(columnName);
   }
 
   public static DeferredNumberColumn numberColumn(String columnName) {

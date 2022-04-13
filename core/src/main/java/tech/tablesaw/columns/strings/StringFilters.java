@@ -41,7 +41,9 @@ import tech.tablesaw.filtering.StringFilterSpec;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-public interface StringFilters extends Column<String>, StringFilterSpec<Selection> {
+public interface StringFilters extends StringFilterSpec<Selection> {
+
+  int size();
 
   default Selection eval(BiPredicate<String, String> predicate, Column<String> otherColumn) {
     Selection selection = new BitmapBackedSelection();

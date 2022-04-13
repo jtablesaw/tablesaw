@@ -149,9 +149,6 @@ public class Row implements Iterator<Row> {
       if (column instanceof StringColumn) {
         stringColumnMap.put(column.name(), (StringColumn) column);
       }
-      if (column instanceof TextColumn) {
-        stringColumnMap.put(column.name(), (TextColumn) column);
-      }
       if (column instanceof DateColumn) {
         dateColumnMap.put(column.name(), (DateColumn) column);
 
@@ -458,30 +455,6 @@ public class Row implements Iterator<Row> {
   }
 
   /**
-   * Returns a String representing the text from this Row at the column of the given name. An
-   * IllegalStateException is thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different type
-   *
-   * @deprecated Use {@link #getString(int)}
-   */
-  @Deprecated
-  public String getText(String columnName) {
-    return stringColumnMap.get(columnName).get(getIndex(rowNumber));
-  }
-
-  /**
-   * Returns a String value from this Row at the column with the given index. An
-   * IllegalStateException is thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different type type
-   *
-   * @deprecated Use {@link #getString(int)}
-   */
-  @Deprecated
-  public String getText(int columnIndex) {
-    return getString(columnNames[columnIndex]);
-  }
-
-  /**
    * Returns a LocalTime value from this Row at the column of the given name. An
    * IllegalStateException is thrown if the column is not present in the Row and an
    * IllegalArgumentException is thrown if it has a different type type
@@ -784,26 +757,6 @@ public class Row implements Iterator<Row> {
    * signature
    */
   public void setString(String columnName, String value) {
-    stringColumnMap.get(columnName).set(getIndex(rowNumber), value);
-  }
-
-  /**
-   * Sets the value of the column at the given index and this Row to the given value. An
-   * IllegalStateException is * thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different type to that named in the method
-   * signature
-   */
-  public void setText(int columnIndex, String value) {
-    setString(columnNames[columnIndex], value);
-  }
-
-  /**
-   * Sets the value of the column with the given name at this Row to the given value. An
-   * IllegalStateException is * thrown if the column is not present in the Row and an
-   * IllegalArgumentException is thrown if it has a different type to that named in the method
-   * signature
-   */
-  public void setText(String columnName, String value) {
     stringColumnMap.get(columnName).set(getIndex(rowNumber), value);
   }
 

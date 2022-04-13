@@ -24,7 +24,6 @@ import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
 import static tech.tablesaw.api.ColumnType.LONG;
 import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -72,8 +71,7 @@ public class ReadOptions {
           LONG,
           FLOAT,
           DOUBLE,
-          STRING,
-          TEXT);
+          STRING);
 
   protected final Source source;
   protected final String tableName;

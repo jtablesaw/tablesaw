@@ -71,11 +71,11 @@ class StringColumnTest {
     final StringColumn sc = StringColumn.create("sc");
     sc.append("*");
     assertEquals(0, sc.countMissing());
-    StringParser parser = new StringParser(ColumnType.TEXT);
+    StringParser parser = new StringParser(ColumnType.STRING);
     parser.setMissingValueStrings(new ArrayList<>());
     sc.appendCell("*", parser);
     assertEquals(0, sc.countMissing());
-    StringParser parser2 = new StringParser(ColumnType.TEXT);
+    StringParser parser2 = new StringParser(ColumnType.STRING);
     parser2.setMissingValueStrings(Lists.newArrayList("45"));
     sc.appendCell("45", parser2);
     assertEquals(1, sc.countMissing());
@@ -86,7 +86,7 @@ class StringColumnTest {
     // Just do enough to ensure the parser is wired up correctly
     final StringColumn sc = StringColumn.create("sc");
     StringParser customParser = new StringParser(ColumnType.STRING);
-    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    customParser.setMissingValueStrings(List.of("not here"));
     sc.setParser(customParser);
 
     sc.appendCell("not here");
@@ -798,21 +798,5 @@ class StringColumnTest {
     assertEquals("Value 4", summary.getUnformatted(2, 1));
     assertEquals("Top Freq.", summary.getUnformatted(3, 0));
     assertEquals("1", summary.getUnformatted(3, 1));
-  }
-
-  /** Test that we can append both text and string columns to a string column */
-  @Test
-  void appendTextColumn() {
-    StringColumn col1 = StringColumn.create("col1");
-    col1.append("1");
-    TextColumn col2 = TextColumn.create("col2");
-    col2.append("2");
-    StringColumn col3 = StringColumn.create("col3");
-    col3.append("3");
-    assertEquals(1, col1.size());
-    col1.append(col2);
-    assertEquals(2, col1.size());
-    col1.append(col3);
-    assertEquals(3, col1.size());
   }
 }

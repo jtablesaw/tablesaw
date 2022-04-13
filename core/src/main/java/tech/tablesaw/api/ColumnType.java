@@ -16,7 +16,6 @@ import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
-import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.ReadOptions;
 
@@ -40,7 +39,6 @@ public interface ColumnType {
   TimeColumnType LOCAL_TIME = TimeColumnType.instance();
   DateTimeColumnType LOCAL_DATE_TIME = DateTimeColumnType.instance();
   InstantColumnType INSTANT = InstantColumnType.instance();
-  TextColumnType TEXT = TextColumnType.instance();
   SkipColumnType SKIP = SkipColumnType.instance();
 
   /** Registers the given ColumnType, identifying it as supported */

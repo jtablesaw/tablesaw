@@ -29,7 +29,6 @@ import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class TableSliceGroupTest {

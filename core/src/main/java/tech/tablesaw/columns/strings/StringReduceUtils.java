@@ -14,9 +14,9 @@
 
 package tech.tablesaw.columns.strings;
 
-import tech.tablesaw.columns.Column;
+public interface StringReduceUtils extends Iterable<String> {
 
-public interface StringReduceUtils extends Column<String>, Iterable<String> {
+  int size();
 
   /**
    * Returns a single string made by appending all the strings in this column, separated by the

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
 

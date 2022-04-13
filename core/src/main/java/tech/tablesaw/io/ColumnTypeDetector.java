@@ -1,7 +1,6 @@
 package tech.tablesaw.io;
 
 import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;

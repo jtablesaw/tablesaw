@@ -16,7 +16,6 @@ package tech.tablesaw.api;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.*;
@@ -35,7 +34,7 @@ import tech.tablesaw.selection.Selection;
  * <p>Because the MISSING_VALUE for this column type is an empty string, there is little or no need
  * for special handling of missing values in this class's methods.
  */
-class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
+public class CategoricalStringData implements StringData {
 
   // a bidirectional map of keys to backing string values.
   private DictionaryMap lookupTable = new ByteDictionaryMap();
@@ -51,77 +50,80 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
     return StringColumnType.valueIsMissing(string);
   }
 
+  @Override
+  public CategoricalStringData asCategoricalStringData() {
+    return this.copy();
+  }
+
+  @Override
+  public TextualStringData asTextualStringData() {
+    return TextualStringData.create(this.asList());
+  }
+
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn appendMissing() {
+  public CategoricalStringData appendMissing() {
     lookupTable.appendMissing();
     return this;
   }
 
-  public BackingStringColumnType backingColumnType() {
-    return BackingStringColumnType.BACKING_STRING;
+  public StringDataType stringDataType() {
+    return StringDataType.CATEGORICAL;
   }
 
   /** {@inheritDoc} */
-  @Override
   public int valueHash(int rowNumber) {
     return get(rowNumber).hashCode();
   }
 
   /** {@inheritDoc} */
-  @Override
   public boolean equals(int rowNumber1, int rowNumber2) {
     return getDictionary().getKeyAtIndex(rowNumber1) == getDictionary().getKeyAtIndex(rowNumber2);
   }
 
-  public static BackingStringColumn create(String name) {
-    return new BackingStringColumn(name);
+  public static CategoricalStringData create() {
+    return new CategoricalStringData();
   }
 
-  public static BackingStringColumn create(String name, String... strings) {
-    return new BackingStringColumn(name, strings);
+  public static CategoricalStringData create(String... strings) {
+    return new CategoricalStringData(strings);
   }
 
-  public static BackingStringColumn create(String name, Collection<String> strings) {
-    return new BackingStringColumn(name, strings);
+  public static CategoricalStringData create(Collection<String> strings) {
+    return new CategoricalStringData(strings);
   }
 
-  public static BackingStringColumn createInternal(String name, DictionaryMap map) {
-    return new BackingStringColumn(name, map);
+  public static CategoricalStringData createInternal(DictionaryMap map) {
+    return new CategoricalStringData(map);
   }
 
-  public static BackingStringColumn create(String name, int size) {
-    BackingStringColumn column = new BackingStringColumn(name, new ArrayList<>(size));
+  public static CategoricalStringData create(int size) {
+    CategoricalStringData column = new CategoricalStringData(new ArrayList<>(size));
     for (int i = 0; i < size; i++) {
       column.appendMissing();
     }
     return column;
   }
 
-  public static BackingStringColumn create(String name, Stream<String> stream) {
-    BackingStringColumn column = create(name);
+  public static CategoricalStringData create(Stream<String> stream) {
+    CategoricalStringData column = create();
     stream.forEach(column::append);
     return column;
   }
 
-  private BackingStringColumn(String name, Collection<String> strings) {
-    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
+  private CategoricalStringData(Collection<String> strings) {
     for (String string : strings) {
       append(string);
     }
   }
 
-  private BackingStringColumn(String name, DictionaryMap map) {
-    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
+  private CategoricalStringData(DictionaryMap map) {
     lookupTable = map;
   }
 
-  private BackingStringColumn(String name) {
-    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-  }
+  private CategoricalStringData() {}
 
-  private BackingStringColumn(String name, String[] strings) {
-    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
+  private CategoricalStringData(String[] strings) {
     for (String string : strings) {
       append(string);
     }
@@ -135,16 +137,14 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn emptyCopy() {
-    BackingStringColumn empty = create(name());
-    empty.setPrintFormatter(getPrintFormatter());
-    return empty;
+  public CategoricalStringData emptyCopy() {
+    return create();
   }
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn emptyCopy(int rowSize) {
-    return create(name(), rowSize);
+  public CategoricalStringData emptyCopy(int rowSize) {
+    return create(rowSize);
   }
 
   /** {@inheritDoc} */
@@ -200,32 +200,8 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
 
   /** {@inheritDoc} */
   @Override
-  public Table summary() {
-    Table summary = Table.create(this.name());
-    BackingStringColumn measure = BackingStringColumn.create("Measure");
-    BackingStringColumn value = BackingStringColumn.create("Value");
-    summary.addColumns(measure);
-    summary.addColumns(value);
-
-    measure.append("Count");
-    value.append(String.valueOf(size()));
-
-    measure.append("Unique");
-    value.append(String.valueOf(countUnique()));
-
-    Table countByCategory = countByCategory().sortDescendingOn("Count");
-    measure.append("Top");
-    value.append(countByCategory.stringColumn("Category").getString(0));
-
-    measure.append("Top Freq.");
-    value.appendObj(countByCategory.intColumn("Count").getString(0));
-    return summary;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Table countByCategory() {
-    return lookupTable.countByCategory(name());
+  public Table countByCategory(String columnName) {
+    return lookupTable.countByCategory(columnName);
   }
 
   /** {@inheritDoc} */
@@ -236,18 +212,15 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn lead(int n) {
-    BackingStringColumn column = lag(-n);
-    column.setName(name() + " lead(" + n + ")");
-    return column;
+  public CategoricalStringData lead(int n) {
+    return lag(-n);
   }
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn lag(int n) {
+  public CategoricalStringData lag(int n) {
 
-    BackingStringColumn copy = emptyCopy();
-    copy.setName(name() + " lag(" + n + ")");
+    CategoricalStringData copy = emptyCopy();
 
     if (n >= 0) {
       for (int m = 0; m < n; m++) {
@@ -279,7 +252,7 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
    * myCatColumn.set(myCatColumn.valueIsMissing(), "Fox"); // no more missing values
    */
   @Override
-  public BackingStringColumn set(Selection rowSelection, String newValue) {
+  public CategoricalStringData set(Selection rowSelection, String newValue) {
     for (int row : rowSelection) {
       set(row, newValue);
     }
@@ -288,7 +261,7 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn set(int rowIndex, String stringValue) {
+  public CategoricalStringData set(int rowIndex, String stringValue) {
     if (stringValue == null) {
       return setMissing(rowIndex);
     }
@@ -325,7 +298,7 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn setMissing(int i) {
+  public CategoricalStringData setMissing(int i) {
     return set(i, StringColumnType.missingValueIndicator());
   }
 
@@ -334,7 +307,7 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
    *
    * @param stringValues a list of values
    */
-  public BackingStringColumn addAll(List<String> stringValues) {
+  public CategoricalStringData addAll(List<String> stringValues) {
     for (String stringValue : stringValues) {
       append(stringValue);
     }
@@ -343,13 +316,13 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn appendCell(String object) {
+  public CategoricalStringData appendCell(String object) {
     return appendCell(object, parser());
   }
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn appendCell(String object, AbstractColumnParser<?> parser) {
+  public CategoricalStringData appendCell(String object, AbstractColumnParser<?> parser) {
     return appendObj(parser.parse(object));
   }
 
@@ -395,42 +368,37 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
    * @return a column with unique values.
    */
   @Override
-  public BackingStringColumn unique() {
+  public CategoricalStringData unique() {
     List<String> strings = new ArrayList<>(lookupTable.asSet());
-    return BackingStringColumn.create(name() + " Unique values", strings);
-  }
-
-  public DoubleColumn asDoubleColumn() {
-    return DoubleColumn.create(this.name(), asDoubleArray());
+    return CategoricalStringData.create(strings);
   }
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn where(Selection selection) {
-    return subset(selection.toArray());
+  public CategoricalStringData where(Selection selection) {
+    return (CategoricalStringData) subset(selection.toArray());
   }
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn copy() {
-    BackingStringColumn newCol = create(name(), size());
+  public CategoricalStringData copy() {
+    CategoricalStringData newCol = create(size());
     int r = 0;
     for (String string : this) {
       newCol.set(r, string);
       r++;
     }
-    newCol.setPrintFormatter(getPrintFormatter());
     return newCol;
   }
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn append(Column<String> column) {
+  public CategoricalStringData append(Column<String> column) {
     checkArgument(
-        column.type() == TEXT || column.type().equals(STRING),
+        column.type().equals(STRING),
         "Column '%s' has type %s, but column '%s' has type %s.",
         name(),
-        type(),
+        STRING,
         column.name(),
         column.type());
     final int size = column.size();
@@ -448,8 +416,8 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn removeMissing() {
-    BackingStringColumn noMissing = emptyCopy();
+  public CategoricalStringData removeMissing() {
+    CategoricalStringData noMissing = emptyCopy();
     for (String v : this) {
       if (!StringColumnType.valueIsMissing(v)) {
         noMissing.append(v);
@@ -486,7 +454,7 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
 
   /** Added for naming consistency with all other columns */
   @Override
-  public BackingStringColumn append(String value) {
+  public CategoricalStringData append(String value) {
     try {
       lookupTable.append(value);
     } catch (NoKeysAvailableException ex) {
@@ -503,7 +471,7 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
 
   /** {@inheritDoc} */
   @Override
-  public BackingStringColumn appendObj(Object obj) {
+  public CategoricalStringData appendObj(Object obj) {
     if (obj == null) {
       return appendMissing();
     }
@@ -556,20 +524,6 @@ class BackingStringColumn extends AbstractStringColumn<BackingStringColumn> {
   @Override
   public String[] asObjectArray() {
     return lookupTable.asObjectArray();
-  }
-
-  /** {@inheritDoc} Note: This method shoud be implemented directly in the wrapper class */
-  @Override
-  public StringColumn asStringColumn() {
-    throw new RuntimeException("Unimplemented function: Wrapper class should handle this directly");
-  }
-
-  public TextColumn asTextColumn() {
-    TextColumn textColumn = TextColumn.create(name(), size());
-    for (int i = 0; i < size(); i++) {
-      textColumn.set(i, get(i));
-    }
-    return textColumn;
   }
 
   /** For tablesaw internal use only */

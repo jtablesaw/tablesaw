@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.BackingStringColumnType;
+import tech.tablesaw.columns.strings.StringDataType;
 
 public abstract class FileReader {
 
@@ -185,9 +185,9 @@ public abstract class FileReader {
         ColumnType type = types[x];
         Column<?> newColumn;
         if (type.equals(STRING)) {
-          newColumn = StringColumn.create(columnName, BackingStringColumnType.BACKING_STRING);
+          newColumn = StringColumn.create(columnName, StringDataType.CATEGORICAL);
         } else if (type.equals(TEXT)) {
-          newColumn = StringColumn.create(columnName, BackingStringColumnType.BACKING_TEXT);
+          newColumn = StringColumn.create(columnName, StringDataType.TEXTUAL);
         } else {
           newColumn = type.create(columnName);
         }

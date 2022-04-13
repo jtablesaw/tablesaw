@@ -160,12 +160,6 @@ class SortKey implements Iterable<ColumnIndexPair> {
         String b2 = r21.getString(pair.right);
         return b1.compareTo(b2);
       };
-    } else if (pair.type.equals(ColumnType.TEXT)) {
-      return (r11, r21) -> {
-        String b1 = r11.getText(pair.left);
-        String b2 = r21.getText(pair.right);
-        return b1.compareTo(b2);
-      };
     }
     throw new RuntimeException("Unhandled ColumnType in SortKey.");
   }

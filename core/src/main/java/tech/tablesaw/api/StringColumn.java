@@ -16,8 +16,10 @@ package tech.tablesaw.api;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static tech.tablesaw.api.ColumnType.*;
-import static tech.tablesaw.columns.strings.BackingStringColumnType.BACKING_STRING;
+import static tech.tablesaw.columns.strings.StringDataType.CATEGORICAL;
+import static tech.tablesaw.columns.strings.StringDataType.TEXTUAL;
 
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,12 +28,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
+import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.AbstractStringColumn;
-import tech.tablesaw.columns.strings.BackingStringColumnType;
-import tech.tablesaw.columns.strings.DictionaryMap;
-import tech.tablesaw.columns.strings.StringColumnType;
+import tech.tablesaw.columns.strings.*;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -43,9 +43,12 @@ import tech.tablesaw.selection.Selection;
  * <p>Because the MISSING_VALUE for this column type is an empty string, there is little or no need
  * for special handling of missing values in this class's methods.
  */
-public class StringColumn extends AbstractStringColumn<StringColumn> {
+public class StringColumn extends AbstractColumn<StringColumn, String>
+    implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
-  private final AbstractStringColumn<?> backingColumn;
+  private final StringData data;
+
+  private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
   public static boolean valueIsMissing(String string) {
     return StringColumnType.valueIsMissing(string);
@@ -54,7 +57,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public StringColumn appendMissing() {
-    backingColumn.appendMissing();
+    data.appendMissing();
     return this;
   }
 
@@ -70,19 +73,19 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
     return getDictionary().getKeyAtIndex(rowNumber1) == getDictionary().getKeyAtIndex(rowNumber2);
   }
 
-  public BackingStringColumnType backingColumnType() {
-    return backingColumn.backingColumnType();
+  public StringDataType stringDataType() {
+    return data.stringDataType();
   }
 
   public static StringColumn create(String name) {
     return new StringColumn(name);
   }
 
-  public static StringColumn create(String name, BackingStringColumnType backingType) {
-    if (backingType.equals(BACKING_STRING)) {
-      return new StringColumn(name, BackingStringColumn.create(name));
-    } else if (backingType.equals(BackingStringColumnType.BACKING_TEXT)) {
-      return new StringColumn(name, BackingTextColumn.create(name));
+  public static StringColumn create(String name, StringDataType backingType) {
+    if (backingType.equals(CATEGORICAL)) {
+      return new StringColumn(name, CategoricalStringData.create(name));
+    } else if (backingType.equals(TEXTUAL)) {
+      return new StringColumn(name, TextualStringData.create(name));
     }
     throw new RuntimeException("Unhandled backing column type for StringColumn: " + backingType);
   }
@@ -91,8 +94,8 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
     return new StringColumn(name, strings);
   }
 
-  public static StringColumn create(String name, AbstractStringColumn<?> backingColumn) {
-    return new StringColumn(name, backingColumn);
+  public static StringColumn create(String name, StringData stringData) {
+    return new StringColumn(name, stringData);
   }
 
   public static StringColumn create(String name, Collection<String> strings) {
@@ -119,36 +122,50 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
 
   private StringColumn(String name, Collection<String> strings) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    backingColumn = BackingStringColumn.create(name, strings);
+    data = CategoricalStringData.create(strings);
   }
 
   private StringColumn(String name, DictionaryMap map) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    backingColumn = BackingStringColumn.createInternal(name, map);
+    data = CategoricalStringData.createInternal(map);
   }
 
   private StringColumn(String name) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    backingColumn = BackingStringColumn.create(name);
+    data = CategoricalStringData.create(name);
   }
 
-  private StringColumn(String name, AbstractStringColumn<?> backingColumn) {
+  private StringColumn(String name, StringData stringData) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    this.backingColumn = backingColumn;
+    this.data = stringData;
   }
 
   private StringColumn(String name, String[] strings) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    backingColumn = BackingStringColumn.create(name);
+    data = CategoricalStringData.create(name);
     for (String string : strings) {
       append(string);
     }
   }
 
+  /**
+   * Sets an {@link StringColumnFormatter} which will be used to format the display of data from
+   * this column when it is printed (using, for example, Table:print()) and optionally when written
+   * to a text file like a CSV.
+   */
+  public void setPrintFormatter(StringColumnFormatter formatter) {
+    Preconditions.checkNotNull(formatter);
+    this.printFormatter = formatter;
+  }
+
+  /** Returns the current {@link StringColumnFormatter}. */
+  public StringColumnFormatter getPrintFormatter() {
+    return printFormatter;
+  }
   /** {@inheritDoc} */
   @Override
   public boolean isMissing(int rowNumber) {
-    return backingColumn.isMissing(rowNumber);
+    return data.isMissing(rowNumber);
   }
 
   /** {@inheritDoc} */
@@ -168,13 +185,13 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public void sortAscending() {
-    backingColumn.sortAscending();
+    data.sortAscending();
   }
 
   /** {@inheritDoc} */
   @Override
   public void sortDescending() {
-    backingColumn.sortDescending();
+    data.sortDescending();
   }
 
   /**
@@ -184,7 +201,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
    */
   @Override
   public int size() {
-    return backingColumn.size();
+    return data.size();
   }
 
   /**
@@ -196,7 +213,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
    */
   @Override
   public String get(int rowIndex) {
-    return backingColumn.get(rowIndex);
+    return data.get(rowIndex);
   }
 
   /**
@@ -243,13 +260,13 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public Table countByCategory() {
-    return backingColumn.countByCategory();
+    return data.countByCategory(name());
   }
 
   /** {@inheritDoc} */
   @Override
   public void clear() {
-    backingColumn.clear();
+    data.clear();
   }
 
   /** {@inheritDoc} */
@@ -307,14 +324,14 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public StringColumn set(int rowIndex, String stringValue) {
-    backingColumn.set(rowIndex, stringValue);
+    data.set(rowIndex, stringValue);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
   public int countUnique() {
-    return backingColumn.countUnique();
+    return data.countUnique();
   }
 
   /**
@@ -361,25 +378,35 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public IntComparator rowComparator() {
-    return backingColumn.rowComparator();
+    return data.rowComparator();
+  }
+
+  @Override
+  public Selection isMissing() {
+    return null;
+  }
+
+  @Override
+  public Selection isNotMissing() {
+    return null;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isEmpty() {
-    return backingColumn.isEmpty();
+    return data.isEmpty();
   }
 
   /** {@inheritDoc} */
   @Override
   public Selection isEqualTo(String string) {
-    return backingColumn.isEqualTo(string);
+    return data.isEqualTo(string);
   }
 
   /** {@inheritDoc} */
   @Override
   public Selection isNotEqualTo(String string) {
-    return backingColumn.isNotEqualTo(string);
+    return data.isNotEqualTo(string);
   }
 
   /**
@@ -391,7 +418,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
    * @return a list of {@link BooleanColumn}
    */
   public List<BooleanColumn> getDummies() {
-    return backingColumn.getDummies();
+    return data.getDummies();
   }
 
   /**
@@ -401,7 +428,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
    */
   @Override
   public StringColumn unique() {
-    return new StringColumn(name(), (BackingStringColumn) backingColumn.unique());
+    return new StringColumn(name(), data.unique());
   }
 
   public DoubleColumn asDoubleColumn() {
@@ -417,7 +444,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public StringColumn copy() {
-    StringColumn newCol = create(name(), (AbstractStringColumn<?>) backingColumn.copy());
+    StringColumn newCol = create(name(), data.copy());
     int r = 0;
     for (String string : this) {
       newCol.set(r, string);
@@ -431,7 +458,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   @Override
   public StringColumn append(Column<String> column) {
     checkArgument(
-        column.type() == TEXT || column.type().equals(STRING),
+        column.type().equals(STRING),
         "Column '%s' has type %s, but column '%s' has type %s.",
         name(),
         type(),
@@ -447,7 +474,7 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** Returns the count of missing values in this column */
   @Override
   public int countMissing() {
-    return backingColumn.countMissing();
+    return data.countMissing();
   }
 
   /** {@inheritDoc} */
@@ -465,32 +492,31 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public Iterator<String> iterator() {
-    return backingColumn.iterator();
+    return data.iterator();
   }
 
   public Set<String> asSet() {
-    return backingColumn.asSet();
+    return data.asSet();
   }
 
   /** Returns the contents of the cell at rowNumber as a byte[] */
   @Override
   public byte[] asBytes(int rowNumber) {
-    return backingColumn.asBytes(rowNumber);
+    return data.asBytes(rowNumber);
   }
 
-  @Override
   public double getDouble(int i) {
-    return backingColumn.getDouble(i);
+    return data.getDouble(i);
   }
 
   public double[] asDoubleArray() {
-    return backingColumn.asDoubleArray();
+    return data.asDoubleArray();
   }
 
   /** Added for naming consistency with all other columns */
   @Override
   public StringColumn append(String value) {
-    backingColumn.append(value);
+    data.append(value);
     return this;
   }
 
@@ -510,13 +536,13 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   /** {@inheritDoc} */
   @Override
   public Selection isIn(String... strings) {
-    return backingColumn.isIn(strings);
+    return data.isIn(strings);
   }
 
   /** {@inheritDoc} */
   @Override
   public Selection isIn(Collection<String> strings) {
-    return backingColumn.isIn(strings);
+    return data.isIn(strings);
   }
 
   /** {@inheritDoc} */
@@ -538,17 +564,17 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
   }
 
   public int firstIndexOf(String value) {
-    return backingColumn.firstIndexOf(value);
+    return data.firstIndexOf(value);
   }
 
   public int countOccurrences(String value) {
-    return backingColumn.countOccurrences(value);
+    return data.countOccurrences(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public String[] asObjectArray() {
-    return backingColumn.asObjectArray();
+    return data.asObjectArray();
   }
 
   /** {@inheritDoc} */
@@ -557,18 +583,78 @@ public class StringColumn extends AbstractStringColumn<StringColumn> {
     return copy();
   }
 
-  public TextColumn asTextColumn() {
-    TextColumn textColumn = TextColumn.create(name(), size());
-    for (int i = 0; i < size(); i++) {
-      textColumn.set(i, get(i));
-    }
-    return textColumn;
+  /** For tablesaw internal use Note: This method returns null if the stringDataType is TEXTUAL */
+  public @Nullable DictionaryMap getDictionary() {
+    return data.getDictionary();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getString(int row) {
+    return printFormatter.format(get(row));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getUnformattedString(int row) {
+    return String.valueOf(get(row));
   }
 
   /**
-   * For tablesaw internal use Note: This method returns null if the backingColumn is a text column
+   * Returns the largest ("top") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is
+   *     greater than the number of observations in the column
+   * @return A list, possibly empty, of the largest observations
    */
-  public @Nullable DictionaryMap getDictionary() {
-    return backingColumn.getDictionary();
+  public List<String> top(int n) {
+    List<String> top = new ArrayList<>();
+    Column<String> copy = this.copy();
+    copy.sortDescending();
+    for (int i = 0; i < n; i++) {
+      top.add(copy.get(i));
+    }
+    return top;
+  }
+
+  /**
+   * Returns the smallest ("bottom") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is
+   *     greater than the number of observations in the column
+   * @return A list, possibly empty, of the smallest n observations
+   */
+  public List<String> bottom(int n) {
+    List<String> bottom = new ArrayList<>();
+    Column<String> copy = this.copy();
+    copy.sortAscending();
+    for (int i = 0; i < n; i++) {
+      bottom.add(copy.get(i));
+    }
+    return bottom;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Column<String> append(Column<String> column, int row) {
+    return append(column.getUnformattedString(row));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Column<String> set(int row, Column<String> column, int sourceRow) {
+    return set(row, column.getUnformattedString(sourceRow));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int byteSize() {
+    return type().byteSize();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int compare(String o1, String o2) {
+    return o1.compareTo(o2);
   }
 }

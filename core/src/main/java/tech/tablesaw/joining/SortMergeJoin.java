@@ -391,8 +391,6 @@ class SortMergeJoin implements JoinStrategy {
     } else if (type.equals(ColumnType.BOOLEAN)) {
       destRow.setBooleanAsByte(
           destColumnPosition, sourceRow.getBooleanAsByte(sourceColumnPosition));
-    } else if (type.equals(ColumnType.TEXT)) {
-      destRow.setText(destColumnPosition, sourceRow.getText(sourceColumnPosition));
     }
   }
 

@@ -21,7 +21,6 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
-import tech.tablesaw.columns.strings.TextColumnType;
 
 class ColumnTypeDetectorTest {
 

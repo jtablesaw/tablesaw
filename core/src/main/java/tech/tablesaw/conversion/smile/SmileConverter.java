@@ -80,8 +80,6 @@ public class SmileConverter {
       return DataTypes.ShortType;
     } else if (type.equals(ColumnType.STRING)) {
       return DataTypes.StringType;
-    } else if (type.equals(ColumnType.TEXT)) {
-      return DataTypes.StringType;
     }
     throw new IllegalStateException("Unsupported column type " + type);
   }
