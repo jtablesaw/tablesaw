@@ -21,7 +21,7 @@ Tablesaw User Guide
   * [Simple plotting API: Time Series, Line Charts and Area charts](https://jtablesaw.github.io/tablesaw/userguide/TimeSeries)
   * [Writing Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/Visualization_custom)
 * Data Science
-  * Introduction (*Not yet available*)
+  * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/ml/Introduction)
   * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball Linear regression)
   * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs) 
   * [K-Means clustering with Smile and Tablesaw: NYC Uber Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Uber K Means)
