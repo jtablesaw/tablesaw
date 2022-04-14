@@ -22,10 +22,10 @@ Tablesaw User Guide
   * [Writing Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/Visualization_custom)
 * Data Science
   * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/ml/Introduction)
-  * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball Linear regression)
+  * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball%20Linear%20regression)
   * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs) 
-  * [K-Means clustering with Smile and Tablesaw: NYC Uber Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Uber K Means)
+  * [K-Means clustering with Smile and Tablesaw: NYC Uber Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Uber%20K%20Means)
   * Hierarchical clustering (with Smile) (*Not yet available*)
   * Classification using Logistic Regression (with Smile) (*Not yet available*)
-  * [Classification using Random Forests with Smile and Tablesaw: Heart Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Heart Random forest)
+  * [Classification using Random Forests with Smile and Tablesaw: Heart Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Heart%20Random%20forest)
 * Using Tablesaw in Jupyter () (*Not yet available*)
