@@ -23,7 +23,7 @@ Essentially, this becomes a computationally-intensive optimization problem to wh
  
  ### K-Means with NYC Uber Data
  
-Because the K-means algorithm clusters datapoints, we can use it to determine ideal locations for Uber drivers to idle between customer pickups. The data in uber-pickups-april14.csv represents all Uber pickups in New York City during April 2014. To start, create a bounding box around the data to focus on Manhatten and the immediate vicinity. Download the data [here](/data/uber-pickups-apr14.csv).
+Because the K-means algorithm clusters datapoints, we can use it to determine ideal locations for Uber drivers to idle between customer pickups. The data in uber-pickups-april14.csv represents all Uber pickups in New York City during April 2014. To start, create a bounding box around the data to focus on Manhatten and the immediate vicinity. Download the data [here](https://github.com/jtablesaw/tablesaw/blob/8c03426f73cfa432ac563d5a6cb69bebdfea056a/data/uber-pickups-apr14.csv).
  
  ```Java
  Table pickups = Table.read().csv("uber-pickups-apr14.csv");
@@ -84,7 +84,7 @@ Plot.show(ScatterPlot.create("K=3", plot_data, "lon", "lat", "cluster"));
 Your plot should look similiar to the following. You can clearly see the three selected clusters represented by the color of each pickup location. (Notice that the data mirrors the shape of Manhatten and the surrounding area)
  
  <p align="center">
-<img src="/docs/userguide/images/ml/k_means/Uber_NYC_K3.png" width="650" height = "500">
+<img src="https://jtablesaw.github.io/tablesaw/userguide/images/ml/k_means/Uber_NYC_K3.png" width="650" height = "500">
 </p>
  
 A practical issue encountered when using the K-means algorithm is the choice of the number of clusters, k. A common approach is to create an "Elbow Curve", which is a plot of the distortion (sum of squared distances from the centroid of a cluster) against chosen values of k. Let's create an Elbow Curve for each value of k from 2,10). 
@@ -105,7 +105,7 @@ Plot.show(LinePlot.create("Distortion vs K", elbowTable, "k", "distortion"));
 Your curve should look something like the image below. We are looking for a hard break in the curve at a value of k where the distortion flattens out. (Hence the name, *Elbow Curve*)
  
 <p align="center">
-<img src="/docs/userguide/images/ml/k_means/Distortion.png" width="650" height = "500">
+<img src="https://jtablesaw.github.io/tablesaw/userguide/images/ml/k_means/Distortion.png" width="650" height = "500">
 </p>
  
  Based on this curve, I will choose k=4. Generate a new model with k=4. This time, generate an additional plot showing the centroids of each region. 
@@ -131,7 +131,7 @@ Plot.show(ScatterPlot.create("centroids", centTable, "lon", "lat"));
  
 
  <p align="center">
- <img src="/docs/userguide/images/ml/k_means/Uber_NYC_K4.png" width="446.875" height = "343.75"><img src="../images/ml/k_means/Centroids_K_4.png" width="446.875" height = "343.75">
+ <img src="https://jtablesaw.github.io/tablesaw/userguide/images/ml/k_means/Uber_NYC_K4.png" width="446.875" height = "343.75"><img src="../images/ml/k_means/Centroids_K_4.png" width="446.875" height = "343.75">
 </p>
  
 So far in our analysis, we have sought to develop a general recommendation for where a driver should idle irrespective of the day of the week or time of the day. Now, let's look at how day of week and time of day impact customer pickup requests. For brevity, I will use k=5 for all of these scenarios. In practice, one would ideally generate an Elbow curve for each subset of the data. 
@@ -187,11 +187,11 @@ Plot.show(ScatterPlot.create("Weekend, K=5", plot_data_Weekend, "lon", "lat", "c
 
 ### Time Based Clusters
   <p align="center">
- <img src="/docs/userguide/images/ml/k_means/Weekday_Morning_K5.png" width="446.875" height = "343.75"><img src="../images/ml/k_means/Weekday_Evening_K5.png" width="446.875" height = "343.75">
+ <img src="https://jtablesaw.github.io/tablesaw/userguide/images/ml/k_means/Weekday_Morning_K5.png" width="446.875" height = "343.75"><img src="https://jtablesaw.github.io/tablesaw/userguide/images/ml/k_means/Weekday_Evening_K5.png" width="446.875" height = "343.75">
 </p>
 
   <p align="center">
- <img src="/docs/userguide/images/ml/k_means/Late_Night_K5.png" width="446.875" height = "343.75"><img src="../images/ml/k_means/Weekend_K5.png" width="446.875" height = "343.75">
+ <img src="https://jtablesaw.github.io/tablesaw/userguide/images/ml/k_means/Late_Night_K5.png" width="446.875" height = "343.75"><img src="https://jtablesaw.github.io/tablesaw/userguide/images/ml/k_means/Weekend_K5.png" width="446.875" height = "343.75">
 </p>
 
 ### Conclusions
