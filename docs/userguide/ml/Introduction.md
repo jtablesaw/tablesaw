@@ -1,10 +1,10 @@
 ## Introduction
 
-Tablesaw provides excellent functionality for easy and efficient manipulation, vizualization, and exploration of data from a variety of sources. A natural extension of this is the ability to utilize statistical/machine learning algorithms alongside this functionality. Tablesaw now has supports basic integration with the leading JVM machine learning library, [Smile](https://haifengl.github.io/). 
+Tablesaw provides excellent functionality for easy and efficient manipulation, vizualization, and exploration of data from a variety of sources. A natural extension of this is the ability to utilize statistical/machine learning methods alongside this functionality. Tablesaw now supports basic integration with the leading JVM machine learning library, [Smile](https://haifengl.github.io/). 
 
-Smile supports a wide variety of machine learning techniques, everything from basic linear regression to various unsupervised learning techniques. The library boasts top of the line performance both in the JVM realm and in comparison to alternatives in the Python/R ecosystems. 
+Smile supports numerous machine learning techniques, everything from basic linear regression to unsupervised learning algorithms. The library boasts top of the line performance both in the JVM realm and in comparison to alternatives in the Python/R ecosystems. 
 
-At the basic level, one can use Tablesaw to do all of the data manipulation required in the project, and can then be converted to the Smile Dataframe format when passed off to a model. 
+At the basic level, one can use Tablesaw to do all of the data manipulation required for a project and then easily convert a Table to the Smile DataFrame format when passing it off to a model. 
 
 ```Java
 Table data = Table.read().csv("path/to/file.csv");
@@ -15,7 +15,7 @@ Table data = Table.read().csv("path/to/file.csv");
 DataFrame data_smile = data.smile().toDataFrame();
 ```
 
-The Tablesaw User Guide contains several examples of how to use Tablesaw and Smile together to implement popular machine learning methods. To add Smile to your project, add this dependency to your Gradle or Maven file. Though there are other versions available, the Smile 2.0.0 was used in the development of the tutorials and is recommended. 
+The Tablesaw User Guide contains several examples of how to use Tablesaw and Smile together to implement popular machine learning methods. To add Smile to your project, add the dependency below to your Gradle or Maven file. **Though there are newer versions available, Smile 2.0.0 was used in the development of the tutorials and is recommended.**
 
 
 ```Java
