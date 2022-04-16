@@ -1,0 +1,44 @@
+package tech.tablesaw.plotly.api;
+
+import java.util.List;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.traces.ScatterTrace;
+import tech.tablesaw.table.TableSliceGroup;
+
+public class AreaPlot {
+
+  public static Figure create(
+      String title, Table table, String xCol, String yCol, String groupCol) {
+    TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
+
+    Layout layout = Layout.builder(title, xCol, yCol).showLegend(true).build();
+
+    ScatterTrace[] traces = new ScatterTrace[tables.size()];
+    for (int i = 0; i < tables.size(); i++) {
+      List<Table> tableList = tables.asTableList();
+      traces[i] =
+          ScatterTrace.builder(
+                  tableList.get(i).numberColumn(xCol).asDoubleArray(),
+                  tableList.get(i).numberColumn(yCol).asDoubleArray())
+              .showLegend(true)
+              .name(tableList.get(i).name())
+              .mode(ScatterTrace.Mode.LINE)
+              .fill(ScatterTrace.Fill.TO_NEXT_Y)
+              .build();
+    }
+    return new Figure(layout, traces);
+  }
+
+  public static Figure create(String title, Table table, String xCol, String yCol) {
+    Layout layout = Layout.builder(title, xCol, yCol).build();
+    ScatterTrace trace =
+        ScatterTrace.builder(
+                table.numberColumn(xCol).asDoubleArray(), table.numberColumn(yCol).asDoubleArray())
+            .mode(ScatterTrace.Mode.LINE)
+            .fill(ScatterTrace.Fill.TO_NEXT_Y)
+            .build();
+    return new Figure(layout, trace);
+  }
+}

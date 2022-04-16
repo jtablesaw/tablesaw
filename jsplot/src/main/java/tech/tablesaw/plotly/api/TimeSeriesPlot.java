@@ -1,0 +1,102 @@
+package tech.tablesaw.plotly.api;
+
+import java.util.List;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.InstantColumn;
+import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.traces.ScatterTrace;
+import tech.tablesaw.table.TableSliceGroup;
+
+public class TimeSeriesPlot {
+
+  public static Figure create(
+      String title, Table table, String dateColX, String yCol, String groupCol) {
+
+    TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
+
+    Layout layout = Layout.builder(title, dateColX, yCol).build();
+
+    ScatterTrace[] traces = new ScatterTrace[tables.size()];
+    for (int i = 0; i < tables.size(); i++) {
+      List<Table> tableList = tables.asTableList();
+      Table t = tableList.get(i).sortOn(dateColX);
+      traces[i] =
+          ScatterTrace.builder(
+                  t.dateColumn(dateColX).asObjectArray(), t.numberColumn(yCol).asObjectArray())
+              .showLegend(true)
+              .name(tableList.get(i).name())
+              .mode(ScatterTrace.Mode.LINE)
+              .build();
+    }
+    return new Figure(layout, traces);
+  }
+
+  public static Figure create(String title, Table table, String dateColXName, String yColName) {
+    Layout layout = Layout.builder(title, dateColXName, yColName).build();
+    ScatterTrace trace =
+        ScatterTrace.builder(
+                table.column(dateColXName).asObjectArray(),
+                table.numberColumn(yColName).asObjectArray())
+            .mode(ScatterTrace.Mode.LINE)
+            .build();
+    return new Figure(layout, trace);
+  }
+
+  public static Figure create(
+      String title, String xTitle, DateColumn xCol, String yTitle, NumericColumn<?> yCol) {
+    Layout layout = Layout.builder(title, xTitle, yTitle).build();
+    ScatterTrace trace =
+        ScatterTrace.builder(xCol.asObjectArray(), yCol.asObjectArray())
+            .mode(ScatterTrace.Mode.LINE)
+            .build();
+    return new Figure(layout, trace);
+  }
+
+  public static Figure create(
+      String title, String xTitle, DateTimeColumn xCol, String yTitle, NumericColumn<?> yCol) {
+    Layout layout = Layout.builder(title, xTitle, yTitle).build();
+    ScatterTrace trace =
+        ScatterTrace.builder(xCol.asObjectArray(), yCol.asObjectArray())
+            .mode(ScatterTrace.Mode.LINE)
+            .build();
+    return new Figure(layout, trace);
+  }
+
+  public static Figure create(
+      String title, String xTitle, InstantColumn xCol, String yTitle, NumericColumn<?> yCol) {
+    Layout layout = Layout.builder(title, xTitle, yTitle).build();
+    ScatterTrace trace =
+        ScatterTrace.builder(xCol.asObjectArray(), yCol.asObjectArray())
+            .mode(ScatterTrace.Mode.LINE)
+            .build();
+    return new Figure(layout, trace);
+  }
+
+  /**
+   * Creates a time series where the x values are from a DateTimeColumn, rather than a DateColumn
+   *
+   * @param title The title of the plot
+   * @param table The table containing the source data
+   * @param dateTimeColumnName The name of a DateTimeColumn
+   * @param numberColumnName The name of a NumberColumn
+   * @return The figure to be displayed
+   */
+  public static Figure createDateTimeSeries(
+      String title, Table table, String dateTimeColumnName, String numberColumnName) {
+
+    DateTimeColumn xCol = table.dateTimeColumn(dateTimeColumnName);
+    NumericColumn<?> yCol = table.numberColumn(numberColumnName);
+
+    Layout layout = Layout.builder(title, xCol.name(), yCol.name()).build();
+
+    ScatterTrace trace =
+        ScatterTrace.builder(xCol.asObjectArray(), yCol.asObjectArray())
+            .mode(ScatterTrace.Mode.LINE)
+            .build();
+    return new Figure(layout, trace);
+  }
+}
