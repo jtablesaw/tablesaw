@@ -15,13 +15,16 @@
 package tech.tablesaw.columns;
 
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.selection.Selection;
+import tech.tablesaw.validation.Validator;
 
 /** Partial implementation of the {@link Column} interface */
 public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T> {
@@ -34,6 +37,11 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
 
   private AbstractColumnParser<T> parser;
 
+  private final List<Validator<T>> validators = new ArrayList<>();
+
+  public List<Validator<T>> validators() {
+    return validators;
+  }
   /**
    * Constructs a column with the given {@link ColumnType}, name, and {@link AbstractColumnParser}
    */

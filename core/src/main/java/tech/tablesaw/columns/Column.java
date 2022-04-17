@@ -14,6 +14,7 @@
 
 package tech.tablesaw.columns;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.count;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 import com.google.common.base.Preconditions;
@@ -23,12 +24,15 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.interpolation.Interpolator;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
 import tech.tablesaw.util.StringUtils;
+import tech.tablesaw.validation.Utils;
+import tech.tablesaw.validation.Validator;
 
 /**
  * The general interface for columns.
@@ -743,4 +747,68 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    * not in the column.
    */
   int indexOf(Object o);
+
+  default Column<T> addValidator(Validator<T> validator) {
+    this.validators().add(validator);
+    return this;
+  }
+
+  default void removeValidators(Validator<T> validator) {
+    validators().remove(validator);
+  }
+
+  default void clearValidators() {
+    validators().clear();
+  }
+
+  /**
+   * Updates the provided table with the high-level validation results. There is one row for each
+   * Validator executed, with a count of the failing entries in this column
+   *
+   * @param results A table in the format provided by {@link Utils#summaryResultsTable()}
+   */
+  default void summaryValidation(Table results) {
+    for (Validator<T> v : validators()) {
+      Selection selection = v.apply(this);
+      Row row = results.appendRow();
+      row.setString("Column name", name());
+      row.setString("Column type", type().getPrinterFriendlyName());
+      row.setString("Validator name", v.name());
+      row.setInt("Validation Failures", selection.size());
+    }
+  }
+
+  /**
+   * Updates the provided table with detailed validation results, where each row contains the row #
+   * of a validation failure and the numer of
+   */
+  default void detailedValidation(Table results) {
+    for (Validator<T> v : validators()) {
+      Selection selection = v.apply(this);
+      if (!selection.isEmpty()) {
+        for (int i : selection) {
+          Row row = results.appendRow();
+          row.setString("Column name", name());
+          row.setString("Column type", type().getPrinterFriendlyName());
+          row.setString("Validator name", v.name());
+          row.setInt("Row number", i);
+          row.setString("Failing value", this.getString(i));
+        }
+      }
+    }
+  }
+
+  default void intermediateValidation(Table intermediateResultsTable) {
+    Table details = Utils.detailedResultsTable();
+    detailedValidation(details);
+    Table summarizedResults =
+        details
+            .summarize("Row number", count)
+            .by("Column name", "Column type", "Validator name", "Failing value");
+    summarizedResults.column("Count [Row number]").setName("Count");
+    summarizedResults = summarizedResults.sortAscendingOn("Validator name", "Failing value");
+    intermediateResultsTable.append(summarizedResults);
+  }
+
+  List<Validator<T>> validators();
 }

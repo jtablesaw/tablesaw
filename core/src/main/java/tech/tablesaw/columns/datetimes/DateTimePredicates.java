@@ -20,7 +20,5 @@ import tech.tablesaw.filtering.predicates.LongBiPredicate;
 public class DateTimePredicates extends TemporalPredicates {
 
   public static final LongBiPredicate isInYear =
-      (long valueToTest, long year) -> {
-        return PackedLocalDateTime.isInYear(valueToTest, (int) year);
-      };
+      (long valueToTest, long year) -> PackedLocalDateTime.isInYear(valueToTest, (int) year);
 }
