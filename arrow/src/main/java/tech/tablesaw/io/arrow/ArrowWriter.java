@@ -4,9 +4,17 @@ import static org.apache.arrow.vector.types.FloatingPointPrecision.DOUBLE;
 import static org.apache.arrow.vector.types.FloatingPointPrecision.SINGLE;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.Channels;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.arrow.memory.BufferAllocator;
+import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.*;
+import org.apache.arrow.vector.ipc.ArrowFileWriter;
 import org.apache.arrow.vector.types.DateUnit;
 import org.apache.arrow.vector.types.TimeUnit;
 import org.apache.arrow.vector.types.pojo.ArrowType;
@@ -17,24 +25,9 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.DataWriter;
-import tech.tablesaw.io.Destination;
-import tech.tablesaw.io.WriterRegistry;
+import tech.tablesaw.io.RuntimeIOException;
 
-public class ArrowWriter implements DataWriter<ArrowWriteOptions> {
-
-  private static final ArrowWriter INSTANCE = new ArrowWriter();
-
-  private static final int CHUNK_SIZE = 20_000;
-
-  static {
-    register(Table.defaultWriterRegistry);
-  }
-
-  public static void register(WriterRegistry registry) {
-    registry.registerExtension("arrow", INSTANCE);
-    registry.registerOptions(ArrowWriteOptions.class, INSTANCE);
-  }
+public class ArrowWriter {
 
   private Schema tableSchema(Table table) {
     List<Field> fields = new ArrayList<>();
@@ -43,9 +36,6 @@ public class ArrowWriter implements DataWriter<ArrowWriteOptions> {
       switch (typeName) {
         case "STRING":
           fields.add(new Field(column.name(), FieldType.nullable(new ArrowType.Utf8()), null));
-          break;
-        case "TEXT":
-          fields.add(new Field(column.name(), FieldType.nullable(new ArrowType.LargeUtf8()), null));
           break;
         case "LONG":
           fields.add(
@@ -68,7 +58,7 @@ public class ArrowWriter implements DataWriter<ArrowWriteOptions> {
           fields.add(
               new Field(
                   column.name(),
-                  FieldType.notNullable(new ArrowType.Date(DateUnit.MILLISECOND)),
+                  FieldType.notNullable(new ArrowType.Timestamp(TimeUnit.MILLISECOND, null)),
                   null));
           break;
         case "TIME":
@@ -82,7 +72,7 @@ public class ArrowWriter implements DataWriter<ArrowWriteOptions> {
           fields.add(
               new Field(
                   column.name(),
-                  FieldType.notNullable(new ArrowType.Time(TimeUnit.MILLISECOND, 64)),
+                  FieldType.notNullable(new ArrowType.Timestamp(TimeUnit.MILLISECOND, "UTC")),
                   null));
           break;
         case "BOOLEAN":
@@ -104,25 +94,12 @@ public class ArrowWriter implements DataWriter<ArrowWriteOptions> {
     return new Schema(fields);
   }
 
-  private List<FieldVector> vectorizeTable(Row row, VectorSchemaRoot schemaRoot) {
-    List<String> columnNames = row.columnNames();
-    for (String colName : columnNames) {
-      ColumnType type = row.getColumnType(colName);
-      setBytes(schemaRoot, colName, type, row);
-    }
-    return new ArrayList<>();
-  }
-
   private void setBytes(VectorSchemaRoot schemaRoot, String columnName, ColumnType type, Row row) {
     final String typeName = type.name();
     switch (typeName) {
       case "STRING":
         ((VarCharVector) schemaRoot.getVector(columnName))
             .setSafe(row.getRowNumber(), row.getString(columnName).getBytes());
-        break;
-      case "TEXT":
-        ((VarCharVector) schemaRoot.getVector(columnName))
-            .setSafe(row.getRowNumber(), row.getText(columnName).getBytes());
         break;
       case "LONG":
         ((UInt8Vector) schemaRoot.getVector(columnName))
@@ -141,15 +118,17 @@ public class ArrowWriter implements DataWriter<ArrowWriteOptions> {
             .setSafe(row.getRowNumber(), (int) row.getDate(columnName).toEpochDay());
         break;
       case "DATE_TIME":
-        ((TimeStampNanoVector) schemaRoot.getVector(columnName))
-            .setSafe(row.getRowNumber(), row.getDateTime(columnName).getNano());
+        ((TimeStampMilliVector) schemaRoot.getVector(columnName))
+            .setSafe(
+                row.getRowNumber(),
+                row.getDateTime(columnName).toInstant(ZoneOffset.UTC).toEpochMilli());
         break;
       case "TIME":
         ((TimeMilliVector) schemaRoot.getVector(columnName))
             .setSafe(row.getRowNumber(), (int) (row.getTime(columnName).toNanoOfDay()) / 1_000_000);
         break;
       case "INSTANT":
-        ((TimeStampMilliVector) schemaRoot.getVector(columnName))
+        ((TimeStampMilliTZVector) schemaRoot.getVector(columnName))
             .setSafe(row.getRowNumber(), row.getInstant(columnName).toEpochMilli());
         break;
       case "BOOLEAN":
@@ -167,15 +146,56 @@ public class ArrowWriter implements DataWriter<ArrowWriteOptions> {
     }
   }
 
-  @Override
-  public void write(Table table, Destination dest) {
+  /**
+   * Writes table to arrow-formatted file
+   *
+   * <p>The arrow format specifies writing tables in record batches, along with any
+   * DictionaryProviders that will be used in encoding the data.
+   *
+   * <p>The process for writing record batches is as follows: - create a VectorSchemaRoot (VSR) -
+   * populate the vectors in the VSR with the first batch of rows from the table, using some
+   * arbitrary number of rows for the batch size - write the batch to the output stream - reset the
+   * vectors in the VSR - repopulate the vectors the next batch
+   *
+   * <p>The cycle of reset, repopulate, and write is continued until all the data has been written
+   *
+   * @param table The table to write
+   * @param file The file we're writing to
+   */
+  public void write(Table table, File file) {
 
-    // new ChunkedWriter<>(CHUNK_SIZE, this::vectorizeTable).write(new File("people.arrow"), table);
-    new ChunkedWriter<>(CHUNK_SIZE).write(new File("people.arrow"), table, schema);
+    // Create an RootAllocator to allocate memory for our vectors
+    BufferAllocator allocator = new RootAllocator();
+
+    // How many records to write in one batch
+    // for a first pass, we'll write them all
+    final int batchSize = table.rowCount();
+
+    Schema schema = tableSchema(table);
+
+    List<FieldVector> fieldVectors = createFieldVectors(schema, allocator);
+
+    VectorSchemaRoot schemaRoot = new VectorSchemaRoot(fieldVectors);
+
+    try (FileOutputStream out = new FileOutputStream(file);
+        ArrowFileWriter writer =
+            new ArrowFileWriter(
+                schemaRoot, /*DictionaryProvider=*/ null, Channels.newChannel(out))) {
+      for (Row row : table) {
+        for (Column<?> column : table.columns()) {
+          setBytes(schemaRoot, column.name(), column.type(), row);
+        }
+        writer.writeBatch();
+        writer.end();
+      }
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
+    }
   }
 
-  // private <T> void vectorizeTable(T t, int i, VectorSchemaRoot vectorSchemaRoot) {}
-
-  @Override
-  public void write(Table table, ArrowWriteOptions options) {}
+  private List<FieldVector> createFieldVectors(Schema schema, BufferAllocator allocator) {
+    return schema.getFields().stream()
+        .map(field -> field.createVector(allocator))
+        .collect(Collectors.toList());
+  }
 }
