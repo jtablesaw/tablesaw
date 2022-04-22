@@ -334,11 +334,11 @@ public class SawReader {
             columnMetadata.getName(), getByteMap(dis, columnMetadata, rowcount));
       }
       if (columnMetadata.getStringColumnKeySize().equals(Integer.class.getSimpleName())) {
-        return StringColumn.createInternal(
-            columnMetadata.getName(), getIntMap(dis, columnMetadata, rowcount));
+        IntDictionaryMap intMap = getIntMap(dis, columnMetadata, rowcount);
+        return StringColumn.createInternal(columnMetadata.getName(), intMap);
       }
-      return StringColumn.createInternal(
-          columnMetadata.getName(), getShortMap(dis, columnMetadata, rowcount));
+      ShortDictionaryMap shortMap = getShortMap(dis, columnMetadata, rowcount);
+      return StringColumn.createInternal(columnMetadata.getName(), shortMap);
     }
   }
 
