@@ -27,6 +27,7 @@ import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -365,12 +366,9 @@ public class ByteDictionaryMap implements DictionaryMap {
       String category = getValueForKey(next);
       for (BooleanColumn column : results) {
         if (category.equals(column.name())) {
-          // TODO(lwhite): update the correct row more efficiently, by using set rather than add &
-          // only
-          // updating true
-          column.append(true);
+          column.append(BooleanColumnType.BYTE_TRUE);
         } else {
-          column.append(false);
+          column.append(BooleanColumnType.BYTE_FALSE);
         }
       }
     }

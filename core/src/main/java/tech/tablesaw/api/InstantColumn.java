@@ -79,8 +79,8 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
 
   private final IntComparator comparator =
       (r1, r2) -> {
-        long f1 = getPackedDateTime(r1);
-        long f2 = getPackedDateTime(r2);
+        long f1 = getPackedInstant(r1);
+        long f2 = getPackedInstant(r2);
         return Long.compare(f1, f2);
       };
 
@@ -292,13 +292,13 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   /** {@inheritDoc} */
   @Override
   public String getString(int row) {
-    return printFormatter.format(getPackedDateTime(row));
+    return printFormatter.format(getPackedInstant(row));
   }
 
   /** {@inheritDoc} */
   @Override
   public String getUnformattedString(int row) {
-    return PackedInstant.toString(getPackedDateTime(row));
+    return PackedInstant.toString(getPackedInstant(row));
   }
 
   /** {@inheritDoc} */
@@ -403,15 +403,15 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return data.getLong(index);
   }
 
-  // TODO: Name?
-  protected long getPackedDateTime(int index) {
+  /** Returns the long-encoded version of the instant at the given index */
+  protected long getPackedInstant(int index) {
     return getLongInternal(index);
   }
 
   /** {@inheritDoc} */
   @Override
   public Instant get(int index) {
-    return PackedInstant.asInstant(getPackedDateTime(index));
+    return PackedInstant.asInstant(getPackedInstant(index));
   }
 
   /** {@inheritDoc} */
@@ -439,7 +439,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   public int countMissing() {
     int count = 0;
     for (int i = 0; i < size(); i++) {
-      if (getPackedDateTime(i) == InstantColumnType.missingValueIndicator()) {
+      if (getPackedInstant(i) == InstantColumnType.missingValueIndicator()) {
         count++;
       }
     }
@@ -574,7 +574,7 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
     return set(row, ((InstantColumn) column).getLongInternal(sourceRow));
   }
 
-  /** {@inheritDoc} */
+  /** Returns the largest instant value in the column */
   public Instant max() {
     if (isEmpty()) {
       return null;
@@ -690,11 +690,11 @@ public class InstantColumn extends AbstractColumn<InstantColumn, Instant>
   /** Returns the contents of the cell at rowNumber as a byte[] */
   @Override
   public byte[] asBytes(int rowNumber) {
-    return ByteBuffer.allocate(byteSize()).putLong(getPackedDateTime(rowNumber)).array();
+    return ByteBuffer.allocate(byteSize()).putLong(getPackedInstant(rowNumber)).array();
   }
 
   public double getDouble(int i) {
-    return getPackedDateTime(i);
+    return getPackedInstant(i);
   }
 
   public double[] asDoubleArray() {

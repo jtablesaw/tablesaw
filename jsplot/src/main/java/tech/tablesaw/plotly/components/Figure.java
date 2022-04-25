@@ -57,21 +57,6 @@ public class Figure {
     this.eventHandlers = null;
   }
 
-  /** @deprecated Use the FigureBuilder instead */
-  @Deprecated
-  public Figure(Layout layout, EventHandler eventHandler, Trace... traces) {
-    this(layout, new EventHandler[] {eventHandler}, traces);
-  }
-
-  /** @deprecated Use the FigureBuilder instead */
-  @Deprecated
-  public Figure(Layout layout, EventHandler[] eventHandlers, Trace... traces) {
-    this.data = traces;
-    this.layout = layout;
-    this.config = null;
-    this.eventHandlers = eventHandlers;
-  }
-
   public String divString(String divName) {
     return String.format("<div id='%s' ></div>" + System.lineSeparator(), divName);
   }

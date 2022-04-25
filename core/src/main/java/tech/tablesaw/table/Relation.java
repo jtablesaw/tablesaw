@@ -14,6 +14,8 @@
 
 package tech.tablesaw.table;
 
+import static tech.tablesaw.joining.JoinType.FULL_OUTER;
+
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import java.io.ByteArrayOutputStream;
@@ -203,21 +205,6 @@ public abstract class Relation implements Iterable<Row> {
   /**
    * Returns an array of the column types of all columns in the relation, including duplicates as
    * appropriate, and maintaining order
-   *
-   * @deprecated for API name consistency. Use {@link #typeArray()} instead.
-   */
-  @Deprecated
-  public ColumnType[] columnTypes() {
-    ColumnType[] columnTypes = new ColumnType[columnCount()];
-    for (int i = 0; i < columnCount(); i++) {
-      columnTypes[i] = columns().get(i).type();
-    }
-    return columnTypes;
-  }
-
-  /**
-   * Returns an array of the column types of all columns in the relation, including duplicates as
-   * appropriate, and maintaining order
    */
   public ColumnType[] typeArray() {
     ColumnType[] columnTypes = new ColumnType[columnCount()];
@@ -314,7 +301,12 @@ public abstract class Relation implements Iterable<Row> {
       Table columnSummary = this.column(i).summary();
       columnSummary.column(1).setName(this.column(i).name());
       summaryTable =
-          summaryTable.joinOn("Measure").fullOuter(columnSummary, columnSummary.column(0).name());
+          summaryTable
+              .joinOn("Measure")
+              .with(columnSummary)
+              .rightJoinColumns(columnSummary.column(0).name())
+              .type(FULL_OUTER)
+              .join();
     }
     summaryTable.column(0).setName("Summary");
     return summaryTable;

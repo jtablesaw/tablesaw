@@ -33,7 +33,7 @@ public class LongColumnType extends AbstractColumnType {
     return LongColumn.create(name);
   }
 
-  /** {@inheritDoc} */
+  /** Returns the default parser used to convert strings to long values */
   public LongParser defaultParser() {
     return DEFAULT_PARSER;
   }

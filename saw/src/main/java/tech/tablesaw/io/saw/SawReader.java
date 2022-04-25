@@ -46,6 +46,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import net.jpountz.lz4.*;
 import org.iq80.snappy.SnappyFramedInputStream;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
@@ -72,16 +73,16 @@ public class SawReader {
 
   private final SawMetadata sawMetadata;
 
-  private ReadOptions readOptions = ReadOptions.defaultOptions();
+  private SawReadOptions sawReadOptions = SawReadOptions.defaultOptions();
 
   public SawReader(Path sawPath) {
     this.sawPath = sawPath;
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
-  public SawReader(Path sawPath, ReadOptions options) {
+  public SawReader(Path sawPath, SawReadOptions options) {
     this.sawPath = sawPath;
-    this.readOptions = options;
+    this.sawReadOptions = options;
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
@@ -90,9 +91,9 @@ public class SawReader {
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
-  public SawReader(File sawPathFile, ReadOptions options) {
+  public SawReader(File sawPathFile, SawReadOptions options) {
     this.sawPath = sawPathFile.toPath();
-    this.readOptions = options;
+    this.sawReadOptions = options;
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
@@ -101,9 +102,9 @@ public class SawReader {
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
-  public SawReader(String sawPathName, ReadOptions options) {
+  public SawReader(String sawPathName, SawReadOptions options) {
     this.sawPath = setPath(sawPathName);
-    this.readOptions = options;
+    this.sawReadOptions = options;
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
@@ -137,9 +138,10 @@ public class SawReader {
 
   public Table read() {
 
-    final ExecutorService executor = Executors.newFixedThreadPool(readOptions.getThreadPoolSize());
+    final ExecutorService executor =
+        Executors.newFixedThreadPool(sawReadOptions.getThreadPoolSize());
     // The column names to filter for, if we don't want the whole table
-    final Set<String> selectedColumns = new HashSet<>(readOptions.getSelectedColumns());
+    final Set<String> selectedColumns = new HashSet<>(sawReadOptions.getSelectedColumns());
 
     final List<ColumnMetadata> columnMetadata = getMetadata(selectedColumns);
 
@@ -230,6 +232,9 @@ public class SawReader {
     FileInputStream fis = new FileInputStream(fileName);
     if (sawMetadata.getCompressionType().equals(CompressionType.NONE)) {
       return new DataInputStream(fis);
+    } else if (sawMetadata.getCompressionType().equals(CompressionType.LZ4)) {
+      LZ4BlockInputStream lis = new LZ4BlockInputStream(fis);
+      return new DataInputStream(lis);
     } else {
       SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
       return new DataInputStream(sis);
@@ -488,10 +493,31 @@ public class SawReader {
       throws IOException {
 
     BooleanColumn column = BooleanColumn.create(metadata.getName());
+    int trueBytesLength = metadata.getTrueBytesLength();
+    int falseBytesLength = metadata.getFalseBytesLength();
+    int missingBytesLength = metadata.getMissingBytesLength();
+    int trueAndFalseLength = trueBytesLength + falseBytesLength;
+    int allBytesLength = trueAndFalseLength + missingBytesLength;
+    byte[] trueBytes = new byte[trueBytesLength];
+    byte[] falseBytes = new byte[falseBytesLength];
+    byte[] missingBytes = new byte[missingBytesLength];
     try (DataInputStream dis = inputStream(fileName)) {
-      for (int i = 0; i < rowcount; i++) {
-        column.append(dis.readByte());
+      for (int i = 0; i < trueBytesLength; i++) {
+        trueBytes[i] = dis.readByte();
       }
+      column.trueBytes(trueBytes);
+      int j = 0;
+      for (int i = trueBytesLength; i < trueAndFalseLength; i++) {
+        falseBytes[j] = dis.readByte();
+        j++;
+      }
+      column.falseBytes(falseBytes);
+      int k = 0;
+      for (int i = trueAndFalseLength; i < allBytesLength; i++) {
+        missingBytes[k] = dis.readByte();
+        k++;
+      }
+      column.missingBytes(missingBytes);
     }
     return column;
   }

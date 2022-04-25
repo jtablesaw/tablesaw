@@ -27,10 +27,8 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.roaringbitmap.RoaringBitmap;
@@ -221,7 +219,7 @@ public class Table extends Relation implements Iterable<Row> {
     return key;
   }
 
-  /** Returns an object that an be used to read data from a file into a new Table */
+  /** Returns an object that can be used to read data from a file into a new Table */
   public static DataFrameReader read() {
     return new DataFrameReader(defaultReaderRegistry);
   }
@@ -776,18 +774,6 @@ public class Table extends Relation implements Iterable<Row> {
     }
   }
 
-  /**
-   * Adds the given row to this table
-   *
-   * @deprecated Use {@link #append(Row)} instead.
-   */
-  @Deprecated
-  public void addRow(Row row) {
-    for (int i = 0; i < row.columnCount(); i++) {
-      column(i).appendObj(row.getObject(i));
-    }
-  }
-
   /** Returns a new Row object with its position set to the given zero-based row index. */
   public Row row(int rowIndex) {
     Row row = new Row(Table.this);
@@ -1029,17 +1015,6 @@ public class Table extends Relation implements Iterable<Row> {
   /**
    * Returns a new table containing copies of the selected columns from this table
    *
-   * @param columns The columns to copy into the new table
-   * @see #retainColumns(Column[])
-   * @deprecated Use {@link #selectColumns(Column[])} instead
-   */
-  public Table select(Column<?>... columns) {
-    return selectColumns(columns);
-  }
-
-  /**
-   * Returns a new table containing copies of the selected columns from this table
-   *
    * @param columnNames The names of the columns to include
    * @see #retainColumns(String[])
    */
@@ -1049,17 +1024,6 @@ public class Table extends Relation implements Iterable<Row> {
       t.addColumns(column(s).copy());
     }
     return t;
-  }
-
-  /**
-   * Returns a new table containing copies of the selected columns from this table
-   *
-   * @param columnNames The names of the columns to include
-   * @see #retainColumns(String[])
-   * @deprecated Use {@link #selectColumns(String[])} instead
-   */
-  public Table select(String... columnNames) {
-    return selectColumns(columnNames);
   }
 
   /**
@@ -1243,7 +1207,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1254,7 +1218,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1265,7 +1229,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1277,7 +1241,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1289,7 +1253,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1306,7 +1270,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1317,7 +1281,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1329,7 +1293,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1344,7 +1308,7 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns an {@link Summarizer} that can be used to summarize the column with the given name(s)
+   * Returns a {@link Summarizer} that can be used to summarize the column with the given name(s)
    * using the given functions. This object implements reduce/aggregation operations on a table.
    *
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
@@ -1667,9 +1631,9 @@ public class Table extends Relation implements Iterable<Row> {
   /**
    * Melt implements the 'tidy' melt operation as described in these papers by Hadley Wickham.
    *
-   * <p>Tidy concepts: {@see https://www.jstatsoft.org/article/view/v059i10}
+   * <p>Tidy concepts: see https://www.jstatsoft.org/article/view/v059i10
    *
-   * <p>Cast function details: {@see https://www.jstatsoft.org/article/view/v021i12}
+   * <p>Cast function details: see https://www.jstatsoft.org/article/view/v021i12
    *
    * <p>In short, melt turns columns into rows, but in a particular way. Used with the cast method,
    * it can help make data tidy. In a tidy dataset, every variable is a column and every observation
@@ -1794,9 +1758,9 @@ public class Table extends Relation implements Iterable<Row> {
    * <p>Variable columns are returned in an arbitrary order. Use {@link #reorderColumns(String...)}
    * if column order is important.
    *
-   * <p>Tidy concepts: {@see https://www.jstatsoft.org/article/view/v059i10}
+   * <p>Tidy concepts: see https://www.jstatsoft.org/article/view/v059i10
    *
-   * <p>Cast function details: {@see https://www.jstatsoft.org/article/view/v021i12}
+   * <p>Cast function details: see https://www.jstatsoft.org/article/view/v021i12
    */
   public Table cast() {
     StringColumn variableNames = stringColumn(MELT_VARIABLE_COLUMN_NAME);
@@ -1874,84 +1838,5 @@ public class Table extends Relation implements Iterable<Row> {
       }
     }
     return result;
-  }
-
-  /**
-   * Applies the operation in {@code doable} to every row in the table
-   *
-   * @deprecated use {@code stream().forEach}
-   */
-  @Deprecated
-  public void doWithRows(Consumer<Row> doable) {
-    stream().forEach(doable);
-  }
-
-  /**
-   * Applies the predicate to each row, and return true if any row returns true
-   *
-   * @deprecated use {@code stream().anyMatch}
-   */
-  @Deprecated
-  public boolean detect(Predicate<Row> predicate) {
-    return stream().anyMatch(predicate);
-  }
-
-  /** @deprecated use steppingStream(n).forEach(rowConsumer) */
-  @Deprecated
-  public void stepWithRows(Consumer<Row[]> rowConsumer, int n) {
-    steppingStream(n).forEach(rowConsumer);
-  }
-
-  /** @deprecated use stream(2).forEach(rowConsumer) */
-  @Deprecated
-  public void doWithRows(Pairs pairs) {
-    rollingStream(2).forEach(rows -> pairs.doWithPair(rows[0], rows[1]));
-  }
-
-  /** @deprecated use stream(2).forEach(rowConsumer) */
-  @Deprecated
-  public void doWithRowPairs(Consumer<RowPair> pairConsumer) {
-    rollingStream(2).forEach(rows -> pairConsumer.accept(new RowPair(rows[0], rows[1])));
-  }
-
-  /** @deprecated use stream(n).forEach(rowConsumer) */
-  @Deprecated
-  public void rollWithRows(Consumer<Row[]> rowConsumer, int n) {
-    rollingStream(n).forEach(rowConsumer);
-  }
-
-  @Deprecated
-  public static class RowPair {
-    private final Row first;
-    private final Row second;
-
-    public RowPair(Row first, Row second) {
-      this.first = first;
-      this.second = second;
-    }
-
-    public Row getFirst() {
-      return first;
-    }
-
-    public Row getSecond() {
-      return second;
-    }
-  }
-
-  @Deprecated
-  interface Pairs {
-
-    void doWithPair(Row row1, Row row2);
-
-    /**
-     * Returns an object containing the results of applying doWithPair() to the rows in a table.
-     *
-     * <p>The default implementation throws an exception, to be used if the operation produces only
-     * side effects
-     */
-    default Object getResult() {
-      throw new UnsupportedOperationException("This Pairs function returns no results");
-    }
   }
 }

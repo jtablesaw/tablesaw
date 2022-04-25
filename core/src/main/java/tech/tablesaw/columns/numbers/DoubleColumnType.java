@@ -44,12 +44,6 @@ public class DoubleColumnType extends AbstractColumnType {
     return Double.isNaN(value);
   }
 
-  /** @deprecated Please use valueIsMissing(double) instead */
-  @Deprecated
-  public static boolean isMissingValue(double value) {
-    return Double.isNaN(value);
-  }
-
   /**
    * Returns the missing value indicator for this column type NOTE: Clients should use {@link
    * DoubleColumnType#valueIsMissing(double)} to test for missing value indicators
