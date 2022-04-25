@@ -11,29 +11,29 @@ import java.util.List;
  * <p>Note: There is no CompressionType option for reading. The CompressionType is read from the Saw
  * metadata file as it must match what was used when the data was written
  */
-public class ReadOptions {
+public class SawReadOptions {
 
   private static final int READER_POOL_SIZE = 8;
 
   private List<String> selectedColumns = new ArrayList<>();
   private int threadPoolSize = READER_POOL_SIZE;
 
-  public static ReadOptions defaultOptions() {
-    return new ReadOptions();
+  public static SawReadOptions defaultOptions() {
+    return new SawReadOptions();
   }
 
-  public ReadOptions threadPoolSize(int size) {
+  public SawReadOptions threadPoolSize(int size) {
     Preconditions.checkArgument(size > 0);
     this.threadPoolSize = size;
     return this;
   }
 
-  public ReadOptions selectedColumns(String... columnNames) {
+  public SawReadOptions selectedColumns(String... columnNames) {
     this.selectedColumns = Lists.newArrayList(columnNames);
     return this;
   }
 
-  public ReadOptions selectedColumns(List<String> columnNames) {
+  public SawReadOptions selectedColumns(List<String> columnNames) {
     this.selectedColumns = columnNames;
     return this;
   }

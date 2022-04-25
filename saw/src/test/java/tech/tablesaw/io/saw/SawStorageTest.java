@@ -251,7 +251,8 @@ class SawStorageTest {
   @Test
   void selectedColumns() {
     String path = new SawWriter("../testoutput/baseball", baseball).write();
-    Table bb2 = new SawReader(path, new ReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
+    Table bb2 =
+        new SawReader(path, new SawReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
     assertEquals(3, bb2.columnCount());
     assertTrue(bb2.columnNames().contains("OBP"));
     assertTrue(bb2.columnNames().contains("SLG"));
@@ -267,7 +268,8 @@ class SawStorageTest {
                 baseball,
                 new SawWriteOptions().compressionType(CompressionType.NONE))
             .write();
-    Table bb2 = new SawReader(path, new ReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
+    Table bb2 =
+        new SawReader(path, new SawReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
     assertEquals(3, bb2.columnCount());
     assertTrue(bb2.columnNames().contains("OBP"));
     assertTrue(bb2.columnNames().contains("SLG"));
@@ -283,7 +285,8 @@ class SawStorageTest {
                 baseball,
                 new SawWriteOptions().compressionType(CompressionType.LZ4))
             .write();
-    Table bb2 = new SawReader(path, new ReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
+    Table bb2 =
+        new SawReader(path, new SawReadOptions().selectedColumns("OBP", "SLG", "BA")).read();
     assertEquals(3, bb2.columnCount());
     assertTrue(bb2.columnNames().contains("OBP"));
     assertTrue(bb2.columnNames().contains("SLG"));

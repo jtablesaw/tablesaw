@@ -6,11 +6,11 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class ReadOptionsTest {
+class SawReadOptionsTest {
 
   @Test
   void threadPoolSize() {
-    ReadOptions options = new ReadOptions().threadPoolSize(10001);
+    SawReadOptions options = new SawReadOptions().threadPoolSize(10001);
     assertEquals(10001, options.getThreadPoolSize());
   }
 
@@ -18,7 +18,7 @@ class ReadOptionsTest {
   void selectedColumns() {
     String[] names = {"foo", "bar"};
     List<String> nameList = Lists.newArrayList(names);
-    ReadOptions options = new ReadOptions().selectedColumns(names);
+    SawReadOptions options = new SawReadOptions().selectedColumns(names);
     assertEquals(nameList, options.getSelectedColumns());
   }
 
@@ -26,7 +26,7 @@ class ReadOptionsTest {
   void testSelectedColumns() {
     String[] names = {"foo", "bar"};
     List<String> nameList = Lists.newArrayList(names);
-    ReadOptions options = new ReadOptions().selectedColumns(nameList);
+    SawReadOptions options = new SawReadOptions().selectedColumns(nameList);
     assertEquals(nameList, options.getSelectedColumns());
   }
 }
