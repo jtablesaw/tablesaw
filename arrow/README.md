@@ -7,11 +7,11 @@ Note: Only those Arrow vectors needed to persist Tablesaw columns are supported.
 ## Tablesaw Column to Arrow FieldVector mapping
 
 | Tablesaw Column | Arrow Field Vector     | Notes                                                        |
-| --------------- | ---------------------- | ------------------------------------------------------------ |
+| --------------- |------------------------| ------------------------------------------------------------ |
 | BooleanColumn   | BitVector              |                                                              |
-| IntColumn       | UInt4Vector            |                                                              |
-| ShortColumn     | UInt2Vector            |                                                              |
-| LongColumn      | Uint8Vector            |                                                              |
+| IntColumn       | IntVector              |                                                              |
+| ShortColumn     | SmallIntVector         |                                                              |
+| LongColumn      | BigIntVector           |                                                              |
 | FloatColumn     | Float4Vector           |                                                              |
 | DoubleColumn    | Float8Vector           |                                                              |
 | DateColumn      | DateDayVector          |                                                              |
