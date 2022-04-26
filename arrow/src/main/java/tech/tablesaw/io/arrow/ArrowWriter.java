@@ -18,6 +18,7 @@ import org.apache.arrow.vector.*;
 import org.apache.arrow.vector.ipc.ArrowStreamWriter;
 import org.apache.arrow.vector.types.DateUnit;
 import org.apache.arrow.vector.types.TimeUnit;
+import org.apache.arrow.vector.types.Types;
 import org.apache.arrow.vector.types.pojo.ArrowType;
 import org.apache.arrow.vector.types.pojo.Field;
 import org.apache.arrow.vector.types.pojo.FieldType;
@@ -42,15 +43,15 @@ public class ArrowWriter {
           break;
         case "LONG":
           fields.add(
-              new Field(column.name(), FieldType.nullable(new ArrowType.Int(64, false)), null));
+              new Field(column.name(), FieldType.nullable(new ArrowType.Int(64, true)), null));
           break;
         case "INTEGER":
           fields.add(
-              new Field(column.name(), FieldType.nullable(new ArrowType.Int(32, false)), null));
+              new Field(column.name(), FieldType.nullable(new ArrowType.Int(32, true)), null));
           break;
         case "SHORT":
           fields.add(
-              new Field(column.name(), FieldType.nullable(new ArrowType.Int(16, false)), null));
+              new Field(column.name(), FieldType.nullable(new ArrowType.Int(16, true)), null));
           break;
         case "LOCAL_DATE":
           fields.add(
@@ -80,7 +81,7 @@ public class ArrowWriter {
           break;
         case "BOOLEAN":
           fields.add(
-              new Field(column.name(), FieldType.notNullable(new ArrowType.Int(16, false)), null));
+              new Field(column.name(), FieldType.nullable(Types.MinorType.BIT.getType()), null));
           break;
         case "FLOAT":
           fields.add(
@@ -114,7 +115,7 @@ public class ArrowWriter {
         sv.setValueCount(sc.size());
         break;
       case "LONG":
-        UInt8Vector lv = ((UInt8Vector) schemaRoot.getVector(column.name()));
+        BigIntVector lv = ((BigIntVector) schemaRoot.getVector(column.name()));
         LongColumn lc = (LongColumn) column;
         for (int i = 0; i < lc.size(); i++) {
           lv.setSafe(i, lc.getLong(i));
@@ -122,7 +123,7 @@ public class ArrowWriter {
         lv.setValueCount(lc.size());
         break;
       case "INTEGER":
-        UInt4Vector iv = ((UInt4Vector) schemaRoot.getVector(column.name()));
+        IntVector iv = ((IntVector) schemaRoot.getVector(column.name()));
         IntColumn ic = (IntColumn) column;
         for (int i = 0; i < ic.size(); i++) {
           iv.setSafe(i, ic.getInt(i));
@@ -130,7 +131,7 @@ public class ArrowWriter {
         iv.setValueCount(ic.size());
         break;
       case "SHORT":
-        UInt2Vector shortv = ((UInt2Vector) schemaRoot.getVector(column.name()));
+        SmallIntVector shortv = ((SmallIntVector) schemaRoot.getVector(column.name()));
         ShortColumn shortc = (ShortColumn) column;
         for (int i = 0; i < shortc.size(); i++) {
           shortv.setSafe(i, shortc.getInt(i));

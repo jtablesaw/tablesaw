@@ -9,7 +9,6 @@ import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.*;
 import org.apache.arrow.vector.ipc.ArrowStreamReader;
 import org.apache.arrow.vector.types.Types;
-import org.apache.arrow.vector.types.pojo.Schema;
 import tech.tablesaw.api.*;
 import tech.tablesaw.io.RuntimeIOException;
 
@@ -39,8 +38,6 @@ public class ArrowReader {
     try (FileInputStream in = new FileInputStream(file);
         ArrowStreamReader reader = new ArrowStreamReader(Channels.newChannel(in), allocator)) {
       VectorSchemaRoot vsr = reader.getVectorSchemaRoot();
-      Schema schema = vsr.getSchema();
-      System.out.println("Schema from VSR: " + schema.toJson());
       while (!eos) {
         VectorSchemaRoot next = reader.getVectorSchemaRoot();
         eos = reader.loadNextBatch();
@@ -72,7 +69,7 @@ public class ArrowReader {
           table.stringColumn(strCol.name()).append(strCol);
         }
         break;
-      case UINT8:
+      case BIGINT:
         LongColumn longCol = LongColumn.create(name);
         BigIntVector bigIntVector = (BigIntVector) v;
         for (int i = 0; i < bigIntVector.getValueCount(); i++) {
@@ -88,9 +85,9 @@ public class ArrowReader {
           table.longColumn(longCol.name()).append(longCol);
         }
         break;
-      case UINT4:
+      case INT:
         IntColumn intCol = IntColumn.create(name);
-        UInt4Vector intVector = (UInt4Vector) v;
+        IntVector intVector = (IntVector) v;
         for (int i = 0; i < intVector.getValueCount(); i++) {
           if (!intVector.isNull(i)) {
             intCol.append(intVector.get(i));
@@ -104,7 +101,7 @@ public class ArrowReader {
           table.intColumn(intCol.name()).append(intCol);
         }
         break;
-      case UINT2:
+      case SMALLINT:
         ShortColumn shortColumn = ShortColumn.create(name);
         SmallIntVector smallIntVector = (SmallIntVector) v;
         for (int i = 0; i < smallIntVector.getValueCount(); i++) {
@@ -187,7 +184,7 @@ public class ArrowReader {
         break;
       case BIT:
         BooleanColumn booleanColumn = BooleanColumn.create(name);
-        TimeStampMilliTZVector booleanVector = (TimeStampMilliTZVector) v;
+        BitVector booleanVector = (BitVector) v;
         for (int i = 0; i < booleanVector.getValueCount(); i++) {
           if (!booleanVector.isNull(i)) {
             booleanColumn.append((byte) booleanVector.get(i));
