@@ -3,7 +3,7 @@ package tech.tablesaw.io.arrow;
 import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.file.Path;
-import java.time.LocalDate;
+import java.time.*;
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.*;
@@ -52,7 +52,6 @@ public class ArrowReader {
     } catch (IOException e) {
       throw new RuntimeIOException(e);
     }
-
     return table;
   }
 
@@ -137,26 +136,71 @@ public class ArrowReader {
           table.dateColumn(dateCol.name()).append(dateCol);
         }
         break;
-        /*
-                    case TIMESTAMPMILLI:
-                        ((TimeStampMilliVector) schemaRoot.getVector(columnName))
-                                .setSafe(
-                                        row.getRowNumber(),
-                                        row.getDateTime(columnName).toInstant(ZoneOffset.UTC).toEpochMilli());
-                        break;
-                    case TIMEMILLI:
-                        ((TimeMilliVector) schemaRoot.getVector(columnName))
-                                .setSafe(row.getRowNumber(), (int) (row.getTime(columnName).toNanoOfDay()) / 1_000_000);
-                        break;
-                    case TIMESTAMPMILLITZ:
-                        ((TimeStampMilliTZVector) schemaRoot.getVector(columnName))
-                                .setSafe(row.getRowNumber(), row.getInstant(columnName).toEpochMilli());
-                        break;
-                    case BIT:
-                        ((BitVector) schemaRoot.getVector(columnName))
-                                .setSafe(row.getRowNumber(), row.getBooleanAsByte(columnName));
-                        break;
-        */
+      case TIMESTAMPMILLI:
+        DateTimeColumn dtCol = DateTimeColumn.create(name);
+        TimeStampMilliVector dtVector = (TimeStampMilliVector) v;
+        for (int i = 0; i < dtVector.getValueCount(); i++) {
+          if (!dtVector.isNull(i)) {
+            dtCol.append(
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(dtVector.get(i)), ZoneOffset.UTC));
+          } else {
+            dtCol.appendMissing();
+          }
+        }
+        if (!table.containsColumn(name)) {
+          table.addColumns(dtCol);
+        } else {
+          table.dateTimeColumn(dtCol.name()).append(dtCol);
+        }
+        break;
+      case TIMEMILLI:
+        TimeColumn timeColumn = TimeColumn.create(name);
+        TimeMilliVector timeVector = (TimeMilliVector) v;
+        for (int i = 0; i < timeVector.getValueCount(); i++) {
+          if (!timeVector.isNull(i)) {
+            timeColumn.append(LocalTime.ofNanoOfDay(((long) timeVector.get(i)) * 1_000_000));
+          } else {
+            timeColumn.appendMissing();
+          }
+        }
+        if (!table.containsColumn(name)) {
+          table.addColumns(timeColumn);
+        } else {
+          table.timeColumn(timeColumn.name()).append(timeColumn);
+        }
+        break;
+      case TIMESTAMPMILLITZ:
+        InstantColumn instantColumn = InstantColumn.create(name);
+        TimeStampMilliTZVector instantVector = (TimeStampMilliTZVector) v;
+        for (int i = 0; i < instantVector.getValueCount(); i++) {
+          if (!instantVector.isNull(i)) {
+            instantColumn.append(Instant.ofEpochMilli(instantVector.get(i)));
+          } else {
+            instantColumn.appendMissing();
+          }
+        }
+        if (!table.containsColumn(name)) {
+          table.addColumns(instantColumn);
+        } else {
+          table.instantColumn(instantColumn.name()).append(instantColumn);
+        }
+        break;
+      case BIT:
+        BooleanColumn booleanColumn = BooleanColumn.create(name);
+        TimeStampMilliTZVector booleanVector = (TimeStampMilliTZVector) v;
+        for (int i = 0; i < booleanVector.getValueCount(); i++) {
+          if (!booleanVector.isNull(i)) {
+            booleanColumn.append((byte) booleanVector.get(i));
+          } else {
+            booleanColumn.appendMissing();
+          }
+        }
+        if (!table.containsColumn(name)) {
+          table.addColumns(booleanColumn);
+        } else {
+          table.booleanColumn(booleanColumn.name()).append(booleanColumn);
+        }
+        break;
       case FLOAT4:
         FloatColumn floatCol = FloatColumn.create(name);
         Float4Vector float4Vector = (Float4Vector) v;

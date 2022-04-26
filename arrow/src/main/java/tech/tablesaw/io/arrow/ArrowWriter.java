@@ -158,7 +158,7 @@ public class ArrowWriter {
         TimeMilliVector tv = ((TimeMilliVector) schemaRoot.getVector(column.name()));
         TimeColumn tc = (TimeColumn) column;
         for (int i = 0; i < tc.size(); i++) {
-          tv.setSafe(i, (int) (tc.get(i).toNanoOfDay()) / 1_000_000);
+          tv.setSafe(i, (int) ((tc.get(i).toNanoOfDay()) / 1_000_000));
         }
         tv.setValueCount(tc.size());
         break;
