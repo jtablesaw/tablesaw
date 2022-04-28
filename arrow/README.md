@@ -1,8 +1,10 @@
 # Apache Arrow IO Support
 
-Provides basic support for Apache Arrow as an output format
+Provides basic support for Apache Arrow as an output format.
 
-Note: Only those Arrow vectors needed to persist Tablesaw columns are supported.
+Note 1: To use this in Java 16 or later, you MUST add the add-opens option on the java command line
+
+Note 2: Only those Arrow vectors needed to persist Tablesaw columns are supported.
 
 ## Tablesaw Column to Arrow FieldVector mapping
 
@@ -19,4 +21,3 @@ Note: Only those Arrow vectors needed to persist Tablesaw columns are supported.
 | DateTimeColumn  | TimeStampMilliVector   |                                                              |
 | InstantColumn   | TimeStampMilliTZVector | Instants written with timezone of UTC. No other timezone is supported |
 | StringColumn    | VarCharVector          |                                                              |
-

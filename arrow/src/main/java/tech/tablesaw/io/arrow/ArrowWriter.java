@@ -93,6 +93,9 @@ public class ArrowWriter {
               new Field(
                   column.name(), FieldType.notNullable(new ArrowType.FloatingPoint(DOUBLE)), null));
           break;
+        default:
+          throw new IllegalArgumentException(
+              "Unhandled Column type " + typeName + " in exported data");
       }
     }
     return new Schema(fields);

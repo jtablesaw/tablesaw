@@ -230,6 +230,9 @@ public class ArrowReader {
           table.doubleColumn(doubleCol.name()).append(doubleCol);
         }
         break;
+      default:
+        throw new IllegalArgumentException(
+            "Unhandled Column type " + type.name() + " in arrow data");
     }
   }
 }
