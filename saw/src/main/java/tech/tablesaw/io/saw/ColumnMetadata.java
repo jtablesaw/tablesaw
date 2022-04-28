@@ -14,7 +14,6 @@
 
 package tech.tablesaw.io.saw;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Objects;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.StringColumn;
@@ -25,7 +24,6 @@ import tech.tablesaw.columns.strings.IntDictionaryMap;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
 /** Data about a specific column used in it's persistence */
-@Beta
 public class ColumnMetadata {
 
   private String id;

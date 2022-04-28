@@ -14,7 +14,6 @@ import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
@@ -67,7 +66,10 @@ import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
-@Beta
+/**
+ * Writes data to saw files Saw is a binary format for storing tablesaw data with much better IO
+ * performance than text files
+ */
 public class SawWriter {
 
   // We flush the output stream repeatedly to ensure it doesn't grow without bounds for big files

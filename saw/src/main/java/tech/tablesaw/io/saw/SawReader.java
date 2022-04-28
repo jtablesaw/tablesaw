@@ -13,7 +13,6 @@ import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
 import static tech.tablesaw.io.saw.SawUtils.TEXT;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
@@ -66,7 +65,12 @@ import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.IntDictionaryMap;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 
-@Beta
+/**
+ * Reads Data from saw formatted files
+ *
+ * <p>Saw is a binary format for storing tablesaw data with much better IO performance than text
+ * files
+ */
 public class SawReader {
 
   private final Path sawPath;

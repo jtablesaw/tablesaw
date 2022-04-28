@@ -18,7 +18,6 @@ import static java.util.stream.Collectors.toList;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.annotations.Beta;
 import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +30,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
 
 /** Data about a specific physical table used in its persistence */
-@Beta
 public class TableMetadata {
 
   @JsonProperty("columnMetadata")
