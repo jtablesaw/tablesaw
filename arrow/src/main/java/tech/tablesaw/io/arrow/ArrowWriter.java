@@ -199,6 +199,9 @@ public class ArrowWriter {
         }
         f8v.setValueCount(f8c.size());
         break;
+      default:
+        throw new IllegalArgumentException(
+            "Unhandled Column type " + typeName + " in exported data");
     }
   }
 
