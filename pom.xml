@@ -51,6 +51,7 @@
         <module>json</module>
         <module>jsplot</module>
         <module>saw</module>
+        <module>arrow</module>
         <module>docs-src</module>
     </modules>
 
@@ -242,7 +243,7 @@
                     <!-- Jacoco prepare-agent builds some command-line params without -->
                     <!-- which jacoco will not instrument. Hence it is important to add -->
                     <!-- those command-line params here (${argLine} holds those params) -->
-                    <argLine>${argLine} -Xms256m -Xmx2048m -Duser.language=en-US -Duser.region=US</argLine>
+                    <argLine>${argLine} -Xms256m -Xmx2048m -Duser.language=en-US -Duser.region=US --add-opens java.base/java.nio=ALL-UNNAMED</argLine>
                     <forkCount>1</forkCount>
                     <runOrder>random</runOrder>
                 </configuration>
