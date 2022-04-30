@@ -169,7 +169,6 @@ public class SawWriter {
       }
     }
     Files.createDirectories(filePath);
-    writeTableMetadata(filePath, sawMetadata);
 
     try {
       List<Column<?>> columns = table.columns();
@@ -188,6 +187,7 @@ public class SawWriter {
         Future<Void> future = writerCompletionService.take();
         future.get();
       }
+      writeTableMetadata(filePath, sawMetadata);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException(e);
@@ -271,6 +271,9 @@ public class SawWriter {
       }
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(4 * column.size());
   }
 
   private void writeColumn(String fileName, DoubleColumn column) throws IOException {
@@ -286,6 +289,9 @@ public class SawWriter {
       }
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(8 * column.size());
   }
 
   /**
@@ -308,6 +314,9 @@ public class SawWriter {
         writeToStream((IntDictionaryMap) lookupTable, dos);
       }
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(-1);
   }
 
   /**
@@ -462,6 +471,9 @@ public class SawWriter {
       }
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(-1);
   }
 
   private void writeColumn(String fileName, IntColumn column) throws IOException {
@@ -469,9 +481,11 @@ public class SawWriter {
       writeIntStream(dos, column.intIterator());
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(4 * column.size());
   }
 
-  // TODO(lwhite): save the column using integer compression?
   private void writeIntStream(DataOutputStream dos, IntIterator iterator) throws IOException {
     int i = 0;
     while (iterator.hasNext()) {
@@ -510,6 +524,9 @@ public class SawWriter {
       }
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(2 * column.size());
   }
 
   private void writeColumn(String fileName, LongColumn column) throws IOException {
@@ -517,6 +534,9 @@ public class SawWriter {
       writeLongStream(dos, column.longIterator());
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(8 * column.size());
   }
 
   private void writeColumn(String fileName, DateColumn column) throws IOException {
@@ -524,6 +544,9 @@ public class SawWriter {
       writeIntStream(dos, column.intIterator());
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(4 * column.size());
   }
 
   private void writeColumn(String fileName, DateTimeColumn column) throws IOException {
@@ -531,12 +554,18 @@ public class SawWriter {
       writeLongStream(dos, column.longIterator());
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(8 * column.size());
   }
 
   private void writeColumn(String fileName, InstantColumn column) throws IOException {
     try (DataOutputStream dos = columnOutputStream(fileName)) {
       writeLongStream(dos, column.longIterator());
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(8 * column.size());
   }
 
   private void writeColumn(String fileName, TimeColumn column) throws IOException {
@@ -544,6 +573,9 @@ public class SawWriter {
       writeIntStream(dos, column.intIterator());
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(4 * column.size());
   }
 
   private void writeColumn(String fileName, BooleanColumn column) throws IOException {
@@ -566,6 +598,9 @@ public class SawWriter {
       }
       dos.flush();
     }
+    ColumnMetadata metadata =
+        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
+    metadata.setUncompressedByteSize(trueBytes.length + falseBytes.length + missingBytes.length);
   }
 
   /**

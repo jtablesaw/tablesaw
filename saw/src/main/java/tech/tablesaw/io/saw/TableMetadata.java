@@ -16,11 +16,14 @@ package tech.tablesaw.io.saw;
 
 import static java.util.stream.Collectors.toList;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Objects;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -40,6 +43,8 @@ public class TableMetadata {
   // The number of rows in the table
   private int rowCount;
 
+  @JsonIgnore private Map<String, ColumnMetadata> columnMetadataMap = new HashMap<>();
+
   TableMetadata(Relation table) {
     this.name = table.name();
     this.rowCount = table.rowCount();
@@ -47,6 +52,7 @@ public class TableMetadata {
     for (Column<?> column : table.columns()) {
       ColumnMetadata metadata = new ColumnMetadata(column);
       columnMetadataList.add(metadata);
+      columnMetadataMap.put(column.name(), metadata);
     }
   }
 
@@ -83,6 +89,10 @@ public class TableMetadata {
   /** Returns a list of ColumnMetadata objects, one for each Column in the table */
   List<ColumnMetadata> getColumnMetadataList() {
     return columnMetadataList;
+  }
+
+  public Map<String, ColumnMetadata> getColumnMetadataMap() {
+    return columnMetadataMap;
   }
 
   /** Returns the number of columns in the table */

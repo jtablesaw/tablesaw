@@ -72,16 +72,16 @@ public class SawReader {
 
   private final SawMetadata sawMetadata;
 
-  private ReadOptions readOptions = ReadOptions.defaultOptions();
+  private SawReadOptions sawReadOptions = SawReadOptions.defaultOptions();
 
   public SawReader(Path sawPath) {
     this.sawPath = sawPath;
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
-  public SawReader(Path sawPath, ReadOptions options) {
+  public SawReader(Path sawPath, SawReadOptions options) {
     this.sawPath = sawPath;
-    this.readOptions = options;
+    this.sawReadOptions = options;
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
@@ -90,9 +90,9 @@ public class SawReader {
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
-  public SawReader(File sawPathFile, ReadOptions options) {
+  public SawReader(File sawPathFile, SawReadOptions options) {
     this.sawPath = sawPathFile.toPath();
-    this.readOptions = options;
+    this.sawReadOptions = options;
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
@@ -101,9 +101,9 @@ public class SawReader {
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
-  public SawReader(String sawPathName, ReadOptions options) {
+  public SawReader(String sawPathName, SawReadOptions options) {
     this.sawPath = setPath(sawPathName);
-    this.readOptions = options;
+    this.sawReadOptions = options;
     this.sawMetadata = SawMetadata.readMetadata(sawPath);
   }
 
@@ -137,9 +137,10 @@ public class SawReader {
 
   public Table read() {
 
-    final ExecutorService executor = Executors.newFixedThreadPool(readOptions.getThreadPoolSize());
+    final ExecutorService executor =
+        Executors.newFixedThreadPool(sawReadOptions.getThreadPoolSize());
     // The column names to filter for, if we don't want the whole table
-    final Set<String> selectedColumns = new HashSet<>(readOptions.getSelectedColumns());
+    final Set<String> selectedColumns = new HashSet<>(sawReadOptions.getSelectedColumns());
 
     final List<ColumnMetadata> columnMetadata = getMetadata(selectedColumns);
 
@@ -231,12 +232,6 @@ public class SawReader {
     if (sawMetadata.getCompressionType().equals(CompressionType.NONE)) {
       return new DataInputStream(fis);
     } else if (sawMetadata.getCompressionType().equals(CompressionType.LZ4)) {
-      // TODO: Figure out how to provide the pre-compression size of the byte array
-      //  so we can use the fast decompressor
-      // LZ4Factory factory = LZ4Factory.fastestInstance();
-      // LZ4FastDecompressor decompressor = factory.fastDecompressor();
-      // final int decompressedLength = sawMetadata.getColumnMetadataList()..length;
-      // LZ4BlockInputStream lis = new LZ4BlockInputStream(fis, decompressor);
       LZ4BlockInputStream lis = new LZ4BlockInputStream(fis);
       return new DataInputStream(lis);
     } else {
@@ -343,11 +338,11 @@ public class SawReader {
             columnMetadata.getName(), getByteMap(dis, columnMetadata, rowcount));
       }
       if (columnMetadata.getStringColumnKeySize().equals(Integer.class.getSimpleName())) {
-        return StringColumn.createInternal(
-            columnMetadata.getName(), getIntMap(dis, columnMetadata, rowcount));
+        IntDictionaryMap intMap = getIntMap(dis, columnMetadata, rowcount);
+        return StringColumn.createInternal(columnMetadata.getName(), intMap);
       }
-      return StringColumn.createInternal(
-          columnMetadata.getName(), getShortMap(dis, columnMetadata, rowcount));
+      ShortDictionaryMap shortMap = getShortMap(dis, columnMetadata, rowcount);
+      return StringColumn.createInternal(columnMetadata.getName(), shortMap);
     }
   }
 

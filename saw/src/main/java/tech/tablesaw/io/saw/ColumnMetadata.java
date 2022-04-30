@@ -39,6 +39,8 @@ public class ColumnMetadata {
   private String stringColumnKeySize;
   private int nextStringKey;
 
+  private int uncompressedByteSize;
+
   // these attributes are specific to boolean columns
   private int trueBytesLength;
   private int falseBytesLength;
@@ -70,6 +72,7 @@ public class ColumnMetadata {
         trueBytesLength = bc.trueBytes().length;
         falseBytesLength = bc.falseBytes().length;
         missingBytesLength = bc.missingBytes().length;
+        uncompressedByteSize = trueBytesLength + falseBytesLength + missingBytesLength;
       }
     }
   }
@@ -106,6 +109,10 @@ public class ColumnMetadata {
 
   public String getType() {
     return type;
+  }
+
+  public int getUncompressedByteSize() {
+    return uncompressedByteSize;
   }
 
   public String getStringColumnKeySize() {
@@ -158,5 +165,9 @@ public class ColumnMetadata {
    */
   public int getMissingBytesLength() {
     return missingBytesLength;
+  }
+
+  public void setUncompressedByteSize(int uncompressedByteSize) {
+    this.uncompressedByteSize = uncompressedByteSize;
   }
 }
