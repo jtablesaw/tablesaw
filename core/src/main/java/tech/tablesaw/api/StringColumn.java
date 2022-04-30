@@ -83,9 +83,9 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
 
   public static StringColumn create(String name, StringDataType backingType) {
     if (backingType.equals(CATEGORICAL)) {
-      return new StringColumn(name, CategoricalStringData.create(name));
+      return new StringColumn(name, StringDataCategorical.create(name));
     } else if (backingType.equals(TEXTUAL)) {
-      return new StringColumn(name, TextualStringData.create(name));
+      return new StringColumn(name, StringDataTextual.create(name));
     }
     throw new RuntimeException("Unhandled backing column type for StringColumn: " + backingType);
   }
@@ -122,17 +122,17 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
 
   private StringColumn(String name, Collection<String> strings) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    data = CategoricalStringData.create(strings);
+    data = StringDataCategorical.create(strings);
   }
 
   private StringColumn(String name, DictionaryMap map) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    data = CategoricalStringData.createInternal(map);
+    data = StringDataCategorical.createInternal(map);
   }
 
   private StringColumn(String name) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    data = CategoricalStringData.create(name);
+    data = StringDataCategorical.create(name);
   }
 
   private StringColumn(String name, StringData stringData) {
@@ -142,7 +142,7 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
 
   private StringColumn(String name, String[] strings) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    data = CategoricalStringData.create(name);
+    data = StringDataCategorical.create(name);
     for (String string : strings) {
       append(string);
     }

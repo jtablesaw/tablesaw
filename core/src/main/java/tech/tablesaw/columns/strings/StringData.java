@@ -5,18 +5,18 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.CategoricalStringData;
+import tech.tablesaw.api.StringDataCategorical;
+import tech.tablesaw.api.StringDataTextual;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TextualStringData;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
 
 public interface StringData extends StringFilters, StringReduceUtils {
 
-  CategoricalStringData asCategoricalStringData();
+  StringDataCategorical asCategoricalStringData();
 
-  TextualStringData asTextualStringData();
+  StringDataTextual asTextualStringData();
 
   StringData appendMissing();
 

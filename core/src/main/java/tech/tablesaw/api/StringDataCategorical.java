@@ -34,7 +34,7 @@ import tech.tablesaw.selection.Selection;
  * <p>Because the MISSING_VALUE for this column type is an empty string, there is little or no need
  * for special handling of missing values in this class's methods.
  */
-public class CategoricalStringData implements StringData {
+public class StringDataCategorical implements StringData {
 
   // a bidirectional map of keys to backing string values.
   private DictionaryMap lookupTable = new ByteDictionaryMap();
@@ -51,18 +51,18 @@ public class CategoricalStringData implements StringData {
   }
 
   @Override
-  public CategoricalStringData asCategoricalStringData() {
+  public StringDataCategorical asCategoricalStringData() {
     return this.copy();
   }
 
   @Override
-  public TextualStringData asTextualStringData() {
-    return TextualStringData.create(this.asList());
+  public StringDataTextual asTextualStringData() {
+    return StringDataTextual.create(this.asList());
   }
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData appendMissing() {
+  public StringDataCategorical appendMissing() {
     lookupTable.appendMissing();
     return this;
   }
@@ -81,49 +81,49 @@ public class CategoricalStringData implements StringData {
     return getDictionary().getKeyAtIndex(rowNumber1) == getDictionary().getKeyAtIndex(rowNumber2);
   }
 
-  public static CategoricalStringData create() {
-    return new CategoricalStringData();
+  public static StringDataCategorical create() {
+    return new StringDataCategorical();
   }
 
-  public static CategoricalStringData create(String... strings) {
-    return new CategoricalStringData(strings);
+  public static StringDataCategorical create(String... strings) {
+    return new StringDataCategorical(strings);
   }
 
-  public static CategoricalStringData create(Collection<String> strings) {
-    return new CategoricalStringData(strings);
+  public static StringDataCategorical create(Collection<String> strings) {
+    return new StringDataCategorical(strings);
   }
 
-  public static CategoricalStringData createInternal(DictionaryMap map) {
-    return new CategoricalStringData(map);
+  public static StringDataCategorical createInternal(DictionaryMap map) {
+    return new StringDataCategorical(map);
   }
 
-  public static CategoricalStringData create(int size) {
-    CategoricalStringData column = new CategoricalStringData(new ArrayList<>(size));
+  public static StringDataCategorical create(int size) {
+    StringDataCategorical column = new StringDataCategorical(new ArrayList<>(size));
     for (int i = 0; i < size; i++) {
       column.appendMissing();
     }
     return column;
   }
 
-  public static CategoricalStringData create(Stream<String> stream) {
-    CategoricalStringData column = create();
+  public static StringDataCategorical create(Stream<String> stream) {
+    StringDataCategorical column = create();
     stream.forEach(column::append);
     return column;
   }
 
-  private CategoricalStringData(Collection<String> strings) {
+  private StringDataCategorical(Collection<String> strings) {
     for (String string : strings) {
       append(string);
     }
   }
 
-  private CategoricalStringData(DictionaryMap map) {
+  private StringDataCategorical(DictionaryMap map) {
     lookupTable = map;
   }
 
-  private CategoricalStringData() {}
+  private StringDataCategorical() {}
 
-  private CategoricalStringData(String[] strings) {
+  private StringDataCategorical(String[] strings) {
     for (String string : strings) {
       append(string);
     }
@@ -137,13 +137,13 @@ public class CategoricalStringData implements StringData {
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData emptyCopy() {
+  public StringDataCategorical emptyCopy() {
     return create();
   }
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData emptyCopy(int rowSize) {
+  public StringDataCategorical emptyCopy(int rowSize) {
     return create(rowSize);
   }
 
@@ -212,15 +212,15 @@ public class CategoricalStringData implements StringData {
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData lead(int n) {
+  public StringDataCategorical lead(int n) {
     return lag(-n);
   }
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData lag(int n) {
+  public StringDataCategorical lag(int n) {
 
-    CategoricalStringData copy = emptyCopy();
+    StringDataCategorical copy = emptyCopy();
 
     if (n >= 0) {
       for (int m = 0; m < n; m++) {
@@ -252,7 +252,7 @@ public class CategoricalStringData implements StringData {
    * myCatColumn.set(myCatColumn.valueIsMissing(), "Fox"); // no more missing values
    */
   @Override
-  public CategoricalStringData set(Selection rowSelection, String newValue) {
+  public StringDataCategorical set(Selection rowSelection, String newValue) {
     for (int row : rowSelection) {
       set(row, newValue);
     }
@@ -261,7 +261,7 @@ public class CategoricalStringData implements StringData {
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData set(int rowIndex, String stringValue) {
+  public StringDataCategorical set(int rowIndex, String stringValue) {
     if (stringValue == null) {
       return setMissing(rowIndex);
     }
@@ -298,7 +298,7 @@ public class CategoricalStringData implements StringData {
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData setMissing(int i) {
+  public StringDataCategorical setMissing(int i) {
     return set(i, StringColumnType.missingValueIndicator());
   }
 
@@ -307,7 +307,7 @@ public class CategoricalStringData implements StringData {
    *
    * @param stringValues a list of values
    */
-  public CategoricalStringData addAll(List<String> stringValues) {
+  public StringDataCategorical addAll(List<String> stringValues) {
     for (String stringValue : stringValues) {
       append(stringValue);
     }
@@ -316,13 +316,13 @@ public class CategoricalStringData implements StringData {
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData appendCell(String object) {
+  public StringDataCategorical appendCell(String object) {
     return appendCell(object, parser());
   }
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData appendCell(String object, AbstractColumnParser<?> parser) {
+  public StringDataCategorical appendCell(String object, AbstractColumnParser<?> parser) {
     return appendObj(parser.parse(object));
   }
 
@@ -368,21 +368,21 @@ public class CategoricalStringData implements StringData {
    * @return a column with unique values.
    */
   @Override
-  public CategoricalStringData unique() {
+  public StringDataCategorical unique() {
     List<String> strings = new ArrayList<>(lookupTable.asSet());
-    return CategoricalStringData.create(strings);
+    return StringDataCategorical.create(strings);
   }
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData where(Selection selection) {
-    return (CategoricalStringData) subset(selection.toArray());
+  public StringDataCategorical where(Selection selection) {
+    return (StringDataCategorical) subset(selection.toArray());
   }
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData copy() {
-    CategoricalStringData newCol = create(size());
+  public StringDataCategorical copy() {
+    StringDataCategorical newCol = create(size());
     int r = 0;
     for (String string : this) {
       newCol.set(r, string);
@@ -393,7 +393,7 @@ public class CategoricalStringData implements StringData {
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData append(Column<String> column) {
+  public StringDataCategorical append(Column<String> column) {
     checkArgument(
         column.type().equals(STRING),
         "Column '%s' has type %s, but column '%s' has type %s.",
@@ -416,8 +416,8 @@ public class CategoricalStringData implements StringData {
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData removeMissing() {
-    CategoricalStringData noMissing = emptyCopy();
+  public StringDataCategorical removeMissing() {
+    StringDataCategorical noMissing = emptyCopy();
     for (String v : this) {
       if (!StringColumnType.valueIsMissing(v)) {
         noMissing.append(v);
@@ -454,7 +454,7 @@ public class CategoricalStringData implements StringData {
 
   /** Added for naming consistency with all other columns */
   @Override
-  public CategoricalStringData append(String value) {
+  public StringDataCategorical append(String value) {
     try {
       lookupTable.append(value);
     } catch (NoKeysAvailableException ex) {
@@ -471,7 +471,7 @@ public class CategoricalStringData implements StringData {
 
   /** {@inheritDoc} */
   @Override
-  public CategoricalStringData appendObj(Object obj) {
+  public StringDataCategorical appendObj(Object obj) {
     if (obj == null) {
       return appendMissing();
     }
