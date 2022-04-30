@@ -17,7 +17,6 @@ package tech.tablesaw.api;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.*;
 import java.util.stream.Stream;
-import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.*;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -309,18 +308,6 @@ public class StringDataCategorical implements StringData {
       append(stringValue);
     }
     return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public StringDataCategorical appendCell(String object) {
-    return appendCell(object, parser());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public StringDataCategorical appendCell(String object, AbstractColumnParser<?> parser) {
-    return appendObj(parser.parse(object));
   }
 
   /** {@inheritDoc} */

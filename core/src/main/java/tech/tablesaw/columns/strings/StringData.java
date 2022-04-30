@@ -8,7 +8,6 @@ import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.StringDataCategorical;
 import tech.tablesaw.api.StringDataTextual;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
 
@@ -49,10 +48,6 @@ public interface StringData extends StringFilters, StringReduceUtils {
   boolean contains(String aString);
 
   StringData setMissing(int i);
-
-  StringData appendCell(String object);
-
-  StringData appendCell(String object, AbstractColumnParser<?> parser);
 
   IntComparator rowComparator();
 

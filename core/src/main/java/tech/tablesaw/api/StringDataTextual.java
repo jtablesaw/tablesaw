@@ -21,7 +21,6 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.*;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
-import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.*;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -295,18 +294,6 @@ public class StringDataTextual implements StringData {
     for (String stringValue : stringValues) {
       append(stringValue);
     }
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  public StringDataTextual appendCell(String object) {
-    append(parser().parse(object));
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  public StringDataTextual appendCell(String object, AbstractColumnParser<?> parser) {
-    append(String.valueOf(parser.parse(object)));
     return this;
   }
 
