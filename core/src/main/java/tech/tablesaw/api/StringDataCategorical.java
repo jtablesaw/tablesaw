@@ -14,9 +14,6 @@
 
 package tech.tablesaw.api;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static tech.tablesaw.api.ColumnType.STRING;
-
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.*;
 import java.util.stream.Stream;
@@ -393,19 +390,11 @@ public class StringDataCategorical implements StringData {
 
   /** {@inheritDoc} */
   @Override
-  public StringDataCategorical append(Column<String> column) {
-    checkArgument(
-        column.type().equals(STRING),
-        "Column '%s' has type %s, but column '%s' has type %s.",
-        name(),
-        STRING,
-        column.name(),
-        column.type());
+  public void append(Column<String> column) {
     final int size = column.size();
     for (int i = 0; i < size; i++) {
       append(column.getString(i));
     }
-    return this;
   }
 
   /** Returns the count of missing values in this column */

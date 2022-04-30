@@ -464,10 +464,7 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
         type(),
         column.name(),
         column.type());
-    final int size = column.size();
-    for (int i = 0; i < size; i++) {
-      append(column.getString(i));
-    }
+    data.append(column);
     return this;
   }
 

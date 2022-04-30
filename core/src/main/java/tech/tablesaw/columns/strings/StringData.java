@@ -70,7 +70,7 @@ public interface StringData extends StringFilters, StringReduceUtils {
 
   int countUnique();
 
-  StringData append(Column<String> column);
+  void append(Column<String> column);
 
   int countMissing();
 

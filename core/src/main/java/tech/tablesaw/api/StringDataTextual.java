@@ -14,10 +14,8 @@
 
 package tech.tablesaw.api;
 
-import static tech.tablesaw.api.ColumnType.STRING;
 import static tech.tablesaw.columns.AbstractColumn.DEFAULT_ARRAY_SIZE;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.*;
@@ -350,19 +348,11 @@ public class StringDataTextual implements StringData {
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual append(Column<String> column) {
-    Preconditions.checkArgument(
-        column.type().equals(STRING),
-        "Column '%s' has type %s, but column '%s' has type %s.",
-        name(),
-        STRING,
-        column.name(),
-        column.type());
+  public void append(Column<String> column) {
     final int size = column.size();
     for (int i = 0; i < size; i++) {
       append(column.getString(i));
     }
-    return this;
   }
 
   /** Returns the count of missing values in this column */
