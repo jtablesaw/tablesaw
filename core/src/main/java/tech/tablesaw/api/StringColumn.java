@@ -44,6 +44,13 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
 
   private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
+  private final IntComparator rowComparator =
+      (i, i1) -> {
+        String f1 = get(i);
+        String f2 = get(i1);
+        return f1.compareTo(f2);
+      };
+
   public static boolean valueIsMissing(String string) {
     return StringColumnType.valueIsMissing(string);
   }
@@ -665,11 +672,4 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
   public int compare(String o1, String o2) {
     return o1.compareTo(o2);
   }
-
-  private final IntComparator rowComparator =
-      (i, i1) -> {
-        String f1 = get(i);
-        String f2 = get(i1);
-        return f1.compareTo(f2);
-      };
 }
