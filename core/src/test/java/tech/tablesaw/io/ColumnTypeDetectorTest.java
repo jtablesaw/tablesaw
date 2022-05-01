@@ -11,7 +11,6 @@ import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
 import static tech.tablesaw.api.ColumnType.LONG;
 import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
 
 import com.google.common.collect.Lists;
 import java.io.StringReader;
@@ -21,7 +20,6 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
-import tech.tablesaw.columns.strings.TextColumnType;
 
 class ColumnTypeDetectorTest {
 
@@ -46,12 +44,10 @@ class ColumnTypeDetectorTest {
                 LONG,
                 FLOAT,
                 DOUBLE,
-                STRING,
-                TEXT));
+                STRING));
 
     ColumnType[] types =
         detector.detectColumnTypes(dates.iterator(), new ReadOptions.Builder().build());
-    assertEquals(TextColumnType.instance(), types[0]);
     assertEquals(DateColumnType.instance(), types[1]);
     assertEquals(StringColumnType.instance(), types[2]);
   }

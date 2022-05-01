@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.api.ColumnType.INSTANT;
-import static tech.tablesaw.api.ColumnType.TEXT;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -85,7 +84,6 @@ class SawStorageTest {
   void setUp() {
 
     intsAndStrings.addColumns(intsAndStrings.intColumn("index1").asStringColumn());
-    intsAndText.addColumns(intsAndText.intColumn("index1").asStringColumn().asTextColumn());
     boolsOnly
         .booleanColumn(0)
         .fillWith(
@@ -190,15 +188,6 @@ class SawStorageTest {
     Table table = new SawReader(path).read();
     assertNotNull(table);
     assertEquals(intsAndStrings.rowCount(), table.rowCount());
-  }
-
-  @Test
-  void saveIntsAndText() {
-    String path = new SawWriter(tempDir, intsAndText).write();
-    Table table = new SawReader(path).read();
-    assertTrue(table.column(1).size() > 0);
-    assertEquals(TEXT, table.column(1).type());
-    assertEquals(intsAndText.rowCount(), table.rowCount());
   }
 
   @Test

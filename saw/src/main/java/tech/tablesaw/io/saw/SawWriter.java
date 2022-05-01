@@ -12,7 +12,6 @@ import static tech.tablesaw.io.saw.SawUtils.LOCAL_TIME;
 import static tech.tablesaw.io.saw.SawUtils.LONG;
 import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
-import static tech.tablesaw.io.saw.SawUtils.TEXT;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
@@ -59,7 +58,6 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
@@ -237,9 +235,6 @@ public class SawWriter {
           break;
         case STRING:
           writeColumn(fileName, (StringColumn) column);
-          break;
-        case TEXT:
-          writeColumn(fileName, (TextColumn) column);
           break;
         case INSTANT:
           writeColumn(fileName, (InstantColumn) column);
@@ -456,25 +451,6 @@ public class SawWriter {
       SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
       return new DataOutputStream(sos);
     }
-  }
-
-  /** Writes out the values of the TextColumn */
-  private void writeColumn(String fileName, TextColumn column) throws IOException {
-    try (DataOutputStream dos = columnOutputStream(fileName)) {
-      int i = 0;
-      for (String s : column) {
-        dos.writeUTF(s);
-        i++;
-        if (i == FLUSH_AFTER_ITERATIONS) {
-          dos.flush();
-          i = 0;
-        }
-      }
-      dos.flush();
-    }
-    ColumnMetadata metadata =
-        sawMetadata.getTableMetadata().getColumnMetadataMap().get(column.name());
-    metadata.setUncompressedByteSize(-1);
   }
 
   private void writeColumn(String fileName, IntColumn column) throws IOException {

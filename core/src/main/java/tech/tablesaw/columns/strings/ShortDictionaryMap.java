@@ -43,6 +43,8 @@ public class ShortDictionaryMap implements DictionaryMap {
 
   private static final short DEFAULT_RETURN_VALUE = Short.MIN_VALUE;
 
+  private final boolean canPromoteToText;
+
   private final ShortComparator reverseDictionarySortComparator =
       (i, i1) ->
           Comparator.<String>reverseOrder()
@@ -75,6 +77,7 @@ public class ShortDictionaryMap implements DictionaryMap {
   ShortDictionaryMap(ByteDictionaryMap original) throws NoKeysAvailableException {
     valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
     keyToCount.defaultReturnValue(0);
+    canPromoteToText = original.canPromoteToText();
 
     for (int i = 0; i < original.size(); i++) {
       String value = original.getValueForIndex(i);
@@ -87,6 +90,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     this.keyToValue = builder.keyToValue;
     this.valueToKey = builder.valueToKey;
     this.keyToCount = builder.keyToCount;
+    this.canPromoteToText = builder.canPromoteToText;
     this.values = builder.values;
   }
 
@@ -434,13 +438,17 @@ public class ShortDictionaryMap implements DictionaryMap {
   @Override
   public DictionaryMap promoteYourself() {
 
-    IntDictionaryMap dictionaryMap;
+    DictionaryMap dictionaryMap;
 
-    try {
-      dictionaryMap = new IntDictionaryMap(this);
-    } catch (NoKeysAvailableException e) {
-      // this should never happen;
-      throw new IllegalStateException(e);
+    if (canPromoteToText && countUnique() > size() * 0.5) {
+      dictionaryMap = new NullDictionaryMap(this);
+    } else {
+      try {
+        dictionaryMap = new IntDictionaryMap(this);
+      } catch (NoKeysAvailableException e) {
+        // this should never happen;
+        throw new IllegalStateException(e);
+      }
     }
 
     return dictionaryMap;
@@ -449,6 +457,11 @@ public class ShortDictionaryMap implements DictionaryMap {
   @Override
   public int nextKeyWithoutIncrementing() {
     return nextIndex.get();
+  }
+
+  @Override
+  public boolean canPromoteToText() {
+    return canPromoteToText;
   }
 
   public static class ShortDictionaryBuilder {
@@ -468,6 +481,8 @@ public class ShortDictionaryMap implements DictionaryMap {
     // the map with counts
     private Short2IntOpenHashMap keyToCount;
 
+    private boolean canPromoteToText = true;
+
     public ShortDictionaryBuilder setNextIndex(int value) {
       nextIndex = new AtomicInteger(value);
       return this;
@@ -475,6 +490,11 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     public ShortDictionaryBuilder setKeyToValue(Short2ObjectMap<String> keyToValue) {
       this.keyToValue = keyToValue;
+      return this;
+    }
+
+    public ShortDictionaryBuilder setCanPromoteToText(boolean canPromoteToText) {
+      this.canPromoteToText = canPromoteToText;
       return this;
     }
 

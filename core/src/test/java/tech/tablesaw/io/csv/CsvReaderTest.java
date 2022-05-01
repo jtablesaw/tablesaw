@@ -45,6 +45,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
@@ -109,6 +110,8 @@ public class CsvReaderTest {
   }
 
   @Test
+  @Disabled
+  /** TODO: Remove. Text columns should be used as backing column types */
   void textColumnShutoff() throws IOException {
 
     Table table = Table.read().csv(CsvReadOptions.builder("../data/cities-states-zipcode.csv"));
@@ -121,8 +124,8 @@ public class CsvReaderTest {
                     .columnTypesToDetect(typesToDetect)
                     .build());
 
-    assertEquals(table.column("WorldRegion").type(), TEXT);
-    assertEquals(table2.column("WorldRegion").type(), STRING);
+    assertEquals(STRING, table.column("WorldRegion").type());
+    assertEquals(STRING, table2.column("WorldRegion").type());
   }
 
   @Test

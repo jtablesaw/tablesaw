@@ -190,10 +190,10 @@ public class CsvWriterTest {
 
   @Test
   void printFormatter_text() throws IOException {
-    Table table = Table.create("", TextColumn.create("strings"));
+    Table table = Table.create("", StringColumn.create("strings"));
     StringColumnFormatter formatter = new StringColumnFormatter(s -> "[" + s + "]", "N/A");
-    table.textColumn("strings").setPrintFormatter(formatter);
-    table.textColumn("strings").append("hey").append("you").appendMissing();
+    table.stringColumn("strings").setPrintFormatter(formatter);
+    table.stringColumn("strings").append("hey").append("you").appendMissing();
     StringWriter writer = new StringWriter();
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(

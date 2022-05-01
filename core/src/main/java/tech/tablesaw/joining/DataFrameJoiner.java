@@ -266,13 +266,14 @@ public class DataFrameJoiner extends AbstractJoiner {
     }
   }
 
+  @Override
   Table joinInternal(
       Table table1,
       Table table2,
       JoinType joinType,
       boolean allowDuplicates,
       boolean keepAllJoinKeyColumns,
-      String... rightJoinColumnPositions) {
+      String[] rightJoinColumnPositions) {
     return strategy.performJoin(
         table1,
         table2,

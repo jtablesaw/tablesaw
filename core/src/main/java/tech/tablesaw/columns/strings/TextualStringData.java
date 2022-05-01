@@ -12,27 +12,19 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.api;
+package tech.tablesaw.columns.strings;
 
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
+import static tech.tablesaw.columns.AbstractColumn.DEFAULT_ARRAY_SIZE;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
-import tech.tablesaw.columns.AbstractColumnParser;
+import javax.annotation.Nullable;
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.AbstractStringColumn;
-import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -45,7 +37,7 @@ import tech.tablesaw.selection.Selection;
  * <p>Because the MISSING_VALUE for this column type is an empty string, there is little or no need
  * for special handling of missing values in this class's methods.
  */
-public class TextColumn extends AbstractStringColumn<TextColumn> {
+public class TextualStringData implements StringData {
 
   // holds each element in the column.
   protected List<String> values;
@@ -59,33 +51,27 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
 
   private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
 
-  /** {@inheritDoc} */
-  @Override
   public int valueHash(int rowNumber) {
     return get(rowNumber).hashCode();
   }
 
   /** {@inheritDoc} */
-  @Override
   public boolean equals(int rowNumber1, int rowNumber2) {
     return get(rowNumber1).equals(get(rowNumber2));
   }
 
-  private TextColumn(String name, Collection<String> strings) {
-    super(TextColumnType.instance(), name, TextColumnType.DEFAULT_PARSER);
+  private TextualStringData(Collection<String> strings) {
     values = new ArrayList<>(strings.size());
     for (String string : strings) {
       append(string);
     }
   }
 
-  private TextColumn(String name) {
-    super(TextColumnType.instance(), name, TextColumnType.DEFAULT_PARSER);
+  private TextualStringData() {
     values = new ArrayList<>(DEFAULT_ARRAY_SIZE);
   }
 
-  private TextColumn(String name, String[] strings) {
-    super(TextColumnType.instance(), name, TextColumnType.DEFAULT_PARSER);
+  private TextualStringData(String[] strings) {
     values = new ArrayList<>(strings.length);
     for (String string : strings) {
       append(string);
@@ -93,69 +79,61 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   public static boolean valueIsMissing(String string) {
-    return TextColumnType.valueIsMissing(string);
+    return StringColumnType.valueIsMissing(string);
   }
 
-  @Override
-  public TextColumn appendMissing() {
-    append(TextColumnType.missingValueIndicator());
+  public TextualStringData appendMissing() {
+    append(StringColumnType.missingValueIndicator());
     return this;
   }
 
-  public static TextColumn create(String name) {
-    return new TextColumn(name);
+  public static TextualStringData create() {
+    return new TextualStringData();
   }
 
-  public static TextColumn create(String name, String... strings) {
-    return new TextColumn(name, strings);
+  public static TextualStringData create(String... strings) {
+    return new TextualStringData(strings);
   }
 
-  public static TextColumn create(String name, Collection<String> strings) {
-    return new TextColumn(name, strings);
+  public static TextualStringData create(Collection<String> strings) {
+    return new TextualStringData(strings);
   }
 
-  public static TextColumn create(String name, int size) {
+  public static TextualStringData create(int size) {
     ArrayList<String> strings = new ArrayList<>(size);
     for (int i = 0; i < size; i++) {
-      strings.add(TextColumnType.missingValueIndicator());
+      strings.add(StringColumnType.missingValueIndicator());
     }
-    return new TextColumn(name, strings);
+    return new TextualStringData(strings);
   }
 
-  public static TextColumn create(String name, Stream<String> stream) {
-    TextColumn column = create(name);
+  public static TextualStringData create(Stream<String> stream) {
+    TextualStringData column = create();
     stream.forEach(column::append);
     return column;
   }
 
   /** {@inheritDoc} */
-  @Override
   public boolean isMissing(int rowNumber) {
-    return get(rowNumber).equals(TextColumnType.missingValueIndicator());
+    return get(rowNumber).equals(StringColumnType.missingValueIndicator());
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn emptyCopy() {
-    TextColumn empty = create(name());
-    empty.setPrintFormatter(getPrintFormatter());
-    return empty;
+  public TextualStringData emptyCopy() {
+    return create();
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn emptyCopy(int rowSize) {
-    return create(name(), rowSize);
+  public TextualStringData emptyCopy(int rowSize) {
+    return create(rowSize);
   }
 
   /** {@inheritDoc} */
-  @Override
   public void sortAscending() {
     values.sort(String::compareTo);
   }
 
   /** {@inheritDoc} */
-  @Override
   public void sortDescending() {
     values.sort(descendingStringComparator);
   }
@@ -165,7 +143,6 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    *
    * @return size as int
    */
-  @Override
   public int size() {
     return values.size();
   }
@@ -177,7 +154,6 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    * @return value as String
    * @throws IndexOutOfBoundsException if the given rowIndex is not in the column
    */
-  @Override
   public String get(int rowIndex) {
     return values.get(rowIndex);
   }
@@ -190,15 +166,21 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    *
    * @return values as a list of String.
    */
-  @Override
   public List<String> asList() {
     return new ArrayList<>(values);
   }
 
-  /** {@inheritDoc} */
   @Override
+  public Table countByCategory(String columnName) {
+    throw new UnsupportedOperationException();
+    // TODO: fix me
+    // return asCategoricalStringData().countByCategory(columnName);
+  }
+
+  /** {@inheritDoc} */
   public Table summary() {
-    Table table = Table.create("Column: " + name());
+    // Table table = Table.create("Column: " + name());
+    Table table = Table.create();
     StringColumn measure = StringColumn.create("Measure");
     StringColumn value = StringColumn.create("Value");
     table.addColumns(measure);
@@ -213,25 +195,19 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
   public void clear() {
     values.clear();
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn lead(int n) {
-    TextColumn column = lag(-n);
-    column.setName(name() + " lead(" + n + ")");
-    return column;
+  public TextualStringData lead(int n) {
+    return lag(-n);
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn lag(int n) {
+  public TextualStringData lag(int n) {
 
-    TextColumn copy = emptyCopy();
-    copy.setName(name() + " lag(" + n + ")");
+    TextualStringData copy = emptyCopy();
 
     if (n >= 0) {
       for (int m = 0; m < n; m++) {
@@ -262,8 +238,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    * <p>Examples: myCatColumn.set(myCatColumn.isEqualTo("Cat"), "Dog"); // no more cats
    * myCatColumn.set(myCatColumn.valueIsMissing(), "Fox"); // no more missing values
    */
-  @Override
-  public TextColumn set(Selection rowSelection, String newValue) {
+  public TextualStringData set(Selection rowSelection, String newValue) {
     for (int row : rowSelection) {
       set(row, newValue);
     }
@@ -271,8 +246,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn set(int rowIndex, String stringValue) {
+  public TextualStringData set(int rowIndex, String stringValue) {
     if (stringValue == null) {
       return setMissing(rowIndex);
     }
@@ -281,7 +255,6 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
   public int countUnique() {
     return asSet().size();
   }
@@ -292,15 +265,13 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    * @param aString the value to look for
    * @return true if contains, false otherwise
    */
-  @Override
   public boolean contains(String aString) {
     return values.contains(aString);
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn setMissing(int i) {
-    return set(i, TextColumnType.missingValueIndicator());
+  public TextualStringData setMissing(int i) {
+    return set(i, StringColumnType.missingValueIndicator());
   }
 
   /**
@@ -308,7 +279,7 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    *
    * @param stringValues a list of values
    */
-  public TextColumn addAll(List<String> stringValues) {
+  public TextualStringData addAll(List<String> stringValues) {
     for (String stringValue : stringValues) {
       append(stringValue);
     }
@@ -316,27 +287,11 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn appendCell(String object) {
-    append(parser().parse(object));
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public TextColumn appendCell(String object, AbstractColumnParser<?> parser) {
-    append(String.valueOf(parser.parse(object)));
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public IntComparator rowComparator() {
     return rowComparator;
   }
 
   /** {@inheritDoc} */
-  @Override
   public boolean isEmpty() {
     return values.isEmpty();
   }
@@ -346,49 +301,41 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
    *
    * @return a column with unique values.
    */
-  @Override
-  public TextColumn unique() {
+  public TextualStringData unique() {
     List<String> strings = new ArrayList<>(asSet());
-    return TextColumn.create(name() + " Unique values", strings);
+    return TextualStringData.create(strings);
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn where(Selection selection) {
-    return subset(selection.toArray());
+  public TextualStringData where(Selection selection) {
+    return (TextualStringData) subset(selection.toArray());
   }
 
+  // TODO (lwhite): This could avoid the append and do a list copy
   /** {@inheritDoc} */
-  @Override
-  public TextColumn copy() {
-    TextColumn newCol = create(name());
-    newCol.values = Lists.newArrayList(values);
+  public TextualStringData copy() {
+    TextualStringData newCol = create(size());
+    int r = 0;
+    for (String string : this) {
+      newCol.set(r, string);
+      r++;
+    }
     return newCol;
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn append(Column<String> column) {
-    Preconditions.checkArgument(
-        column.type() == TEXT || column.type().equals(STRING),
-        "Column '%s' has type %s, but column '%s' has type %s.",
-        name(),
-        type(),
-        column.name(),
-        column.type());
+  public void append(Column<String> column) {
     final int size = column.size();
     for (int i = 0; i < size; i++) {
       append(column.getString(i));
     }
-    return this;
   }
 
   /** Returns the count of missing values in this column */
-  @Override
   public int countMissing() {
     int count = 0;
     for (int i = 0; i < size(); i++) {
-      if (TextColumnType.missingValueIndicator().equals(get(i))) {
+      if (StringColumnType.missingValueIndicator().equals(get(i))) {
         count++;
       }
     }
@@ -396,11 +343,10 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn removeMissing() {
-    TextColumn noMissing = emptyCopy();
+  public TextualStringData removeMissing() {
+    TextualStringData noMissing = emptyCopy();
     for (String v : this) {
-      if (!TextColumnType.valueIsMissing(v)) {
+      if (!StringColumnType.valueIsMissing(v)) {
         noMissing.append(v);
       }
     }
@@ -408,34 +354,29 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
   public Iterator<String> iterator() {
     return values.iterator();
   }
 
   /** {@inheritDoc} */
-  @Override
   public Set<String> asSet() {
     return new HashSet<>(values);
   }
 
   /** Returns the contents of the cell at rowNumber as a byte[] */
-  @Override
   public byte[] asBytes(int rowNumber) {
     String value = get(rowNumber);
     return value.getBytes();
   }
 
   /** Added for naming consistency with all other columns */
-  @Override
-  public TextColumn append(String value) {
+  public TextualStringData append(String value) {
     values.add(value);
     return this;
   }
 
   /** {@inheritDoc} */
-  @Override
-  public TextColumn appendObj(Object obj) {
+  public TextualStringData appendObj(Object obj) {
     if (obj == null) {
       return appendMissing();
     }
@@ -447,7 +388,6 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
   public Selection isIn(String... strings) {
     Set<String> stringSet = Sets.newHashSet(strings);
 
@@ -461,7 +401,6 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
   public Selection isIn(Collection<String> strings) {
     Set<String> stringSet = Sets.newHashSet(strings);
 
@@ -475,7 +414,6 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
   public Selection isNotIn(String... strings) {
     Selection results = new BitmapBackedSelection();
     results.addRange(0, size());
@@ -484,7 +422,6 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
   public Selection isNotIn(Collection<String> strings) {
     Selection results = new BitmapBackedSelection();
     results.addRange(0, size());
@@ -497,7 +434,6 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
   }
 
   /** {@inheritDoc} */
-  @Override
   public String[] asObjectArray() {
     final String[] output = new String[size()];
     for (int i = 0; i < size(); i++) {
@@ -506,13 +442,40 @@ public class TextColumn extends AbstractStringColumn<TextColumn> {
     return output;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public StringColumn asStringColumn() {
-    StringColumn textColumn = StringColumn.create(name(), size());
+  /**
+   * Returns a double that can stand in for the string at index i in some ML applications
+   *
+   * <p>TODO: Evaluate use of hashCode() here for uniqueness
+   *
+   * @param i The index in this column
+   */
+  public double getDouble(int i) {
+    return values.get(i).hashCode();
+  }
+
+  public double[] asDoubleArray() {
+    double[] result = new double[this.size()];
     for (int i = 0; i < size(); i++) {
-      textColumn.set(i, get(i));
+      result[i] = getDouble(i);
     }
-    return textColumn;
+    return result;
+  }
+
+  public int countOccurrences(String value) {
+    return isEqualTo(value).size();
+  }
+
+  /**
+   * {@inheritDoc} Unsupported Operation This can't be used on a text column as the number of
+   * BooleanColumns would likely be excessive
+   */
+  public List<BooleanColumn> getDummies() {
+    throw new UnsupportedOperationException(
+        "StringColumns containing arbitary, non-categorical strings do not support the getDummies() method for performance reasons");
+  }
+
+  /** Returns null, as this Column is not backed by a dictionaryMap */
+  public @Nullable DictionaryMap getDictionary() {
+    return null;
   }
 }

@@ -20,7 +20,6 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 
 public class ColumnAppendTest {
@@ -82,10 +81,6 @@ public class ColumnAppendTest {
             StringColumn.create("stringCol1", new String[] {"foo"}),
             StringColumn.create("stringCol2", new String[] {"bar"})),
         new Scenario<>(StringColumn.create("stringCol1", new String[] {"baz"})),
-        new Scenario<>(
-            TextColumn.create("textCol1", new String[] {"foo"}),
-            TextColumn.create("textCol2", new String[] {"bar"})),
-        new Scenario<>(TextColumn.create("textCol1", new String[] {"baz"})),
         new Scenario<>(
             TimeColumn.create("timeCol1", new LocalTime[] {LocalTime.now()}),
             TimeColumn.create("timeCol2", new LocalTime[] {LocalTime.now()})),

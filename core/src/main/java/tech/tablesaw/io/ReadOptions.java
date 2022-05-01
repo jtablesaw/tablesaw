@@ -24,7 +24,6 @@ import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
 import static tech.tablesaw.api.ColumnType.LONG;
 import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -52,7 +51,8 @@ public class ReadOptions {
 
   private static final List<ColumnType> DEFAULT_TYPES =
       Lists.newArrayList(
-          LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, LONG, DOUBLE, STRING, TEXT);
+          LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, LONG, DOUBLE, STRING // , TEXT
+          );
 
   /**
    * An extended list of types that are used if minimizeColumnSizes is true. By including extra
@@ -71,8 +71,7 @@ public class ReadOptions {
           LONG,
           FLOAT,
           DOUBLE,
-          STRING,
-          TEXT);
+          STRING);
 
   protected final Source source;
   protected final String tableName;

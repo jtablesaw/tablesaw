@@ -65,8 +65,8 @@ public class SqlResultSetReader {
             .put(Types.NCHAR, ColumnType.STRING)
             .put(Types.NVARCHAR, ColumnType.STRING)
             .put(Types.VARCHAR, ColumnType.STRING)
-            .put(Types.LONGVARCHAR, ColumnType.TEXT)
-            .put(Types.LONGNVARCHAR, ColumnType.TEXT)
+            .put(Types.LONGVARCHAR, ColumnType.STRING)
+            .put(Types.LONGNVARCHAR, ColumnType.STRING)
             .build());
   }
 

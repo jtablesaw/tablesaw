@@ -14,7 +14,6 @@ import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
 import static tech.tablesaw.api.ColumnType.LONG;
 import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
 
 import com.google.common.collect.Streams;
 import java.io.File;
@@ -254,19 +253,6 @@ public class RowTest {
   }
 
   @Test
-  public void testGetText() {
-    ColumnType[] types = {LOCAL_DATE, SHORT, TEXT};
-    Table table =
-        Table.read().csv(CsvReadOptions.builder(new File("../data/bush.csv")).columnTypes(types));
-    Row row = new Row(table);
-    while (row.hasNext()) {
-      row.next();
-      assertEquals(table.textColumn(2).get(row.getRowNumber()), row.getText(2));
-      assertEquals(table.textColumn("who").get(row.getRowNumber()), row.getText("who"));
-    }
-  }
-
-  @Test
   public void testGetTime() {
     Table table = tornado.copy();
     Row row = new Row(table);
@@ -451,27 +437,6 @@ public class RowTest {
       // setString(columnName, value)
       row.setString("who", updateVal2);
       assertEquals(updateVal2, row.getString("who"));
-    }
-  }
-
-  @Test
-  public void testSetText() {
-    ColumnType[] bushColumnTypes = {LOCAL_DATE, INTEGER, TEXT};
-    Table table = readBush(bushColumnTypes);
-    Row row = new Row(table);
-    while (row.hasNext()) {
-      row.next();
-      String rowVal = table.textColumn(2).get(row.getRowNumber());
-      String updateVal1 = rowVal.concat("2");
-      String updateVal2 = rowVal.concat("3");
-
-      // setText(columnIndex, value)
-      row.setText(2, updateVal1);
-      assertEquals(updateVal1, row.getText(2));
-
-      // setText(columnName, value)
-      row.setText("who", updateVal2);
-      assertEquals(updateVal2, row.getText("who"));
     }
   }
 

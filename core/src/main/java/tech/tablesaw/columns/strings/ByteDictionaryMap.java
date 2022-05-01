@@ -43,6 +43,8 @@ public class ByteDictionaryMap implements DictionaryMap {
 
   private static final byte DEFAULT_RETURN_VALUE = Byte.MIN_VALUE;
 
+  private boolean canPromoteToText = Boolean.TRUE;
+
   private final ByteComparator reverseDictionarySortComparator =
       (i, i1) ->
           Comparator.<String>reverseOrder().compare(getValueForByteKey(i), getValueForByteKey(i1));
@@ -75,6 +77,12 @@ public class ByteDictionaryMap implements DictionaryMap {
   public ByteDictionaryMap() {
     valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
     keyToCount.defaultReturnValue(0);
+  }
+
+  public ByteDictionaryMap(boolean canPromoteToText) {
+    valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
+    keyToCount.defaultReturnValue(0);
+    this.canPromoteToText = canPromoteToText;
   }
 
   private ByteDictionaryMap(ByteDictionaryBuilder builder) {
@@ -393,7 +401,7 @@ public class ByteDictionaryMap implements DictionaryMap {
 
   @Override
   public Iterator<String> iterator() {
-    return new Iterator<String>() {
+    return new Iterator<>() {
 
       private final ByteListIterator valuesIt = values.iterator();
 
@@ -441,6 +449,11 @@ public class ByteDictionaryMap implements DictionaryMap {
   @Override
   public int nextKeyWithoutIncrementing() {
     return nextIndex.get();
+  }
+
+  @Override
+  public boolean canPromoteToText() {
+    return canPromoteToText;
   }
 
   public static class ByteDictionaryBuilder {

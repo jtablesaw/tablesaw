@@ -11,7 +11,6 @@ import static tech.tablesaw.io.saw.SawUtils.LOCAL_TIME;
 import static tech.tablesaw.io.saw.SawUtils.LONG;
 import static tech.tablesaw.io.saw.SawUtils.SHORT;
 import static tech.tablesaw.io.saw.SawUtils.STRING;
-import static tech.tablesaw.io.saw.SawUtils.TEXT;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
@@ -59,7 +58,6 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
@@ -212,8 +210,6 @@ public class SawReader {
         return readInstantColumn(fileName, columnMetadata, rowcount);
       case STRING:
         return readStringColumn(fileName, columnMetadata, rowcount);
-      case TEXT:
-        return readTextColumn(fileName, columnMetadata, rowcount);
       case SHORT:
         return readShortColumn(fileName, columnMetadata, rowcount);
       case LONG:
@@ -429,6 +425,7 @@ public class SawReader {
         .setValueToKey(valueToKey)
         .setKeyToValue(keyToValue)
         .setKeyToCount(keyToCount)
+        .setCanPromoteToText(true) // TODO: read from metadata
         .setNextIndex(metaData.getNextStringKey())
         .build();
   }
@@ -474,19 +471,6 @@ public class SawReader {
         .setKeyToCount(keyToCount)
         .setNextIndex(metaData.getNextStringKey())
         .build();
-  }
-
-  /** Reads the TextColumn data from the given file and stuffs it into a new TextColumn */
-  private TextColumn readTextColumn(String fileName, ColumnMetadata columnMetadata, int rowcount)
-      throws IOException {
-
-    TextColumn textColumn = TextColumn.create(columnMetadata.getName(), rowcount);
-    try (DataInputStream dis = inputStream(fileName)) {
-      for (int j = 0; j < rowcount; j++) {
-        textColumn.set(j, dis.readUTF());
-      }
-    }
-    return textColumn;
   }
 
   private BooleanColumn readBooleanColumn(String fileName, ColumnMetadata metadata, int rowcount)

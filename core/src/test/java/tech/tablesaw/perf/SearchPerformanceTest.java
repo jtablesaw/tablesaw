@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filters;
+package tech.tablesaw.perf;
 
 import static java.lang.System.out;
 

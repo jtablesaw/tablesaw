@@ -129,7 +129,8 @@ public class TableSliceTest {
 
   @Test
   public void first() {
-    TableSlice slice = new TableSlice(source, Selection.withRange(2, 12));
+    Table sourceCopy = source;
+    TableSlice slice = new TableSlice(sourceCopy, Selection.withRange(2, 12));
     Table first = slice.first(5);
     assertEquals(first.get(0, 1), slice.get(0, 1));
     assertEquals(first.get(0, 1), source.get(2, 1));

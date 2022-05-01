@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
 
@@ -843,8 +842,8 @@ public class DataFrameJoinerTest {
   public void innerJoinDuplicateKeysSecondTableWithTextColumn() {
     Table feed = ANIMAL_FEED.copy();
     Table names = ANIMAL_NAMES.copy();
-    feed.replaceColumn("Animal", feed.stringColumn("Animal").asTextColumn());
-    TextColumn nameCol = names.stringColumn("Animal").asTextColumn();
+    feed.replaceColumn("Animal", feed.stringColumn("Animal").asStringColumn());
+    StringColumn nameCol = names.stringColumn("Animal");
     nameCol = nameCol.where(Selection.withRange(0, feed.rowCount()));
     feed.replaceColumn("Animal", nameCol);
     Table joined =
