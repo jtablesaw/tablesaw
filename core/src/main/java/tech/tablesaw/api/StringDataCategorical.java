@@ -63,10 +63,6 @@ public class StringDataCategorical implements StringData {
     return this;
   }
 
-  public StringDataType stringDataType() {
-    return StringDataType.CATEGORICAL;
-  }
-
   /** {@inheritDoc} */
   public int valueHash(int rowNumber) {
     return get(rowNumber).hashCode();

@@ -49,11 +49,6 @@ public class StringDataTextual implements StringData {
 
   private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
 
-  @Override
-  public StringDataType stringDataType() {
-    return StringDataType.TEXTUAL;
-  }
-
   public int valueHash(int rowNumber) {
     return get(rowNumber).hashCode();
   }

@@ -73,8 +73,6 @@ public interface StringData extends StringFilters, StringReduceUtils {
 
   Table countByCategory(String columnName);
 
-  StringDataType stringDataType();
-
   List<BooleanColumn> getDummies();
 
   double getDouble(int i);

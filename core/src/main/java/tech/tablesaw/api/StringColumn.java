@@ -16,8 +16,6 @@ package tech.tablesaw.api;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static tech.tablesaw.api.ColumnType.*;
-import static tech.tablesaw.columns.strings.StringDataType.CATEGORICAL;
-import static tech.tablesaw.columns.strings.StringDataType.TEXTUAL;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -73,21 +71,8 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
     return getDictionary().getKeyAtIndex(rowNumber1) == getDictionary().getKeyAtIndex(rowNumber2);
   }
 
-  public StringDataType stringDataType() {
-    return data.stringDataType();
-  }
-
   public static StringColumn create(String name) {
     return new StringColumn(name);
-  }
-
-  public static StringColumn create(String name, StringDataType backingType) {
-    if (backingType.equals(CATEGORICAL)) {
-      return new StringColumn(name, StringDataCategorical.create());
-    } else if (backingType.equals(TEXTUAL)) {
-      return new StringColumn(name, StringDataTextual.create());
-    }
-    throw new RuntimeException("Unhandled backing column type for StringColumn: " + backingType);
   }
 
   public static StringColumn create(String name, String... strings) {
