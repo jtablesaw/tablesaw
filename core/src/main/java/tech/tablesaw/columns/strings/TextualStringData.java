@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.api;
+package tech.tablesaw.columns.strings;
 
 import static tech.tablesaw.columns.AbstractColumn.DEFAULT_ARRAY_SIZE;
 
@@ -21,8 +21,10 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import java.util.*;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.*;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -35,7 +37,7 @@ import tech.tablesaw.selection.Selection;
  * <p>Because the MISSING_VALUE for this column type is an empty string, there is little or no need
  * for special handling of missing values in this class's methods.
  */
-public class StringDataTextual implements StringData {
+public class TextualStringData implements StringData {
 
   // holds each element in the column.
   protected List<String> values;
@@ -58,18 +60,18 @@ public class StringDataTextual implements StringData {
     return get(rowNumber1).equals(get(rowNumber2));
   }
 
-  private StringDataTextual(Collection<String> strings) {
+  private TextualStringData(Collection<String> strings) {
     values = new ArrayList<>(strings.size());
     for (String string : strings) {
       append(string);
     }
   }
 
-  private StringDataTextual() {
+  private TextualStringData() {
     values = new ArrayList<>(DEFAULT_ARRAY_SIZE);
   }
 
-  private StringDataTextual(String[] strings) {
+  private TextualStringData(String[] strings) {
     values = new ArrayList<>(strings.length);
     for (String string : strings) {
       append(string);
@@ -80,43 +82,33 @@ public class StringDataTextual implements StringData {
     return StringColumnType.valueIsMissing(string);
   }
 
-  @Override
-  public StringDataCategorical asCategoricalStringData() {
-    return StringDataCategorical.create(false, this.values);
-  }
-
-  @Override
-  public StringDataTextual asTextualStringData() {
-    return copy();
-  }
-
-  public StringDataTextual appendMissing() {
+  public TextualStringData appendMissing() {
     append(StringColumnType.missingValueIndicator());
     return this;
   }
 
-  public static StringDataTextual create() {
-    return new StringDataTextual();
+  public static TextualStringData create() {
+    return new TextualStringData();
   }
 
-  public static StringDataTextual create(String... strings) {
-    return new StringDataTextual(strings);
+  public static TextualStringData create(String... strings) {
+    return new TextualStringData(strings);
   }
 
-  public static StringDataTextual create(Collection<String> strings) {
-    return new StringDataTextual(strings);
+  public static TextualStringData create(Collection<String> strings) {
+    return new TextualStringData(strings);
   }
 
-  public static StringDataTextual create(int size) {
+  public static TextualStringData create(int size) {
     ArrayList<String> strings = new ArrayList<>(size);
     for (int i = 0; i < size; i++) {
       strings.add(StringColumnType.missingValueIndicator());
     }
-    return new StringDataTextual(strings);
+    return new TextualStringData(strings);
   }
 
-  public static StringDataTextual create(Stream<String> stream) {
-    StringDataTextual column = create();
+  public static TextualStringData create(Stream<String> stream) {
+    TextualStringData column = create();
     stream.forEach(column::append);
     return column;
   }
@@ -127,12 +119,12 @@ public class StringDataTextual implements StringData {
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual emptyCopy() {
+  public TextualStringData emptyCopy() {
     return create();
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual emptyCopy(int rowSize) {
+  public TextualStringData emptyCopy(int rowSize) {
     return create(rowSize);
   }
 
@@ -180,7 +172,9 @@ public class StringDataTextual implements StringData {
 
   @Override
   public Table countByCategory(String columnName) {
-    return asCategoricalStringData().countByCategory(columnName);
+    throw new UnsupportedOperationException();
+    // TODO: fix me
+    // return asCategoricalStringData().countByCategory(columnName);
   }
 
   /** {@inheritDoc} */
@@ -206,14 +200,14 @@ public class StringDataTextual implements StringData {
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual lead(int n) {
+  public TextualStringData lead(int n) {
     return lag(-n);
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual lag(int n) {
+  public TextualStringData lag(int n) {
 
-    StringDataTextual copy = emptyCopy();
+    TextualStringData copy = emptyCopy();
 
     if (n >= 0) {
       for (int m = 0; m < n; m++) {
@@ -244,7 +238,7 @@ public class StringDataTextual implements StringData {
    * <p>Examples: myCatColumn.set(myCatColumn.isEqualTo("Cat"), "Dog"); // no more cats
    * myCatColumn.set(myCatColumn.valueIsMissing(), "Fox"); // no more missing values
    */
-  public StringDataTextual set(Selection rowSelection, String newValue) {
+  public TextualStringData set(Selection rowSelection, String newValue) {
     for (int row : rowSelection) {
       set(row, newValue);
     }
@@ -252,7 +246,7 @@ public class StringDataTextual implements StringData {
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual set(int rowIndex, String stringValue) {
+  public TextualStringData set(int rowIndex, String stringValue) {
     if (stringValue == null) {
       return setMissing(rowIndex);
     }
@@ -276,7 +270,7 @@ public class StringDataTextual implements StringData {
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual setMissing(int i) {
+  public TextualStringData setMissing(int i) {
     return set(i, StringColumnType.missingValueIndicator());
   }
 
@@ -285,7 +279,7 @@ public class StringDataTextual implements StringData {
    *
    * @param stringValues a list of values
    */
-  public StringDataTextual addAll(List<String> stringValues) {
+  public TextualStringData addAll(List<String> stringValues) {
     for (String stringValue : stringValues) {
       append(stringValue);
     }
@@ -307,20 +301,20 @@ public class StringDataTextual implements StringData {
    *
    * @return a column with unique values.
    */
-  public StringDataTextual unique() {
+  public TextualStringData unique() {
     List<String> strings = new ArrayList<>(asSet());
-    return StringDataTextual.create(strings);
+    return TextualStringData.create(strings);
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual where(Selection selection) {
-    return (StringDataTextual) subset(selection.toArray());
+  public TextualStringData where(Selection selection) {
+    return (TextualStringData) subset(selection.toArray());
   }
 
   // TODO (lwhite): This could avoid the append and do a list copy
   /** {@inheritDoc} */
-  public StringDataTextual copy() {
-    StringDataTextual newCol = create(size());
+  public TextualStringData copy() {
+    TextualStringData newCol = create(size());
     int r = 0;
     for (String string : this) {
       newCol.set(r, string);
@@ -349,8 +343,8 @@ public class StringDataTextual implements StringData {
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual removeMissing() {
-    StringDataTextual noMissing = emptyCopy();
+  public TextualStringData removeMissing() {
+    TextualStringData noMissing = emptyCopy();
     for (String v : this) {
       if (!StringColumnType.valueIsMissing(v)) {
         noMissing.append(v);
@@ -376,13 +370,13 @@ public class StringDataTextual implements StringData {
   }
 
   /** Added for naming consistency with all other columns */
-  public StringDataTextual append(String value) {
+  public TextualStringData append(String value) {
     values.add(value);
     return this;
   }
 
   /** {@inheritDoc} */
-  public StringDataTextual appendObj(Object obj) {
+  public TextualStringData appendObj(Object obj) {
     if (obj == null) {
       return appendMissing();
     }

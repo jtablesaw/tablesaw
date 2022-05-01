@@ -19,11 +19,7 @@ import static tech.tablesaw.api.ColumnType.*;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import tech.tablesaw.columns.AbstractColumn;
@@ -44,7 +40,7 @@ import tech.tablesaw.selection.Selection;
 public class StringColumn extends AbstractColumn<StringColumn, String>
     implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
-  private final StringData data;
+  private DictionaryMap data;
 
   private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
@@ -79,9 +75,11 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
     return new StringColumn(name, strings);
   }
 
-  public static StringColumn create(String name, StringData stringData) {
-    return new StringColumn(name, stringData);
-  }
+  /*
+    public static StringColumn create(String name, StringData stringData) {
+      return new StringColumn(name, stringData);
+    }
+  */
 
   public static StringColumn create(String name, Collection<String> strings) {
     return new StringColumn(name, strings);
@@ -92,6 +90,7 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
   }
 
   public static StringColumn create(String name, int size) {
+    // TODO Pick map implementation based on array size
     StringColumn column = new StringColumn(name);
     for (int i = 0; i < size; i++) {
       column.appendMissing();
@@ -107,27 +106,27 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
 
   private StringColumn(String name, Collection<String> strings) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    data = StringDataCategorical.create(strings);
+    // TODO Pick map implementation based on array size
+    data = new ByteDictionaryMap();
+    for (String s : strings) {
+      append(s);
+    }
   }
 
   private StringColumn(String name, DictionaryMap map) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    data = StringDataCategorical.createInternal(map);
+    data = map;
   }
 
   private StringColumn(String name) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    data = StringDataCategorical.create();
-  }
-
-  private StringColumn(String name, StringData stringData) {
-    super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    this.data = stringData;
+    data = new ByteDictionaryMap();
   }
 
   private StringColumn(String name, String[] strings) {
     super(StringColumnType.instance(), name, StringColumnType.DEFAULT_PARSER);
-    data = StringDataCategorical.create();
+    // TODO Pick map implementation based on array size
+    data = new ByteDictionaryMap();
     for (String string : strings) {
       append(string);
     }
@@ -309,7 +308,20 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
   /** {@inheritDoc} */
   @Override
   public StringColumn set(int rowIndex, String stringValue) {
-    data.set(rowIndex, stringValue);
+    if (stringValue == null) {
+      return setMissing(rowIndex);
+    }
+    try {
+      data.set(rowIndex, stringValue);
+    } catch (NoKeysAvailableException ex) {
+      data = data.promoteYourself();
+      try {
+        data.set(rowIndex, stringValue);
+      } catch (NoKeysAvailableException e) {
+        // this can't happen
+        throw new IllegalStateException(e);
+      }
+    }
     return this;
   }
 
@@ -363,7 +375,7 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
   /** {@inheritDoc} */
   @Override
   public IntComparator rowComparator() {
-    return data.rowComparator();
+    return rowComparator;
   }
 
   @Override
@@ -413,7 +425,8 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
    */
   @Override
   public StringColumn unique() {
-    return new StringColumn(name(), data.unique());
+    List<String> strings = new ArrayList<>(data.asSet());
+    return new StringColumn(name(), strings);
   }
 
   public DoubleColumn asDoubleColumn() {
@@ -429,7 +442,7 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
   /** {@inheritDoc} */
   @Override
   public StringColumn copy() {
-    StringColumn newCol = create(name(), data.copy());
+    StringColumn newCol = create(name(), size());
     int r = 0;
     for (String string : this) {
       newCol.set(r, string);
@@ -449,7 +462,10 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
         type(),
         column.name(),
         column.type());
-    data.append(column);
+    final int size = column.size();
+    for (int i = 0; i < size; i++) {
+      append(column.getString(i));
+    }
     return this;
   }
 
@@ -488,17 +504,27 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
   }
 
   public double getDouble(int i) {
-    return data.getDouble(i);
+    return (double) data.uniqueValuesAt(data.firstIndexOf(data.getValueForIndex(i))) - 1;
   }
 
   public double[] asDoubleArray() {
-    return data.asDoubleArray();
+    return Arrays.stream(data.asIntArray()).asDoubleStream().toArray();
   }
 
   /** Added for naming consistency with all other columns */
   @Override
   public StringColumn append(String value) {
-    data.append(value);
+    try {
+      data.append(value);
+    } catch (NoKeysAvailableException ex) {
+      data = data.promoteYourself();
+      try {
+        data.append(value);
+      } catch (NoKeysAvailableException e) {
+        // this can't happen
+        throw new IllegalStateException(e);
+      }
+    }
     return this;
   }
 
@@ -567,7 +593,7 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
 
   /** For tablesaw internal use Note: This method returns null if the stringDataType is TEXTUAL */
   public @Nullable DictionaryMap getDictionary() {
-    return data.getDictionary();
+    return data;
   }
 
   /** {@inheritDoc} */
@@ -639,4 +665,11 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
   public int compare(String o1, String o2) {
     return o1.compareTo(o2);
   }
+
+  private final IntComparator rowComparator =
+      (i, i1) -> {
+        String f1 = get(i);
+        String f2 = get(i1);
+        return f1.compareTo(f2);
+      };
 }

@@ -5,19 +5,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.StringDataTextual;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 
+/**
+ * A null dictionary map has no actual dictionary as the underlying data is not dictionary encoded.
+ * It works with textual data that is non-categorical, or where the number of categories approaches
+ * 1/2 of the total number of values, making dictionary encoding inefficient.
+ */
 public class NullDictionaryMap implements DictionaryMap {
 
-  private final StringDataTextual data;
+  private final TextualStringData data;
 
   public NullDictionaryMap(DictionaryMap dictionaryMap) {
-    data = StringDataTextual.create();
-    Iterator<String> mapIterator = dictionaryMap.iterator();
-    while (mapIterator.hasNext()) {
-      data.append(mapIterator.next());
+    data = TextualStringData.create();
+    for (String s : dictionaryMap) {
+      data.append(s);
     }
   }
 
@@ -117,6 +120,31 @@ public class NullDictionaryMap implements DictionaryMap {
   @Override
   public Selection isEqualTo(String string) {
     return data.isEqualTo(string);
+  }
+
+  @Override
+  public String get(int index) {
+    return data.get(index);
+  }
+
+  @Override
+  public Selection isIn(String... strings) {
+    return data.isIn(strings);
+  }
+
+  @Override
+  public Selection isIn(Collection<String> strings) {
+    return data.isIn(strings);
+  }
+
+  @Override
+  public Selection isNotIn(String... strings) {
+    return data.isNotIn(strings);
+  }
+
+  @Override
+  public Selection isNotIn(Collection<String> strings) {
+    return data.isNotIn(strings);
   }
 
   @Override

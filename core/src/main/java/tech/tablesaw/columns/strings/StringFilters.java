@@ -43,8 +43,6 @@ import tech.tablesaw.selection.Selection;
 
 public interface StringFilters extends StringFilterSpec<Selection> {
 
-  int size();
-
   default Selection eval(BiPredicate<String, String> predicate, Column<String> otherColumn) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < size(); idx++) {
@@ -141,10 +139,6 @@ public interface StringFilters extends StringFilterSpec<Selection> {
     return eval(isLongerThan, stringLength);
   }
 
-  Selection isIn(String... strings);
-
-  Selection isIn(Collection<String> strings);
-
   default Selection isIn(Column<String> strings) {
     return isIn(strings.unique().asList());
   }
@@ -152,10 +146,6 @@ public interface StringFilters extends StringFilterSpec<Selection> {
   default Selection isNotIn(Column<String> strings) {
     return isNotIn(strings.unique().asList());
   }
-
-  Selection isNotIn(String... strings);
-
-  Selection isNotIn(Collection<String> strings);
 
   // Column Methods
   default Selection isEqualTo(Column<String> other) {
@@ -196,4 +186,14 @@ public interface StringFilters extends StringFilterSpec<Selection> {
   }
 
   String get(int index);
+
+  Selection isIn(String... strings);
+
+  Selection isIn(Collection<String> strings);
+
+  Selection isNotIn(String... strings);
+
+  Selection isNotIn(Collection<String> strings);
+
+  int size();
 }
