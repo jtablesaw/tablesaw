@@ -383,12 +383,12 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
 
   @Override
   public Selection isMissing() {
-    return null;
+    return data.isMissing();
   }
 
   @Override
   public Selection isNotMissing() {
-    return null;
+    return data.isNotMissing();
   }
 
   /** {@inheritDoc} */

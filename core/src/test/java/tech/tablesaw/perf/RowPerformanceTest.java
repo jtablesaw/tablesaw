@@ -1,4 +1,4 @@
-package tech.tablesaw.api;
+package tech.tablesaw.perf;
 
 import static java.lang.System.out;
 
@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
