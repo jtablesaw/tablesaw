@@ -62,7 +62,7 @@ public class TableTest {
             .csv(
                 CsvReadOptions.builder(new File("../data/bush.csv"))
                     .columnTypes(BUSH_COLUMN_TYPES));
-    ColumnType[] types = {LOCAL_DATE, SHORT, TEXT};
+    ColumnType[] types = {LOCAL_DATE, SHORT, STRING};
     bushMinimized = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").columnTypes(types));
   }
 

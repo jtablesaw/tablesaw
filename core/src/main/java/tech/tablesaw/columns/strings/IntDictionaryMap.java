@@ -43,6 +43,8 @@ public class IntDictionaryMap implements DictionaryMap {
 
   private static final int DEFAULT_RETURN_VALUE = Integer.MIN_VALUE;
 
+  private final boolean canPromoteToText = Boolean.TRUE;
+
   private final IntComparator reverseDictionarySortComparator =
       (i, i1) -> Comparator.<String>reverseOrder().compare(getValueForKey(i), getValueForKey(i1));
 
@@ -388,7 +390,7 @@ public class IntDictionaryMap implements DictionaryMap {
 
   @Override
   public Iterator<String> iterator() {
-    return new Iterator<String>() {
+    return new Iterator<>() {
 
       private final IntListIterator valuesIt = values.iterator();
 
@@ -421,12 +423,20 @@ public class IntDictionaryMap implements DictionaryMap {
 
   @Override
   public DictionaryMap promoteYourself() {
+    if (canPromoteToText) {
+      return new NullDictionaryMap(this);
+    }
     return this;
   }
 
   @Override
   public int nextKeyWithoutIncrementing() {
     return nextIndex.get();
+  }
+
+  @Override
+  public boolean canPromoteToText() {
+    return canPromoteToText;
   }
 
   public static class IntDictionaryBuilder {

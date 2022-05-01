@@ -85,6 +85,10 @@ public class StringDataCategorical implements StringData {
     return new StringDataCategorical(strings);
   }
 
+  public static StringDataCategorical create(boolean canPromoteToText, Collection<String> strings) {
+    return new StringDataCategorical(canPromoteToText, strings);
+  }
+
   public static StringDataCategorical create(Collection<String> strings) {
     return new StringDataCategorical(strings);
   }
@@ -120,6 +124,13 @@ public class StringDataCategorical implements StringData {
   private StringDataCategorical() {}
 
   private StringDataCategorical(String[] strings) {
+    for (String string : strings) {
+      append(string);
+    }
+  }
+
+  private StringDataCategorical(boolean canPromoteToText, Collection<String> strings) {
+    lookupTable = new ByteDictionaryMap(canPromoteToText);
     for (String string : strings) {
       append(string);
     }
@@ -428,7 +439,6 @@ public class StringDataCategorical implements StringData {
     return Arrays.stream(lookupTable.asIntArray()).asDoubleStream().toArray();
   }
 
-  /** Added for naming consistency with all other columns */
   @Override
   public StringDataCategorical append(String value) {
     try {

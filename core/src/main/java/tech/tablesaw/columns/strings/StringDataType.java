@@ -6,4 +6,5 @@ public enum StringDataType {
   CATEGORICAL,
   // A List<String> representation for non-categorical strings
   TEXTUAL,
+  UNDECIDED,
 }

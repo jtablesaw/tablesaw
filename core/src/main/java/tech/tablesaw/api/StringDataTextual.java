@@ -87,7 +87,7 @@ public class StringDataTextual implements StringData {
 
   @Override
   public StringDataCategorical asCategoricalStringData() {
-    return StringDataCategorical.create(this.values);
+    return StringDataCategorical.create(false, this.values);
   }
 
   @Override

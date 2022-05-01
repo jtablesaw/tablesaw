@@ -110,4 +110,6 @@ public interface DictionaryMap {
   DictionaryMap promoteYourself();
 
   int nextKeyWithoutIncrementing();
+
+  boolean canPromoteToText();
 }

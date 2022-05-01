@@ -842,8 +842,8 @@ public class DataFrameJoinerTest {
   public void innerJoinDuplicateKeysSecondTableWithTextColumn() {
     Table feed = ANIMAL_FEED.copy();
     Table names = ANIMAL_NAMES.copy();
-    feed.replaceColumn("Animal", feed.stringColumn("Animal").asTextColumn());
-    TextColumn nameCol = names.stringColumn("Animal").asTextColumn();
+    feed.replaceColumn("Animal", feed.stringColumn("Animal").asStringColumn());
+    StringColumn nameCol = names.stringColumn("Animal");
     nameCol = nameCol.where(Selection.withRange(0, feed.rowCount()));
     feed.replaceColumn("Animal", nameCol);
     Table joined =

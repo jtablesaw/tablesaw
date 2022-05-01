@@ -82,10 +82,6 @@ public class ColumnAppendTest {
             StringColumn.create("stringCol2", new String[] {"bar"})),
         new Scenario<>(StringColumn.create("stringCol1", new String[] {"baz"})),
         new Scenario<>(
-            TextColumn.create("textCol1", new String[] {"foo"}),
-            TextColumn.create("textCol2", new String[] {"bar"})),
-        new Scenario<>(TextColumn.create("textCol1", new String[] {"baz"})),
-        new Scenario<>(
             TimeColumn.create("timeCol1", new LocalTime[] {LocalTime.now()}),
             TimeColumn.create("timeCol2", new LocalTime[] {LocalTime.now()})),
         new Scenario<>(TimeColumn.create("timeCol1", new LocalTime[] {LocalTime.now()})));

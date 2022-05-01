@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -100,6 +99,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
     } else { // handle the case where split is on non-text-columns
       int byteSize = getByteSize(splitColumns);
       for (int i = 0; i < getSourceTable().rowCount(); i++) {
+        // TODO: instead of splitting on column type, have a function that returns the byte size?
         StringBuilder stringKey = new StringBuilder();
         ByteBuffer byteBuffer = ByteBuffer.allocate(byteSize);
         int count = 0;
@@ -129,7 +129,8 @@ public class StandardTableSliceGroup extends TableSliceGroup {
   }
 
   private boolean containsTextColumn(List<Column<?>> splitColumns) {
-    return splitColumns.stream().anyMatch(objects -> objects.type().equals(ColumnType.TEXT));
+    return false;
+    // return splitColumns.stream().anyMatch(objects -> objects.type().equals(ColumnType.TEXT));
   }
 
   /** Wrapper class for a byte[] that implements equals and hashcode. */
