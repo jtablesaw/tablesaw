@@ -101,7 +101,7 @@
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
-            <version>65.1</version>
+            <version>68.2</version>
         </dependency>
         <dependency>
             <groupId>io.github.classgraph</groupId>
