@@ -1,11 +1,12 @@
 package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
+
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 public class DoubleParser extends AbstractColumnParser<Double> {
 
@@ -56,7 +57,26 @@ public class DoubleParser extends AbstractColumnParser<Double> {
     return Double.parseDouble(AbstractColumnParser.remove(s, ','));
   }
 
+  /**
+   * A number is percent when it ends with %
+   * - We can trim off the last occurrence of '%'
+   * - The remaining string should then be parsable as a number(double)
+   *
+   * @param s Value
+   * @return Flag returning whether the input is a percent or not
+   */
   private boolean isPercent(String s) {
-    return s.charAt(s.length() - 1) == '%';
+    boolean containsPercentSymbol = s.charAt(s.length() - 1) == '%';
+    if (containsPercentSymbol) {
+      String percentageValue = s.substring(0, s.length() - 1);
+      try {
+        double value = Double.parseDouble(percentageValue);
+        return !Double.isNaN(value);
+      } catch (NumberFormatException e) {
+        // it's all part of the plan
+        return false;
+      }
+    }
+    return false;
   }
 }

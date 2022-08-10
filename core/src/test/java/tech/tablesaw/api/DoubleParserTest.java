@@ -45,6 +45,12 @@ class DoubleParserTest {
   }
 
   @Test
+  void testCanParse5() {
+    DoubleParser doubleParser = new DoubleParser(ColumnType.DOUBLE);
+    assertFalse(doubleParser.canParse("0% - 25%"));
+  }
+
+  @Test
   void testParseDouble1() {
     DoubleParser doubleParser = new DoubleParser(ColumnType.DOUBLE);
     assertEquals(1.3, doubleParser.parseDouble("1.3"));
