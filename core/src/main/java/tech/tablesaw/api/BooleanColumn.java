@@ -670,7 +670,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     BooleanSet set = new BooleanOpenHashSet(3);
     BooleanColumn unique = unique();
     for (int i = 0; i < unique.size(); i++) {
-      set.add((boolean) unique.get(i));
+      set.add((Boolean) unique.get(i));
     }
     return set;
   }
