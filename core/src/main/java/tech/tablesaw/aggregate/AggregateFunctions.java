@@ -3,10 +3,13 @@ package tech.tablesaw.aggregate;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.EnumMap;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
+import org.apache.commons.math3.stat.descriptive.rank.Percentile.EstimationType;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
@@ -581,6 +584,42 @@ public class AggregateFunctions {
   /** Returns the given percentile of the values in the argument */
   public static Double percentile(NumericColumn<?> data, Double percentile) {
     return StatUtils.percentile(removeMissing(data), percentile);
+  }
+
+  /**
+   * The nine estimation types defined in
+   * org.apache.commons.math3.stat.descriptive.rank.Percentile.EstimationType For more information:
+   * https://en.wikipedia.org/wiki/Quantile#Estimating_quantiles_from_a_sample
+   */
+  public enum PercentileEstimation {
+    R1,
+    R2,
+    R3,
+    R4,
+    R5,
+    R6,
+    R7,
+    R8,
+    R9;
+  }
+
+  /** Returns the given percentile of specified estimation type of the values in the argument */
+  public static Double percentileWithEstimationType(
+      NumericColumn<?> data, Double percentile, PercentileEstimation type) {
+    EnumMap<PercentileEstimation, EstimationType> estimationMap =
+        new EnumMap<>(PercentileEstimation.class);
+    estimationMap.put(PercentileEstimation.R1, EstimationType.R_1);
+    estimationMap.put(PercentileEstimation.R2, EstimationType.R_2);
+    estimationMap.put(PercentileEstimation.R3, EstimationType.R_3);
+    estimationMap.put(PercentileEstimation.R4, EstimationType.R_4);
+    estimationMap.put(PercentileEstimation.R5, EstimationType.R_5);
+    estimationMap.put(PercentileEstimation.R6, EstimationType.R_6);
+    estimationMap.put(PercentileEstimation.R7, EstimationType.R_7);
+    estimationMap.put(PercentileEstimation.R8, EstimationType.R_8);
+    estimationMap.put(PercentileEstimation.R9, EstimationType.R_9);
+    return new Percentile()
+        .withEstimationType(estimationMap.get(type))
+        .evaluate(removeMissing(data), percentile);
   }
 
   private static double[] removeMissing(NumericColumn<?> column) {

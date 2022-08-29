@@ -24,6 +24,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.percentile;
 import static tech.tablesaw.aggregate.AggregateFunctions.percentile90;
 import static tech.tablesaw.aggregate.AggregateFunctions.percentile95;
 import static tech.tablesaw.aggregate.AggregateFunctions.percentile99;
+import static tech.tablesaw.aggregate.AggregateFunctions.percentileWithEstimationType;
 import static tech.tablesaw.aggregate.AggregateFunctions.quartile1;
 import static tech.tablesaw.aggregate.AggregateFunctions.quartile3;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
@@ -47,6 +48,7 @@ import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.aggregate.AggregateFunctions.PercentileEstimation;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -106,6 +108,7 @@ public class NumberColumnTest {
     assertEquals(5, c2.percentile(5), 0.00001);
     assertEquals(5, c.percentile(5), 0.00001);
     assertEquals(5, percentile(c, 5.0), 0.00001);
+    assertEquals(5.9, percentileWithEstimationType(c, 5.0, PercentileEstimation.R7), 0.00001);
 
     assertEquals(95, percentile95.summarize(c), 0.00001);
     assertEquals(99, percentile99.summarize(c), 0.00001);
