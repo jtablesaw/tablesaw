@@ -864,19 +864,41 @@ public class Table extends Relation implements Iterable<Row> {
     return newTable;
   }
 
-  /**
+
+  public Table pivot(
+    List<CategoricalColumn<?>> groupingColumn,
+    CategoricalColumn<?> pivotColumn,
+    List<NumericColumn<?>> aggregatedColumn,
+    AggregateFunction<?, ?> aggregateFunction) {
+    return PivotTable.pivot(this, groupingColumn, pivotColumn, aggregatedColumn, aggregateFunction);
+  }
+
+  public Table pivot(
+      List<String> groupingColumnNames,
+      String pivotColumnName,
+      List<String> aggregatedColumnNames,
+      AggregateFunction<?, ?> aggregateFunction) {
+        return pivot(
+            groupingColumnNames.stream().map(this::categoricalColumn).collect(Collectors.toList()),
+            categoricalColumn(pivotColumnName),
+            aggregatedColumnNames.stream().map(this::numberColumn).collect(Collectors.toList()),
+            aggregateFunction);
+  }
+
+    /**
    * Returns a pivot on this table, where: The first column contains unique values from the index
    * column1 There are n additional columns, one for each unique value in column2 The values in each
    * of the cells in these new columns are the result of applying the given AggregateFunction to the
    * data in column3, grouped by the values of column1 and column2
    */
   public Table pivot(
-      CategoricalColumn<?> column1,
-      CategoricalColumn<?> column2,
-      NumericColumn<?> column3,
+      CategoricalColumn<?> groupingColumn,
+      CategoricalColumn<?> pivotColumn,
+      NumericColumn<?> aggregatedColumn,
       AggregateFunction<?, ?> aggregateFunction) {
-    return PivotTable.pivot(this, column1, column2, column3, aggregateFunction);
+    return PivotTable.pivot(this, groupingColumn, pivotColumn, aggregatedColumn, aggregateFunction);
   }
+
 
   /**
    * Returns a pivot on this table, where: The first column contains unique values from the index
@@ -885,14 +907,14 @@ public class Table extends Relation implements Iterable<Row> {
    * data in column3, grouped by the values of column1 and column2
    */
   public Table pivot(
-      String column1Name,
-      String column2Name,
-      String column3Name,
+      String groupingColumnName,
+      String pivotColumnName,
+      String aggregatedColumnName,
       AggregateFunction<?, ?> aggregateFunction) {
     return pivot(
-        categoricalColumn(column1Name),
-        categoricalColumn(column2Name),
-        numberColumn(column3Name),
+        categoricalColumn(groupingColumnName),
+        categoricalColumn(pivotColumnName),
+        numberColumn(pivotColumnName),
         aggregateFunction);
   }
 
