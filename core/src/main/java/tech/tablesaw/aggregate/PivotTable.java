@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import tech.tablesaw.api.CategoricalColumn;
@@ -29,31 +28,43 @@ public class PivotTable {
   /**
    * Returns a table that is a rotation of the given table pivoted around the key columns, and
    * filling the output cells using the values calculated by the {@code aggregateFunction} when
-   * applied to the {@code values column} grouping by the key columns
+   * applied to the {@code aggregatedColumn} grouping by the key columns
+   * 
+   * Handles the case whereby there is a single groupingColumn and aggregatedColumn
    *
    * @param table The table that provides the data to be pivoted
-   * @param column1 A "key" categorical column from which the primary grouping is created. There
+   * @param groupingColumn A "key" categorical column from which the primary grouping is created. There
    *     will be one on each row of the result
-   * @param column2 A second categorical column for which a subtotal is created; this produces n
+   * @param pivotColumn A second categorical column for which a subtotal is created; this produces n
    *     columns on each row of the result
-   * @param values A numeric column that provides the values to be summarized
+   * @param aggregatedColumn A numeric column that provides the values to be summarized
    * @param aggregateFunction function that defines what operation is performed on the values in the
    *     subgroups
    * @return A new, pivoted table
    */
   
-
   public static Table pivot(
       Table table,
       CategoricalColumn<?> groupingColumn,
       CategoricalColumn<?> pivotColumn,
       NumericColumn<?> aggregatedColumns,
       AggregateFunction<?, ?> aggregateFunction) {
-
       return pivot(table, List.of(groupingColumn), pivotColumn, List.of(aggregatedColumns), aggregateFunction);
   }
       
-      
+   /**
+   * Returns a table that is a rotation of the given table pivoted around the key columns, and
+   * filling the output cells using the values calculated by the {@code aggregateFunction} when
+   * applied to the {@code aggregatedColumns} grouping by the key columns
+   * 
+   * Handles the case whereby there may be multiple groupingColumns and/or multiple aggregatedColumns
+    * @param table
+    * @param groupingColumn
+    * @param pivotColumn
+    * @param aggregatedColumns
+    * @param aggregateFunction
+    * @return
+    */
   public static Table pivot(
       Table table,
       List<CategoricalColumn<?>> groupingColumns,
@@ -119,7 +130,7 @@ public class PivotTable {
         }  
 
     }
-    
+
     return pivotTable;
   }
 
@@ -130,6 +141,7 @@ public class PivotTable {
       TableSlice slice,
       AggregateFunction<?, ?> function) {
 
+    boolean multiAggregated = aggregatedColumns.size() > 1;
     Table temp = slice.asTable();
     List<CategoricalColumn<?>> allKeyColumns = new LinkedList<>(groupingColumns);
     allKeyColumns.add(pivotColumn);
@@ -140,21 +152,18 @@ public class PivotTable {
 
     Map<String, Double> valueMap = new HashMap<>();
 
-    
-    if(aggregatedColumns.size() == 1){
-
-      NumericColumn<?> nc = summary.numberColumn(summary.columnCount() - 1);
-      for (int i = 0; i < summary.rowCount(); i++) {
-        valueMap.put(String.valueOf(summary.get(i, groupingColumns.size())), nc.getDouble(i));
-      }
-
-    }
-    else{
+    if(multiAggregated){
       for (int i = 0; i < summary.rowCount(); i++) {
         for (int k = 0; k < aggregatedColumns.size(); k++) {
           NumericColumn<?> nc = summary.numberColumn(groupingColumns.size() + k + 1);
           valueMap.put(String.valueOf(summary.get(i, groupingColumns.size())) + "." + aggregatedColumns.get(k).name(), nc.getDouble(i));
         }
+      }
+    }
+    else{
+      NumericColumn<?> nc = summary.numberColumn(summary.columnCount() - 1);
+      for (int i = 0; i < summary.rowCount(); i++) {
+        valueMap.put(String.valueOf(summary.get(i, groupingColumns.size())), nc.getDouble(i));
       }
     }
 
