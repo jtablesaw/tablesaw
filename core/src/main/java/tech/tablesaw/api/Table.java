@@ -865,14 +865,44 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
 
+  /**
+   * Returns a new column, where the first n columns are the groupingColumns. There are then p additional
+   * columns, which is the product of each unique value in the pivot column and aggregatedColumn. The 
+   * values in each of the cells in these new columns are the result of applying the given AggregateFunction 
+   * to the data in each of aggregatedColumn, grouped by the values of groupingColumn and pivotColumn.
+   * 
+   * If more than one aggregatedColumn is provided then each is appended to each unique value of the pivot
+   * column in the format "{PivotColumnValue}.{AggregatedColumnName}
+   * 
+   * @param groupingColumn
+   * @param pivotColumn
+   * @param aggregatedColumn
+   * @param aggregateFunction
+   * @return
+   */
   public Table pivot(
-    List<CategoricalColumn<?>> groupingColumn,
+    List<CategoricalColumn<?>> groupingColumns,
     CategoricalColumn<?> pivotColumn,
-    List<NumericColumn<?>> aggregatedColumn,
+    List<NumericColumn<?>> aggregatedColumns,
     AggregateFunction<?, ?> aggregateFunction) {
-    return PivotTable.pivot(this, groupingColumn, pivotColumn, aggregatedColumn, aggregateFunction);
+    return PivotTable.pivot(this, groupingColumns, pivotColumn, aggregatedColumns, aggregateFunction);
   }
 
+  /**
+   * Returns a new column, where the first n columns are the groupingColumns. There are then p additional
+   * columns, which is the product of each unique value in the pivot column and aggregatedColumn. The 
+   * values in each of the cells in these new columns are the result of applying the given AggregateFunction 
+   * to the data in each of aggregatedColumn, grouped by the values of groupingColumn and pivotColumn.
+   * 
+   * If more than one aggregatedColumn is provided then each is appended to each unique value of the pivot
+   * column in the format "{PivotColumnValue}.{AggregatedColumnName}
+   * 
+   * @param groupingColumnNames
+   * @param pivotColumnName
+   * @param aggregatedColumnNames
+   * @param aggregateFunction
+   * @return
+   */
   public Table pivot(
       List<String> groupingColumnNames,
       String pivotColumnName,
@@ -887,9 +917,9 @@ public class Table extends Relation implements Iterable<Row> {
 
     /**
    * Returns a pivot on this table, where: The first column contains unique values from the index
-   * column1 There are n additional columns, one for each unique value in column2 The values in each
-   * of the cells in these new columns are the result of applying the given AggregateFunction to the
-   * data in column3, grouped by the values of column1 and column2
+   * groupingColumn There are n additional columns, one for each unique value in the pivotColumn. The 
+   * values in each of the cells in these new columns are the result of applying the given AggregateFunction 
+   * to the data in the aggregatedColumn, grouped by the values of groupingColumn and pivotColumn
    */
   public Table pivot(
       CategoricalColumn<?> groupingColumn,
@@ -902,9 +932,9 @@ public class Table extends Relation implements Iterable<Row> {
 
   /**
    * Returns a pivot on this table, where: The first column contains unique values from the index
-   * column1 There are n additional columns, one for each unique value in column2 The values in each
-   * of the cells in these new columns are the result of applying the given AggregateFunction to the
-   * data in column3, grouped by the values of column1 and column2
+   * groupingColumn There are n additional columns, one for each unique value in the pivotColumn The 
+   * values in each of the cells in these new columns are the result of applying the given AggregateFunction 
+   * to the data in the aggregatedColumn, grouped by the values of groupingColumn and pivotColumn
    */
   public Table pivot(
       String groupingColumnName,
