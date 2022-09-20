@@ -147,7 +147,7 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
       case NUMERIC:
         if (DateUtil.isCellDateFormatted(cell)
             ? cell.getDateCellValue() != null
-            : cell.getNumericCellValue() != 0) {
+            : cell.getNumericCellValue() != 0 || cell.getCellType() == NUMERIC) {
           return false;
         }
         break;
