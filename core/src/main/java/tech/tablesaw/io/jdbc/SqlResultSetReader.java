@@ -170,11 +170,11 @@ public class SqlResultSetReader {
           }
         }
       } else { // s is not zero, so a decimal value is expected. First try float, then double
-        if (scale <= 7) {
+        if (precision <= 6) {
           type = ColumnType.FLOAT;
-        } else if (scale <= 16) {
+        } else if (precision <= 15) {
           type = ColumnType.DOUBLE;
-        }
+        } 
       }
     }
     return type;
