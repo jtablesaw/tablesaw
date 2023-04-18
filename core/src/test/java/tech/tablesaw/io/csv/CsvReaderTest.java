@@ -55,6 +55,7 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.datetimes.DateTimeParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.io.AddCellToColumnException;
@@ -302,7 +303,7 @@ public class CsvReaderTest {
     CsvReadOptions options =
         CsvReadOptions.builder(reader)
             .header(header)
-            .dateTimeFormat(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss"))
+            .dateTimeFormat(DateTimeParser.caseInsensitiveDTFormatter("dd-MMM-yyyy HH:mm:ss"))
             .build();
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
@@ -327,7 +328,7 @@ public class CsvReaderTest {
     CsvReadOptions options =
         CsvReadOptions.builder(reader)
             .header(header)
-            .dateTimeFormat(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss"))
+            .dateTimeFormat(DateTimeParser.caseInsensitiveDTFormatter("dd-MMM-yyyy HH:mm:ss"))
             .build();
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));

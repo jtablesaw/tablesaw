@@ -19,14 +19,16 @@ public class DateTimeParser extends AbstractColumnParser<LocalDateTime> {
       DateTimeFormatter.ofPattern(
           "yyyy-MM-dd HH:mm:ss.S"); // 2014-07-09 13:03:44.7 (as above, but without leading 0 in
   // millis)
-  private static final DateTimeFormatter dtTimef4 =
-      DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm"); // 09-Jul-2014 13:03
+  private static final DateTimeFormatter dtTimef4 = caseInsensitiveDTFormatter("dd-MMM-yyyy HH:mm"); // 09-Jul-2014 13:03
   private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
   private static final DateTimeFormatter dtTimef6; // ISO, with millis appended
   private static final DateTimeFormatter dtTimef7 = //  7/9/14 9:04
       DateTimeFormatter.ofPattern("M/d/yy H:mm");
-  private static final DateTimeFormatter dtTimef8 =
-      DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a"); //  7/9/2014 9:04:55 PM
+  private static final DateTimeFormatter dtTimef8 = caseInsensitiveDTFormatter("M/d/yyyy h:mm:ss a"); //  7/9/2014 9:04:55 PM
+
+  public static DateTimeFormatter caseInsensitiveDTFormatter(String pattern) {
+    return new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(pattern).toFormatter();
+  }
 
   static {
     dtTimef6 =

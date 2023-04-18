@@ -22,7 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.datetimes.DateTimeParser;
@@ -63,7 +64,7 @@ public class DateTimeColumnTest {
   public void testCustomParser() {
     // Just do enough to ensure the parser is wired up correctly
     DateTimeParser customParser = new DateTimeParser(ColumnType.LOCAL_DATE_TIME);
-    customParser.setMissingValueStrings(Arrays.asList("not here"));
+    customParser.setMissingValueStrings(List.of("not here"));
     column1.setParser(customParser);
 
     column1.appendCell("not here");

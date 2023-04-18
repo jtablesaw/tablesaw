@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.dates.DateParser;
+import tech.tablesaw.columns.datetimes.DateTimeParser;
 
 public class DateColumnTest {
   private DateColumn column1;
@@ -61,7 +62,7 @@ public class DateColumnTest {
     column1.appendCell("12/23/1924");
     column1.appendCell("12-May-2015");
     column1.appendCell("12-Jan-2015");
-    column1.setPrintFormatter(DateTimeFormatter.ofPattern("MMM~dd~yyyy"), "");
+    column1.setPrintFormatter(DateTimeParser.caseInsensitiveDTFormatter("MMM~dd~yyyy"), "");
     assertEquals(
         "Column: Game date"
             + System.lineSeparator()
@@ -82,7 +83,7 @@ public class DateColumnTest {
     column1.appendCell("12/23/1924");
     column1.appendCell("12-May-2015");
     column1.appendCell("12-Jan-2015");
-    column1.setPrintFormatter(DateTimeFormatter.ofPattern("MMM~dd~yyyy"));
+    column1.setPrintFormatter(DateTimeParser.caseInsensitiveDTFormatter("MMM~dd~yyyy"));
     assertEquals(
         "Column: Game date"
             + System.lineSeparator()
