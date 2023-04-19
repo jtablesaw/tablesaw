@@ -303,7 +303,7 @@ public class CsvReaderTest {
     CsvReadOptions options =
         CsvReadOptions.builder(reader)
             .header(header)
-            .dateTimeFormat(DateTimeParser.caseInsensitiveDTFormatter("dd-MMM-yyyy HH:mm:ss"))
+            .dateTimeFormat(DateTimeParser.caseInsensitiveFormatter("dd-MMM-yyyy HH:mm:ss"))
             .build();
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
@@ -328,7 +328,7 @@ public class CsvReaderTest {
     CsvReadOptions options =
         CsvReadOptions.builder(reader)
             .header(header)
-            .dateTimeFormat(DateTimeParser.caseInsensitiveDTFormatter("dd-MMM-yyyy HH:mm:ss"))
+            .dateTimeFormat(DateTimeParser.caseInsensitiveFormatter("dd-MMM-yyyy HH:mm:ss"))
             .build();
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));

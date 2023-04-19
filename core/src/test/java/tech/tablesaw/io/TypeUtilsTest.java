@@ -36,7 +36,7 @@ public class TypeUtilsTest {
 
   @Test
   public void testDateFormatter() {
-    final DateTimeFormatter dtTimef8 = DateTimeParser.caseInsensitiveDTFormatter("M/d/yyyy h:mm:ss a");
+    final DateTimeFormatter dtTimef8 = DateTimeParser.caseInsensitiveFormatter("M/d/yyyy h:mm:ss a");
 
     String anotherDate = "10/2/2016 8:18:03 AM";
     dtTimef8.parse(anotherDate);

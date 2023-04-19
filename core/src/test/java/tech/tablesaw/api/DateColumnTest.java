@@ -62,7 +62,7 @@ public class DateColumnTest {
     column1.appendCell("12/23/1924");
     column1.appendCell("12-May-2015");
     column1.appendCell("12-Jan-2015");
-    column1.setPrintFormatter(DateTimeParser.caseInsensitiveDTFormatter("MMM~dd~yyyy"), "");
+    column1.setPrintFormatter(DateTimeParser.caseInsensitiveFormatter("MMM~dd~yyyy"), "");
     assertEquals(
         "Column: Game date"
             + System.lineSeparator()
@@ -83,7 +83,7 @@ public class DateColumnTest {
     column1.appendCell("12/23/1924");
     column1.appendCell("12-May-2015");
     column1.appendCell("12-Jan-2015");
-    column1.setPrintFormatter(DateTimeParser.caseInsensitiveDTFormatter("MMM~dd~yyyy"));
+    column1.setPrintFormatter(DateTimeParser.caseInsensitiveFormatter("MMM~dd~yyyy"));
     assertEquals(
         "Column: Game date"
             + System.lineSeparator()
