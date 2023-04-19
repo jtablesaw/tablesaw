@@ -132,12 +132,12 @@ public abstract class FileReader {
     Map<String, Integer> nameCounter = new HashMap<>();
     for (int i = 0; i < headerNames.length; i++) {
       String name = headerNames[i];
-      Integer count = nameCounter.get(name);
+      Integer count = nameCounter.get(name.toLowerCase());
       if (count == null) {
-        nameCounter.put(name, 1);
+        nameCounter.put(name.toLowerCase(), 1);
       } else {
         count++;
-        nameCounter.put(name, count);
+        nameCounter.put(name.toLowerCase(), count);
         headerNames[i] = name + "-" + count;
       }
     }
