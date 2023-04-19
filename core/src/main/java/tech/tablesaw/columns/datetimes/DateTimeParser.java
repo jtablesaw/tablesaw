@@ -19,14 +19,26 @@ public class DateTimeParser extends AbstractColumnParser<LocalDateTime> {
       DateTimeFormatter.ofPattern(
           "yyyy-MM-dd HH:mm:ss.S"); // 2014-07-09 13:03:44.7 (as above, but without leading 0 in
   // millis)
-  private static final DateTimeFormatter dtTimef4 =
-      DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm"); // 09-Jul-2014 13:03
+  private static final DateTimeFormatter dtTimef4 = caseInsensitiveFormatter("dd-MMM-yyyy HH:mm"); // 09-Jul-2014 13:03
   private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
   private static final DateTimeFormatter dtTimef6; // ISO, with millis appended
   private static final DateTimeFormatter dtTimef7 = //  7/9/14 9:04
       DateTimeFormatter.ofPattern("M/d/yy H:mm");
-  private static final DateTimeFormatter dtTimef8 =
-      DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a"); //  7/9/2014 9:04:55 PM
+  private static final DateTimeFormatter dtTimef8 = caseInsensitiveFormatter("M/d/yyyy h:mm:ss a"); //  7/9/2014 9:04:55 PM
+
+  /**
+   * Creates a Case-insensitive formatter using the specified pattern.
+   * This method will create a formatter based on a simple pattern of letters and symbols as described in the class documentation.
+   * For example, d MMM yyyy will format 2011-12-03 as '3 Dec 2011'. The formatter will use the default FORMAT locale.
+   * This function can handle cases like am/AM, pm/PM, Jan/JAN, Feb/FEB etc
+   *
+   * @param pattern the pattern to use, not null
+   * @return the formatter based on the pattern, not null
+   * @throws IllegalArgumentException if the pattern is invalid
+   */
+  public static DateTimeFormatter caseInsensitiveFormatter(String pattern) {
+    return new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(pattern).toFormatter();
+  }
 
   static {
     dtTimef6 =

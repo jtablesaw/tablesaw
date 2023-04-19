@@ -8,6 +8,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.datetimes.DateTimeParser;
 import tech.tablesaw.io.ReadOptions;
 
 public class DateParser extends AbstractColumnParser<LocalDate> {
@@ -19,19 +20,19 @@ public class DateParser extends AbstractColumnParser<LocalDate> {
   private static final DateTimeFormatter dtf4 = DateTimeFormatter.ofPattern("MM.dd.yyyy");
   private static final DateTimeFormatter dtf5 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   private static final DateTimeFormatter dtf6 = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-  private static final DateTimeFormatter dtf7 = DateTimeFormatter.ofPattern("dd/MMM/yyyy");
-  private static final DateTimeFormatter dtf8 = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+  private static final DateTimeFormatter dtf7 = DateTimeParser.caseInsensitiveFormatter("dd/MMM/yyyy");
+  private static final DateTimeFormatter dtf8 = DateTimeParser.caseInsensitiveFormatter("dd-MMM-yyyy");
   private static final DateTimeFormatter dtf9 = DateTimeFormatter.ofPattern("M/d/yyyy");
   private static final DateTimeFormatter dtf10 = DateTimeFormatter.ofPattern("M/d/yy");
-  private static final DateTimeFormatter dtf11 = DateTimeFormatter.ofPattern("MMM/dd/yyyy");
-  private static final DateTimeFormatter dtf12 = DateTimeFormatter.ofPattern("MMM-dd-yyyy");
-  private static final DateTimeFormatter dtf13 = DateTimeFormatter.ofPattern("MMM/dd/yy");
-  private static final DateTimeFormatter dtf14 = DateTimeFormatter.ofPattern("MMM-dd-yy");
-  private static final DateTimeFormatter dtf15 = DateTimeFormatter.ofPattern("MMM/dd/yyyy");
-  private static final DateTimeFormatter dtf16 = DateTimeFormatter.ofPattern("MMM/d/yyyy");
-  private static final DateTimeFormatter dtf17 = DateTimeFormatter.ofPattern("MMM-dd-yy");
-  private static final DateTimeFormatter dtf18 = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-  private static final DateTimeFormatter dtf19 = DateTimeFormatter.ofPattern("MMM d, yyyy");
+  private static final DateTimeFormatter dtf11 = DateTimeParser.caseInsensitiveFormatter("MMM/dd/yyyy");
+  private static final DateTimeFormatter dtf12 = DateTimeParser.caseInsensitiveFormatter("MMM-dd-yyyy");
+  private static final DateTimeFormatter dtf13 = DateTimeParser.caseInsensitiveFormatter("MMM/dd/yy");
+  private static final DateTimeFormatter dtf14 = DateTimeParser.caseInsensitiveFormatter("MMM-dd-yy");
+  private static final DateTimeFormatter dtf15 = DateTimeParser.caseInsensitiveFormatter("MMM/dd/yyyy");
+  private static final DateTimeFormatter dtf16 = DateTimeParser.caseInsensitiveFormatter("MMM/d/yyyy");
+  private static final DateTimeFormatter dtf17 = DateTimeParser.caseInsensitiveFormatter("MMM-dd-yy");
+  private static final DateTimeFormatter dtf18 = DateTimeParser.caseInsensitiveFormatter("MMM dd, yyyy");
+  private static final DateTimeFormatter dtf19 = DateTimeParser.caseInsensitiveFormatter("MMM d, yyyy");
 
   // A formatter that handles all the date formats defined above
   public static final DateTimeFormatter DEFAULT_FORMATTER =

@@ -15,6 +15,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
+import tech.tablesaw.columns.datetimes.DateTimeParser;
 import tech.tablesaw.columns.instant.InstantColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
@@ -46,7 +47,7 @@ public class CsvWriterTest {
   @Test
   void dateFormatter() throws IOException {
     Table table = Table.read().csv("../data/bush.csv").rows(1);
-    table.dateColumn("date").setPrintFormatter(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+    table.dateColumn("date").setPrintFormatter(DateTimeParser.caseInsensitiveFormatter("MMM dd, yyyy"));
     StringWriter writer = new StringWriter();
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
@@ -84,7 +85,7 @@ public class CsvWriterTest {
   @Test
   void printFormatter_date() throws IOException {
     Table table = Table.create("", DateColumn.create("dates"));
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MMM");
+    DateTimeFormatter formatter = DateTimeParser.caseInsensitiveFormatter("yyyy-dd-MMM");
     table.dateColumn("dates").setPrintFormatter(formatter, "WHAT?");
     table
         .dateColumn("dates")
@@ -154,7 +155,7 @@ public class CsvWriterTest {
   @Test
   void printFormatter_datetime() throws IOException {
     Table table = Table.create("", DateTimeColumn.create("dates"));
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy - hh:mm");
+    DateTimeFormatter formatter = DateTimeParser.caseInsensitiveFormatter("MMM d, yyyy - hh:mm");
     table.dateTimeColumn("dates").setPrintFormatter(formatter, "WHAT?");
     table.dateTimeColumn("dates").append(LocalDateTime.of(2011, 1, 1, 4, 30));
     StringWriter writer = new StringWriter();
@@ -216,7 +217,7 @@ public class CsvWriterTest {
   @Test
   void printFormatter_instant() throws IOException {
     Table table = Table.create("", InstantColumn.create("dates"));
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy - hh:mm");
+    DateTimeFormatter formatter = DateTimeParser.caseInsensitiveFormatter("MMM d, yyyy - hh:mm");
     table.instantColumn("dates").setPrintFormatter(new InstantColumnFormatter(formatter, "WHAT?"));
     table.instantColumn("dates").append(Instant.parse("2007-12-03T10:15:30.00Z")).appendMissing();
     StringWriter writer = new StringWriter();
@@ -253,7 +254,7 @@ public class CsvWriterTest {
     table.dateTimeColumn(0).append(LocalDateTime.of(2011, 1, 1, 4, 30));
     table
         .dateTimeColumn("dt")
-        .setPrintFormatter(DateTimeFormatter.ofPattern("MMM d, yyyy - hh:mm"));
+        .setPrintFormatter(DateTimeParser.caseInsensitiveFormatter("MMM d, yyyy - hh:mm"));
     StringWriter writer = new StringWriter();
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(
