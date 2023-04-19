@@ -156,14 +156,15 @@ public class SortTest {
   public void testGetOrderAndCreate0() throws Exception {
     assertThrows(IllegalStateException.class, () -> {
       Table table = Table.create("table1", IntColumn.create(" ales"));
-      AnalyticQuery query = AnalyticQuery.query().from(table)
-                                         .partitionBy("product", "region")
-                                         .orderBy("sales")
-                                         .rowsBetween()
-                                         .unboundedPreceding()
-                                         .andUnBoundedFollowing()
-                                         .sum("sales").as("sumSales")
-                                         .build();
+      AnalyticQuery.query()
+          .from(table)
+          .partitionBy("product", "region")
+          .orderBy("sales")
+          .rowsBetween()
+          .unboundedPreceding()
+          .andUnBoundedFollowing()
+          .sum("sales").as("sumSales")
+          .build();
     });
   }
 }
