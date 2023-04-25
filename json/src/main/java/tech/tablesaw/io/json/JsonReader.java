@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wnameless.json.flattener.JsonFlattener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -103,7 +103,7 @@ public class JsonReader implements DataReader<JsonReadOptions> {
       throw new RuntimeIOException(e);
     }
 
-    Set<String> colNames = new HashSet<>();
+    Set<String> colNames = new LinkedHashSet<>();
     for (JsonNode row : flattenedJsonObj) {
       Iterator<String> fieldNames = row.fieldNames();
       while (fieldNames.hasNext()) {
