@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XlsWriterTest {
+public class XlsxWriterTest {
 
   @Test
   public void testXlsxWriter() throws IOException {
