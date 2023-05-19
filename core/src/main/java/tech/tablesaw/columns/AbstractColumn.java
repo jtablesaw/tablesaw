@@ -194,4 +194,11 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
   public int indexOf(final Object o) {
     return IntStream.range(0, size()).filter(i -> get(i).equals(o)).findFirst().orElse(-1);
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public int lastIndexOf(Object o) {
+    return IntStream.iterate(size() - 1, i -> (i >= 0), i -> i - 1).filter(i -> get(i).equals(o))
+            .findFirst().orElse(-1);
+  }
 }
