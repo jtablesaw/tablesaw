@@ -41,7 +41,11 @@ public class IntDictionaryMap implements DictionaryMap {
 
   private static final int MISSING_VALUE = Integer.MAX_VALUE;
 
-  private static final int DEFAULT_RETURN_VALUE = Integer.MIN_VALUE;
+  private static final int DEFAULT_KEY_VALUE = Integer.MIN_VALUE;
+
+  private static final int DEFAULT_KEY_COUNT = 0;
+
+  private static final int BYTE_SIZE = Integer.SIZE / Byte.SIZE;
 
   private final boolean canPromoteToText = Boolean.TRUE;
 
@@ -55,7 +59,7 @@ public class IntDictionaryMap implements DictionaryMap {
   // value
   private IntArrayList values = new IntArrayList();
 
-  private AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
+  private AtomicInteger nextIndex = new AtomicInteger(DEFAULT_KEY_VALUE);
 
   // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
   // count of values
@@ -67,8 +71,8 @@ public class IntDictionaryMap implements DictionaryMap {
 
   /** Returns a new DictionaryMap that is a deep copy of the original */
   IntDictionaryMap(DictionaryMap original) throws NoKeysAvailableException {
-    valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
-    keyToCount.defaultReturnValue(0);
+    valueToKey.defaultReturnValue(DEFAULT_KEY_VALUE);
+    keyToCount.defaultReturnValue(DEFAULT_KEY_COUNT);
 
     for (int i = 0; i < original.size(); i++) {
       String value = original.getValueForIndex(i);
@@ -95,12 +99,17 @@ public class IntDictionaryMap implements DictionaryMap {
     if (o == null || getClass() != o.getClass()) return false;
     IntDictionaryMap that = (IntDictionaryMap) o;
 
-    boolean a = Objects.equal(values, that.values);
-    boolean b = Objects.equal(keyToValue, that.keyToValue);
-    boolean c = Objects.equal(valueToKey, that.valueToKey);
-    boolean d = Objects.equal(keyToCount, that.keyToCount);
-    boolean e = Objects.equal(nextIndex.get(), that.nextIndex.get());
-    return a && b && c && d && e;
+    boolean isValuesEqual = Objects.equal(values, that.values);
+    boolean isKeyToValueEqual = Objects.equal(keyToValue, that.keyToValue);
+    boolean isValueToKeyEqual = Objects.equal(valueToKey, that.valueToKey);
+    boolean isKeyToCountEqual = Objects.equal(keyToCount, that.keyToCount);
+    boolean isNextIndexEqual = Objects.equal(nextIndex.get(), that.nextIndex.get());
+
+    return isValuesEqual
+            && isKeyToValueEqual
+            && isValueToKeyEqual
+            && isKeyToCountEqual
+            && isNextIndexEqual;
   }
 
   @Override
@@ -212,7 +221,7 @@ public class IntDictionaryMap implements DictionaryMap {
     IntOpenHashSet keys = new IntOpenHashSet(strings.length);
     for (String string : strings) {
       int key = getKeyForValue(string);
-      if (key != DEFAULT_RETURN_VALUE) {
+      if (key != DEFAULT_KEY_VALUE) {
         keys.add(key);
       }
     }
@@ -231,7 +240,7 @@ public class IntDictionaryMap implements DictionaryMap {
     IntOpenHashSet keys = new IntOpenHashSet(strings.size());
     for (String string : strings) {
       int key = getKeyForValue(string);
-      if (key != DEFAULT_RETURN_VALUE) {
+      if (key != DEFAULT_KEY_VALUE) {
         keys.add(key);
       }
     }
@@ -254,7 +263,7 @@ public class IntDictionaryMap implements DictionaryMap {
     } else {
       key = getKeyForValue(value);
     }
-    if (key == DEFAULT_RETURN_VALUE) {
+    if (key == DEFAULT_KEY_VALUE) {
       key = getValueId();
       put(key, value);
     }
@@ -276,7 +285,7 @@ public class IntDictionaryMap implements DictionaryMap {
    * that key
    */
   private void addValuesToSelection(Selection results, int key) {
-    if (key != DEFAULT_RETURN_VALUE) {
+    if (key != DEFAULT_KEY_VALUE) {
       int i = 0;
       for (int next : values) {
         if (key == next) {
@@ -294,7 +303,7 @@ public class IntDictionaryMap implements DictionaryMap {
       str = stringValue;
     }
     int valueId = getKeyForValue(str);
-    if (valueId == DEFAULT_RETURN_VALUE) {
+    if (valueId == DEFAULT_KEY_VALUE) {
       valueId = getValueId();
       put(valueId, str);
     }
@@ -309,7 +318,7 @@ public class IntDictionaryMap implements DictionaryMap {
 
   @Override
   public void clear() {
-    nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
+    nextIndex = new AtomicInteger(DEFAULT_KEY_VALUE);
     values.clear();
     keyToValue.clear();
     valueToKey.clear();
@@ -375,11 +384,7 @@ public class IntDictionaryMap implements DictionaryMap {
   /** Returns the contents of the cell at rowNumber as a byte[] */
   @Override
   public byte[] asBytes(int rowNumber) {
-    return ByteBuffer.allocate(byteSize()).putInt(getKeyForIndex(rowNumber)).array();
-  }
-
-  private int byteSize() {
-    return 4;
+    return ByteBuffer.allocate(BYTE_SIZE).putInt(getKeyForIndex(rowNumber)).array();
   }
 
   /** Returns the count of missing values in this column */

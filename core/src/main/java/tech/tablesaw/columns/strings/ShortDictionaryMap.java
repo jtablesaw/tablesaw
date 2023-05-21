@@ -41,7 +41,11 @@ public class ShortDictionaryMap implements DictionaryMap {
 
   private static final short MISSING_VALUE = Short.MAX_VALUE;
 
-  private static final short DEFAULT_RETURN_VALUE = Short.MIN_VALUE;
+  private static final short DEFAULT_KEY_VALUE = Short.MIN_VALUE;
+
+  private static final int DEFAULT_KEY_COUNT = 0;
+
+  private static final int BYTE_SIZE = Integer.SIZE / Byte.SIZE;
 
   private final boolean canPromoteToText;
 
@@ -57,7 +61,7 @@ public class ShortDictionaryMap implements DictionaryMap {
   // value
   private ShortArrayList values = new ShortArrayList();
 
-  private AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
+  private AtomicInteger nextIndex = new AtomicInteger(DEFAULT_KEY_VALUE);
 
   // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
   // count of values
@@ -75,10 +79,9 @@ public class ShortDictionaryMap implements DictionaryMap {
 
   /** Returns a new DictionaryMap that is a deep copy of the original */
   ShortDictionaryMap(ByteDictionaryMap original) throws NoKeysAvailableException {
-    valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
-    keyToCount.defaultReturnValue(0);
+    valueToKey.defaultReturnValue(DEFAULT_KEY_VALUE);
+    keyToCount.defaultReturnValue(DEFAULT_KEY_COUNT);
     canPromoteToText = original.canPromoteToText();
-
     for (int i = 0; i < original.size(); i++) {
       String value = original.getValueForIndex(i);
       append(value);
@@ -224,7 +227,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     ShortOpenHashSet keys = new ShortOpenHashSet(strings.length);
     for (String string : strings) {
       short key = getKeyForValue(string);
-      if (key != DEFAULT_RETURN_VALUE) {
+      if (key != DEFAULT_KEY_VALUE) {
         keys.add(key);
       }
     }
@@ -243,7 +246,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     ShortOpenHashSet keys = new ShortOpenHashSet(strings.size());
     for (String string : strings) {
       short key = getKeyForValue(string);
-      if (key != DEFAULT_RETURN_VALUE) {
+      if (key != DEFAULT_KEY_VALUE) {
         keys.add(key);
       }
     }
@@ -266,7 +269,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     } else {
       key = getKeyForValue(value);
     }
-    if (key == DEFAULT_RETURN_VALUE) {
+    if (key == DEFAULT_KEY_VALUE) {
       key = getValueId();
       put(key, value);
     }
@@ -290,7 +293,7 @@ public class ShortDictionaryMap implements DictionaryMap {
    * that key
    */
   private void addValuesToSelection(Selection results, short key) {
-    if (key != DEFAULT_RETURN_VALUE) {
+    if (key != DEFAULT_KEY_VALUE) {
       int i = 0;
       for (short next : values) {
         if (key == next) {
@@ -308,7 +311,7 @@ public class ShortDictionaryMap implements DictionaryMap {
       str = stringValue;
     }
     short valueId = getKeyForValue(str);
-    if (valueId == DEFAULT_RETURN_VALUE) {
+    if (valueId == DEFAULT_KEY_VALUE) {
       valueId = getValueId();
       put(valueId, str);
     }
@@ -323,7 +326,7 @@ public class ShortDictionaryMap implements DictionaryMap {
 
   @Override
   public void clear() {
-    nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
+    nextIndex = new AtomicInteger(DEFAULT_KEY_VALUE);
     values.clear();
     keyToValue.clear();
     valueToKey.clear();
@@ -389,11 +392,7 @@ public class ShortDictionaryMap implements DictionaryMap {
   /** Returns the contents of the cell at rowNumber as a byte[] */
   @Override
   public byte[] asBytes(int rowNumber) {
-    return ByteBuffer.allocate(byteSize()).putShort((short) getKeyForIndex(rowNumber)).array();
-  }
-
-  private int byteSize() {
-    return 2;
+    return ByteBuffer.allocate(BYTE_SIZE).putShort((short) getKeyForIndex(rowNumber)).array();
   }
 
   /** Returns the count of missing values in this column */

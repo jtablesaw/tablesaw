@@ -41,7 +41,11 @@ public class ByteDictionaryMap implements DictionaryMap {
 
   private static final byte MISSING_VALUE = Byte.MAX_VALUE;
 
-  private static final byte DEFAULT_RETURN_VALUE = Byte.MIN_VALUE;
+  private static final byte DEFAULT_KEY_VALUE = Byte.MIN_VALUE;
+
+  private static final byte DEFAULT_KEY_COUNT = 0;
+
+  private static final int BYTE_SIZE = Byte.SIZE / Byte.SIZE;
 
   private boolean canPromoteToText = Boolean.TRUE;
 
@@ -56,7 +60,7 @@ public class ByteDictionaryMap implements DictionaryMap {
   // value
   private ByteArrayList values = new ByteArrayList();
 
-  private AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
+  private AtomicInteger nextIndex = new AtomicInteger(DEFAULT_KEY_VALUE);
 
   // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
   // count of values
@@ -75,13 +79,13 @@ public class ByteDictionaryMap implements DictionaryMap {
   }
 
   public ByteDictionaryMap() {
-    valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
-    keyToCount.defaultReturnValue(0);
+    valueToKey.defaultReturnValue(DEFAULT_KEY_VALUE);
+    keyToCount.defaultReturnValue(DEFAULT_KEY_COUNT);
   }
 
   public ByteDictionaryMap(boolean canPromoteToText) {
-    valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
-    keyToCount.defaultReturnValue(0);
+    valueToKey.defaultReturnValue(DEFAULT_KEY_VALUE);
+    keyToCount.defaultReturnValue(DEFAULT_KEY_COUNT);
     this.canPromoteToText = canPromoteToText;
   }
 
@@ -104,12 +108,17 @@ public class ByteDictionaryMap implements DictionaryMap {
     if (o == null || getClass() != o.getClass()) return false;
     ByteDictionaryMap that = (ByteDictionaryMap) o;
 
-    boolean a = Objects.equal(values, that.values);
-    boolean b = Objects.equal(keyToValue, that.keyToValue);
-    boolean c = Objects.equal(valueToKey, that.valueToKey);
-    boolean d = Objects.equal(keyToCount, that.keyToCount);
-    boolean e = Objects.equal(nextIndex.get(), that.nextIndex.get());
-    return a && b && c && d && e;
+    boolean isValuesEqual = Objects.equal(values, that.values);
+    boolean isKeyToValueEqual = Objects.equal(keyToValue, that.keyToValue);
+    boolean isValueToKeyEqual = Objects.equal(valueToKey, that.valueToKey);
+    boolean isKeyToCountEqual = Objects.equal(keyToCount, that.keyToCount);
+    boolean isNextIndexEqual = Objects.equal(nextIndex.get(), that.nextIndex.get());
+
+    return isValuesEqual
+            && isKeyToValueEqual
+            && isValueToKeyEqual
+            && isKeyToCountEqual
+            && isNextIndexEqual;
   }
 
   @Override
@@ -214,7 +223,7 @@ public class ByteDictionaryMap implements DictionaryMap {
     ByteOpenHashSet keys = new ByteOpenHashSet();
     for (String string : strings) {
       byte key = getKeyForValue(string);
-      if (key != DEFAULT_RETURN_VALUE) {
+      if (key != DEFAULT_KEY_VALUE) {
         keys.add(key);
       }
     }
@@ -234,7 +243,7 @@ public class ByteDictionaryMap implements DictionaryMap {
 
     for (String string : strings) {
       byte key = getKeyForValue(string);
-      if (key != DEFAULT_RETURN_VALUE) {
+      if (key != DEFAULT_KEY_VALUE) {
         keys.add(key);
       }
     }
@@ -257,7 +266,7 @@ public class ByteDictionaryMap implements DictionaryMap {
     } else {
       key = getKeyForValue(value);
     }
-    if (key == DEFAULT_RETURN_VALUE) {
+    if (key == DEFAULT_KEY_VALUE) {
       key = getValueId();
       put(key, value);
     }
@@ -281,7 +290,7 @@ public class ByteDictionaryMap implements DictionaryMap {
    * that key
    */
   private void addValuesToSelection(Selection results, byte key) {
-    if (key != DEFAULT_RETURN_VALUE) {
+    if (key != DEFAULT_KEY_VALUE) {
       int i = 0;
       for (byte next : values) {
         if (key == next) {
@@ -300,7 +309,7 @@ public class ByteDictionaryMap implements DictionaryMap {
     }
     byte valueId = getKeyForValue(str);
 
-    if (valueId == DEFAULT_RETURN_VALUE) { // this is a new value not in dictionary
+    if (valueId == DEFAULT_KEY_VALUE) { // this is a new value not in dictionary
       valueId = getValueId();
       put(valueId, str);
     }
@@ -315,7 +324,7 @@ public class ByteDictionaryMap implements DictionaryMap {
 
   @Override
   public void clear() {
-    nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
+    nextIndex = new AtomicInteger(DEFAULT_KEY_VALUE);
     values.clear();
     keyToValue.clear();
     valueToKey.clear();
@@ -386,11 +395,7 @@ public class ByteDictionaryMap implements DictionaryMap {
   /** Returns the contents of the cell at rowNumber as a byte[] */
   @Override
   public byte[] asBytes(int rowNumber) {
-    return ByteBuffer.allocate(byteSize()).put((byte) getKeyForIndex(rowNumber)).array();
-  }
-
-  private int byteSize() {
-    return 1;
+    return ByteBuffer.allocate(BYTE_SIZE).put((byte) getKeyForIndex(rowNumber)).array();
   }
 
   /** Returns the count of missing values in this column */
