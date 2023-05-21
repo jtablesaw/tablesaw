@@ -38,6 +38,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -327,23 +329,23 @@ public class SawWriter {
       // we write each one keys first, then values
       // the idea is that there are relatively few unique values so it's cheap to write them more
       // than once
-      ObjectSet<Byte2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
-      for (Byte2ObjectMap.Entry<String> entry : entries) {
-        dos.writeByte(entry.getByteKey());
+      Set<Map.Entry<Byte, String>> entries = dictionary.getKeyValueEntries();
+      for (Map.Entry<Byte, String> entry : entries) {
+        dos.writeByte(entry.getKey());
       }
 
-      for (Byte2ObjectMap.Entry<String> entry : entries) {
+      for (Map.Entry<Byte, String> entry : entries) {
         dos.writeUTF(entry.getValue());
       }
 
-      ObjectSet<Byte2IntMap.Entry> counts = dictionary.getKeyCountEntries();
+      Set<Map.Entry<Byte, Integer>> counts = dictionary.getKeyCountEntries();
 
-      for (Byte2IntMap.Entry count : counts) {
-        dos.writeByte(count.getByteKey());
+      for (Map.Entry<Byte, Integer> count : counts) {
+        dos.writeByte(count.getKey());
       }
 
-      for (Byte2IntMap.Entry count : counts) {
-        dos.writeInt(count.getIntValue());
+      for (Map.Entry<Byte, Integer> count : counts) {
+        dos.writeInt(count.getValue());
       }
 
       // write the values in column order, including repeats
@@ -368,24 +370,24 @@ public class SawWriter {
       // we write each one keys first, then values
       // the idea is that there are relatively few unique values so it's cheap to write them more
       // than once
-      ObjectSet<Short2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
+      Set<Map.Entry<Short, String>> entries = dictionary.getKeyValueEntries();
 
-      for (Short2ObjectMap.Entry<String> entry : entries) {
-        dos.writeShort(entry.getShortKey());
+      for (Map.Entry<Short, String> entry : entries) {
+        dos.writeShort(entry.getKey());
       }
 
-      for (Short2ObjectMap.Entry<String> entry : entries) {
+      for (Map.Entry<Short, String> entry : entries) {
         dos.writeUTF(entry.getValue());
       }
 
-      ObjectSet<Short2IntMap.Entry> counts = dictionary.getKeyCountEntries();
+      Set<Map.Entry<Short, Integer>> counts = dictionary.getKeyCountEntries();
 
-      for (Short2IntMap.Entry count : counts) {
-        dos.writeShort(count.getShortKey());
+      for (Map.Entry<Short, Integer> count : counts) {
+        dos.writeShort(count.getKey());
       }
 
-      for (Short2IntMap.Entry count : counts) {
-        dos.writeInt(count.getIntValue());
+      for (Map.Entry<Short, Integer> count : counts) {
+        dos.writeInt(count.getValue());
       }
 
       // write the values in column order, including repeats
@@ -410,24 +412,24 @@ public class SawWriter {
       // we write each one keys first, then values
       // the idea is that there are relatively few unique values so it's cheap to write them more
       // than once
-      ObjectSet<Int2ObjectMap.Entry<String>> entries = dictionary.getKeyValueEntries();
+      Set<Map.Entry<Integer, String>> entries = dictionary.getKeyValueEntries();
 
-      for (Int2ObjectMap.Entry<String> entry : entries) {
-        dos.writeInt(entry.getIntKey());
+      for (Map.Entry<Integer, String> entry : entries) {
+        dos.writeInt(entry.getKey());
       }
 
-      for (Int2ObjectMap.Entry<String> entry : entries) {
+      for (Map.Entry<Integer, String> entry : entries) {
         dos.writeUTF(entry.getValue());
       }
 
-      ObjectSet<Int2IntMap.Entry> counts = dictionary.getKeyCountEntries();
+      Set<Map.Entry<Integer, Integer>> counts = dictionary.getKeyCountEntries();
 
-      for (Int2IntMap.Entry count : counts) {
-        dos.writeInt(count.getIntKey());
+      for (Map.Entry<Integer, Integer> count : counts) {
+        dos.writeInt(count.getKey());
       }
 
-      for (Int2IntMap.Entry count : counts) {
-        dos.writeInt(count.getIntValue());
+      for (Map.Entry<Integer, Integer> count : counts) {
+        dos.writeInt(count.getValue());
       }
 
       // write the values in column order, including repeats
