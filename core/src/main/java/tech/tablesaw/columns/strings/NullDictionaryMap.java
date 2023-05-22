@@ -13,11 +13,11 @@ import tech.tablesaw.selection.Selection;
  * It works with textual data that is non-categorical, or where the number of categories approaches
  * 1/2 of the total number of values, making dictionary encoding inefficient.
  */
-public class NullDictionaryMap implements DictionaryMap {
+public class NullDictionaryMap extends DictionaryMap<Number> {
 
   private final TextualStringData data;
 
-  public NullDictionaryMap(DictionaryMap dictionaryMap) {
+  public NullDictionaryMap(DictionaryMap<?> dictionaryMap) {
     data = TextualStringData.create();
     for (String s : dictionaryMap) {
       data.append(s);
@@ -38,12 +38,6 @@ public class NullDictionaryMap implements DictionaryMap {
   public int getKeyAtIndex(int rowNumber) {
     throw new UnsupportedOperationException(
         "NullDictionaryMap does not support getKeyAtIndex because there is no dictionary encoding.");
-  }
-
-  @Override
-  public String getValueForKey(int key) {
-    throw new UnsupportedOperationException(
-        "NullDictionaryMap does not support getValueForKey because there is no dictionary encoding.");
   }
 
   @Override
@@ -190,5 +184,25 @@ public class NullDictionaryMap implements DictionaryMap {
   @Override
   public boolean canPromoteToText() {
     return false;
+  }
+
+  @Override
+  protected Number getDefaultKeyValue() {
+    return null;
+  }
+
+  @Override
+  protected Number getDefaultMissingValue() {
+    return null;
+  }
+
+  @Override
+  protected Number getMaxUnique() {
+    return null;
+  }
+
+  @Override
+  protected int getByteSize() {
+    return 0;
   }
 }
