@@ -39,12 +39,12 @@ enum AggregateFunctions implements FunctionMetaData {
   MEAN(new Mean<>(), ColumnType.DOUBLE, AggregateFunctions::isNumericColumn),
   COUNT(new Count<>(), ColumnType.INTEGER, t -> true);
 
-  private final WindowForGrowingAggregateFunction<?> implementation;
+  private final WindowDependentAggregateFunction<?> implementation;
   private final ColumnType outputColumnType;
   private final Function<ColumnType, Boolean> isCompatibleColumnTestFunc;
 
   AggregateFunctions(
-      WindowForGrowingAggregateFunction<?> implementation,
+      WindowDependentAggregateFunction<?> implementation,
       ColumnType outputColumnType,
       Function<ColumnType, Boolean> isCompatibleColumnTestFunc) {
     this.implementation = implementation;
@@ -108,7 +108,7 @@ enum AggregateFunctions implements FunctionMetaData {
     }
   }
 
-  static class Sum<T extends Number> extends WindowForGrowingAggregateFunction<T> {
+  static class Sum<T extends Number> extends WindowDependentAggregateFunction<T> {
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
       return new AppendAggregateFunction<T, Double>() {
@@ -173,7 +173,7 @@ enum AggregateFunctions implements FunctionMetaData {
     }
   }
 
-  static class Max<T extends Number> extends WindowForGrowingAggregateFunction<T> {
+  static class Max<T extends Number> extends WindowDependentAggregateFunction<T> {
 
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
@@ -233,7 +233,7 @@ enum AggregateFunctions implements FunctionMetaData {
     }
   }
 
-  static class Min<T extends Number> extends WindowForGrowingAggregateFunction<T> {
+  static class Min<T extends Number> extends WindowDependentAggregateFunction<T> {
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
       return new AppendAggregateFunction<T, Double>() {
@@ -292,7 +292,7 @@ enum AggregateFunctions implements FunctionMetaData {
     }
   }
 
-  static class Mean<T extends Number> extends WindowForGrowingAggregateFunction<T> {
+  static class Mean<T extends Number> extends WindowDependentAggregateFunction<T> {
 
     @Override
     AppendAggregateFunction<T, Double> functionForAppendWindows() {
@@ -363,7 +363,7 @@ enum AggregateFunctions implements FunctionMetaData {
     }
   }
 
-  static class Count<T> extends WindowForGrowingAggregateFunction<T> {
+  static class Count<T> extends WindowDependentAggregateFunction<T> {
 
     @Override
     AppendAggregateFunction<T, Integer> functionForAppendWindows() {
