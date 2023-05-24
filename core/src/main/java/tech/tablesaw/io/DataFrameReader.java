@@ -162,7 +162,7 @@ public class DataFrameReader {
 
   public Table db(ResultSet resultSet, String tableName) throws SQLException {
     Table table = SqlResultSetReader.read(resultSet);
-    table.setName(tableName);
+    table.setTableName(tableName);
     return table;
   }
 

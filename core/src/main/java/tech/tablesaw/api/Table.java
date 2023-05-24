@@ -70,7 +70,7 @@ public class Table extends Relation implements Iterable<Row> {
   /** The columns that hold the data in this table */
   private final List<Column<?>> columnList = new ArrayList<>();
   /** The name of the table */
-  private String name;
+  private String tableName;
 
   // standard column names for melt and cast operations
   public static final String MELT_VARIABLE_COLUMN_NAME = "variable";
@@ -80,18 +80,18 @@ public class Table extends Relation implements Iterable<Row> {
   private Table() {}
 
   /** Returns a new table initialized with the given name */
-  private Table(String name) {
-    this.name = name;
+  private Table(String tableName) {
+    this.tableName = tableName;
   }
 
   /**
    * Returns a new Table initialized with the given names and columns
    *
-   * @param name The name of the table
+   * @param tableName The name of the table
    * @param columns One or more columns, all of which must have either the same length or size 0
    */
-  protected Table(String name, Column<?>... columns) {
-    this(name);
+  protected Table(String tableName, Column<?>... columns) {
+    this(tableName);
     for (final Column<?> column : columns) {
       this.addColumns(column);
     }
@@ -100,11 +100,11 @@ public class Table extends Relation implements Iterable<Row> {
   /**
    * Returns a new Table initialized with the given names and columns
    *
-   * @param name The name of the table
+   * @param tableName The name of the table
    * @param columns One or more columns, all of which must have either the same length or size 0
    */
-  protected Table(String name, Collection<Column<?>> columns) {
-    this(name);
+  protected Table(String tableName, Collection<Column<?>> columns) {
+    this(tableName);
     for (final Column<?> column : columns) {
       this.addColumns(column);
     }
@@ -209,11 +209,11 @@ public class Table extends Relation implements Iterable<Row> {
    */
   private static Sort getSort(String... columnNames) {
     Sort key = null;
-    for (String s : columnNames) {
+    for (String columnName : columnNames) {
       if (key == null) {
-        key = first(s, Sort.Order.DESCEND);
+        key = first(columnName, Sort.Order.DESCEND);
       } else {
-        key.next(s, Sort.Order.DESCEND);
+        key.next(columnName, Sort.Order.DESCEND);
       }
     }
     return key;
@@ -237,10 +237,10 @@ public class Table extends Relation implements Iterable<Row> {
    * rowCount() of the table they're being added to. Column names in the table must remain unique.
    */
   @Override
-  public Table addColumns(final Column<?>... cols) {
-    for (final Column<?> c : cols) {
-      validateColumn(c);
-      columnList.add(c);
+  public Table addColumns(final Column<?>... columns) {
+    for (final Column<?> column : columns) {
+      validateColumn(column);
+      columnList.add(column);
     }
     return this;
   }
@@ -262,15 +262,16 @@ public class Table extends Relation implements Iterable<Row> {
    */
   private void validateColumn(final Column<?> newColumn) {
     Preconditions.checkNotNull(
-        newColumn, "Attempted to add a null to the columns in table " + name);
-    List<String> stringList = new ArrayList<>();
+        newColumn, "Attempted to add a null to the columns in table " + tableName);
+    List<String> columnNamesLowerCase = new ArrayList<>();
     for (String name : columnNames()) {
-      stringList.add(name.toLowerCase());
+      columnNamesLowerCase.add(name.toLowerCase());
     }
-    if (stringList.contains(newColumn.name().toLowerCase())) {
+    final boolean isDuplicateColumn = columnNamesLowerCase.contains(newColumn.name().toLowerCase());
+    if (isDuplicateColumn) {
       String message =
           String.format(
-              "Cannot add column with duplicate name %s to table %s", newColumn.name(), name);
+              "Cannot add column with duplicate name %s to table %s", newColumn.name(), tableName);
       throw new IllegalArgumentException(message);
     }
 
@@ -323,9 +324,9 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public Table reorderColumns(String... columnNames) {
     Preconditions.checkArgument(columnNames.length == columnCount());
-    Table table = Table.create(name);
-    for (String name : columnNames) {
-      table.addColumns(column(name));
+    Table table = Table.create(tableName);
+    for (String columnName : columnNames) {
+      table.addColumns(column(columnName));
     }
     return table;
   }
@@ -363,8 +364,8 @@ public class Table extends Relation implements Iterable<Row> {
 
   /** Sets the name of the table */
   @Override
-  public Table setName(String name) {
-    this.name = name;
+  public Table setTableName(String tableName) {
+    this.tableName = tableName;
     return this;
   }
 
@@ -432,7 +433,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
     if (columnIndex == -1) {
       throw new IllegalArgumentException(
-          String.format("Column %s is not present in table %s", columnName, name));
+          String.format("Column %s is not present in table %s", columnName, tableName));
     }
     return columnIndex;
   }
@@ -452,7 +453,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
     if (columnIndex == -1) {
       throw new IllegalArgumentException(
-          String.format("Column %s is not present in table %s", column.name(), name));
+          String.format("Column %s is not present in table %s", column.name(), tableName));
     }
     return columnIndex;
   }
@@ -460,7 +461,7 @@ public class Table extends Relation implements Iterable<Row> {
   /** Returns the name of the table */
   @Override
   public String name() {
-    return name;
+    return tableName;
   }
 
   /** Returns a List of the names of all the columns in this table */
@@ -475,7 +476,7 @@ public class Table extends Relation implements Iterable<Row> {
 
   /** Returns a table with the same columns as this table, but no data */
   public Table emptyCopy() {
-    Table copy = new Table(name);
+    Table copy = new Table(tableName);
     for (Column<?> column : columnList) {
       copy.addColumns(column.emptyCopy());
     }
@@ -487,7 +488,7 @@ public class Table extends Relation implements Iterable<Row> {
    * size
    */
   public Table emptyCopy(int rowSize) {
-    Table copy = new Table(name);
+    Table copy = new Table(tableName);
     for (Column<?> column : columnList) {
       copy.addColumns(column.emptyCopy(rowSize));
     }
@@ -504,10 +505,10 @@ public class Table extends Relation implements Iterable<Row> {
   public void copyRowsToTable(Selection rows, Table newTable) {
     for (int columnIndex = 0; columnIndex < this.columnCount(); columnIndex++) {
       Column oldColumn = this.column(columnIndex);
-      int r = 0;
+      int row = 0;
       for (int i : rows) {
-        newTable.column(columnIndex).set(r, oldColumn, i);
-        r++;
+        newTable.column(columnIndex).set(row, oldColumn, i);
+        row++;
       }
     }
   }
@@ -519,10 +520,10 @@ public class Table extends Relation implements Iterable<Row> {
   public void copyRowsToTable(int[] rows, Table newTable) {
     for (int columnIndex = 0; columnIndex < columnCount(); columnIndex++) {
       Column oldColumn = column(columnIndex);
-      int r = 0;
+      int row = 0;
       for (int i : rows) {
-        newTable.column(columnIndex).set(r, oldColumn, i);
-        r++;
+        newTable.column(columnIndex).set(row, oldColumn, i);
+        row++;
       }
     }
   }
@@ -553,11 +554,11 @@ public class Table extends Relation implements Iterable<Row> {
     if (row1.columnCount() != row2.columnCount()) {
       return false;
     }
-    boolean result;
+    boolean isDuplicateRow;
     for (int columnIndex = 0; columnIndex < row1.columnCount(); columnIndex++) {
-      Column<?> c = column(columnIndex);
-      result = c.equals(row1.getRowNumber(), row2.getRowNumber());
-      if (!result) {
+      Column<?> column = column(columnIndex);
+      isDuplicateRow = column.equals(row1.getRowNumber(), row2.getRowNumber());
+      if (!isDuplicateRow) {
         return false;
       }
     }
@@ -820,7 +821,7 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public Table dropRange(int rowCount) {
     Preconditions.checkArgument(rowCount <= rowCount());
-    int rowStart = rowCount >= 0 ? rowCount : 0;
+    int rowStart = Math.max(rowCount, 0);
     int rowEnd = rowCount >= 0 ? rowCount() : rowCount() + rowCount;
     return where(Selection.withRange(rowStart, rowEnd));
   }
@@ -1005,7 +1006,7 @@ public class Table extends Relation implements Iterable<Row> {
    * @see #retainColumns(Column[])
    */
   public Table selectColumns(Column<?>... columns) {
-    Table t = Table.create(this.name);
+    Table t = Table.create(this.tableName);
     for (Column<?> c : columns) {
       t.addColumns(c.copy());
     }
@@ -1019,7 +1020,7 @@ public class Table extends Relation implements Iterable<Row> {
    * @see #retainColumns(String[])
    */
   public Table selectColumns(String... columnNames) {
-    Table t = Table.create(this.name);
+    Table t = Table.create(this.tableName);
     for (String s : columnNames) {
       t.addColumns(column(s).copy());
     }
@@ -1034,7 +1035,7 @@ public class Table extends Relation implements Iterable<Row> {
    * @see #removeColumns(int[])
    */
   public Table rejectColumns(int... columnIndexes) {
-    Table t = Table.create(this.name);
+    Table t = Table.create(this.tableName);
     RoaringBitmap bm = new RoaringBitmap();
     bm.add((long) 0, columnCount());
     RoaringBitmap excluded = new RoaringBitmap();
@@ -1083,7 +1084,7 @@ public class Table extends Relation implements Iterable<Row> {
    * @see #retainColumns(int[])
    */
   public Table selectColumns(int... columnIndexes) {
-    Table t = Table.create(this.name);
+    Table t = Table.create(this.tableName);
     RoaringBitmap bm = new RoaringBitmap();
     bm.add(columnIndexes);
     for (int i : bm) {
@@ -1111,9 +1112,13 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public Table retainColumns(Column<?>... columns) {
     List<Column<?>> retained = Arrays.asList(columns);
+    addRetainedColumns(retained);
+    return this;
+  }
+
+  private void addRetainedColumns(List<Column<?>> retained) {
     columnList.clear();
     columnList.addAll(retained);
-    return this;
   }
 
   /**
@@ -1122,8 +1127,7 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public Table retainColumns(int... columnIndexes) {
     List<Column<?>> retained = columns(columnIndexes);
-    columnList.clear();
-    columnList.addAll(retained);
+    addRetainedColumns(retained);
     return this;
   }
 
@@ -1133,8 +1137,7 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public Table retainColumns(String... columnNames) {
     List<Column<?>> retained = columns(columnNames);
-    columnList.clear();
-    columnList.addAll(retained);
+    addRetainedColumns(retained);
     return this;
   }
 
@@ -1213,8 +1216,8 @@ public class Table extends Relation implements Iterable<Row> {
    * <p>Summarizer can return the results as a table using the Summarizer:apply() method. Summarizer
    * can compute sub-totals using the Summarizer:by() method.
    */
-  public Summarizer summarize(String columName, AggregateFunction<?, ?>... functions) {
-    return summarize(column(columName), functions);
+  public Summarizer summarize(String columnName, AggregateFunction<?, ?>... functions) {
+    return summarize(column(columnName), functions);
   }
 
   /**
@@ -1576,15 +1579,11 @@ public class Table extends Relation implements Iterable<Row> {
     int columnOffset = useFirstColumnForHeadings ? 1 : 0;
     ColumnType resultColumnType = validateTableHasSingleColumnType(columnOffset);
 
-    Table transposed = Table.create(this.name);
+    Table transposed = Table.create(this.tableName);
     if (includeColumnHeadingsAsFirstColumn) {
       String columnName = useFirstColumnForHeadings ? this.column(0).name() : "0";
       StringColumn labelColumn = StringColumn.create(columnName);
-      for (int i = columnOffset; i < this.columnCount(); i++) {
-        Column<?> columnToTranspose = this.column(i);
-        labelColumn.append(columnToTranspose.name());
-      }
-      transposed.addColumns(labelColumn);
+      addColumnsTransposed(columnOffset, transposed, labelColumn);
     }
 
     if (useFirstColumnForHeadings) {
@@ -1595,6 +1594,14 @@ public class Table extends Relation implements Iterable<Row> {
           transposed, resultColumnType, row -> String.valueOf(transposed.columnCount()), 0);
     }
     return transposed;
+  }
+
+  private void addColumnsTransposed(int columnOffset, Table transposed, StringColumn labelColumn) {
+    for (int i = columnOffset; i < this.columnCount(); i++) {
+      Column<?> columnToTranspose = this.column(i);
+      labelColumn.append(columnToTranspose.name());
+    }
+    transposed.addColumns(labelColumn);
   }
 
   private ColumnType validateTableHasSingleColumnType(int startingColumn) {
@@ -1667,7 +1674,7 @@ public class Table extends Relation implements Iterable<Row> {
   public Table melt(
       List<String> idVariables, List<NumericColumn<?>> measuredVariables, Boolean dropMissing) {
 
-    Table result = Table.create(name);
+    Table result = Table.create(tableName);
     for (String idColName : idVariables) {
       result.addColumns(column(idColName).type().create(idColName));
     }
@@ -1768,7 +1775,7 @@ public class Table extends Relation implements Iterable<Row> {
                     !column.name().equals(MELT_VARIABLE_COLUMN_NAME)
                         && !column.name().equals(MELT_VALUE_COLUMN_NAME))
             .collect(toList());
-    Table result = Table.create(name);
+    Table result = Table.create(tableName);
     for (Column<?> idColumn : idColumns) {
       result.addColumns(idColumn.type().create(idColumn.name()));
     }

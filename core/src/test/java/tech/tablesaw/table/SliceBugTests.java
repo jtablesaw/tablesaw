@@ -77,7 +77,7 @@ public class SliceBugTests {
                     .instantColumn("sale_timestamp")
                     .asLocalDateTimeColumn()
                     .isAfter(LocalDateTime.of(2018, 1, 1, 13, 1, 3)));
-    filteredTable.setName("filteredTable");
+    filteredTable.setTableName("filteredTable");
 
     // work around
     TableSliceGroup slices = filteredTable.splitOn("countries");

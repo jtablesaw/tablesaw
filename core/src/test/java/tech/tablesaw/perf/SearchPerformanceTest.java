@@ -57,7 +57,7 @@ public class SearchPerformanceTest {
     t = t.sortAscendingOn("date");
 
     dateIndex = new LongIndex(t.dateTimeColumn("date"));
-    t.setName("Observations");
+    t.setTableName("Observations");
 
     DateTimeColumn dates = t.dateTimeColumn("date");
     DoubleColumn lowValues = t.doubleColumn("lowValue");

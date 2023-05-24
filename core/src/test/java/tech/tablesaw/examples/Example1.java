@@ -100,11 +100,11 @@ public class Example1 extends AbstractExample {
     // NOTE: we need a static import of QueryHelper for this section. See the imports above
 
     Table highRatings = table1.where(table1.numberColumn("approval").isGreaterThan(80));
-    highRatings.setName("Approval ratings over 80%");
+    highRatings.setTableName("Approval ratings over 80%");
     out(highRatings);
 
     Table Q3 = table1.where(date.isInQ3());
-    Q3.setName("3rd Quarter ratings");
+    Q3.setTableName("3rd Quarter ratings");
     out(Q3);
 
     // Sorting

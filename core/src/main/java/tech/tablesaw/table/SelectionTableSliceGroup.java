@@ -53,7 +53,7 @@ public class SelectionTableSliceGroup extends TableSliceGroup {
     for (int i = 0; i < selections.size(); i++) {
       TableSlice view = new TableSlice(getSourceTable(), selections.get(i));
       String name = nameTemplate + ": " + i + 1;
-      view.setName(name);
+      view.setTableName(name);
       getSlices().add(view);
     }
   }

@@ -104,7 +104,7 @@ public class Tutorial implements DocsSourceFile {
 
     // @@ totals
     Table injuriesByScale = tornadoes.summarize("Injuries", median).by("Scale").sortOn("Scale");
-    injuriesByScale.setName("Median injuries by Tornado Scale");
+    injuriesByScale.setTableName("Median injuries by Tornado Scale");
     // @@ totals
     outputWriter.write(injuriesByScale.first(10), "totals");
 

@@ -32,7 +32,7 @@ public class TornadoVisualizations extends AbstractExample {
 
     Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
     out(tornadoes.structure());
-    tornadoes.setName("tornadoes");
+    tornadoes.setTableName("tornadoes");
 
     // filter out a bad data point
     tornadoes = tornadoes.where(tornadoes.numberColumn("Start Lat").isGreaterThan(20f));

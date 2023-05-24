@@ -123,7 +123,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
     // Construct slices for all the values in our maps
     for (Entry<ByteArray, Selection> entry : selectionMap.entrySet()) {
       TableSlice slice = new TableSlice(getSourceTable(), entry.getValue());
-      slice.setName(sliceNameMap.get(entry.getKey()));
+      slice.setTableName(sliceNameMap.get(entry.getKey()));
       addSlice(slice);
     }
   }
