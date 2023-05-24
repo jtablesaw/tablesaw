@@ -62,7 +62,7 @@ public class TimeDependentFilteringTest {
     Table t = defineSchema();
     generateTestData(t, numberOfRecordsInTable, stopwatch);
 
-    t.setName("Observations");
+    t.setTableName("Observations");
 
     // non temporal constraints
     String conceptA = t.stringColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));

@@ -139,7 +139,7 @@ public class TableSliceTest {
   @Test
   public void setName() {
     TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
-    slice.setName("foo");
+    slice.setTableName("foo");
     assertEquals("foo", slice.name());
     assertNotEquals("foo", source.name());
   }

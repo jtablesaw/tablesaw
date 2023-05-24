@@ -38,7 +38,7 @@ public class TornadoExample extends AbstractExample {
     out(structure);
     out(structure.where(structure.stringColumn("Column Type").isEqualTo("DOUBLE")));
 
-    tornadoes.setName("tornadoes");
+    tornadoes.setTableName("tornadoes");
 
     out();
     out("Column names");
@@ -92,20 +92,20 @@ public class TornadoExample extends AbstractExample {
     Table injuriesByScale = tornadoes.summarize("Injuries", median).by("Scale");
     Table fob = tornadoes.summarize("Injuries", min).by("Scale", "State");
     out(fob);
-    injuriesByScale.setName("Median injuries by Tornado Scale");
+    injuriesByScale.setTableName("Median injuries by Tornado Scale");
     out(injuriesByScale);
 
     injuriesByScale = tornadoes.summarize("Injuries", mean).by("Scale");
-    injuriesByScale.setName("Average injuries by Tornado Scale");
+    injuriesByScale.setTableName("Average injuries by Tornado Scale");
     out(injuriesByScale);
 
     // TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
     Table injuriesByScaleState = tornadoes.summarize("Injuries", median).by("Scale", "State");
-    injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
+    injuriesByScaleState.setTableName("Median injuries by Tornado Scale and State");
     out(injuriesByScaleState);
 
     Table injuriesByScaleState2 = tornadoes.summarize("Injuries", sum).by("State", "Scale");
-    injuriesByScaleState2.setName("Total injuries by Tornado Scale and State");
+    injuriesByScaleState2.setTableName("Total injuries by Tornado Scale and State");
     out(injuriesByScaleState2);
 
     // Average days between tornadoes in the summer

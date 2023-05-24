@@ -196,8 +196,8 @@ public class TableSlice extends Relation {
 
   /** {@inheritDoc} */
   @Override
-  public TableSlice setName(String name) {
-    this.name = name;
+  public TableSlice setTableName(String tableName) {
+    this.name = tableName;
     return this;
   }
 

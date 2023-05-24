@@ -62,7 +62,7 @@ public abstract class Relation implements Iterable<Row> {
    *
    * @return This Relation
    */
-  public abstract Relation setName(String name);
+  public abstract Relation setTableName(String tableName);
 
   /**
    * Returns true if this relation has zero rows and false otherwise. Rows of missing values are
