@@ -1,12 +1,5 @@
 package tech.tablesaw.columns.strings;
 
-import java.nio.ByteBuffer;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import it.unimi.dsi.fastutil.bytes.ByteComparator;
-import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
@@ -14,6 +7,11 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * Interface implemented by the objects that perform the dictionary encoding of the Strings in
@@ -29,7 +27,7 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
 
   protected boolean canPromoteToText = Boolean.TRUE;
 
-  protected AtomicInteger nextIndex = new AtomicInteger((int) getDefaultKeyValue());
+  protected AtomicReference<T> nextIndex = new AtomicReference<>(getDefaultKeyValue());
 
   private final Comparator<T> reverseDictionarySortComparator =
           (i, i1) ->
@@ -48,7 +46,9 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
 
   /** Returns the int that represents the string at rowNumber */
   public int getKeyAtIndex(int rowNumber) {
-    return (int) values.get(rowNumber);
+    T value = values.get(rowNumber);
+    if (value != null) return value.intValue();
+    else return getDefaultKeyValue().intValue();
   }
 
   public String getValueForKey(T key) {
@@ -65,7 +65,8 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
   }
 
   public int countOccurrences(String value) {
-    return keyToCount.get(valueToKey.get(value));
+    T key = valueToKey.get(value);
+    return key == null ? 0 : keyToCount.get(key);
   }
 
   public Set<String> asSet() {
@@ -107,11 +108,12 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
   }
 
   public int getKeyForIndex(int i) {
-    return (int) values.get(i);
+    return values.get(i).intValue();
   }
 
   public int firstIndexOf(String value) {
-    return values.indexOf(valueToKey.get(value));
+    T key = valueToKey.get(value);
+    return key == null ? -1 : values.indexOf(key);
   }
 
   public String[] asObjectArray() {
@@ -157,43 +159,52 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
   }
 
   public void append(String value) throws NoKeysAvailableException {
-    T key = getDefaultKeyValue();
+    T key = null;
+    if (value == null || StringColumnType.missingValueIndicator().equals(value)) {
+      key = getDefaultMissingValue();
+      value = StringColumnType.missingValueIndicator();
+    }
+
+    if (valueToKey.containsKey(value)) {
+      key = valueToKey.get(value);
+      keyToCount.put(key, keyToCount.get(key) + 1);
+    } else {
+      if (key == null) key = getValueId();
+      put(key, value);
+      keyToCount.put(key, 1);
+    }
+    values.add(key);
+  }
+
+  public void set(int rowIndex, String value) throws NoKeysAvailableException {
+    T key;
     if (value == null || StringColumnType.missingValueIndicator().equals(value)) {
       key = getDefaultMissingValue();
       put(key, StringColumnType.missingValueIndicator());
-    }
-
-    if (valueToKey.containsKey(key)) {
-      key = (T) getValueId();
+    }else if (valueToKey.containsKey(value)) {
+      key = valueToKey.get(value);
+      keyToCount.put(key, keyToCount.get(key) + 1);
+    } else {
+      key = getValueId();
       put(key, value);
+      keyToCount.put(key, 1);
     }
-    values.add(key);
-    keyToCount.put(key, 1);
-  }
-
-  public void set(int rowIndex, String stringValue) throws NoKeysAvailableException {
-    String str = StringColumnType.missingValueIndicator();
-    if (stringValue != null) {
-      str = stringValue;
+    T oldKey = values.get(rowIndex);
+    if (keyToValue.containsKey(oldKey)) {
+      String oldValue = keyToValue.get(oldKey);
+      if (keyToCount.get(oldKey) == 1) {
+        keyToCount.remove(oldKey);
+        keyToValue.remove(oldKey);
+        valueToKey.remove(oldValue);
+      } else {
+        keyToCount.put(oldKey, keyToCount.get(oldKey) - 1);
+      }
     }
-    T valueId = getDefaultKeyValue();
-
-    if (valueToKey.containsKey(str)) { // this is a new value not in dictionary
-      valueId = (T) getValueId();
-      put(valueId, str);
-    }
-
-    T oldKey = values.set(rowIndex, valueId);
-    keyToCount.put(valueId, 1);
-    if (keyToCount.put(oldKey, -1) == 1) {
-      String obsoleteValue = keyToValue.remove(oldKey);
-      valueToKey.remove(obsoleteValue);
-      keyToCount.remove(oldKey);
-    }
+    values.set(rowIndex, key);
   }
 
   public void clear() {
-    nextIndex = new AtomicInteger((Integer) getDefaultKeyValue());
+    nextIndex = new AtomicReference<>((getDefaultKeyValue()));
     values.clear();
     keyToValue.clear();
     valueToKey.clear();
@@ -313,12 +324,13 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
 
   /** Returns the contents of the cell at rowNumber as a byte[] */
   public byte[] asBytes(int rowNumber) {
-    return ByteBuffer.allocate((Integer) getByteSize()).put((byte) getKeyForIndex(rowNumber)).array();
+    return ByteBuffer.allocate(getByteSize()).put((byte) getKeyForIndex(rowNumber)).array();
   }
 
   /** Returns the count of missing values in this column */
   public int countMissing() {
-    return keyToCount.get(getDefaultMissingValue());
+    Integer val = keyToCount.get(getDefaultMissingValue());
+    return val == null ? 0 : val;
   }
 
   @Override
@@ -349,13 +361,13 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
   }
 
   public boolean isMissing(int rowNumber) {
-    return getKeyForIndex(rowNumber) == (int) getDefaultMissingValue();
+    return getKeyForIndex(rowNumber) == getDefaultMissingValue().intValue();
   }
 
   public abstract DictionaryMap promoteYourself();
 
   public int nextKeyWithoutIncrementing() {
-    return nextIndex.get();
+    return nextIndex.get().intValue();
   }
 
   public boolean canPromoteToText() {
@@ -402,14 +414,5 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
 
   protected abstract int getByteSize();
 
-  private Number getValueId() throws NoKeysAvailableException {
-    int nextValue = nextIndex.incrementAndGet();
-    if (nextValue >= Byte.MAX_VALUE) {
-      String msg =
-              String.format(
-                      "String column can only contain %d unique values. Column has more.", getMaxUnique());
-      throw new NoKeysAvailableException(msg);
-    }
-    return nextValue;
-  }
+  protected abstract T getValueId() throws NoKeysAvailableException;
 }

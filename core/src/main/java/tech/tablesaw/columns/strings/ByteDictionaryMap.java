@@ -1,23 +1,15 @@
 package tech.tablesaw.columns.strings;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.bytes.*;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 
-import java.nio.ByteBuffer;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.booleans.BooleanColumnType;
-import tech.tablesaw.selection.BitmapBackedSelection;
-import tech.tablesaw.selection.Selection;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** A map that supports reversible key value pairs of int-String */
 public class ByteDictionaryMap extends DictionaryMap<Byte> {
@@ -93,7 +85,7 @@ public class ByteDictionaryMap extends DictionaryMap<Byte> {
 
   public static class ByteDictionaryBuilder {
 
-    private AtomicInteger nextIndex;
+    private AtomicReference<Byte> nextIndex;
 
     // The list of keys that represents the contents of string column in user order
     private ByteArrayList values;
@@ -109,7 +101,7 @@ public class ByteDictionaryMap extends DictionaryMap<Byte> {
     private Byte2IntOpenHashMap keyToCount;
 
     public ByteDictionaryBuilder setNextIndex(int value) {
-      nextIndex = new AtomicInteger(value);
+      nextIndex = new AtomicReference<>((byte) value);
       return this;
     }
 
@@ -141,5 +133,17 @@ public class ByteDictionaryMap extends DictionaryMap<Byte> {
       Preconditions.checkNotNull(values);
       return new ByteDictionaryMap(this);
     }
+  }
+
+  @Override
+  protected Byte getValueId() throws NoKeysAvailableException {
+    Byte nextValue = nextIndex.updateAndGet((v)-> (byte) (v+1));
+    if (nextValue.intValue() >= getMaxUnique().intValue()) {
+      String msg =
+              String.format(
+                      "String column can only contain %d unique values. Column has more.", getMaxUnique().intValue());
+      throw new NoKeysAvailableException(msg);
+    }
+    return nextValue;
   }
 }

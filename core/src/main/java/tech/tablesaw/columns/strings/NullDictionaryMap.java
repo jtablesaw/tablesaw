@@ -1,12 +1,13 @@
 package tech.tablesaw.columns.strings;
 
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.Selection;
 
 /**
  * A null dictionary map has no actual dictionary as the underlying data is not dictionary encoded.
@@ -204,5 +205,10 @@ public class NullDictionaryMap extends DictionaryMap<Number> {
   @Override
   protected int getByteSize() {
     return 0;
+  }
+
+  @Override
+  protected Number getValueId() throws NoKeysAvailableException {
+    return null;
   }
 }
