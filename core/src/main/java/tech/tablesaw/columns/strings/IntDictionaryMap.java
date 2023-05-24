@@ -5,27 +5,11 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntListIterator;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.booleans.BooleanColumnType;
-import tech.tablesaw.selection.BitmapBackedSelection;
-import tech.tablesaw.selection.Selection;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** A map that supports reversible key value pairs of int-String */
 public class IntDictionaryMap extends DictionaryMap<Integer> {
@@ -96,7 +80,7 @@ public class IntDictionaryMap extends DictionaryMap<Integer> {
 
   public static class IntDictionaryBuilder {
 
-    private AtomicInteger nextIndex;
+    private AtomicReference<Integer> nextIndex;
 
     // The list of keys that represents the contents of string column in user order
     private IntArrayList values;
@@ -112,7 +96,7 @@ public class IntDictionaryMap extends DictionaryMap<Integer> {
     private Int2IntOpenHashMap keyToCount;
 
     public IntDictionaryBuilder setNextIndex(int value) {
-      nextIndex = new AtomicInteger(value);
+      nextIndex = new AtomicReference<Integer>(value);
       return this;
     }
 
@@ -144,5 +128,18 @@ public class IntDictionaryMap extends DictionaryMap<Integer> {
       Preconditions.checkNotNull(values);
       return new IntDictionaryMap(this);
     }
+  }
+
+  @Override
+  protected Integer getValueId() throws NoKeysAvailableException {
+
+    int nextValue = nextIndex.updateAndGet((v)->v+1);
+    if (nextValue >= getMaxUnique()) {
+      String msg =
+              String.format(
+                      "String column can only contain %d unique values. Column has more.", getMaxUnique());
+      throw new NoKeysAvailableException(msg);
+    }
+    return nextValue;
   }
 }

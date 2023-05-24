@@ -1,31 +1,15 @@
 package tech.tablesaw.columns.strings;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrays;
-import it.unimi.dsi.fastutil.shorts.ShortListIterator;
-import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.booleans.BooleanColumnType;
-import tech.tablesaw.selection.BitmapBackedSelection;
-import tech.tablesaw.selection.Selection;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** A map that supports reversible key value pairs of short-String */
 public class ShortDictionaryMap extends DictionaryMap<Short> {
@@ -105,7 +89,7 @@ public class ShortDictionaryMap extends DictionaryMap<Short> {
 
   public static class ShortDictionaryBuilder {
 
-    private AtomicInteger nextIndex;
+    private AtomicReference<Short> nextIndex;
 
     // The list of keys that represents the contents of string column in user order
     private ShortArrayList values;
@@ -123,7 +107,7 @@ public class ShortDictionaryMap extends DictionaryMap<Short> {
     private boolean canPromoteToText = true;
 
     public ShortDictionaryBuilder setNextIndex(int value) {
-      nextIndex = new AtomicInteger(value);
+      nextIndex = new AtomicReference<>((short) value);
       return this;
     }
 
@@ -160,5 +144,18 @@ public class ShortDictionaryMap extends DictionaryMap<Short> {
       Preconditions.checkNotNull(values);
       return new ShortDictionaryMap(this);
     }
+  }
+
+  @Override
+  protected Short getValueId() throws NoKeysAvailableException {
+
+    Short nextValue = nextIndex.updateAndGet((v)-> (short) (v+1));
+    if (nextValue.intValue() >= getMaxUnique().intValue()) {
+      String msg =
+              String.format(
+                      "String column can only contain %d unique values. Column has more.", getMaxUnique().intValue());
+      throw new NoKeysAvailableException(msg);
+    }
+    return nextValue;
   }
 }
