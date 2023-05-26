@@ -87,55 +87,7 @@ public class ShortDictionaryMap extends DictionaryMap<Short> {
     return dictionaryMap;
   }
 
-  public static class ShortDictionaryBuilder {
-
-    private AtomicReference<Short> nextIndex;
-
-    // The list of keys that represents the contents of string column in user order
-    private ShortArrayList values;
-
-    // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
-    // count of values
-    private Short2ObjectMap<String> keyToValue;
-
-    // the inverse of the above keyToValue map
-    private Object2ShortOpenHashMap<String> valueToKey;
-
-    // the map with counts
-    private Short2IntOpenHashMap keyToCount;
-
-    private boolean canPromoteToText = true;
-
-    public ShortDictionaryBuilder setNextIndex(int value) {
-      nextIndex = new AtomicReference<>((short) value);
-      return this;
-    }
-
-    public ShortDictionaryBuilder setKeyToValue(Short2ObjectMap<String> keyToValue) {
-      this.keyToValue = keyToValue;
-      return this;
-    }
-
-    public ShortDictionaryBuilder setCanPromoteToText(boolean canPromoteToText) {
-      this.canPromoteToText = canPromoteToText;
-      return this;
-    }
-
-    public ShortDictionaryBuilder setValueToKey(Object2ShortOpenHashMap<String> valueToKey) {
-      this.valueToKey = valueToKey;
-      return this;
-    }
-
-    public ShortDictionaryBuilder setKeyToCount(Short2IntOpenHashMap keyToCount) {
-      this.keyToCount = keyToCount;
-      return this;
-    }
-
-    public ShortDictionaryBuilder setValues(short[] data) {
-      this.values = new ShortArrayList(data);
-      return this;
-    }
-
+  public static class ShortDictionaryBuilder extends DictionaryMapBuilder<ShortDictionaryMap, Short> {
     public ShortDictionaryMap build() {
       Preconditions.checkNotNull(nextIndex);
       Preconditions.checkNotNull(keyToCount);

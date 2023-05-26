@@ -415,4 +415,55 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
   protected abstract int getByteSize();
 
   protected abstract T getValueId() throws NoKeysAvailableException;
+
+  public static abstract class DictionaryMapBuilder<E extends DictionaryMap<N>, N extends Number> {
+    protected AtomicReference<N> nextIndex;
+
+    // The list of keys that represents the contents of string column in user order
+    protected List<N> values;
+
+    // we maintain 3 maps, one from strings to keys, one from keys to strings, and one from key to
+    // count of values
+    protected Map<N, String> keyToValue;
+
+    // the inverse of the above keyToValue map
+    protected Map<String, N> valueToKey;
+
+    // the map with counts
+    protected Map<N, Integer> keyToCount;
+
+    protected boolean canPromoteToText = true;
+
+    public DictionaryMapBuilder<E, N> setNextIndex(N value) {
+      nextIndex = new AtomicReference<N>(value);
+      return this;
+    }
+
+    public DictionaryMapBuilder<E, N> setValues(N[] values) {
+      this.values = List.of(values);
+      return this;
+    }
+
+    public DictionaryMapBuilder<E, N> setKeyToValue(Map<N, String> keyToValue) {
+      this.keyToValue = keyToValue;
+      return this;
+    }
+
+    public DictionaryMapBuilder<E, N> setValueToKey(Map<String, N> valueToKey) {
+      this.valueToKey = valueToKey;
+      return this;
+    }
+
+    public DictionaryMapBuilder<E, N> setKeyToCount(Map<N, Integer> keyToCount) {
+      this.keyToCount = keyToCount;
+      return this;
+    }
+
+    public DictionaryMapBuilder<E, N> setCanPromoteToText(boolean canPromoteToText) {
+      this.canPromoteToText = canPromoteToText;
+      return this;
+    }
+
+    public abstract E build();
+  }
 }

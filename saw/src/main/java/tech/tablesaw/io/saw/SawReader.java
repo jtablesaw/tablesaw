@@ -347,7 +347,7 @@ public class SawReader {
       throws IOException {
 
     int cardinality = metaData.getCardinality();
-    byte[] data = new byte[rowcount];
+    Byte[] data = new Byte[rowcount];
     byte[] keys = new byte[cardinality];
     byte[] countKeys = new byte[cardinality];
     String[] values = new String[cardinality];
@@ -382,7 +382,7 @@ public class SawReader {
         .setValueToKey(valueToKey)
         .setKeyToValue(keyToValue)
         .setKeyToCount(keyToCount)
-        .setNextIndex(metaData.getNextStringKey())
+        .setNextIndex((byte) metaData.getNextStringKey())
         .build();
   }
 
@@ -390,7 +390,7 @@ public class SawReader {
       throws IOException {
 
     int cardinality = metaData.getCardinality();
-    short[] data = new short[rowcount];
+    Short[] data = new Short[rowcount];
     short[] keys = new short[cardinality];
     short[] countKeys = new short[cardinality];
     String[] values = new String[cardinality];
@@ -426,7 +426,7 @@ public class SawReader {
         .setKeyToValue(keyToValue)
         .setKeyToCount(keyToCount)
         .setCanPromoteToText(true) // TODO: read from metadata
-        .setNextIndex(metaData.getNextStringKey())
+        .setNextIndex((short) metaData.getNextStringKey())
         .build();
   }
 
@@ -434,7 +434,7 @@ public class SawReader {
       throws IOException {
 
     int cardinality = metaData.getCardinality();
-    int[] data = new int[rowcount];
+    Integer[] data = new Integer[rowcount];
     int[] keys = new int[cardinality];
     int[] countKeys = new int[cardinality];
     String[] values = new String[cardinality];
