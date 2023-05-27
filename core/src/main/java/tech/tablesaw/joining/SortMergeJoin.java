@@ -114,7 +114,7 @@ class SortMergeJoin implements JoinStrategy {
     }
     SortMergeJoinPerformer sortMergeJoinPerformer = new SortMergeJoinPerformer(joinType, LEFT_RECORD_ID_NAME,
             RIGHT_RECORD_ID_NAME, leftJoinColumnPositions, rightJoinColumnPositions);
-    sortMergeJoinPerformer.join(result, table1, table2, resultIgnoreColIndexes);
+    sortMergeJoinPerformer.perform(result, table1, table2, resultIgnoreColIndexes);
     result.removeColumns(LEFT_RECORD_ID_NAME, RIGHT_RECORD_ID_NAME);
 
     if (!keepAllJoinKeyColumns) {
