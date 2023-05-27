@@ -95,11 +95,6 @@ public class IntIndex implements Index {
     index = new Int2ObjectAVLTreeMap<>(tempMap);
   }
 
-  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-    for (int i : tableKeys) {
-      selection.add(i);
-    }
-  }
 
   /**
    * Returns a bitmap {@link Selection} containing row numbers of all cells matching the given int

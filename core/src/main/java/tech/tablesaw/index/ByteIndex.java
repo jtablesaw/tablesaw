@@ -50,11 +50,7 @@ public class ByteIndex implements Index {
     index = new Byte2ObjectAVLTreeMap<>(tempMap);
   }
 
-  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-    for (int i : tableKeys) {
-      selection.add(i);
-    }
-  }
+
 
   /**
    * Returns a bitmap containing row numbers of all cells matching the given int

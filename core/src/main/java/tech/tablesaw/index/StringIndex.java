@@ -47,11 +47,7 @@ public class StringIndex implements Index {
     index = new HashMap<>(tempMap);
   }
 
-  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-    for (int i : tableKeys) {
-      selection.add(i);
-    }
-  }
+
 
   /**
    * Returns a bitmap {@link Selection} containing row numbers of all cells matching the given int
