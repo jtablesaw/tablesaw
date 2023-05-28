@@ -301,7 +301,7 @@ public class TableSlice extends Relation {
       IntComparator comparator = SortUtils.getComparator(table, key);
       this.sortOrder = sortOn(comparator);
     } else {
-      IntComparatorChain chain = SortUtils.getChain(table, key);
+      IntComparator chain = SortUtils.getChain(table, key);
       this.sortOrder = sortOn(chain);
     }
   }

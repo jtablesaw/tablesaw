@@ -20,9 +20,10 @@ import javax.annotation.concurrent.Immutable;
 
 /** A Comparator for sorting int primitives in descending order */
 @Immutable
-public final class DescendingIntComparator {
+public class DescendingIntComparator implements IntComparator {
 
-  public static IntComparator instance() {
-    return IntComparators.OPPOSITE_COMPARATOR;
+  @Override
+  public int compare(int o1, int o2) {
+    return Integer.compare(o2, o1);
   }
 }

@@ -14,7 +14,7 @@ public class SortUtils {
   private SortUtils() {}
 
   /** Returns a comparator chain for sorting according to the given key */
-  public static IntComparatorChain getChain(Table table, Sort key) {
+  public static IntComparator getChain(Table table, Sort key) {
     Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
     Map.Entry<String, Sort.Order> sort = entries.next();
     Column<?> column = table.column(sort.getKey());
