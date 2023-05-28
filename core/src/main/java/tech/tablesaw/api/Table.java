@@ -712,7 +712,7 @@ public class Table extends Relation implements Iterable<Row> {
       IntComparator comparator = SortUtils.getComparator(this, key);
       return parallelSortOn(comparator);
     }
-    IntComparatorChain chain = SortUtils.getChain(this, key);
+    IntComparator chain = SortUtils.getChain(this, key);
     return parallelSortOn(chain);
   }
 

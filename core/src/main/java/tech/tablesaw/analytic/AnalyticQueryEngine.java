@@ -2,6 +2,8 @@ package tech.tablesaw.analytic;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Optional;
+
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.analytic.ArgumentList.FunctionCall;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
@@ -20,7 +22,7 @@ import tech.tablesaw.table.TableSlice;
 final class AnalyticQueryEngine {
   private final AnalyticQuery query;
   private final Table destination;
-  private final IntComparatorChain rowComparator;
+  private final IntComparator rowComparator;
 
   private AnalyticQueryEngine(AnalyticQuery query) {
     this.query = query;
