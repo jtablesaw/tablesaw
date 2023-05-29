@@ -50,7 +50,7 @@ public class IntIndexTest {
   @Test
   public void testGet() {
     Selection fromCol = table.numberColumn("approval").eval(NumberPredicates.isEqualTo(71));
-    Selection fromIdx = index.get(71);
+    Selection fromIdx = index.get((double)71);
     assertEquals(fromCol, fromIdx);
   }
 
@@ -69,7 +69,7 @@ public class IntIndexTest {
   public void testGTE() {
     Selection fromCol =
         table.numberColumn("approval").eval(NumberPredicates.isGreaterThanOrEqualTo(71));
-    Selection fromIdx = index.atLeast(71);
+    Selection fromIdx = index.atLeast((double)71);
     assertEquals(fromCol, fromIdx);
   }
 
@@ -87,21 +87,21 @@ public class IntIndexTest {
   public void testLTE() {
     Selection fromCol =
         table.numberColumn("approval").eval(NumberPredicates.isLessThanOrEqualTo(71));
-    Selection fromIdx = index.atMost(71);
+    Selection fromIdx = index.atMost((double)71);
     assertEquals(fromCol, fromIdx);
   }
 
   @Test
   public void testLT() {
     Selection fromCol = table.numberColumn("approval").eval(NumberPredicates.isLessThan(71));
-    Selection fromIdx = index.lessThan(71);
+    Selection fromIdx = index.lessThan((double)71);
     assertEquals(fromCol, fromIdx);
   }
 
   @Test
   public void testGT() {
     Selection fromCol = table.numberColumn("approval").eval(NumberPredicates.isGreaterThan(71));
-    Selection fromIdx = index.greaterThan(71);
+    Selection fromIdx = index.greaterThan((double)71);
     assertEquals(fromCol, fromIdx);
   }
 

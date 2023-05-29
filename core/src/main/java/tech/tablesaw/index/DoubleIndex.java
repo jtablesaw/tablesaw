@@ -22,8 +22,10 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.util.SortedMap;
+
 /** An index for double-precision 64-bit IEEE 754 floating point columns. */
-public class DoubleIndex implements Index {
+public class DoubleIndex extends Index {
 
   private final Double2ObjectAVLTreeMap<IntArrayList> index;
 
@@ -31,6 +33,7 @@ public class DoubleIndex implements Index {
   public DoubleIndex(DoubleColumn column) {
     int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
     Double2ObjectOpenHashMap<IntArrayList> tempMap = new Double2ObjectOpenHashMap<>(sizeEstimate);
+
     for (int i = 0; i < column.size(); i++) {
       double value = column.getDouble(i);
       IntArrayList recordIds = tempMap.get(value);
@@ -43,65 +46,39 @@ public class DoubleIndex implements Index {
         recordIds.add(i);
       }
     }
+
     index = new Double2ObjectAVLTreeMap<>(tempMap);
   }
 
 
-
-  /**
-   * Returns a bitmap containing row numbers of all cells matching the given int
-   *
-   * @param value This is a 'key' from the index perspective, meaning it is a value from the
-   *     standpoint of the column
-   */
-  public Selection get(double value) {
-    Selection selection = new BitmapBackedSelection();
-    IntArrayList list = index.get(value);
-    if (list != null) {
-      addAllToSelection(list, selection);
-    }
-    return selection;
+  @Override
+  protected <T> IntArrayList getIndexList(T value) {
+    return index.get(value);
   }
 
   /** Returns a {@link Selection} of all values at least as large as the given value */
-  public Selection atLeast(double value) {
-    Selection selection = new BitmapBackedSelection();
-    Double2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
-    for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+
+  @Override
+  protected <T> SortedMap<T, IntArrayList> GTgetTailMap(T value) {
+    Double doubleValue = (Double) value;
+    return (SortedMap<T, IntArrayList>) index.tailMap((double) (doubleValue + 0.000001));
   }
 
-  /** Returns a {@link Selection} of all values greater than the given value */
-  public Selection greaterThan(double value) {
-    Selection selection = new BitmapBackedSelection();
-    Double2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 0.000001);
-    for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> aLgetTailMap(T value) {
+    return (SortedMap<T, IntArrayList>) index.tailMap((double) (value));
   }
 
-  /** Returns a {@link Selection} of all values at most as large as the given value */
-  public Selection atMost(double value) {
-    Selection selection = new BitmapBackedSelection();
-    Double2ObjectSortedMap<IntArrayList> head =
-        index.headMap(value + 0.000001); // we add 1 to get values equal
-    // to the arg
-    for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> aMgetheadMap(T value) {
+    Double doubleValue = (Double) value;
+    return (SortedMap<T, IntArrayList>) index.headMap((double) (doubleValue + 0.000001));
   }
 
-  /** Returns a {@link Selection} of all values less than the given value */
-  public Selection lessThan(double value) {
-    Selection selection = new BitmapBackedSelection();
-    Double2ObjectSortedMap<IntArrayList> head = index.headMap(value);
-    for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> LTgetheadMap(T value) {
+    return (SortedMap<T, IntArrayList>) index.headMap((double) (value));
   }
+
+
 }
