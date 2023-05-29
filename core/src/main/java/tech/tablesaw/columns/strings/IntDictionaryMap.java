@@ -90,12 +90,8 @@ public class IntDictionaryMap extends DictionaryMap<Integer> {
   }
 
   public static class IntDictionaryBuilder extends DictionaryMapBuilder<IntDictionaryMap, Integer> {
-    public IntDictionaryMap build() {
-      Preconditions.checkNotNull(nextIndex);
-      Preconditions.checkNotNull(keyToCount);
-      Preconditions.checkNotNull(keyToValue);
-      Preconditions.checkNotNull(valueToKey);
-      Preconditions.checkNotNull(values);
+    @Override
+    protected IntDictionaryMap createTarget() {
       return new IntDictionaryMap(this);
     }
   }

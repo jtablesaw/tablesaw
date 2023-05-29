@@ -87,17 +87,6 @@ public class ShortDictionaryMap extends DictionaryMap<Short> {
     return dictionaryMap;
   }
 
-  public static class ShortDictionaryBuilder extends DictionaryMapBuilder<ShortDictionaryMap, Short> {
-    public ShortDictionaryMap build() {
-      Preconditions.checkNotNull(nextIndex);
-      Preconditions.checkNotNull(keyToCount);
-      Preconditions.checkNotNull(keyToValue);
-      Preconditions.checkNotNull(valueToKey);
-      Preconditions.checkNotNull(values);
-      return new ShortDictionaryMap(this);
-    }
-  }
-
   @Override
   protected Short getValueId() throws NoKeysAvailableException {
 
@@ -109,5 +98,12 @@ public class ShortDictionaryMap extends DictionaryMap<Short> {
       throw new NoKeysAvailableException(msg);
     }
     return nextValue;
+  }
+
+  public static class ShortDictionaryBuilder extends DictionaryMapBuilder<ShortDictionaryMap, Short> {
+    @Override
+    protected ShortDictionaryMap createTarget() {
+      return new ShortDictionaryMap(this);
+    }
   }
 }
