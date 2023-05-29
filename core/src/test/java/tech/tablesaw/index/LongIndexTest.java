@@ -42,7 +42,7 @@ public class LongIndexTest {
   @Test
   public void testGet() {
     Selection fromCol = table.dateTimeColumn("Midnights").eval(DateTimePredicates.isEqualTo, 71);
-    Selection fromIdx = index.get(71);
+    Selection fromIdx = index.get((long)71);
     assertEquals(fromCol, fromIdx);
   }
 
@@ -50,7 +50,7 @@ public class LongIndexTest {
   public void testGTE() {
     Selection fromCol =
         table.dateTimeColumn("Midnights").eval(DateTimePredicates.isGreaterThanOrEqualTo, 71);
-    Selection fromIdx = index.atLeast(71);
+    Selection fromIdx = index.atLeast((long)71);
     assertEquals(fromCol, fromIdx);
   }
 
@@ -58,14 +58,14 @@ public class LongIndexTest {
   public void testLTE() {
     Selection fromCol =
         table.dateTimeColumn("Midnights").eval(DateTimePredicates.isLessThanOrEqualTo, 71);
-    Selection fromIdx = index.atMost(71);
+    Selection fromIdx = index.atMost((long)71);
     assertEquals(fromCol, fromIdx);
   }
 
   @Test
   public void testLT() {
     Selection fromCol = table.dateTimeColumn("Midnights").eval(DateTimePredicates.isLessThan, 71);
-    Selection fromIdx = index.lessThan(71);
+    Selection fromIdx = index.lessThan((long)71);
     assertEquals(fromCol, fromIdx);
   }
 
@@ -73,7 +73,7 @@ public class LongIndexTest {
   public void testGT() {
     Selection fromCol =
         table.dateTimeColumn("Midnights").eval(DateTimePredicates.isGreaterThan, 71);
-    Selection fromIdx = index.greaterThan(71);
+    Selection fromIdx = index.greaterThan((long)71);
     assertEquals(fromCol, fromIdx);
   }
 }

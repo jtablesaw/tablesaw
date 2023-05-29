@@ -24,8 +24,10 @@ import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.util.SortedMap;
+
 /** An index for {@link ShortColumn} */
-public class ShortIndex implements Index {
+public class ShortIndex extends Index{
 
   private final Short2ObjectAVLTreeMap<IntArrayList> index;
 
@@ -51,11 +53,7 @@ public class ShortIndex implements Index {
     index = new Short2ObjectAVLTreeMap<>(tempMap);
   }
 
-  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-    for (int i : tableKeys) {
-      selection.add(i);
-    }
-  }
+
 
   /**
    * Returns a bitmap containing row numbers of all cells matching the given int
@@ -63,54 +61,31 @@ public class ShortIndex implements Index {
    * @param value This is a 'key' from the index perspective, meaning it is a value from the
    *     standpoint of the column
    */
-  public Selection get(short value) {
-    Selection selection = new BitmapBackedSelection();
-    IntArrayList list = index.get(value);
-    if (list != null) {
-      addAllToSelection(list, selection);
-    }
-    return selection;
+  @Override
+  protected <T> IntArrayList getIndexList(T value) {
+    return index.get(value);
   }
 
-  /** Returns a {@link Selection} of all values at least as large as the given value */
-  public Selection atLeast(short value) {
-    Selection selection = new BitmapBackedSelection();
-    Short2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
-    for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> GTgetTailMap(T value) {
+    Short shortValue = (Short) value;
+    return (SortedMap<T, IntArrayList>) index.tailMap((short) (shortValue + 1));
   }
 
-  /** Returns a {@link Selection} of all values greater than the given value */
-  public Selection greaterThan(short value) {
-    Selection selection = new BitmapBackedSelection();
-    Short2ObjectSortedMap<IntArrayList> tail = index.tailMap((short) (value + 1));
-    for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> aLgetTailMap(T value) {
+    return (SortedMap<T, IntArrayList>) index.tailMap((short) value);
   }
 
-  /** Returns a {@link Selection} of all values at most as large as the given value */
-  public Selection atMost(short value) {
-    Selection selection = new BitmapBackedSelection();
-    Short2ObjectSortedMap<IntArrayList> head =
-        index.headMap((short) (value + 1)); // we add 1 to get values equal to the arg
-    for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> aMgetheadMap(T value) {
+    Short shortValue = (Short) value;
+    return (SortedMap<T, IntArrayList>) index.headMap((short) (shortValue + 1));
   }
 
-  /** Returns a {@link Selection} of all values less than the given value */
-  public Selection lessThan(short value) {
-    Selection selection = new BitmapBackedSelection();
-    Short2ObjectSortedMap<IntArrayList> head =
-        index.headMap(value); // we add 1 to get values equal to the arg
-    for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> LTgetheadMap(T value) {
+    return (SortedMap<T, IntArrayList>) index.headMap((short) value);
   }
+
 }

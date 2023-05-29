@@ -21,6 +21,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.SortedMap;
+
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.IntColumn;
@@ -31,7 +33,7 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 /** An index for four-byte integer and integer backed columns (date, String, time) */
-public class IntIndex implements Index {
+public class IntIndex extends Index{
 
   private final Int2ObjectAVLTreeMap<IntArrayList> index;
 
@@ -95,11 +97,6 @@ public class IntIndex implements Index {
     index = new Int2ObjectAVLTreeMap<>(tempMap);
   }
 
-  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-    for (int i : tableKeys) {
-      selection.add(i);
-    }
-  }
 
   /**
    * Returns a bitmap {@link Selection} containing row numbers of all cells matching the given int
@@ -107,34 +104,12 @@ public class IntIndex implements Index {
    * @param value This is a 'key' from the index perspective, meaning it is a value from the
    *     standpoint of the column
    */
-  public Selection get(int value) {
-    Selection selection = new BitmapBackedSelection();
-    IntArrayList list = index.get(value);
-    if (list != null) {
-      addAllToSelection(list, selection);
-    }
-    return selection;
+
+  @Override
+  protected <T> IntArrayList getIndexList(T value) {
+    return index.get(value);
   }
 
-  /** Returns the {@link Selection} of all values exactly equal to the given value */
-  public Selection get(LocalTime value) {
-    return get(PackedLocalTime.pack(value));
-  }
-
-  /** Returns the {@link Selection} of all values exactly equal to the given value */
-  public Selection get(LocalDate value) {
-    return get(PackedLocalDate.pack(value));
-  }
-
-  /** Returns a {@link Selection} of all values at least as large as the given value */
-  public Selection atLeast(int value) {
-    Selection selection = new BitmapBackedSelection();
-    Int2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
-    for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
-  }
 
   /** Returns a {@link Selection} of all values at least as large as the given value */
   public Selection atLeast(LocalTime value) {
@@ -147,13 +122,29 @@ public class IntIndex implements Index {
   }
 
   /** Returns a {@link Selection} of all values greater than the given value */
-  public Selection greaterThan(int value) {
-    Selection selection = new BitmapBackedSelection();
-    Int2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 1);
-    for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+
+
+
+  @Override
+  protected <T> SortedMap<T, IntArrayList> GTgetTailMap(T value) {
+    Integer intValue = (Integer) value;
+    return (SortedMap<T, IntArrayList>) index.tailMap((int) (intValue + 1));
+  }
+
+  @Override
+  protected <T> SortedMap<T, IntArrayList> aLgetTailMap(T value) {
+    return (SortedMap<T, IntArrayList>) index.tailMap((int)value);
+  }
+
+  @Override
+  protected <T> SortedMap<T, IntArrayList> aMgetheadMap(T value) {
+    Integer intValue = (Integer) value;
+    return (SortedMap<T, IntArrayList>) index.headMap((int) (intValue + 1));
+  }
+
+  @Override
+  protected <T> SortedMap<T, IntArrayList> LTgetheadMap(T value) {
+    return (SortedMap<T, IntArrayList>) index.headMap((int)value);
   }
 
   /** Returns a {@link Selection} of all values greater than the given value */
@@ -166,16 +157,7 @@ public class IntIndex implements Index {
     return greaterThan(PackedLocalDate.pack(value));
   }
 
-  /** Returns a {@link Selection} of all values at most as large as the given value */
-  public Selection atMost(int value) {
-    Selection selection = new BitmapBackedSelection();
-    Int2ObjectSortedMap<IntArrayList> head =
-        index.headMap(value + 1); // we add 1 to get values equal to the arg
-    for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
-  }
+
 
   /** Returns a {@link Selection} of all values at most as large as the given value */
   public Selection atMost(LocalTime value) {
@@ -187,16 +169,6 @@ public class IntIndex implements Index {
     return atMost(PackedLocalDate.pack(value));
   }
 
-  /** Returns a {@link Selection} of all values less than the given value */
-  public Selection lessThan(int value) {
-    Selection selection = new BitmapBackedSelection();
-    Int2ObjectSortedMap<IntArrayList> head =
-        index.headMap(value); // we add 1 to get values equal to the arg
-    for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
-  }
 
   /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(LocalTime value) {
@@ -206,5 +178,14 @@ public class IntIndex implements Index {
   /** Returns a {@link Selection} of all values less than the given value */
   public Selection lessThan(LocalDate value) {
     return lessThan(PackedLocalDate.pack(value));
+  }
+
+
+
+  public Selection get(LocalTime value) {
+    return get(PackedLocalTime.pack(value));
+  }
+  public Selection get(LocalDate value) {
+    return get(PackedLocalDate.pack(value));
   }
 }

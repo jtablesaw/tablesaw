@@ -22,8 +22,10 @@ import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.util.SortedMap;
+
 /** An index for single-precision 32-bit IEEE 754 floating point columns. */
-public class FloatIndex implements Index {
+public class FloatIndex extends Index{
 
   private final Float2ObjectAVLTreeMap<IntArrayList> index;
 
@@ -46,66 +48,35 @@ public class FloatIndex implements Index {
     index = new Float2ObjectAVLTreeMap<>(tempMap);
   }
 
-  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-    for (int i : tableKeys) {
-      selection.add(i);
-    }
+
+
+
+  @Override
+  protected <T> IntArrayList getIndexList(T value) {
+    return index.get(value);
   }
 
-  /**
-   * Returns a bitmap containing row numbers of all cells matching the given int
-   *
-   * @param value This is a 'key' from the index perspective, meaning it is a value from the
-   *     standpoint of the column
-   */
-  public Selection get(float value) {
-    Selection selection = new BitmapBackedSelection();
-    IntArrayList list = index.get(value);
-    if (list != null) {
-      addAllToSelection(list, selection);
-    }
-    return selection;
+
+  @Override
+  protected <T> SortedMap<T, IntArrayList> GTgetTailMap(T value) {
+    Float floatValue = (Float) value;
+    return (SortedMap<T, IntArrayList>) index.tailMap((float) (floatValue + 0.000001f));
   }
 
-  /** Returns a {@link Selection} of all values at least as large as the given value */
-  public Selection atLeast(float value) {
-    Selection selection = new BitmapBackedSelection();
-    Float2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
-    for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> aLgetTailMap(T value) {
+    return (SortedMap<T, IntArrayList>) index.tailMap((float) (value));
   }
 
-  /** Returns a {@link Selection} of all values greater than the given value */
-  public Selection greaterThan(float value) {
-    Selection selection = new BitmapBackedSelection();
-    Float2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 0.000001f);
-    for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> aMgetheadMap(T value) {
+    Float floatValue = (Float) value;
+    return (SortedMap<T, IntArrayList>) index.headMap((float) (floatValue + 0.000001f));
   }
 
-  /** Returns a {@link Selection} of all values at most as large as the given value */
-  public Selection atMost(float value) {
-    Selection selection = new BitmapBackedSelection();
-    Float2ObjectSortedMap<IntArrayList> head =
-        index.headMap(value + 0.000001f); // we add 1 to get values equal
-    // to the arg
-    for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
+  @Override
+  protected <T> SortedMap<T, IntArrayList> LTgetheadMap(T value) {
+    return (SortedMap<T, IntArrayList>) index.headMap((float) (value));
   }
 
-  /** Returns a {@link Selection} of all values less than the given value */
-  public Selection lessThan(float value) {
-    Selection selection = new BitmapBackedSelection();
-    Float2ObjectSortedMap<IntArrayList> head = index.headMap(value);
-    for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
-    }
-    return selection;
-  }
 }
