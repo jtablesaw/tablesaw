@@ -94,12 +94,8 @@ public class ByteDictionaryMap extends DictionaryMap<Byte> {
   }
 
   public static class ByteDictionaryBuilder extends DictionaryMapBuilder<ByteDictionaryMap, Byte> {
-    public ByteDictionaryMap build() {
-      Preconditions.checkNotNull(nextIndex);
-      Preconditions.checkNotNull(keyToCount);
-      Preconditions.checkNotNull(keyToValue);
-      Preconditions.checkNotNull(valueToKey);
-      Preconditions.checkNotNull(values);
+    @Override
+    protected ByteDictionaryMap createTarget() {
       return new ByteDictionaryMap(this);
     }
   }

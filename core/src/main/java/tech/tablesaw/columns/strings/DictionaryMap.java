@@ -1,5 +1,6 @@
 package tech.tablesaw.columns.strings;
 
+import com.google.common.base.Preconditions;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
@@ -464,6 +465,16 @@ public abstract class DictionaryMap<T extends Number> implements StringReduceUti
       return this;
     }
 
-    public abstract E build();
+    public E build() {
+      Preconditions.checkNotNull(nextIndex);
+      Preconditions.checkNotNull(keyToCount);
+      Preconditions.checkNotNull(keyToValue);
+      Preconditions.checkNotNull(valueToKey);
+      Preconditions.checkNotNull(values);
+
+      return createTarget();
+    }
+
+    protected abstract E createTarget();
   }
 }
