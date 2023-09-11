@@ -16,9 +16,15 @@ public class Browser {
 
   public void browse(File file) throws IOException {
     if (Desktop.isDesktopSupported()) {
-
-      Desktop.getDesktop().browse(file.toURI());
-    } else {
+      if(Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)){
+      Desktop.getDesktop().browse(file.toURI());}
+     else if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)){
+        Desktop.getDesktop().open(file);
+     }else{
+         throw new UnsupportedOperationException("Browser not supported.");
+     }
+    }
+     else {
       throw new UnsupportedOperationException("Browser not supported.");
     }
   }
