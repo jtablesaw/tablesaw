@@ -21,7 +21,7 @@ public class Browser {
      else if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)){
         Desktop.getDesktop().open(file);
      }else{
-         throw new UnsupportedOperationException("Browser not supported.");
+         throw new UnsupportedOperationException("Neither open nor browse are supported");
      }
     }
      else {
