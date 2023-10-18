@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class OhlcTest {
 
     @Test
-    void ochlPlotDoesNotThrowIllegalArgumentException() {
+    void ohlcPlotDoesNotThrowIllegalArgumentException() {
         // Test to fix bug reported at https://github.com/jtablesaw/tablesaw/issues/1237
         String timeTitle = "time";
         String openTitle = "open";
