@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class OchlTest {
+public class OhlcTest {
 
     @Test
     void ochlPlotDoesNotThrowIllegalArgumentException() {
