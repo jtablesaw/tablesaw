@@ -484,7 +484,7 @@ public class TableTest {
             + LINE_END
             + "John Smith,    1,  33,     90,   1.87"
             + LINE_END
-            + "Mary Smith,    1,  N/A,     N/A,   1.54";
+            + "Mary Smith,    1,  ,     ,   1.54";
     StringReader reader = new StringReader(df);
     Table t = Table.read().csv(reader);
     t.columnNames();
@@ -521,7 +521,7 @@ public class TableTest {
             + LINE_END
             + "John Smith,    1,  33,     90,   1.87"
             + LINE_END
-            + "Mary Smith,    1,  N/A,     N/A,   1.54";
+            + "Mary Smith,    1,  ,     ,   1.54";
     StringReader reader = new StringReader(df);
     Table t = Table.read().csv(reader);
     t.columnNames();
