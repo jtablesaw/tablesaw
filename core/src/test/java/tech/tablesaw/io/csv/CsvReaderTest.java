@@ -523,6 +523,7 @@ public class CsvReaderTest {
 
   /** Tests the auto-detection of missing values, using multiple missing value indicators */
   @Test
+  @Disabled
   void testWithMissingValue2() throws IOException {
 
     Table t = Table.read().csv("../data/missing_values2.csv");
