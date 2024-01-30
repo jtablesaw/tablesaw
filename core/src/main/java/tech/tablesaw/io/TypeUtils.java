@@ -33,7 +33,7 @@ public final class TypeUtils {
   // No default missing indicators
   // TODO: Allow this to be configurable?
   public static final ImmutableList<String> MISSING_INDICATORS =
-      ImmutableList.of();
+      ImmutableList.of(missingInd1, missingInd2);
 
   /** Private constructor to prevent instantiation */
   private TypeUtils() {}
