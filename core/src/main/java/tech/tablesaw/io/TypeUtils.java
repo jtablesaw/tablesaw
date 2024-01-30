@@ -29,8 +29,11 @@ public final class TypeUtils {
   private static final String missingInd3 = "NA";
   private static final String missingInd4 = "null";
   private static final String missingInd5 = "N/A";
+
+  // No default missing indicators
+  // TODO: Allow this to be configurable?
   public static final ImmutableList<String> MISSING_INDICATORS =
-      ImmutableList.of(missingInd1, missingInd2, missingInd3, missingInd4, missingInd5);
+      ImmutableList.of();
 
   /** Private constructor to prevent instantiation */
   private TypeUtils() {}
