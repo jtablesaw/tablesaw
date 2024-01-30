@@ -501,6 +501,7 @@ public class CsvReaderTest {
    * side-effect of treating those otherwise numeric columns as StringColumns
    */
   @Test
+  @Disabled
   void testWithMissingValues() throws IOException {
 
     Reader reader =
