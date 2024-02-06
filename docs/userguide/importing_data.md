@@ -237,6 +237,11 @@ Tablesaw supports importing data from HTML, JSON, and Excel. See the Javadoc for
 
 ## Exporting data
 
+### Exporting to CSV
 
+Any `Table` object can be exported to a local csv file using the following command. 
+```
+Table myData; //name of table object
 
-TODO
+myData.write().csv("file-path-here.csv");
+```
