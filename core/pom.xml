@@ -76,7 +76,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>32.1.3-jre</version>
+            <version>33.0.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -86,12 +86,12 @@
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
-            <version>8.4.4</version>
+            <version>8.5.13</version>
         </dependency>
        <dependency>
             <groupId>org.roaringbitmap</groupId>
             <artifactId>RoaringBitmap</artifactId>
-            <version>0.9.39</version>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>com.univocity</groupId>
@@ -101,12 +101,12 @@
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
-            <version>72.1</version>
+            <version>74.2</version>
         </dependency>
         <dependency>
             <groupId>io.github.classgraph</groupId>
             <artifactId>classgraph</artifactId>
-            <version>4.8.155</version>
+            <version>4.8.168</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -132,43 +132,43 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
+            <version>3.14.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.10.0</version>
+            <version>1.11.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.jbellis</groupId>
             <artifactId>jamm</artifactId> <!-- Memory usage testing -->
-            <version>0.3.3</version>
+            <version>0.4.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.2.220</version>
+            <version>2.2.224</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
-            <version>2.6.0</version>
+            <version>3.0.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-mkl</artifactId>
-            <version>2.6.0</version>
+            <version>3.0.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
-            <version>1.2</version>
+            <version>1.3.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
