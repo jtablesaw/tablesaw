@@ -28,6 +28,21 @@
 {% if tick0 is not null %}
     tick0: '{{tick0}}',
 {% endif %}
+{% if showPrefix is not null %}
+    showtickprefix: '{{showPrefix}}',
+{% endif %}
+{% if showSuffix is not null %}
+    showticksuffix: '{{showSuffix}}',
+{% endif %}
+{% if prefix is not null %}
+    tickprefix: '{{prefix}}',
+{% endif %}
+{% if suffix is not null %}
+    ticksuffix: '{{suffix}}',
+{% endif %}
+{% if format is not null %}
+    tickformat: '{{format}}',
+{% endif %}
 {% if showExponent is not null %}
     showExponent: '{{showExponent}}',
 {% endif %}
