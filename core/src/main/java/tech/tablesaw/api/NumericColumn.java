@@ -8,6 +8,8 @@ import it.unimi.dsi.fastutil.doubles.DoubleComparator;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.BiPredicate;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
@@ -77,9 +79,11 @@ public interface NumericColumn<T extends Number>
   /** {@inheritDoc} */
   @Override
   default Selection isIn(Collection<Number> numbers) {
+    final SortedSet<Double> doubleNumbers = new TreeSet<>();
+    numbers.forEach(n -> doubleNumbers.add(n.doubleValue()));
     final Selection results = new BitmapBackedSelection();
     for (int i = 0; i < size(); i++) {
-      if (numbers.contains(getDouble(i))) {
+      if (doubleNumbers.contains(getDouble(i))) {
         results.add(i);
       }
     }
