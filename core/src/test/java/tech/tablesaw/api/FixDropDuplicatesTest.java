@@ -18,7 +18,7 @@ class FixDropDuplicatesTest {
     private static Table testTable;
     
     @BeforeAll
-    static void setUpBeforeClass() throws Exception {
+    static void setUpBeforeClass() {
         testTable = Table.read().usingOptions(CsvReadOptions
             .builder(new File(SOURCE_FILE_NAME))
             .missingValueIndicator("-"));    }
