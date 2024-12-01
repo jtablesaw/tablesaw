@@ -969,12 +969,10 @@ public class Table extends Relation implements Iterable<Row> {
       Row oldRow = this.row(key);
       if (duplicateRows(row, oldRow)) {
         return true;
-      } else {
-        uniqueHashes.get(hash).add(row.getRowNumber());
-        return false;
       }
     }
-    return true;
+    uniqueHashes.get(hash).add(row.getRowNumber());
+    return false;
   }
 
   /** Returns only those records in this table that have no columns with missing values */
