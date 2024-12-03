@@ -528,7 +528,7 @@ public class CsvReaderTest {
 
     Table t = Table.read().csv("../data/missing_values2.csv");
     assertEquals(1, t.stringColumn(0).countMissing());
-    assertEquals(1, t.numberColumn(1).countMissing());
+    assertEquals(0, t.numberColumn(1).countMissing());
     assertEquals(0, t.numberColumn(2).countMissing());
   }
 
