@@ -529,17 +529,20 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
-   * Returns {@code true} if the row @rowNumber in table1 holds the same data as the row at
-   * rowNumber in table2
+   * Returns {@code true} if the row {@code rowNumber} in {@code table1} holds the same values than the row at
+   * {@code rowNumber} in {@code table2}. Returns false if the number of columns is different in the two tables.
+   * @param rowNumber the row to compare
+   * @param table1 the first table to compare
+   * @param table2 the second table to compare
+   * @return false if row {@code rowNumber} is different in {@code table1} and {@code table2}
+   * @throws {@code IndexOutOfBoundsException} if {@code rownumber} exceeds either table number of rows
    */
   public static boolean compareRows(int rowNumber, Table table1, Table table2) {
-    int columnCount = table1.columnCount();
-    boolean result;
+    final int columnCount = table1.columnCount();
+    if (columnCount != table2.columnCount()) return false;
     for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
       ColumnType columnType = table1.column(columnIndex).type();
-      result =
-          columnType.compare(rowNumber, table2.column(columnIndex), table1.column(columnIndex));
-      if (!result) {
+      if (!columnType.compare(rowNumber, table2.column(columnIndex), table1.column(columnIndex))) {
         return false;
       }
     }
