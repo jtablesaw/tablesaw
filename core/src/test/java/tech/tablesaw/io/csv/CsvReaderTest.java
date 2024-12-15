@@ -162,6 +162,17 @@ public class CsvReaderTest {
   }
 
   @Test
+  void allowDuplicateColumnNamesInsensitive() throws IOException {
+    final Reader reader2 =
+        new StringReader(
+            "Col1" + COMMA + "col1" + LINE_END + "\"first\"" + COMMA + "second" + LINE_END);
+    Table dupes =
+        Table.read().csv(CsvReadOptions.builder(reader2).allowDuplicateColumnNames(true).build());
+    assertEquals("Col1", dupes.columnNames().get(0));
+    assertEquals("col1-2", dupes.columnNames().get(1));
+  }
+
+  @Test
   public void testWithColumnSKIPWithoutHeader() throws IOException {
     // Read the CSV file
     Table table =
