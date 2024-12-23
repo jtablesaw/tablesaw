@@ -362,7 +362,7 @@ public class PackedLocalDate {
     byte m = getMonthValue(packedDate);
     short y = getYear(packedDate);
 
-    int newYear = YEAR.checkValidIntValue(yearsToAdd + y);
+    int newYear = YEAR.checkValidIntValue((long)yearsToAdd + y);
     return resolvePreviousValid(newYear, m, d);
   }
 
