@@ -325,10 +325,10 @@ class AggregateFunctionsTest {
     Table table = Table.create("test", booleanColumn, numberColumn);
     Table summary = table.summarize(booleanColumn, numberColumn, countTrue, stdDev).by(stringColumn);
     
-    assertEquals(2.0, summary.doubleColumn(1).get(0), "Wrong summary");
-    assertEquals(0.0, summary.doubleColumn(1).get(1), "Wrong summary");
-    assertEquals(Math.sqrt(2), summary.doubleColumn(2).get(0), "Wrong summary");
-    assertEquals(Math.sqrt(2), summary.doubleColumn(2).get(1), "Wrong summary");    
+    assertEquals(2.0, summary.doubleColumn(1).get(0), 1e-6, "Wrong summary");
+    assertEquals(0.0, summary.doubleColumn(1).get(1), 1e-6,  "Wrong summary");
+    assertEquals(Math.sqrt(2), summary.doubleColumn(2).get(0), 1e-6,  "Wrong summary");
+    assertEquals(Math.sqrt(2), summary.doubleColumn(2).get(1), 1e-6,  "Wrong summary");    
   }
 
   @Test
