@@ -1658,14 +1658,14 @@ public class Table extends Relation implements Iterable<Row> {
    * <p>This kind of structure often makes for a good intermediate format for performing subsequent
    * transformations. It is especially useful when combined with the {@link #cast()} operation
    *
-   * @param idVariables A list of column names intended to be used as identifiers. In he example,
+   * @param idVariables A list of column names intended to be used as identifiers. In the example,
    *     only patient_id would be an identifier
    * @param measuredVariables A list of columns intended to be used as measured variables. All
    *     columns must have the same type
    * @param dropMissing drop any row where the value is missing
    */
   public Table melt(
-      List<String> idVariables, List<NumericColumn<?>> measuredVariables, Boolean dropMissing) {
+      List<String> idVariables, List<NumericColumn<?>> measuredVariables, boolean dropMissing) {
 
     Table result = Table.create(name);
     for (String idColName : idVariables) {
