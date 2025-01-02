@@ -20,6 +20,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
 import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import com.google.common.primitives.Ints;
@@ -953,7 +954,8 @@ public class Table extends Relation implements Iterable<Row> {
    *     list, so that there are exemplars for both
    * @return true if the row's values exactly match a row that was previously seen
    */
-  private boolean isDuplicate(Row row, Int2ObjectMap<IntArrayList> uniqueHashes) {
+  @VisibleForTesting
+  protected boolean isDuplicate(Row row, Int2ObjectMap<IntArrayList> uniqueHashes) {
     int hash = row.rowHash();
     if (!uniqueHashes.containsKey(hash)) {
       IntArrayList rowNumbers = new IntArrayList();

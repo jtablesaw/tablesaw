@@ -28,7 +28,6 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -926,13 +925,11 @@ public class TableTest {
     Table testTable = Table.read().usingOptions(CsvReadOptions
       .builder(new File("../data/missing_values.csv"))
       .missingValueIndicator("-"));
-    Method privateMethod = Table.class.getDeclaredMethod("isDuplicate", Row.class, Int2ObjectMap.class);
-    privateMethod.setAccessible(true);
-    Int2ObjectMap<IntArrayList> uniqueHashes = new Int2ObjectOpenHashMap<>();
     Row row0 = testTable.row(0);
+    Int2ObjectMap<IntArrayList> uniqueHashes = new Int2ObjectOpenHashMap<>();
     IntArrayList value = new IntArrayList(new int[] {1, 0});
     uniqueHashes.put(row0.rowHash(), value);
-    boolean isDuplicate = (boolean) privateMethod.invoke(testTable, row0, uniqueHashes);
+    boolean isDuplicate = testTable.isDuplicate(row0, uniqueHashes);
     assertTrue(isDuplicate, "Duplicate row not found");
   }
 
