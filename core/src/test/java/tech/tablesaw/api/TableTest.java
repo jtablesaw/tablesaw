@@ -22,9 +22,13 @@ import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -916,4 +920,20 @@ public class TableTest {
       fail("toString shouldn't throw " + e);
     }
   }
+
+  @Test
+  void testDropDuplicateWithHashCollision() throws Exception {
+    Table testTable = Table.read().usingOptions(CsvReadOptions
+      .builder(new File("../data/missing_values.csv"))
+      .missingValueIndicator("-"));
+    Method privateMethod = Table.class.getDeclaredMethod("isDuplicate", Row.class, Int2ObjectMap.class);
+    privateMethod.setAccessible(true);
+    Int2ObjectMap<IntArrayList> uniqueHashes = new Int2ObjectOpenHashMap<>();
+    Row row0 = testTable.row(0);
+    IntArrayList value = new IntArrayList(new int[] {1, 0});
+    uniqueHashes.put(row0.rowHash(), value);
+    boolean isDuplicate = (boolean) privateMethod.invoke(testTable, row0, uniqueHashes);
+    assertTrue(isDuplicate, "Duplicate row not found");
+  }
+
 }
