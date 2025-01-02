@@ -22,9 +22,6 @@ import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -919,18 +916,4 @@ public class TableTest {
       fail("toString shouldn't throw " + e);
     }
   }
-
-  @Test
-  void testDropDuplicateWithHashCollision() throws Exception {
-    Table testTable = Table.read().usingOptions(CsvReadOptions
-      .builder(new File("../data/missing_values.csv"))
-      .missingValueIndicator("-"));
-    Row row0 = testTable.row(0);
-    Int2ObjectMap<IntArrayList> uniqueHashes = new Int2ObjectOpenHashMap<>();
-    IntArrayList value = new IntArrayList(new int[] {1, 0});
-    uniqueHashes.put(row0.rowHash(), value);
-    boolean isDuplicate = testTable.isDuplicate(row0, uniqueHashes);
-    assertTrue(isDuplicate, "Duplicate row not found");
-  }
-
 }
