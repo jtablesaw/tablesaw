@@ -1,3 +1,5 @@
+# Contributing
+
 ## Documentation
 
 There are several pieces that go into the docs.
