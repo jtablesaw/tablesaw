@@ -1,3 +1,5 @@
+#### New releases are provided by the [tlabs-data maintenance fork](https://github.com/tlabs-data/tablesaw). See [this discussion](https://github.com/jtablesaw/tablesaw/discussions/1261) for details.
+
 Tablesaw
 =======
 
