@@ -1,4 +1,4 @@
-## Compiled Docs
+## Documentation
 
 There are several pieces that go into the docs.
 
@@ -16,8 +16,7 @@ java src files.
 5) The released/deployed docs are in `docs/` at the root of the project. (Github automatically serves whatever is
 in the `docs/` directory in the master branch)
 
-
-### To update the Docs
+### Rebuilding and deploying the docs
 
 1) Navigate to the  `./docs-src` sub directory (Where POM is located).
 
