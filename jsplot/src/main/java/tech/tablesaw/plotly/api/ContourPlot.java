@@ -1,5 +1,6 @@
 package tech.tablesaw.plotly.api;
 
+import java.util.List;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.Figure;
@@ -7,12 +8,9 @@ import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.ContourTrace;
 import tech.tablesaw.util.DoubleArrays;
 
-import java.util.List;
-
 public class ContourPlot {
 
-  private ContourPlot() {
-  }
+  private ContourPlot() {}
 
   public static Figure create(String title, Table table, String categoryCol1, String categoryCol2) {
     Layout layout = Layout.builder(title).build();

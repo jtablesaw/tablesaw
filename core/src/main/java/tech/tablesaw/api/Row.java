@@ -813,7 +813,7 @@ public class Row implements Iterator<Row> {
   @Override
   public boolean equals(Object obj) {
     if (obj == null || obj.getClass() != this.getClass()) {
-        return false;
+      return false;
     }
 
     Row other = (Row) obj;

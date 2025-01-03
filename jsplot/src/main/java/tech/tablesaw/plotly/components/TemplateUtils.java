@@ -6,7 +6,6 @@ import io.pebbletemplates.pebble.loader.ClasspathLoader;
 import io.pebbletemplates.pebble.loader.DelegatingLoader;
 import io.pebbletemplates.pebble.loader.FileLoader;
 import io.pebbletemplates.pebble.loader.Loader;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

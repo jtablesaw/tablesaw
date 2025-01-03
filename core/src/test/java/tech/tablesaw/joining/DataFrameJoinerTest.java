@@ -1107,6 +1107,7 @@ public class DataFrameJoinerTest {
     assertEquals(30, joined.columnCount());
     assertEquals(14, joined.rowCount());
   }
+
   // Tests for left table is larger than right table, single cols
   @Test
   public void innerJoinStudentInstructorClassDeptHeadOnAgeLargerLeftTable() {
@@ -1177,6 +1178,7 @@ public class DataFrameJoinerTest {
     assertTrue(joined.columnNames().stream().noneMatch(e -> e.startsWith("Placeholder_")));
     assertEquals(1, joined.rowCount());
   }
+
   // Tests for left table is larger than right table, multiple cols
   @Test
   public void innerJoinStudentInstructorDeptHeadOnStateAgeWithLargerLeftTable() {

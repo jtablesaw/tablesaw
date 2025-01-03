@@ -1,10 +1,17 @@
 package tech.tablesaw.docs;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.api.QuerySupport.and;
+import static tech.tablesaw.api.QuerySupport.not;
+// @@ static_boolean_operators_import
+// @@ static_aggregate_function_import
+// import aggregate functions.
+import static tech.tablesaw.api.QuerySupport.or;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
@@ -15,14 +22,9 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.docs.OutputWriter.System;
 import tech.tablesaw.selection.Selection;
+
 // @@ static_boolean_operators_import
-import static tech.tablesaw.api.QuerySupport.and;
-import static tech.tablesaw.api.QuerySupport.or;
-import static tech.tablesaw.api.QuerySupport.not;
-// @@ static_boolean_operators_import
-// @@ static_aggregate_function_import
-// import aggregate functions.
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
+
 // @@ static_aggregate_function_import
 
 public class GettingStarted implements DocsSourceFile {
@@ -274,8 +276,7 @@ public class GettingStarted implements DocsSourceFile {
               and(
                   or(
                       t -> t.doubleColumn("nc1").isGreaterThan(4),
-                      t -> t.doubleColumn("nc1").isNegative()
-                      ),
+                      t -> t.doubleColumn("nc1").isNegative()),
                   not(t -> t.doubleColumn("nc2").isLessThanOrEqualTo(5))));
       // @@ filtering
     } catch (Exception e) {
@@ -291,11 +292,12 @@ public class GettingStarted implements DocsSourceFile {
       // @@ summarize_basic
 
       // @@ summarize_calculated_column
-      summary = table.summarize("sales", mean, median)
-          .by(table.dateColumn("sales date").dayOfWeek());
+      summary =
+          table.summarize("sales", mean, median).by(table.dateColumn("sales date").dayOfWeek());
       // @@ summarize_calculated_column
 
-    } catch (Exception e){}
+    } catch (Exception e) {
+    }
   }
 
   private void crossTab() throws IOException {
@@ -307,8 +309,9 @@ public class GettingStarted implements DocsSourceFile {
     // @@ crosstab
     Table percents = table.xTabTablePercents("month", "who");
     // make table print as percents with no decimals instead of the raw doubles it holds
-    percents.columnsOfType(ColumnType.DOUBLE)
-        .forEach(x -> ((DoubleColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
+    percents
+        .columnsOfType(ColumnType.DOUBLE)
+        .forEach(x -> ((DoubleColumn) x).setPrintFormatter(NumberColumnFormatter.percent(0)));
     System.out.println(percents);
     // @@ crosstab
     outputWriter.write(percents, "crosstab");

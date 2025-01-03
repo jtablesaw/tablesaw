@@ -14,6 +14,8 @@
 
 package tech.tablesaw.examples;
 
+import static tech.tablesaw.plotly.traces.HistogramTrace.HistFunc.*;
+
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -22,28 +24,32 @@ import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.HistogramTrace;
 
-import static tech.tablesaw.plotly.traces.HistogramTrace.HistFunc.*;
-
 /** */
 public class HistogramFuncExample {
 
   public static void main(String[] args) {
 
-    Table test = Table.create(
-            StringColumn.create("type").append("apples").append("apples").append("apples").append("oranges").append("bananas"),
+    Table test =
+        Table.create(
+            StringColumn.create("type")
+                .append("apples")
+                .append("apples")
+                .append("apples")
+                .append("oranges")
+                .append("bananas"),
             IntColumn.create("num").append(5).append(10).append(3).append(10).append(5));
 
     Layout layout1 = Layout.builder().title("Histogram COUNT Test (team batting averages)").build();
-    HistogramTrace trace = HistogramTrace.
-            builder(test.stringColumn("type"), test.intColumn("num"))
+    HistogramTrace trace =
+        HistogramTrace.builder(test.stringColumn("type"), test.intColumn("num"))
             .histFunc(COUNT)
             .build();
 
     Plot.show(new Figure(layout1, trace));
 
     Layout layout2 = Layout.builder().title("Hist SUM Test (team batting averages)").build();
-    HistogramTrace trace2 = HistogramTrace.
-            builder(test.stringColumn("type"), test.intColumn("num"))
+    HistogramTrace trace2 =
+        HistogramTrace.builder(test.stringColumn("type"), test.intColumn("num"))
             .histFunc(SUM)
             .build();
 

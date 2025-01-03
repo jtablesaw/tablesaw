@@ -72,7 +72,8 @@ public class OutputWriter {
     public static final Printer out = new Printer();
 
     public static class Printer {
-      private Printer() {};
+      private Printer() {}
+      ;
 
       public String println(Object obj) {
         return obj.toString();

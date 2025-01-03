@@ -6,6 +6,7 @@ import tech.tablesaw.api.Table;
 
 public class TableAssertions {
   private TableAssertions() {}
+
   /** Make sure each row in each table match */
   public static void assertTableEquals(Table expected, Table actual) {
     assertEquals(actual.rowCount(), expected.rowCount(), "tables should have same number of rows");

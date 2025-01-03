@@ -73,6 +73,7 @@ public class FixedWidthReadOptions extends ReadOptions {
   public static Builder builder(InputStream stream) {
     return new Builder(stream);
   }
+
   /**
    * This method may cause tablesaw to buffer the entire InputStream.
    *

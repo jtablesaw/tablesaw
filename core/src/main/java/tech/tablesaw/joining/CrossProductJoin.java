@@ -307,6 +307,7 @@ public class CrossProductJoin implements JoinStrategy {
               + valueColumn.type());
     }
   }
+
   /**
    * Create a big multicolumn selection for all join columns in the given table. Joins two tables.
    *
