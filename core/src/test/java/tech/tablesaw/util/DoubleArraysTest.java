@@ -29,7 +29,7 @@ public class DoubleArraysTest {
     Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
     TableSliceGroup tableSliceGroup = table.splitOn("Scale");
     int columnNumber = table.columnIndex("Injuries");
-    final double[][] a2dArray = DoubleArrays.to2dArray(tableSliceGroup, columnNumber);
+    double[][] a2dArray = DoubleArrays.to2dArray(tableSliceGroup, columnNumber);
     assertEquals(7, a2dArray.length, "Wrong Scale array length");
   }
 
