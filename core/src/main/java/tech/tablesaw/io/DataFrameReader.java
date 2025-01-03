@@ -86,7 +86,9 @@ public class DataFrameReader {
   }
 
   private String getMimeType(String contentType) {
-    if(contentType == null) return null;
+    if (contentType == null) {
+      return null;
+    }
     String[] pair = contentType.split(";");
     return pair[0].trim();
   }
