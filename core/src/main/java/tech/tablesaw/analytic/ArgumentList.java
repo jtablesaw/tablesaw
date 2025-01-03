@@ -71,7 +71,9 @@ final class ArgumentList {
     return sb.toString();
   }
 
-  /** @return an ordered list of new columns this analytic query will generate. */
+  /**
+   * @return an ordered list of new columns this analytic query will generate.
+   */
   List<Column<?>> createEmptyDestinationColumns(int rowCount) {
     List<Column<?>> newColumns = new ArrayList<>();
     for (String toColumn : newColumnNames) {

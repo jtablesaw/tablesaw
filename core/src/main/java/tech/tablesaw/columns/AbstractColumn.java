@@ -198,7 +198,9 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
   /** {@inheritDoc} */
   @Override
   public int lastIndexOf(Object o) {
-    return IntStream.iterate(size() - 1, i -> (i >= 0), i -> i - 1).filter(i -> get(i).equals(o))
-            .findFirst().orElse(-1);
+    return IntStream.iterate(size() - 1, i -> (i >= 0), i -> i - 1)
+        .filter(i -> get(i).equals(o))
+        .findFirst()
+        .orElse(-1);
   }
 }

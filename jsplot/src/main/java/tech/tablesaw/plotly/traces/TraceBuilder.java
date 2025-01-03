@@ -37,6 +37,7 @@ public abstract class TraceBuilder {
    * `layout.xaxis2`, and so on.
    */
   protected String xAxis = "x";
+
   /**
    * Sets a reference between this trace's y coordinates and a 2D cartesian y axis. If *y* (the
    * default value), the y coordinates refer to `layout.yaxis`. If *y2*, the y coordinates refer to

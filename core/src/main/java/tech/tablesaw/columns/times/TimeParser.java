@@ -15,10 +15,13 @@ import tech.tablesaw.io.ReadOptions;
 public class TimeParser extends AbstractColumnParser<LocalTime> {
 
   private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-  private static final DateTimeFormatter timef2 = DateTimeParser.caseInsensitiveFormatter("hh:mm:ss a");
-  private static final DateTimeFormatter timef3 = DateTimeParser.caseInsensitiveFormatter("h:mm:ss a");
+  private static final DateTimeFormatter timef2 =
+      DateTimeParser.caseInsensitiveFormatter("hh:mm:ss a");
+  private static final DateTimeFormatter timef3 =
+      DateTimeParser.caseInsensitiveFormatter("h:mm:ss a");
   private static final DateTimeFormatter timef4 = DateTimeFormatter.ISO_LOCAL_TIME;
-  private static final DateTimeFormatter timef5 = DateTimeParser.caseInsensitiveFormatter("hh:mm a");
+  private static final DateTimeFormatter timef5 =
+      DateTimeParser.caseInsensitiveFormatter("hh:mm a");
   private static final DateTimeFormatter timef6 = DateTimeParser.caseInsensitiveFormatter("h:mm a");
 
   // only for parsing:

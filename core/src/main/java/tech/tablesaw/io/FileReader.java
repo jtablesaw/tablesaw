@@ -94,7 +94,7 @@ public abstract class FileReader {
     if (options.header()) {
 
       String[] headerNames = parser.parseNext();
-      
+
       if (headerNames == null) {
         // no header because file is empty
         return new String[] {};

@@ -153,6 +153,7 @@ public class StringColumn extends AbstractColumn<StringColumn, String>
   public StringColumnFormatter getPrintFormatter() {
     return printFormatter;
   }
+
   /** {@inheritDoc} */
   @Override
   public boolean isMissing(int rowNumber) {

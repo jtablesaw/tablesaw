@@ -3,7 +3,6 @@ package tech.tablesaw.plotly.traces;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.error.PebbleException;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
@@ -68,6 +67,7 @@ public abstract class AbstractTrace implements Trace {
    * so on.
    */
   private final String xAxis;
+
   /**
    * Sets a reference between this trace's y coordinates and a 2D cartesian y axis. If *y* , the y
    * coordinates refer to `layout.yaxis`. If *y2*, the y coordinates refer to `layout.yaxis2`, and

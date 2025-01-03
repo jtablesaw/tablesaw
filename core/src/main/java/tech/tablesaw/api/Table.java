@@ -69,6 +69,7 @@ public class Table extends Relation implements Iterable<Row> {
 
   /** The columns that hold the data in this table */
   private final List<Column<?>> columnList = new ArrayList<>();
+
   /** The name of the table */
   private String name;
 
