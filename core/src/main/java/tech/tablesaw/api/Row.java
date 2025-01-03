@@ -809,8 +809,29 @@ public class Row implements Iterator<Row> {
     return tableSlice.column(columnIndex);
   }
 
+  /** Returns true if every value is equal to the corresponding value in the given row */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null || obj.getClass() != this.getClass()) {
+        return false;
+    }
+
+    Row other = (Row) obj;
+    if (columnCount() != other.columnCount()) {
+      return false;
+    }
+
+    for (int columnIndex = 0; columnIndex < columnCount(); columnIndex++) {
+      if (!column(columnIndex).equals(getRowNumber(), other.getRowNumber())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /** Returns a hash computed on the values in the backing table at this row */
-  public int rowHash() {
+  @Override
+  public int hashCode() {
     int[] values = new int[columnCount()];
     for (int i = 0; i < columnCount(); i++) {
       Column<?> column = tableSlice.column(i);
