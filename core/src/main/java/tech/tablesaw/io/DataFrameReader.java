@@ -61,7 +61,7 @@ public class DataFrameReader {
       String contentType = connection.getContentType();
       return url(url, getCharset(contentType), getMimeType(contentType));
     } catch (IOException e) {
-        throw new RuntimeIOException(e);
+      throw new RuntimeIOException(e);
     }
   }
 
