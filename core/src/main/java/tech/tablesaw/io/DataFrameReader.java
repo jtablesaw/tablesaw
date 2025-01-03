@@ -94,7 +94,9 @@ public class DataFrameReader {
   }
 
   private Charset getCharset(String contentType) {
-    if(contentType == null) return Charset.defaultCharset();
+    if (contentType == null) {
+      return Charset.defaultCharset();
+    }
     String[] pair = contentType.split(";");
     return pair.length == 1
         ? Charset.defaultCharset()
