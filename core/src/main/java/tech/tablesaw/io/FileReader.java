@@ -97,8 +97,7 @@ public abstract class FileReader {
       
       if (headerNames == null) {
         // no header because file is empty
-        // return empty String[]
-        return new String[0];
+        return new String[] {};
       }
 
       // work around issue where Univocity returns null if a column has no header.
