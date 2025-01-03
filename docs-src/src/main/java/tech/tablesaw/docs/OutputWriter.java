@@ -73,7 +73,6 @@ public class OutputWriter {
 
     public static class Printer {
       private Printer() {}
-      ;
 
       public String println(Object obj) {
         return obj.toString();
