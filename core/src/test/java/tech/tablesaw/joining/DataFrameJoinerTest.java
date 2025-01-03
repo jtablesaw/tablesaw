@@ -2006,7 +2006,7 @@ public class DataFrameJoinerTest {
   @Test
   public void leftOuterEmptyLeftTable() {
     Table leftTable = Table.create(StringColumn.create("Animal"));
-    Table joined = leftTable.joinOn("Animal").with(ANIMAL_NAMES).type(JoinType.LEFT_OUTER).join();
+    Table joined = leftTable.joinOn("Animal").with(ANIMAL_NAMES).type(LEFT_OUTER).join();
     assertEquals(0, joined.rowCount());
     for (Column<?> column : joined.columnArray()) {
       assertEquals(0, column.size());
