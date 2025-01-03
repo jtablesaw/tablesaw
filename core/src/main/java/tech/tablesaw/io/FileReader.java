@@ -129,10 +129,10 @@ public abstract class FileReader {
    * @param headerNames The header names to be potentially adjusted.
    */
   private void renameDuplicateColumnHeaders(String[] headerNames) {
-    final Map<String, Integer> nameCounter = new HashMap<>();
+    Map<String, Integer> nameCounter = new HashMap<>();
     for (int i = 0; i < headerNames.length; i++) {
-      final String name = headerNames[i];
-      final String lowerCase = name.toLowerCase();
+      String name = headerNames[i];
+      String lowerCase = name.toLowerCase();
       Integer count = nameCounter.get(lowerCase);
       if (count == null) {
         nameCounter.put(lowerCase, 1);
