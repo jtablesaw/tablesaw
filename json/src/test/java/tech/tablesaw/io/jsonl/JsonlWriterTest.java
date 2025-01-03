@@ -17,16 +17,16 @@ package tech.tablesaw.io.jsonl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
-
 import tech.tablesaw.api.Table;
 
 public class JsonlWriterTest {
 
-    @Test
-    public void arrayOfObjects() {
-        String json = "{\"a\":1453438800000,\"b\":-2.144}\n{\"a\":1454043600000,\"b\":-2.976}\n{\"a\":1454648400000,\"b\":-2.954}";
-        Table table = Table.read().string(json, "jsonl");
-        String output = table.write().toString("jsonl");
-        assertEquals(json, output);
-    }
+  @Test
+  public void arrayOfObjects() {
+    String json =
+        "{\"a\":1453438800000,\"b\":-2.144}\n{\"a\":1454043600000,\"b\":-2.976}\n{\"a\":1454648400000,\"b\":-2.954}";
+    Table table = Table.read().string(json, "jsonl");
+    String output = table.write().toString("jsonl");
+    assertEquals(json, output);
+  }
 }

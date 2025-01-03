@@ -1,5 +1,11 @@
 package tech.tablesaw.io.jsonl;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.github.wnameless.json.flattener.JsonFlattener;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -7,14 +13,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.github.wnameless.json.flattener.JsonFlattener;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.ReadOptions;
@@ -25,86 +23,86 @@ import tech.tablesaw.io.TableBuildingUtils;
 
 public class JsonlReader implements DataReader<JsonlReadOptions> {
 
-    private static final JsonlReader INSTANCE = new JsonlReader();
-    private static final ObjectMapper mapper = new ObjectMapper();
+  private static final JsonlReader INSTANCE = new JsonlReader();
+  private static final ObjectMapper mapper = new ObjectMapper();
 
-    static {
-        register(Table.defaultReaderRegistry);
+  static {
+    register(Table.defaultReaderRegistry);
+  }
+
+  public static void register(ReaderRegistry registry) {
+    registry.registerExtension("jsonl", INSTANCE);
+    registry.registerMimeType("text/jsonl", INSTANCE);
+    registry.registerMimeType("application/jsonl+json", INSTANCE);
+    registry.registerOptions(JsonlReadOptions.class, INSTANCE);
+  }
+
+  @Override
+  public Table read(JsonlReadOptions options) {
+    ObjectReader stream = mapper.readerFor(JsonNode.class);
+    try {
+      Reader reader = options.source().createReader(null);
+      JsonParser parser = stream.createParser(reader);
+      Iterator<JsonNode> iter = stream.readValues(parser);
+      return convertObjects(iter, options);
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
+    }
+  }
+
+  private Table convertObjects(Iterator<JsonNode> iter, ReadOptions options) {
+    // flatten each object inside the array
+    StringBuilder result = new StringBuilder("[");
+    boolean first = true;
+    for (; iter.hasNext(); ) {
+      JsonNode rowObj = iter.next();
+      String flattenedRow = null;
+      try {
+        flattenedRow = JsonFlattener.flatten(mapper.writeValueAsString(rowObj));
+      } catch (JsonProcessingException e) {
+        throw new RuntimeIOException(e);
+      }
+      if (!first) {
+        result.append(",");
+      }
+      first = false;
+      result.append(flattenedRow);
+    }
+    String flattenedJsonString = result.append("]").toString();
+    JsonNode flattenedJsonObj = null;
+    try {
+      flattenedJsonObj = mapper.readTree(flattenedJsonString);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeIOException(e);
     }
 
-    public static void register(ReaderRegistry registry) {
-        registry.registerExtension("jsonl", INSTANCE);
-        registry.registerMimeType("text/jsonl", INSTANCE);
-        registry.registerMimeType("application/jsonl+json", INSTANCE);
-        registry.registerOptions(JsonlReadOptions.class, INSTANCE);
+    Set<String> colNames = new LinkedHashSet<>();
+    for (JsonNode row : flattenedJsonObj) {
+      Iterator<String> fieldNames = row.fieldNames();
+      while (fieldNames.hasNext()) {
+        colNames.add(fieldNames.next());
+      }
     }
 
-    @Override
-    public Table read(JsonlReadOptions options) {
-        ObjectReader stream = mapper.readerFor(JsonNode.class);
-        try {
-            Reader reader = options.source().createReader(null);
-            JsonParser parser = stream.createParser(reader);
-            Iterator<JsonNode> iter = stream.readValues(parser);
-            return convertObjects(iter, options);
-        } catch (IOException e) {
-            throw new RuntimeIOException(e);
+    List<String> columnNames = new ArrayList<>(colNames);
+    List<String[]> dataRows = new ArrayList<>();
+    for (JsonNode node : flattenedJsonObj) {
+      String[] arr = new String[columnNames.size()];
+      for (int i = 0; i < columnNames.size(); i++) {
+        if (node.has(columnNames.get(i))) {
+          arr[i] = node.get(columnNames.get(i)).asText();
+        } else {
+          arr[i] = null;
         }
+      }
+      dataRows.add(arr);
     }
 
-    private Table convertObjects(Iterator<JsonNode> iter, ReadOptions options) {
-        // flatten each object inside the array
-        StringBuilder result = new StringBuilder("[");
-        boolean first = true;
-        for (; iter.hasNext();) {
-            JsonNode rowObj = iter.next();
-            String flattenedRow = null;
-            try {
-                flattenedRow = JsonFlattener.flatten(mapper.writeValueAsString(rowObj));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeIOException(e);
-            }
-            if (!first) {
-                result.append(",");
-            }
-            first = false;
-            result.append(flattenedRow);
-        }
-        String flattenedJsonString = result.append("]").toString();
-        JsonNode flattenedJsonObj = null;
-        try {
-            flattenedJsonObj = mapper.readTree(flattenedJsonString);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeIOException(e);
-        }
+    return TableBuildingUtils.build(columnNames, dataRows, options);
+  }
 
-        Set<String> colNames = new LinkedHashSet<>();
-        for (JsonNode row : flattenedJsonObj) {
-            Iterator<String> fieldNames = row.fieldNames();
-            while (fieldNames.hasNext()) {
-                colNames.add(fieldNames.next());
-            }
-        }
-
-        List<String> columnNames = new ArrayList<>(colNames);
-        List<String[]> dataRows = new ArrayList<>();
-        for (JsonNode node : flattenedJsonObj) {
-            String[] arr = new String[columnNames.size()];
-            for (int i = 0; i < columnNames.size(); i++) {
-                if (node.has(columnNames.get(i))) {
-                    arr[i] = node.get(columnNames.get(i)).asText();
-                } else {
-                    arr[i] = null;
-                }
-            }
-            dataRows.add(arr);
-        }
-
-        return TableBuildingUtils.build(columnNames, dataRows, options);
-    }
-
-    @Override
-    public Table read(Source source) {
-        return read(JsonlReadOptions.builder(source).build());
-    }
+  @Override
+  public Table read(Source source) {
+    return read(JsonlReadOptions.builder(source).build());
+  }
 }

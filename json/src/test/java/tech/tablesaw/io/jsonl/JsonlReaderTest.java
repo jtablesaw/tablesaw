@@ -17,7 +17,6 @@ package tech.tablesaw.io.jsonl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
@@ -28,8 +27,8 @@ public class JsonlReaderTest {
   public void arrayOfNestedObjects() {
     String json =
         "{\"a\":1453438800000,\"b\":{\"c\":-2.1448117025014}}\n" //
-      + "{\"a\":1454043600000,\"b\":{\"c\":-2.9763153817574}}\n" //
-	  + "{\"a\":1454648400000,\"b\":{\"c\":-2.9545283436391}}";
+            + "{\"a\":1454043600000,\"b\":{\"c\":-2.9763153817574}}\n" //
+            + "{\"a\":1454648400000,\"b\":{\"c\":-2.9545283436391}}";
     Table table = Table.read().string(json, "jsonl");
     assertEquals(2, table.columnCount());
     assertEquals(3, table.rowCount());
@@ -42,7 +41,7 @@ public class JsonlReaderTest {
   public void arrayOfRowsWithIncompleteIndexes() {
     String json =
         "{\"A\" : \"123\", \"B\" : \"456\"}\n" //
-      + "{\"B\" : \"789\", \"C\" : \"123\"}";
+            + "{\"B\" : \"789\", \"C\" : \"123\"}";
 
     Table expected =
         Table.create(
@@ -56,5 +55,4 @@ public class JsonlReaderTest {
     assertEquals(expected.column("B").asList(), actual.column("B").asList());
     assertEquals(expected.column("C").asList(), actual.column("C").asList());
   }
-
 }

@@ -14,14 +14,12 @@
 
 package tech.tablesaw.io.jsonl;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
+import java.io.IOException;
+import java.io.Writer;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.DataWriter;
 import tech.tablesaw.io.Destination;
@@ -30,38 +28,39 @@ import tech.tablesaw.io.WriterRegistry;
 
 public class JsonlWriter implements DataWriter<JsonlWriteOptions> {
 
-    private static final JsonlWriter INSTANCE = new JsonlWriter();
-    private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+  private static final JsonlWriter INSTANCE = new JsonlWriter();
+  private static final ObjectMapper mapper =
+      new ObjectMapper().registerModule(new JavaTimeModule());
 
-    static {
-        register(Table.defaultWriterRegistry);
-    }
+  static {
+    register(Table.defaultWriterRegistry);
+  }
 
-    public static void register(WriterRegistry registry) {
-        registry.registerExtension("jsonl", INSTANCE);
-        registry.registerOptions(JsonlWriteOptions.class, INSTANCE);
-    }
+  public static void register(WriterRegistry registry) {
+    registry.registerExtension("jsonl", INSTANCE);
+    registry.registerOptions(JsonlWriteOptions.class, INSTANCE);
+  }
 
-    public void write(Table table, JsonlWriteOptions options) {
-        try (Writer writer = options.destination().createWriter()) {
-            for (int r = 0; r < table.rowCount(); r++) {
-                ObjectNode row = mapper.createObjectNode();
-                for (int c = 0; c < table.columnCount(); c++) {
-                    row.set(table.column(c).name(), mapper.convertValue(table.get(r, c), JsonNode.class));
-                }
-                String str = mapper.writeValueAsString(row);
-                writer.write(str);
-                if (r < table.rowCount() - 1) {
-                    writer.write("\n");
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeIOException(e);
+  public void write(Table table, JsonlWriteOptions options) {
+    try (Writer writer = options.destination().createWriter()) {
+      for (int r = 0; r < table.rowCount(); r++) {
+        ObjectNode row = mapper.createObjectNode();
+        for (int c = 0; c < table.columnCount(); c++) {
+          row.set(table.column(c).name(), mapper.convertValue(table.get(r, c), JsonNode.class));
         }
+        String str = mapper.writeValueAsString(row);
+        writer.write(str);
+        if (r < table.rowCount() - 1) {
+          writer.write("\n");
+        }
+      }
+    } catch (IOException e) {
+      throw new RuntimeIOException(e);
     }
+  }
 
-    @Override
-    public void write(Table table, Destination dest) {
-        write(table, JsonlWriteOptions.builder(dest).build());
-    }
+  @Override
+  public void write(Table table, Destination dest) {
+    write(table, JsonlWriteOptions.builder(dest).build());
+  }
 }
