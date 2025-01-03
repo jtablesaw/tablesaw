@@ -1,11 +1,11 @@
 package tech.tablesaw.api;
 
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-
 import static java.lang.Double.NaN;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 
 class NumericColumnTest {
 

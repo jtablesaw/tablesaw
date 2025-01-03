@@ -238,7 +238,7 @@ public class ArrowWriter {
     try (FileOutputStream out = new FileOutputStream(file);
         ArrowStreamWriter writer =
             new ArrowStreamWriter(
-                schemaRoot, /*DictionaryProvider=*/ null, Channels.newChannel(out))) {
+                schemaRoot, /* DictionaryProvider= */ null, Channels.newChannel(out))) {
       writer.start();
       for (FieldVector v : schemaRoot.getFieldVectors()) {
         v.reset();

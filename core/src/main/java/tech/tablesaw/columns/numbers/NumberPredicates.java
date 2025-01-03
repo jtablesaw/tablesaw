@@ -37,11 +37,11 @@ public interface NumberPredicates {
 
   static DoublePredicate isBetweenExclusive(double rangeStart, double rangeEnd) {
     return valueToTest -> valueToTest > rangeStart && valueToTest < rangeEnd;
-  };
+  }
 
   static DoublePredicate isBetweenInclusive(double rangeStart, double rangeEnd) {
     return valueToTest -> valueToTest >= rangeStart && valueToTest <= rangeEnd;
-  };
+  }
 
   static DoublePredicate isGreaterThanOrEqualTo(double valueToCompareAgainst) {
     return valueToTest -> valueToTest >= valueToCompareAgainst;

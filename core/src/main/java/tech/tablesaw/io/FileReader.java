@@ -95,6 +95,11 @@ public abstract class FileReader {
 
       String[] headerNames = parser.parseNext();
 
+      if (headerNames == null) {
+        // no header because file is empty
+        return new String[] {};
+      }
+
       // work around issue where Univocity returns null if a column has no header.
       for (int i = 0; i < headerNames.length; i++) {
         if (headerNames[i] == null) {
@@ -132,12 +137,13 @@ public abstract class FileReader {
     Map<String, Integer> nameCounter = new HashMap<>();
     for (int i = 0; i < headerNames.length; i++) {
       String name = headerNames[i];
-      Integer count = nameCounter.get(name.toLowerCase());
+      String lowerCase = name.toLowerCase();
+      Integer count = nameCounter.get(lowerCase);
       if (count == null) {
-        nameCounter.put(name.toLowerCase(), 1);
+        nameCounter.put(lowerCase, 1);
       } else {
         count++;
-        nameCounter.put(name.toLowerCase(), count);
+        nameCounter.put(lowerCase, count);
         headerNames[i] = name + "-" + count;
       }
     }

@@ -47,7 +47,9 @@ public class CsvWriterTest {
   @Test
   void dateFormatter() throws IOException {
     Table table = Table.read().csv("../data/bush.csv").rows(1);
-    table.dateColumn("date").setPrintFormatter(DateTimeParser.caseInsensitiveFormatter("MMM dd, yyyy"));
+    table
+        .dateColumn("date")
+        .setPrintFormatter(DateTimeParser.caseInsensitiveFormatter("MMM dd, yyyy"));
     StringWriter writer = new StringWriter();
     table.write().usingOptions(CsvWriteOptions.builder(writer).usePrintFormatters(true).build());
     assertEquals(

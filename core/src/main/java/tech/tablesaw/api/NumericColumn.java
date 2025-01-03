@@ -5,6 +5,7 @@ import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
 import static tech.tablesaw.columns.numbers.NumberPredicates.isNotMissing;
 
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
+import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.Optional;
@@ -77,9 +78,11 @@ public interface NumericColumn<T extends Number>
   /** {@inheritDoc} */
   @Override
   default Selection isIn(Collection<Number> numbers) {
+    DoubleOpenHashSet doubleNumbers =
+        new DoubleOpenHashSet(numbers.stream().mapToDouble(Number::doubleValue).toArray());
     final Selection results = new BitmapBackedSelection();
     for (int i = 0; i < size(); i++) {
-      if (numbers.contains(getDouble(i))) {
+      if (doubleNumbers.contains(getDouble(i))) {
         results.add(i);
       }
     }

@@ -26,9 +26,10 @@ public class HistogramProbabilityExample {
   public static void main(String[] args) throws Exception {
     Table baseball = Table.read().csv("../data/baseball.csv");
 
-    Layout layout = Layout.builder().title("Probability Histogram of team batting averages").build();
-    HistogramTrace trace = HistogramTrace.
-            builder(baseball.nCol("BA"))
+    Layout layout =
+        Layout.builder().title("Probability Histogram of team batting averages").build();
+    HistogramTrace trace =
+        HistogramTrace.builder(baseball.nCol("BA"))
             .histNorm(HistogramTrace.HistNorm.PROBABILITY)
             .build();
 

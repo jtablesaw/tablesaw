@@ -56,14 +56,13 @@ public class DataFrameReader {
    * mime-type Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
    */
   public Table url(URL url) {
-    URLConnection connection = null;
     try {
-      connection = url.openConnection();
+      URLConnection connection = url.openConnection();
+      String contentType = connection.getContentType();
+      return url(url, getCharset(contentType), getMimeType(contentType));
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeIOException(e);
     }
-    String contentType = connection.getContentType();
-    return url(url, getCharset(contentType), getMimeType(contentType));
   }
 
   private Table url(URL url, Charset charset, String mimeType) {
@@ -87,11 +86,17 @@ public class DataFrameReader {
   }
 
   private String getMimeType(String contentType) {
+    if (contentType == null) {
+      return null;
+    }
     String[] pair = contentType.split(";");
     return pair[0].trim();
   }
 
   private Charset getCharset(String contentType) {
+    if (contentType == null) {
+      return Charset.defaultCharset();
+    }
     String[] pair = contentType.split(";");
     return pair.length == 1
         ? Charset.defaultCharset()
