@@ -1,5 +1,11 @@
 package tech.tablesaw.io.xlsx;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.GregorianCalendar;
+import java.util.List;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -10,13 +16,6 @@ import tech.tablesaw.io.DataWriter;
 import tech.tablesaw.io.Destination;
 import tech.tablesaw.io.RuntimeIOException;
 import tech.tablesaw.io.WriterRegistry;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 public class XlsxWriter implements DataWriter<XlsxWriteOptions> {
 
@@ -38,16 +37,14 @@ public class XlsxWriter implements DataWriter<XlsxWriteOptions> {
 
   @Override
   public void write(Table table, XlsxWriteOptions options) {
-    try(XSSFWorkbook workbook = new XSSFWorkbook()) {
+    try (XSSFWorkbook workbook = new XSSFWorkbook()) {
       CellStyle localDateStyle = workbook.createCellStyle();
-      localDateStyle.setDataFormat(
-          workbook.createDataFormat().getFormat("yyyy-MM-dd"));
+      localDateStyle.setDataFormat(workbook.createDataFormat().getFormat("yyyy-MM-dd"));
       CellStyle localDateTimeStyle = workbook.createCellStyle();
       localDateTimeStyle.setDataFormat(
           workbook.createDataFormat().getFormat("yyyy-MM-dd hh:mm:ss"));
       CellStyle localTimeStyle = workbook.createCellStyle();
-      localTimeStyle.setDataFormat(
-          workbook.createDataFormat().getFormat("[h]:mm:ss"));
+      localTimeStyle.setDataFormat(workbook.createDataFormat().getFormat("[h]:mm:ss"));
       XSSFSheet sheet = workbook.createSheet(table.name());
       int rowNum = 0;
       List<String> columnNames = table.columnNames();
@@ -79,7 +76,8 @@ public class XlsxWriter implements DataWriter<XlsxWriteOptions> {
             cell.setCellValue(time);
             cell.setCellStyle(localTimeStyle);
           } else if (ColumnType.INSTANT.equals(type)) {
-            ZonedDateTime zdt = ZonedDateTime.ofInstant(row.getInstant(colName), ZoneId.systemDefault());
+            ZonedDateTime zdt =
+                ZonedDateTime.ofInstant(row.getInstant(colName), ZoneId.systemDefault());
             cell.setCellValue(GregorianCalendar.from(zdt));
             cell.setCellStyle(localDateTimeStyle);
           } else if (ColumnType.FLOAT.equals(type)) {

@@ -1,11 +1,10 @@
 package tech.tablesaw.io.xlsx;
 
-import tech.tablesaw.io.Destination;
-import tech.tablesaw.io.WriteOptions;
-
 import java.io.File;
 import java.io.OutputStream;
 import java.io.Writer;
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriteOptions;
 
 public class XlsxWriteOptions extends WriteOptions {
 
