@@ -94,6 +94,11 @@ public abstract class FileReader {
     if (options.header()) {
 
       String[] headerNames = parser.parseNext();
+      
+      if (headerNames == null) {
+        // no header because file is empty
+        return new String[] {};
+      }
 
       // work around issue where Univocity returns null if a column has no header.
       for (int i = 0; i < headerNames.length; i++) {
