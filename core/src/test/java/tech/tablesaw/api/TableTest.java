@@ -50,6 +50,7 @@ public class TableTest {
   private static final ColumnType[] BUSH_COLUMN_TYPES = {LOCAL_DATE, INTEGER, STRING};
   private static Table bush;
   private static Table bushMinimized;
+  private static Table missingValues;
 
   private Table table;
   private final DoubleColumn f1 = DoubleColumn.create("f1");
@@ -64,6 +65,8 @@ public class TableTest {
                     .columnTypes(BUSH_COLUMN_TYPES));
     ColumnType[] types = {LOCAL_DATE, SHORT, STRING};
     bushMinimized = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").columnTypes(types));
+    missingValues = Table.read().csv(CsvReadOptions.builder("../data/missing_values.csv")
+      .missingValueIndicator("-"));
   }
 
   @BeforeEach
@@ -915,5 +918,37 @@ public class TableTest {
     } catch (Exception e) {
       fail("toString shouldn't throw " + e);
     }
+  }
+
+  @Test
+  void testCompareRowsIdentical() {
+      for(int i = 0; i < missingValues.rowCount(); i++) {
+          assertTrue(Table.compareRows(i, missingValues, missingValues), "Row " + i + " is not equal to itself");
+      }
+  }
+
+  @Test
+  void testCompareRowsDifferent() {
+      Table differentTable = missingValues.copy().sortDescendingOn("Sales");
+      for(int i = 0; i < missingValues.rowCount(); i++) {
+          assertFalse(Table.compareRows(i, missingValues, differentTable), "Row " + i + " is equal to a different row");
+      }
+  }
+
+  @Test
+  void testCompareRowsDifferentColumns() {
+      Table differentTable = missingValues.copy().removeColumns("Sales");
+      for(int i = 0; i < missingValues.rowCount(); i++) {
+          assertFalse(Table.compareRows(i, missingValues, differentTable), "Row " + i + " is equal to a row with less columns");
+      }
+  }
+  
+  @Test
+  void testCompareRowsOutOfBound() {
+      Table differentTable = missingValues.copy().dropRows(0);
+      int lastRowNumber = missingValues.rowCount() - 1;
+      assertThrows(IndexOutOfBoundsException.class,
+          () -> Table.compareRows(lastRowNumber, missingValues, differentTable),
+          "Row outside range does not throw exception");
   }
 }

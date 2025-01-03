@@ -82,10 +82,13 @@ public interface ColumnType {
   /** TODO: Research this method to provide a good comment */
   AbstractColumnParser<?> customParser(ReadOptions options);
 
-  /** TODO: Research this method to provide a good comment */
-  default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {
-    Object o1 = original.get(rowNumber);
-    Object o2 = temp.get(temp.size() - 1);
+  /**
+   * Compares the row at {@code rowNumber} in {@code column1} and {@code column2} and returns whether they are equal.
+   * @throws {@code IndexOutOfBoundsException} if {@code rowNumber} exceeds either column size
+   */
+  default boolean compare(int rowNumber, Column<?> column1, Column<?> column2) {
+    Object o1 = column2.get(rowNumber);
+    Object o2 = column1.get(rowNumber);
     return o1 == null ? o2 == null : o1.equals(o2);
   }
 
