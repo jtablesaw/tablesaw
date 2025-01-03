@@ -27,17 +27,17 @@ public abstract class PricePlot {
     NumericColumn<?> low = table.numberColumn(lowCol);
     NumericColumn<?> close = table.numberColumn(closeCol);
     ScatterTrace trace;
-    if (x.type() == ColumnType.LOCAL_DATE) {
+    if (ColumnType.LOCAL_DATE.equals(x.type())) {
       trace =
           ScatterTrace.builder(table.dateColumn(xCol), open, high, low, close)
               .type(plotType)
               .build();
-    } else if (x.type() == ColumnType.LOCAL_DATE_TIME) {
+    } else if (ColumnType.LOCAL_DATE_TIME.equals(x.type())) {
       trace =
           ScatterTrace.builder(table.dateTimeColumn(xCol), open, high, low, close)
               .type(plotType)
               .build();
-    } else if (x.type() == ColumnType.INSTANT) {
+    } else if (ColumnType.INSTANT.equals(x.type())) {
       trace =
           ScatterTrace.builder(table.instantColumn(xCol), open, high, low, close)
               .type(plotType)
