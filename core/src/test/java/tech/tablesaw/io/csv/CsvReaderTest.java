@@ -162,10 +162,10 @@ public class CsvReaderTest {
   }
 
   @Test
-  void allowDuplicateColumnNamesInsensitive() throws IOException {
+  void allowDuplicateColumnNamesInsensitive() {
     final Reader reader2 =
         new StringReader(
-            "Col1" + COMMA + "col1" + LINE_END + "\"first\"" + COMMA + "second" + LINE_END);
+            "Col1" + COMMA + "col1" + LINE_END + "first" + COMMA + "second" + LINE_END);
     Table dupes =
         Table.read().csv(CsvReadOptions.builder(reader2).allowDuplicateColumnNames(true).build());
     assertEquals("Col1", dupes.columnNames().get(0));
