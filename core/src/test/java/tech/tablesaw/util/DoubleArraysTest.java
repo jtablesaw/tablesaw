@@ -30,7 +30,7 @@ public class DoubleArraysTest {
     TableSliceGroup tableSliceGroup = table.splitOn("Scale");
     int columnNumber = table.columnIndex("Injuries");
     double[][] a2dArray = DoubleArrays.to2dArray(tableSliceGroup, columnNumber);
-    assertEquals(7, a2dArray.length, "Wrong Scale array length");
+    assertEquals(7, a2dArray.length);
   }
 
   @Test
