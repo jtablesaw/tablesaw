@@ -82,16 +82,16 @@ class DataFrameReaderTest {
             .getMessage()
             .contains("No reader registered for mime-type application/octet-stream"));
   }
-  
+
   @Test
   void readInvalidURL() throws MalformedURLException {
-      URL url = new URL("ftp://not-a-host/data.csv");
-      assertThrows(RuntimeIOException.class, () -> Table.read().url(url));
+    URL url = new URL("ftp://not-a-host/data.csv");
+    assertThrows(RuntimeIOException.class, () -> Table.read().url(url));
   }
 
   @Test
   void readInvalidURLNoExtension() throws MalformedURLException {
-      URL url = new URL("ftp://not-a-host/data/csv");
-      assertThrows(IllegalArgumentException.class, () -> Table.read().url(url));
+    URL url = new URL("ftp://not-a-host/data/csv");
+    assertThrows(IllegalArgumentException.class, () -> Table.read().url(url));
   }
 }
