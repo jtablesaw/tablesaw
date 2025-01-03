@@ -163,7 +163,7 @@ public class CsvReaderTest {
 
   @Test
   void allowDuplicateColumnNamesInsensitive() {
-    final Reader reader2 =
+    Reader reader2 =
         new StringReader(
             "Col1" + COMMA + "col1" + LINE_END + "first" + COMMA + "second" + LINE_END);
     Table dupes =
