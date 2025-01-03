@@ -205,28 +205,27 @@ public class NumberColumnTest {
 
   @Test
   public void testIsInIntegerColumn() {
-    List<Number> inValues = Arrays.asList(new Number[]{10d, (short) -2, 57, 42L, 40f, 52d, -5d});
+    List<Number> inValues = Arrays.asList(new Number[] {10d, (short) -2, 57, 42L, 40f, 52d, -5d});
 
     Table t = Table.create("t", IntColumn.create("Test", 32, 42, 40, 57, 52, -2, 11, 25));
 
     Selection filter = t.numberColumn("Test").isIn(inValues);
     Table result = t.where(filter);
     assertEquals(
-        new HashSet<>(Arrays.asList(-2, 57, 42, 40, 52)),
-        result.numberColumn("Test").asSet());
+        new HashSet<>(Arrays.asList(-2, 57, 42, 40, 52)), result.numberColumn("Test").asSet());
   }
 
   @Test
   public void testIsInDoubleColumn() {
-    List<Number> inValues = Arrays.asList(new Number[]{10d, (short) -2, 57, 42L, 40f, 52d, -5d});
+    List<Number> inValues = Arrays.asList(new Number[] {10d, (short) -2, 57, 42L, 40f, 52d, -5d});
 
-    Table t = Table.create("t", DoubleColumn.create("Test", 32d, 42d, 40d, 57d, 52d, -2d, 11d, 25d));
+    Table t =
+        Table.create("t", DoubleColumn.create("Test", 32d, 42d, 40d, 57d, 52d, -2d, 11d, 25d));
 
     Selection filter = t.numberColumn("Test").isIn(inValues);
     Table result = t.where(filter);
     assertEquals(
-        new HashSet<>(Arrays.asList(-2d, 40d, 42d, 52d, 57d)),
-        result.numberColumn("Test").asSet());
+        new HashSet<>(Arrays.asList(-2d, 40d, 42d, 52d, 57d)), result.numberColumn("Test").asSet());
   }
 
   @Test
