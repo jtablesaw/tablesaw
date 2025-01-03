@@ -85,7 +85,7 @@ class DataFrameReaderTest {
   
   @Test
   void readInvalidURL() throws MalformedURLException {
-      final URL url = new URL("ftp://not-a-host/data.csv");
+      URL url = new URL("ftp://not-a-host/data.csv");
       assertThrows(RuntimeIOException.class, () -> Table.read().url(url));
   }
 
