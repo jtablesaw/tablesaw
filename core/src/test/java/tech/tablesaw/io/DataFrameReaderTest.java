@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -80,5 +81,17 @@ class DataFrameReaderTest {
         thrown
             .getMessage()
             .contains("No reader registered for mime-type application/octet-stream"));
+  }
+
+  @Test
+  void readInvalidURL() throws MalformedURLException {
+    URL url = new URL("ftp://not-a-host/data.csv");
+    assertThrows(RuntimeIOException.class, () -> Table.read().url(url));
+  }
+
+  @Test
+  void readInvalidURLNoExtension() throws MalformedURLException {
+    URL url = new URL("ftp://not-a-host/data/csv");
+    assertThrows(IllegalArgumentException.class, () -> Table.read().url(url));
   }
 }

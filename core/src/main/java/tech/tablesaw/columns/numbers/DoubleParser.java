@@ -1,12 +1,11 @@
 package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
-
-import java.text.NumberFormat;
-import java.text.ParseException;
 
 public class DoubleParser extends AbstractColumnParser<Double> {
 
@@ -58,9 +57,8 @@ public class DoubleParser extends AbstractColumnParser<Double> {
   }
 
   /**
-   * A number is percent when it ends with %
-   * - We can trim off the last occurrence of '%'
-   * - The remaining string should then be parsable as a number(double)
+   * A number is percent when it ends with % - We can trim off the last occurrence of '%' - The
+   * remaining string should then be parsable as a number(double)
    *
    * @param s Value
    * @return Flag returning whether the input is a percent or not

@@ -743,4 +743,10 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
    * not in the column.
    */
   int indexOf(Object o);
+
+  /**
+   * Returns the index of the last occurrence of {@code o} in the column or -1 if the element is not
+   * in the column.
+   */
+  int lastIndexOf(Object o);
 }

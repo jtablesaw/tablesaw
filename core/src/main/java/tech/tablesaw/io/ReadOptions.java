@@ -325,7 +325,9 @@ public class ReadOptions {
       return this;
     }
 
-    /** @see ColumnTypeDetector */
+    /**
+     * @see ColumnTypeDetector
+     */
     public Builder columnTypesToDetect(List<ColumnType> columnTypesToDetect) {
       // Types need to be in certain order as more general types like string come last
       // Otherwise everything will be parsed as a string

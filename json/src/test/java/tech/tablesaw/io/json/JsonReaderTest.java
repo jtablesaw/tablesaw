@@ -22,10 +22,13 @@ import static tech.tablesaw.api.ColumnType.STRING;
 
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.Source;
 
 public class JsonReaderTest {
 
@@ -109,5 +112,19 @@ public class JsonReaderTest {
             .typeArray();
 
     assertArrayEquals(columnTypes, new ColumnType[] {STRING, STRING});
+  }
+
+  @Test
+  void testColumnOrderIsPreserved() {
+    String json =
+        "[{\"日期\":\"1991-04-03\",\"开盘\":49,\"收盘\":49,\"最高\":49,\"最低\":49,\"成交量\":1,\"成交额\":5000,\"振幅\":0,\"涨跌幅\":22.5,\"涨跌额\":9,\"换手率\":0},"
+            + "{\"日期\":\"1991-04-04\",\"开盘\":48.76,\"收盘\":48.76,\"最高\":48.76,\"最低\":48.76,\"成交量\":3,\"成交额\":15000,\"振幅\":0,\"涨跌幅\":-0.49,\"涨跌额\":-0.24,\"换手率\":0}]\n";
+
+    List<String> header =
+        Arrays.asList("日期", "开盘", "收盘", "最高", "最低", "成交量", "成交额", "振幅", "涨跌幅", "涨跌额", "换手率");
+
+    Table table = new JsonReader().read(Source.fromString(json));
+
+    assertEquals(header, table.columnNames());
   }
 }

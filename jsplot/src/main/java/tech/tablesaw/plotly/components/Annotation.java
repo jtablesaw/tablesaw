@@ -9,15 +9,14 @@ public class Annotation extends Component {
 
   /**
    * This is to supply annotation in Plot.ly reference to
-   * https://plotly.com/javascript/reference/layout/annotations/. Support most of
-   * apis there.
+   * https://plotly.com/javascript/reference/layout/annotations/. Support most of apis there.
    */
 
-  /**
-   * The horizontal alignment of the 'text' within the box.
-   */
+  /** The horizontal alignment of the 'text' within the box. */
   public enum Align {
-    LEFT("left"), CENTER("center"), RIGHT("right");
+    LEFT("left"),
+    CENTER("center"),
+    RIGHT("right");
 
     private final String value;
 
@@ -36,7 +35,9 @@ public class Annotation extends Component {
    * The vertical alignment of the 'text' within the box.
    */
   public enum Valign {
-    TOP("top"), MIDDLE("middle"), BOTTOM("bottom");
+    TOP("top"),
+    MIDDLE("middle"),
+    BOTTOM("bottom");
 
     private final String value;
 
@@ -52,7 +53,10 @@ public class Annotation extends Component {
   }
 
   public enum Xanchor {
-    AUTO("auto"), LEFT("left"), CENTER("center"), RIGHT("right");
+    AUTO("auto"),
+    LEFT("left"),
+    CENTER("center"),
+    RIGHT("right");
 
     private final String value;
 
@@ -68,7 +72,10 @@ public class Annotation extends Component {
   }
 
   public enum Yanchor {
-    AUTO("auto"), TOP("top"), MIDDLE("center"), BOTTOM("right");
+    AUTO("auto"),
+    TOP("top"),
+    MIDDLE("center"),
+    BOTTOM("right");
 
     private final String value;
 
@@ -84,7 +91,9 @@ public class Annotation extends Component {
   }
 
   public enum ClicktoShow {
-    FALSE(), ONOFF("onoff"), ONOUT("onout");
+    FALSE(),
+    ONOFF("onoff"),
+    ONOUT("onout");
 
     private final String value;
 
@@ -228,78 +237,42 @@ public class Annotation extends Component {
   @Override
   protected Map<String, Object> getContext() {
     Map<String, Object> context = new HashMap<>();
-    if (DEFAULT_VISIBLE != visible)
-      context.put("visible", visible);
-    if (text != null)
-      context.put("text", text);
-    if (!DEFAULT_FONT.equals(font))
-      context.put("font", font);
-    if (width != null)
-      context.put("width", width);
-    if (height != null)
-      context.put("height", height);
-    if (opacity != DEFAULT_OPACITY)
-      context.put("opacity", opacity);
-    if (!DEFAULT_ALIGN.equals(align))
-      context.put("align", align);
-    if (!DEFAULT_VALIGN.equals(valign))
-      context.put("valign", valign);
-    if (!DEFAULT_BGCOLOR.equals(bgcolor))
-      context.put("bgcolor", bgcolor);
-    if (borderpad != DEFAULT_BORDERPAD)
-      context.put("borderpad", borderpad);
-    if (borderwidth != borderwidth)
-      context.put("borderwidth", bordercolor);
-    if (showarrow != DEFAULT_SHOWARROW)
-      context.put("showarrow", showarrow);
-    if (arrowcolor != null)
-      context.put("arrowcolor", arrowcolor);
-    if (arrowhead != DEFAULT_ARROWHEAD)
-      context.put("arrowhead", arrowhead);
-    if (startarrowhead != DEFAULT_STARTARROWHEAD)
-      context.put("startarrowhead", startarrowhead);
-    if (arrowwidth != DEFAULT_ARROWWIDTH)
-      context.put("arrowwidth", arrowwidth);
-    if (standoff != DEFAULT_STANDOFF)
-      context.put("standoff", standoff);
-    if (ax != null)
-      context.put("ax", ax);
-    if (ay != null)
-      context.put("ay", ay);
-    if (!DEFAULT_AXREF.equals(axref))
-      context.put("axref", axref);
-    if (!DEFAULT_AYREF.equals(ayref))
-      context.put("ayref", ayref);
-    if (!DEFAULT_XREF.equals(xref))
-      context.put("xref", xref);
-    if (x != null)
-      context.put("x", x);
-    if (!DEFAULT_XANCHOR.equals(xanchor))
-      context.put("xanchor", xanchor);
-    if (xshift != DEFAULT_XSHIFT)
-      context.put("xshift", xshift);
-    if (!DEFAULT_YREF.equals(yref))
-      context.put("yref", yref);
-    if (y != null)
-      context.put("y", y);
-    if (!DEFAULT_YANCHOR.equals(yanchor))
-      context.put("yanchor", yanchor);
-    if (yshift != DEFAULT_YSHIFT)
-      context.put("yshift", yshift);
-    if (!DEFAULT_CLICKTOSHOW.equals(clicktoshow))
-      context.put("clicktoshow", clicktoshow);
-    if (xclick != null)
-      context.put("xclick", xclick);
-    if (yclick != null)
-      context.put("yclick", yclick);
-    if (hoverlabel != null)
-      context.put("hoverlabel", hoverlabel);
-    if (captureevents != DEFAULT_CAPTUREEVENTS)
-      context.put("captureevents", captureevents);
-    if (name != null)
-      context.put("name", name);
-    if (templateitemname != null)
-      context.put("templateitemname", templateitemname);
+    if (DEFAULT_VISIBLE != visible) context.put("visible", visible);
+    if (text != null) context.put("text", text);
+    if (!DEFAULT_FONT.equals(font)) context.put("font", font);
+    if (width != null) context.put("width", width);
+    if (height != null) context.put("height", height);
+    if (opacity != DEFAULT_OPACITY) context.put("opacity", opacity);
+    if (!DEFAULT_ALIGN.equals(align)) context.put("align", align);
+    if (!DEFAULT_VALIGN.equals(valign)) context.put("valign", valign);
+    if (!DEFAULT_BGCOLOR.equals(bgcolor)) context.put("bgcolor", bgcolor);
+    if (borderpad != DEFAULT_BORDERPAD) context.put("borderpad", borderpad);
+    if (borderwidth != borderwidth) context.put("borderwidth", bordercolor);
+    if (showarrow != DEFAULT_SHOWARROW) context.put("showarrow", showarrow);
+    if (arrowcolor != null) context.put("arrowcolor", arrowcolor);
+    if (arrowhead != DEFAULT_ARROWHEAD) context.put("arrowhead", arrowhead);
+    if (startarrowhead != DEFAULT_STARTARROWHEAD) context.put("startarrowhead", startarrowhead);
+    if (arrowwidth != DEFAULT_ARROWWIDTH) context.put("arrowwidth", arrowwidth);
+    if (standoff != DEFAULT_STANDOFF) context.put("standoff", standoff);
+    if (ax != null) context.put("ax", ax);
+    if (ay != null) context.put("ay", ay);
+    if (!DEFAULT_AXREF.equals(axref)) context.put("axref", axref);
+    if (!DEFAULT_AYREF.equals(ayref)) context.put("ayref", ayref);
+    if (!DEFAULT_XREF.equals(xref)) context.put("xref", xref);
+    if (x != null) context.put("x", x);
+    if (!DEFAULT_XANCHOR.equals(xanchor)) context.put("xanchor", xanchor);
+    if (xshift != DEFAULT_XSHIFT) context.put("xshift", xshift);
+    if (!DEFAULT_YREF.equals(yref)) context.put("yref", yref);
+    if (y != null) context.put("y", y);
+    if (!DEFAULT_YANCHOR.equals(yanchor)) context.put("yanchor", yanchor);
+    if (yshift != DEFAULT_YSHIFT) context.put("yshift", yshift);
+    if (!DEFAULT_CLICKTOSHOW.equals(clicktoshow)) context.put("clicktoshow", clicktoshow);
+    if (xclick != null) context.put("xclick", xclick);
+    if (yclick != null) context.put("yclick", yclick);
+    if (hoverlabel != null) context.put("hoverlabel", hoverlabel);
+    if (captureevents != DEFAULT_CAPTUREEVENTS) context.put("captureevents", captureevents);
+    if (name != null) context.put("name", name);
+    if (templateitemname != null) context.put("templateitemname", templateitemname);
 
     return context;
   }
@@ -352,8 +325,7 @@ public class Annotation extends Component {
     private String name;
     private String templateitemname;
 
-    private AnnotationBuilder() {
-    }
+    private AnnotationBuilder() {}
 
     public AnnotationBuilder visible(boolean visible) {
       this.visible = visible;

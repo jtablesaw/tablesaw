@@ -51,7 +51,7 @@ public class TickSettings {
 
   /** Controls the display of prefixes, suffixes, and exponents on ticks */
   public enum DisplayRules {
-    ALL("outside"),
+    ALL("all"),
     FIRST("first"),
     LAST("last"),
     NONE("none");
@@ -132,6 +132,7 @@ public class TickSettings {
   private final int angle;
   private final String prefix;
   private final String suffix;
+  private final String format;
   private final boolean autoMargin;
   private final DisplayRules showPrefix;
   private final DisplayRules showSuffix;
@@ -167,6 +168,7 @@ public class TickSettings {
     angle = builder.angle;
     prefix = builder.prefix;
     suffix = builder.suffix;
+    format = builder.format;
     mirror = builder.mirror;
     separateThousands = builder.separateThousands;
   }
@@ -204,6 +206,7 @@ public class TickSettings {
     context.put("suffix", suffix);
     context.put("showPrefix", showPrefix);
     context.put("showSuffix", showSuffix);
+    context.put("format", format);
     context.put("angle", angle);
     context.put("autoMargin", autoMargin);
     context.put("tickMode", tickMode);
@@ -239,6 +242,7 @@ public class TickSettings {
     private boolean autoMargin = true;
     private DisplayRules showPrefix = ALL;
     private DisplayRules showSuffix = ALL;
+    private String format;
     private Mirror mirror;
     private boolean separateThousands;
 
@@ -396,6 +400,11 @@ public class TickSettings {
 
     public TickSettings.TickSettingsBuilder suffix(String suffix) {
       this.suffix = suffix;
+      return this;
+    }
+
+    public TickSettings.TickSettingsBuilder format(String format) {
+      this.format = format;
       return this;
     }
 

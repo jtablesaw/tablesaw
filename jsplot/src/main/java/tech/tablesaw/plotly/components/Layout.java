@@ -1,8 +1,8 @@
 package tech.tablesaw.plotly.components;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.pebbletemplates.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.error.PebbleException;
+import io.pebbletemplates.pebble.template.PebbleTemplate;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
@@ -21,7 +21,7 @@ public class Layout {
   private static final String DEFAULT_DECIMAL_SEPARATOR = ".";
   private static final String DEFAULT_THOUSANDS_SEPARATOR = ",";
   private static final boolean DEFAULT_AUTO_SIZE = false;
-  private static final HoverMode DEFAULT_HOVER_MODE = HoverMode.FALSE;
+  private static final HoverMode DEFAULT_HOVER_MODE = HoverMode.CLOSEST;
   private static final DragMode DEFAULT_DRAG_MODE = DragMode.ZOOM;
   private static final int DEFAULT_HOVER_DISTANCE = 20;
   private static final BarMode DEFAULT_BAR_MODE = BarMode.GROUP;

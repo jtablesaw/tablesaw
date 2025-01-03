@@ -169,17 +169,23 @@ public enum TestData {
     this.source = Paths.get(csvSource);
   }
 
-  /** @return The Table for a specific data set */
+  /**
+   * @return The Table for a specific data set
+   */
   public Table getTable() {
     return table;
   }
 
-  /** @return the column types for the data set. */
+  /**
+   * @return the column types for the data set.
+   */
   public ColumnType[] getColumnTypes() {
     return columnTypes;
   }
 
-  /** @return The path to the raw data for this data set */
+  /**
+   * @return The path to the raw data for this data set
+   */
   public Path getSource() {
     return source;
   }

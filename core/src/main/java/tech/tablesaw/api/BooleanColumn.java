@@ -133,7 +133,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
   }
 
   /**
-   * Returns a new Boolean column of the given size. All elements are false
+   * Returns a new Boolean column of the given size.
    *
    * @param name The column name
    * @param initialSize The column size
@@ -422,7 +422,7 @@ public class BooleanColumn extends AbstractColumn<BooleanColumn, Boolean>
     return (double) countTrue() / (size() - countMissing());
   }
 
-  /** Returns the proportion of non-missing row elements that contain true */
+  /** Returns the proportion of non-missing row elements that contain false */
   public double proportionFalse() {
     return 1.0 - proportionTrue();
   }

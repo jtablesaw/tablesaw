@@ -11,7 +11,9 @@ public class Utils {
     return Arrays.toString(data);
   }
 
-  /** @return un-escaped quote of argument */
+  /**
+   * @return un-escaped quote of argument
+   */
   public static String quote(String string) {
     return "'" + string + "'";
   }
@@ -24,7 +26,9 @@ public class Utils {
     JsonStringEncoder.getInstance().quoteAsString(s, sb);
   }
 
-  /** @return a Javascript array of strings (escaped if needed) */
+  /**
+   * @return a Javascript array of strings (escaped if needed)
+   */
   public static String dataAsString(Object[] data) {
     StringBuilder builder = new StringBuilder("[");
     for (int i = 0; i < data.length; i++) {

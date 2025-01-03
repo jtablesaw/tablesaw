@@ -338,4 +338,13 @@ public class ColumnTest {
     assertEquals(0, testDoubleCol.indexOf(0.0));
     assertEquals(1, testDoubleCol.indexOf(1.0));
   }
+
+  @Test
+  public void lastIndexOfTest() {
+    DoubleColumn testDoubleCol = DoubleColumn.create("t1", 0, 1, 1);
+    assertEquals(-1, testDoubleCol.lastIndexOf(2));
+    assertEquals(-1, testDoubleCol.lastIndexOf(0));
+    assertEquals(0, testDoubleCol.lastIndexOf(0.0));
+    assertEquals(2, testDoubleCol.lastIndexOf(1.0));
+  }
 }

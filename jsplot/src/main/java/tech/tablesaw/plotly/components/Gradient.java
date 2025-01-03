@@ -79,6 +79,7 @@ public class Gradient extends Component {
       this.color[0] = color;
       return this;
     }
+
     /** Sets the marker color to an array of color values */
     public GradientBuilder color(String[] color) {
       this.color = color;

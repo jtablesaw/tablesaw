@@ -163,7 +163,9 @@ public class JsonReadOptions extends ReadOptions {
       return this;
     }
 
-    /** @param path the JSON Pointer path used to select a sub-tree in the main document */
+    /**
+     * @param path the JSON Pointer path used to select a sub-tree in the main document
+     */
     public Builder path(String path) {
       this.path = path;
       return this;
