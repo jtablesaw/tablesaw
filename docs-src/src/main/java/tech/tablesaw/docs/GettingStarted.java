@@ -5,7 +5,6 @@ import static tech.tablesaw.api.QuerySupport.and;
 import static tech.tablesaw.api.QuerySupport.not;
 // @@ static_boolean_operators_import
 // @@ static_aggregate_function_import
-// import aggregate functions.
 import static tech.tablesaw.api.QuerySupport.or;
 
 import java.io.IOException;
