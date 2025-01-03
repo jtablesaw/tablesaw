@@ -91,7 +91,7 @@ class DataFrameReaderTest {
 
   @Test
   void readInvalidURLNoExtension() throws MalformedURLException {
-      final URL url = new URL("ftp://not-a-host/data/csv");
+      URL url = new URL("ftp://not-a-host/data/csv");
       assertThrows(IllegalArgumentException.class, () -> Table.read().url(url));
   }
 }
