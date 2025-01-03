@@ -83,12 +83,8 @@ public interface ColumnType {
   AbstractColumnParser<?> customParser(ReadOptions options);
 
   /**
-   * Compare the row at {@code rownumber} in {@code column1} and {@code column2} and returns whether they are equals.
-   * @param rowNumber the row to compare
-   * @param column1 the first column to compare
-   * @param column2 the second column to compare
-   * @return true if row {@code rownumber} is equals in both columns
-   * @throws {@code IndexOutOfBoundsException} if {@code rownumber} exceeds either column size
+   * Compares the row at {@code rowNumber} in {@code column1} and {@code column2} and returns whether they are equal.
+   * @throws {@code IndexOutOfBoundsException} if {@code rowNumber} exceeds either column size
    */
   default boolean compare(int rowNumber, Column<?> column1, Column<?> column2) {
     Object o1 = column2.get(rowNumber);
