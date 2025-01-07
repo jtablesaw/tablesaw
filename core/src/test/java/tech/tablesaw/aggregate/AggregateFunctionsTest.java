@@ -323,7 +323,13 @@ class AggregateFunctionsTest {
     StringColumn stringColumn = StringColumn.create("s", strings);
 
     Table table = Table.create("test", booleanColumn, numberColumn);
-    table.summarize(booleanColumn, numberColumn, countTrue, stdDev).by(stringColumn);
+    Table summary =
+        table.summarize(booleanColumn, numberColumn, countTrue, stdDev).by(stringColumn);
+
+    assertEquals(2.0, summary.doubleColumn(1).get(0), 1e-6);
+    assertEquals(0.0, summary.doubleColumn(1).get(1), 1e-6);
+    assertEquals(Math.sqrt(2), summary.doubleColumn(2).get(0), 1e-6);
+    assertEquals(Math.sqrt(2), summary.doubleColumn(2).get(1), 1e-6);
   }
 
   @Test

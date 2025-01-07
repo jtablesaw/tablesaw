@@ -14,6 +14,7 @@
 
 package tech.tablesaw.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -27,8 +28,9 @@ public class DoubleArraysTest {
   public void testTo2dArray() throws Exception {
     Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
     TableSliceGroup tableSliceGroup = table.splitOn("Scale");
-    int columnNuumber = table.columnIndex("Injuries");
-    DoubleArrays.to2dArray(tableSliceGroup, columnNuumber);
+    int columnNumber = table.columnIndex("Injuries");
+    double[][] a2dArray = DoubleArrays.to2dArray(tableSliceGroup, columnNumber);
+    assertEquals(7, a2dArray.length);
   }
 
   @Test
