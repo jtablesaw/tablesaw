@@ -31,9 +31,28 @@ public class JsonlReader implements DataReader<JsonlReadOptions> {
   }
 
   public static void register(ReaderRegistry registry) {
+    // See https://github.com/jtablesaw/tablesaw/pull/1260
     registry.registerExtension("jsonl", INSTANCE);
+    registry.registerMimeType("application/json-lines", INSTANCE);
+    registry.registerMimeType("application/jsonl", INSTANCE);
+    registry.registerMimeType("application/jsonlines", INSTANCE);
+    registry.registerMimeType("application/ldjson", INSTANCE);
+    registry.registerMimeType("application/ndjson", INSTANCE);
+    registry.registerMimeType("application/x-json-lines", INSTANCE);
+    registry.registerMimeType("application/x-jsonl", INSTANCE);
+    registry.registerMimeType("application/x-jsonlines", INSTANCE);
+    registry.registerMimeType("application/x-ldjson", INSTANCE);
+    registry.registerMimeType("application/x-ndjson", INSTANCE);
+    registry.registerMimeType("text/json-lines", INSTANCE);
     registry.registerMimeType("text/jsonl", INSTANCE);
-    registry.registerMimeType("application/jsonl+json", INSTANCE);
+    registry.registerMimeType("text/jsonlines", INSTANCE);
+    registry.registerMimeType("text/ldjson", INSTANCE);
+    registry.registerMimeType("text/ndjson", INSTANCE);
+    registry.registerMimeType("text/x-json-lines", INSTANCE);
+    registry.registerMimeType("text/x-jsonl", INSTANCE);
+    registry.registerMimeType("text/x-jsonlines", INSTANCE);
+    registry.registerMimeType("text/x-ldjson", INSTANCE);
+    registry.registerMimeType("text/x-ndjson", INSTANCE);
     registry.registerOptions(JsonlReadOptions.class, INSTANCE);
   }
 
