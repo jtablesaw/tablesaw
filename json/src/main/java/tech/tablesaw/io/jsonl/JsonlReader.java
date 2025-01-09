@@ -31,7 +31,7 @@ public class JsonlReader implements DataReader<JsonlReadOptions> {
   }
 
   public static void register(ReaderRegistry registry) {
-    // See https://github.com/jtablesaw/tablesaw/pull/1260
+    // no standard exists yet. taken from https://murex.rocks/types/jsonl.html#more-information
     registry.registerExtension("jsonl", INSTANCE);
     registry.registerMimeType("application/json-lines", INSTANCE);
     registry.registerMimeType("application/jsonl", INSTANCE);
