@@ -2,7 +2,6 @@ Tablesaw
 =======
 
 [![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/nebula-project-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![Build Status](https://travis-ci.org/jtablesaw/tablesaw.svg?branch=master)](https://travis-ci.org/jtablesaw/tablesaw)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/3ebd154b5253466b932cb17dda737293)](https://www.codacy.com/gh/jtablesaw/tablesaw/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jtablesaw/tablesaw&amp;utm_campaign=Badge_Grade)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=jtablesaw_tablesaw&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=jtablesaw_tablesaw)
 
