@@ -14,9 +14,10 @@ Tablesaw supports importing and exporting data to and from a variety of data typ
 | :----------------------------- | :----- | :----- |
 | CSV (and other delimited text) | Yes    | Yes    |
 | JSON                           | Yes    | Yes    |
+| JSONL                          | Yes    | Yes    |
 | RDBMS (via JDBC)               | Yes    |        |
 | Fixed Width Text               | Yes    | Yes    |
-| Excel                          | Yes    |        |
+| Excel                          | Yes    | Yes    |
 | HTML                           | Yes    | Yes    |
 
 ## Importing data
