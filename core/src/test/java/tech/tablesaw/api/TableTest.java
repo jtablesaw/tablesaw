@@ -65,8 +65,9 @@ public class TableTest {
                     .columnTypes(BUSH_COLUMN_TYPES));
     ColumnType[] types = {LOCAL_DATE, SHORT, STRING};
     bushMinimized = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").columnTypes(types));
-    missingValues = Table.read().csv(CsvReadOptions.builder("../data/missing_values.csv")
-      .missingValueIndicator("-"));
+    missingValues =
+        Table.read()
+            .csv(CsvReadOptions.builder("../data/missing_values.csv").missingValueIndicator("-"));
   }
 
   @BeforeEach
@@ -922,33 +923,40 @@ public class TableTest {
 
   @Test
   void testCompareRowsIdentical() {
-      for(int i = 0; i < missingValues.rowCount(); i++) {
-          assertTrue(Table.compareRows(i, missingValues, missingValues), "Row " + i + " is not equal to itself");
-      }
+    for (int i = 0; i < missingValues.rowCount(); i++) {
+      assertTrue(
+          Table.compareRows(i, missingValues, missingValues),
+          "Row " + i + " is not equal to itself");
+    }
   }
 
   @Test
   void testCompareRowsDifferent() {
-      Table differentTable = missingValues.copy().sortDescendingOn("Sales");
-      for(int i = 0; i < missingValues.rowCount(); i++) {
-          assertFalse(Table.compareRows(i, missingValues, differentTable), "Row " + i + " is equal to a different row");
-      }
+    Table differentTable = missingValues.copy().sortDescendingOn("Sales");
+    for (int i = 0; i < missingValues.rowCount(); i++) {
+      assertFalse(
+          Table.compareRows(i, missingValues, differentTable),
+          "Row " + i + " is equal to a different row");
+    }
   }
 
   @Test
   void testCompareRowsDifferentColumns() {
-      Table differentTable = missingValues.copy().removeColumns("Sales");
-      for(int i = 0; i < missingValues.rowCount(); i++) {
-          assertFalse(Table.compareRows(i, missingValues, differentTable), "Row " + i + " is equal to a row with less columns");
-      }
+    Table differentTable = missingValues.copy().removeColumns("Sales");
+    for (int i = 0; i < missingValues.rowCount(); i++) {
+      assertFalse(
+          Table.compareRows(i, missingValues, differentTable),
+          "Row " + i + " is equal to a row with less columns");
+    }
   }
-  
+
   @Test
   void testCompareRowsOutOfBound() {
-      Table differentTable = missingValues.copy().dropRows(0);
-      int lastRowNumber = missingValues.rowCount() - 1;
-      assertThrows(IndexOutOfBoundsException.class,
-          () -> Table.compareRows(lastRowNumber, missingValues, differentTable),
-          "Row outside range does not throw exception");
+    Table differentTable = missingValues.copy().dropRows(0);
+    int lastRowNumber = missingValues.rowCount() - 1;
+    assertThrows(
+        IndexOutOfBoundsException.class,
+        () -> Table.compareRows(lastRowNumber, missingValues, differentTable),
+        "Row outside range does not throw exception");
   }
 }
