@@ -22,18 +22,10 @@ import tech.tablesaw.api.ColumnType;
 @Immutable
 public final class TypeUtils {
 
-  /** Strings representing missing values in, for example, a CSV file that is being imported */
-  private static final String missingInd1 = "NaN";
-
-  private static final String missingInd2 = "*";
-  private static final String missingInd3 = "NA";
-  private static final String missingInd4 = "null";
-  private static final String missingInd5 = "N/A";
-
   // No default missing indicators
   // TODO: Allow this to be configurable?
   public static final ImmutableList<String> MISSING_INDICATORS =
-      ImmutableList.of(missingInd1, missingInd2, missingInd4, missingInd5);
+      ImmutableList.of();
 
   /** Private constructor to prevent instantiation */
   private TypeUtils() {}
