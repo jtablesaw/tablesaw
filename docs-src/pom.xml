@@ -5,7 +5,7 @@
     <parent>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-parent</artifactId>
-        <version>0.44.0</version>
+        <version>0.44.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>tablesaw-docs</artifactId>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-core</artifactId>
-            <version>0.44.0</version>
+            <version>0.44.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

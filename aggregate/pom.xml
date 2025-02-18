@@ -5,7 +5,7 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.44.0</version>
+    <version>0.44.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>tablesaw-aggregate</artifactId>
@@ -16,42 +16,42 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.44.0</version>
+      <version>0.44.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-beakerx</artifactId>
-      <version>0.44.0</version>
+      <version>0.44.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-excel</artifactId>
-      <version>0.44.0</version>
+      <version>0.44.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-html</artifactId>
-      <version>0.44.0</version>
+      <version>0.44.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-arrow</artifactId>
-      <version>0.44.0</version>
+      <version>0.44.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-json</artifactId>
-      <version>0.44.0</version>
+      <version>0.44.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-jsplot</artifactId>
-      <version>0.44.0</version>
+      <version>0.44.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-saw</artifactId>
-      <version>0.44.0</version>
+      <version>0.44.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

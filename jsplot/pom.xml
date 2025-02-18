@@ -5,7 +5,7 @@
     <parent>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-parent</artifactId>
-        <version>0.44.0</version>
+        <version>0.44.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>tablesaw-jsplot</artifactId>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-core</artifactId>
-            <version>0.44.0</version>
+            <version>0.44.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
