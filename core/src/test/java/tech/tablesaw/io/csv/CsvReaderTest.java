@@ -422,7 +422,7 @@ public class CsvReaderTest {
 
     final boolean header = true;
 
-    CsvReadOptions options = CsvReadOptions.builder(reader).header(header).separator(',').build();
+    CsvReadOptions options = CsvReadOptions.builder(reader).header(header).build();
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
     assertEquals(List.of(LOCAL_DATE, LOCAL_DATE, STRING), actual);
@@ -450,7 +450,6 @@ public class CsvReaderTest {
         CsvReadOptions.builder(reader)
             .header(header)
             .dateFormat(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-            .separator(',')
             .build();
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
