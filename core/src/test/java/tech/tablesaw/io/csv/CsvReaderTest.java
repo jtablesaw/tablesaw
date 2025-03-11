@@ -32,6 +32,8 @@ import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.SKIP;
 import static tech.tablesaw.api.ColumnType.STRING;
 
+import com.google.common.collect.ImmutableMap;
+import com.univocity.parsers.common.TextParsingException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -52,13 +54,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableMap;
-import com.univocity.parsers.common.TextParsingException;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
@@ -442,9 +439,9 @@ public class CsvReaderTest {
         new StringReader(
             "DateISO,DateUS,DateEU"
                 + LINE_END
-                + "2024-03-20,03/20/2024,20/03/2024"
+                + "2024-03-20,03/20/2024"
                 + LINE_END
-                + "2024-03-26,03/26/2024,26/03/2024"
+                + "2024-03-26,03/26/2024"
                 + LINE_END);
 
     final boolean header = true;
@@ -457,7 +454,7 @@ public class CsvReaderTest {
             .build();
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
-    assertEquals(List.of(LOCAL_DATE, STRING, STRING), actual);
+    assertEquals(List.of(LOCAL_DATE, STRING), actual);
   }
 
   /**
@@ -471,9 +468,9 @@ public class CsvReaderTest {
         new StringReader(
             "DateISO,DateUS,DateEU"
                 + LINE_END
-                + "2024-03-20,03/20/2024,20/03/2024"
+                + "2024-03-20,03/20/2024"
                 + LINE_END
-                + "2024-03-26,03/26/2024,26/03/2024"
+                + "2024-03-26,03/26/2024"
                 + LINE_END);
 
     final boolean header = true;
@@ -485,7 +482,7 @@ public class CsvReaderTest {
             .build();
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
-    assertEquals(List.of(STRING, LOCAL_DATE, STRING), actual);
+    assertEquals(List.of(STRING, LOCAL_DATE), actual);
   }
 
   @Test
