@@ -21,10 +21,17 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.BOOLEAN;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.STRING;
 
-import com.google.common.collect.ImmutableMap;
-import com.univocity.parsers.common.TextParsingException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -45,8 +52,13 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableMap;
+import com.univocity.parsers.common.TextParsingException;
+
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
@@ -396,6 +408,84 @@ public class CsvReaderTest {
 
     final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
     assertEquals(Collections.singletonList(LOCAL_TIME), actual);
+  }
+
+  /** Asserts ISO and US date formats are supported, while EU date format is not by default. */
+  @Test
+  public void testDateDetection2() {
+
+    final Reader reader =
+        new StringReader(
+            "DateISO,DateUS,DateEU"
+                + LINE_END
+                + "2024-03-20,03/20/2024,20/03/2024"
+                + LINE_END
+                + "2024-03-26,03/26/2024,26/03/2024"
+                + LINE_END);
+
+    final boolean header = true;
+
+    CsvReadOptions options = CsvReadOptions.builder(reader).header(header).separator(',').build();
+
+    final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+    assertEquals(List.of(LOCAL_DATE, LOCAL_DATE, STRING), actual);
+  }
+
+  /**
+   * Asserts ISO dates > {@code LOCAL_DATE} and US dates > {@code STRING} for date format {@code
+   * yyyy-MM-dd}.
+   */
+  @Test
+  public void testDateDetectionIsoDate() {
+
+    final Reader reader =
+        new StringReader(
+            "DateISO,DateUS,DateEU"
+                + LINE_END
+                + "2024-03-20,03/20/2024,20/03/2024"
+                + LINE_END
+                + "2024-03-26,03/26/2024,26/03/2024"
+                + LINE_END);
+
+    final boolean header = true;
+
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(header)
+            .dateFormat(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            .separator(',')
+            .build();
+
+    final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+    assertEquals(List.of(LOCAL_DATE, STRING, STRING), actual);
+  }
+
+  /**
+   * Asserts ISO dates > {@code STRING} and US dates > {@code LOCAL_DATE} for date format {@code
+   * MM/dd/yyyy}.
+   */
+  @Test
+  public void testDateDetectionUsDate() {
+
+    final Reader reader =
+        new StringReader(
+            "DateISO,DateUS,DateEU"
+                + LINE_END
+                + "2024-03-20,03/20/2024,20/03/2024"
+                + LINE_END
+                + "2024-03-26,03/26/2024,26/03/2024"
+                + LINE_END);
+
+    final boolean header = true;
+
+    CsvReadOptions options =
+        CsvReadOptions.builder(reader)
+            .header(header)
+            .dateFormat(DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+            .build();
+
+    final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
+    assertEquals(List.of(STRING, LOCAL_DATE, STRING), actual);
   }
 
   @Test
