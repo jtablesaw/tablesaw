@@ -17,6 +17,8 @@ import tech.tablesaw.io.TypeUtils;
  */
 public abstract class AbstractColumnParser<T> {
 
+  protected static final char THOUSANDS_SEP = ',';
+
   private final ColumnType columnType;
 
   protected List<String> missingValueStrings = TypeUtils.MISSING_INDICATORS;

@@ -27,12 +27,8 @@ public class ShortParser extends AbstractColumnParser<Short> {
     if (isMissing(str)) {
       return true;
     }
-    String s = str;
     try {
-      if (ignoreZeroDecimal) {
-        s = StringUtils.removeZeroDecimal(s);
-      }
-      Short.parseShort(AbstractColumnParser.remove(s, ','));
+      Short.parseShort(normalize(str));
       return true;
     } catch (NumberFormatException e) {
       // it's all part of the plan
@@ -55,10 +51,13 @@ public class ShortParser extends AbstractColumnParser<Short> {
     if (isMissing(str)) {
       return ShortColumnType.missingValueIndicator();
     }
-    String s = str;
+    return Short.parseShort(normalize(str));
+  }
+
+  private String normalize(String str) {
     if (ignoreZeroDecimal) {
-      s = StringUtils.removeZeroDecimal(s);
+      str = StringUtils.removeZeroDecimal(str);
     }
-    return Short.parseShort(AbstractColumnParser.remove(s, ','));
+    return AbstractColumnParser.remove(str, THOUSANDS_SEP);
   }
 }
