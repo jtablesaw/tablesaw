@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
@@ -40,7 +41,6 @@ import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.TableSliceGroup;
-import tech.tablesaw.util.RandomUtils;
 
 /** Tests manipulation of large (but not big) data sets */
 public class TimeDependentFilteringTest {
