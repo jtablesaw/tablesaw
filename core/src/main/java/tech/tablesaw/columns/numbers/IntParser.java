@@ -28,8 +28,8 @@ public class IntParser extends AbstractColumnParser<Integer> {
     if (isMissing(str)) {
       return true;
     }
+    String s = str;
     try {
-      String s = str;
       if (ignoreZeroDecimal) {
         s = StringUtils.removeZeroDecimal(s);
       }
