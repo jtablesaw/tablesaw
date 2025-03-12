@@ -1,34 +1,13 @@
 package tech.tablesaw.io;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
 
 public class ColumnTypeDetector {
-
-  /** Consider using TextColumn instead of StringColumn for string data after this many rows */
-  private static final int STRING_COLUMN_ROW_COUNT_CUTOFF = 50_000;
-
-  /**
-   * Use a TextColumn if at least this proportion of values are found to be unique in the type
-   * detection sample
-   *
-   * <p>Note: This number is based on an assumption that as more records are considered, a smaller
-   * proportion of these new records will be found to be unique
-   *
-   * <p>Sample calculation; 10 character string = 2 bytes * 10 + 38 extra bytes = 58; rounded up to
-   * 64 so it's a multiple of 8
-   *
-   * <p>With dictionary encoding, we have 2*64 + 2*4 = 136 byte per unique value plus 4 bytes for
-   * each value For text columns we have 64 bytes per string
-   *
-   * <p>So, if every value is unique, using dictionary encoding wastes about 70 bytes per value. If
-   * there are only two unique values, dictionary encoding saves about 62 bytes per value.
-   *
-   * <p>Of course, it all depends on the lengths of the strings.
-   */
-  private static final double STRING_COLUMN_CUTOFF = 0.50;
 
   private final List<ColumnType> typeArray;
 

@@ -51,7 +51,7 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C setName(final String name) {
     this.name = name.trim();
     return (C) this;
@@ -65,7 +65,7 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C setParser(final AbstractColumnParser<T> parser) {
     Preconditions.checkNotNull(parser);
     this.parser = parser;
@@ -84,91 +84,91 @@ public abstract class AbstractColumn<C extends Column<T>, T> implements Column<T
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C filter(Predicate<? super T> test) {
     return (C) Column.super.filter(test);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C sorted(Comparator<? super T> comp) {
     return (C) Column.super.sorted(comp);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C map(Function<? super T, ? extends T> fun) {
     return (C) Column.super.map(fun);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C min(Column<T> other) {
     return (C) Column.super.min(other);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C max(Column<T> other) {
     return (C) Column.super.max(other);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C set(Selection condition, Column<T> other) {
     return (C) Column.super.set(condition, other);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C set(Selection rowSelection, T newValue) {
     return (C) Column.super.set(rowSelection, newValue);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C first(int numRows) {
     return (C) Column.super.first(numRows);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C last(int numRows) {
     return (C) Column.super.last(numRows);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C sampleN(int n) {
     return (C) Column.super.sampleN(n);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C sampleX(double proportion) {
     return (C) Column.super.sampleX(proportion);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C subset(int[] rows) {
     return (C) Column.super.subset(rows);
   }
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   public C inRange(int start, int end) {
     return (C) Column.super.inRange(start, end);
   }

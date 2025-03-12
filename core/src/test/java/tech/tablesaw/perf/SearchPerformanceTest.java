@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
@@ -34,6 +33,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.index.LongIndex;
+import tech.tablesaw.util.RandomUtils;
 
 /** Tests manipulation of large (but not big) data sets */
 public class SearchPerformanceTest {

@@ -16,7 +16,7 @@ package tech.tablesaw;
 
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.RandomUtils;
+import tech.tablesaw.util.RandomUtils;
 
 /** */
 public class TestDataUtil {

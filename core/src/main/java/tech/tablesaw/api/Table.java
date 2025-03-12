@@ -21,12 +21,22 @@ import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
+import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
-import it.unimi.dsi.fastutil.ints.*;
-import java.util.*;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -49,7 +59,10 @@ import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.Sort;
 import tech.tablesaw.sorting.SortUtils;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
-import tech.tablesaw.table.*;
+import tech.tablesaw.table.Relation;
+import tech.tablesaw.table.StandardTableSliceGroup;
+import tech.tablesaw.table.TableSlice;
+import tech.tablesaw.table.TableSliceGroup;
 
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
@@ -919,7 +932,7 @@ public class Table extends Relation implements Iterable<Row> {
    */
   public Table dropDuplicateRows() {
     Table temp = emptyCopy();
-    Set uniqueRows = new HashSet<>();
+    Set<Row> uniqueRows = new HashSet<>();
     for (Row row : this) {
       if (!uniqueRows.contains(row)) {
         uniqueRows.add(row);

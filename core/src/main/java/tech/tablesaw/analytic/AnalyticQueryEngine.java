@@ -76,7 +76,7 @@ final class AnalyticQueryEngine {
    * Execute all numbering functions for the given slice setting values in the appropriate
    * destination column.
    */
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   private void processNumberingFunctions(TableSlice slice) {
     for (String toColumn : query.getArgumentList().getNumberingFunctions().keySet()) {
       if (rowComparator == null) {

@@ -18,13 +18,13 @@ class WindowSlider {
   private final int initialLeftBound;
   private final int initialRightBound;
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"rawtypes"})
   private final AggregateFunction function;
 
   private final TableSlice slice;
   private final Column<?> sourceColumn;
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"rawtypes"})
   private final Column destinationColumn;
 
   WindowSlider(
@@ -102,7 +102,7 @@ class WindowSlider {
    * Adds initial values to the aggregate function for the first window. E.G. ROWS BETWEEN CURRENT
    * ROW AND 3 FOLLOWING would add the first four rows in the slice to the function.
    */
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   private void initWindow() {
     int leftBound = Math.max(getInitialLeftBound(), 0);
     int rightBound = Math.min(getInitialRightBound(), slice.rowCount() - 1);
@@ -116,7 +116,7 @@ class WindowSlider {
   }
 
   /** Set the value in the destination column that corresponds to the row in the view. */
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked"})
   private void set(int rowNumberInSlice, Object value) {
     destinationColumn.set(slice.mappedRowNumber(mirror(rowNumberInSlice)), value);
   }
