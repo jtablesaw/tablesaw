@@ -28,11 +28,12 @@ public class LongParser extends AbstractColumnParser<Long> {
     if (isMissing(str)) {
       return true;
     }
+    String s = str;
     try {
       if (ignoreZeroDecimal) {
-        str = StringUtils.removeZeroDecimal(str);
+        s = StringUtils.removeZeroDecimal(s);
       }
-      Long.parseLong(AbstractColumnParser.remove(str, ','));
+      Long.parseLong(AbstractColumnParser.remove(s, ','));
       return true;
     } catch (NumberFormatException e) {
       // it's all part of the plan

@@ -29,10 +29,11 @@ public class IntParser extends AbstractColumnParser<Integer> {
       return true;
     }
     try {
+      String s = str;
       if (ignoreZeroDecimal) {
-        str = StringUtils.removeZeroDecimal(str);
+        s = StringUtils.removeZeroDecimal(s);
       }
-      Integer.parseInt(AbstractColumnParser.remove(str, ','));
+      Integer.parseInt(AbstractColumnParser.remove(s, ','));
       return true;
     } catch (NumberFormatException e) {
       // it's all part of the plan
@@ -55,9 +56,10 @@ public class IntParser extends AbstractColumnParser<Integer> {
     if (isMissing(str)) {
       return IntColumnType.missingValueIndicator();
     }
+    String s = str;
     if (ignoreZeroDecimal) {
-      str = StringUtils.removeZeroDecimal(str);
+      s = StringUtils.removeZeroDecimal(s);
     }
-    return Integer.parseInt(AbstractColumnParser.remove(str, ','));
+    return Integer.parseInt(AbstractColumnParser.remove(s, ','));
   }
 }
