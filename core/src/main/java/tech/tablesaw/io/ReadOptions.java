@@ -308,7 +308,7 @@ public class ReadOptions {
       return this;
     }
 
-    /** Skip the rows with invalid column count in data values. Defaluts to {@code false}. */
+    /** Skip the rows with invalid column count in data values. Defaults to {@code false}. */
     public Builder skipRowsWithInvalidColumnCount(boolean skipRowsWithInvalidColumnCount) {
       this.skipRowsWithInvalidColumnCount = skipRowsWithInvalidColumnCount;
       return this;
