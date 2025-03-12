@@ -52,11 +52,7 @@ public class LongParser extends AbstractColumnParser<Long> {
     if (isMissing(str)) {
       return LongColumnType.missingValueIndicator();
     }
-    String s = str;
-    if (ignoreZeroDecimal) {
-      s = StringUtils.removeZeroDecimal(s);
-    }
-    return Long.parseLong(AbstractColumnParser.remove(s, ','));
+    return Long.parseLong(normalize(str));
   }
 
   private String normalize(String str) {
