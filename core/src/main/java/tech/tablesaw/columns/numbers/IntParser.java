@@ -59,6 +59,6 @@ public class IntParser extends AbstractColumnParser<Integer> {
     if (ignoreZeroDecimal) {
       str = StringUtils.removeZeroDecimal(str);
     }
-    return AbstractColumnParser.remove(str, THOUSANDS_SEP);
+    return AbstractColumnParser.remove(str, ',');
   }
 }
