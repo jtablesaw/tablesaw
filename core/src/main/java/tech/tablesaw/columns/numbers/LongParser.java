@@ -28,12 +28,8 @@ public class LongParser extends AbstractColumnParser<Long> {
     if (isMissing(str)) {
       return true;
     }
-    String s = str;
     try {
-      if (ignoreZeroDecimal) {
-        s = StringUtils.removeZeroDecimal(s);
-      }
-      Long.parseLong(AbstractColumnParser.remove(s, ','));
+      Long.parseLong(normalize(str));
       return true;
     } catch (NumberFormatException e) {
       // it's all part of the plan
@@ -56,10 +52,13 @@ public class LongParser extends AbstractColumnParser<Long> {
     if (isMissing(str)) {
       return LongColumnType.missingValueIndicator();
     }
-    String s = str;
+    return Long.parseLong(normalize(str));
+  }
+
+  private String normalize(String str) {
     if (ignoreZeroDecimal) {
-      s = StringUtils.removeZeroDecimal(s);
+      str = StringUtils.removeZeroDecimal(str);
     }
-    return Long.parseLong(AbstractColumnParser.remove(s, ','));
+    return AbstractColumnParser.remove(str, ',');
   }
 }
