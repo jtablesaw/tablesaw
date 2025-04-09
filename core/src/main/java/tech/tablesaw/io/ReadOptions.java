@@ -51,8 +51,7 @@ public class ReadOptions {
 
   private static final List<ColumnType> DEFAULT_TYPES =
       Lists.newArrayList(
-          LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, LONG, DOUBLE, STRING // , TEXT
-          );
+          LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, LONG, DOUBLE, STRING);
 
   /**
    * An extended list of types that are used if minimizeColumnSizes is true. By including extra
@@ -309,7 +308,7 @@ public class ReadOptions {
       return this;
     }
 
-    /** Skip the rows with invalid column count in data values. Defaluts to {@code false}. */
+    /** Skip the rows with invalid column count in data values. Defaults to {@code false}. */
     public Builder skipRowsWithInvalidColumnCount(boolean skipRowsWithInvalidColumnCount) {
       this.skipRowsWithInvalidColumnCount = skipRowsWithInvalidColumnCount;
       return this;
