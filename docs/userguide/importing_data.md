@@ -2,10 +2,6 @@
 
 # Importing & exporting data
 
-## Table of contents
-
-[TOC]
-
 ## Supported Formats
 
 Tablesaw supports importing and exporting data to and from a variety of data types and sources. 
@@ -19,9 +15,10 @@ Tablesaw supports importing and exporting data to and from a variety of data typ
 | Excel                          | Yes    |        |
 | HTML                           | Yes    | Yes    |
 
-## Importing data
 
-**Note**: To minimize the size of the core library, some of the readers (currently JSON, HTML tables, and Excel files) are packaged in separate modules. You will need to include them in your project to use the `Table.read()` methods.
+Importing/Exporting data from CSV and RDBMS are included in the standard tablesaw library. To import/export JSON and HTML data, and import Excel data, requires the [tablesaw-json](https://mvnrepository.com/artifact/tech.tablesaw/tablesaw-json), [tablesaw-html](https://mvnrepository.com/artifact/tech.tablesaw/tablesaw-html), and [tablesaw-excel](https://mvnrepository.com/artifact/tech.tablesaw/tablesaw-excel) dependencies, respectively. 
+
+## Importing data
 
 See the Javadoc for [DataFrameReader](http://static.javadoc.io/tech.tablesaw/tablesaw-core/0.31.0/tech/tablesaw/io/DataFrameReader.html) for a listing of all the `Table.read()` methods that are available.
 
@@ -212,31 +209,28 @@ try (Statement stmt = conn.createStatement()) {
 
 ### Importing from HTML, JSON, Excel
 
-Tablesaw supports importing data from HTML, JSON, and Excel. See the Javadoc for the [Table.read()](http://static.javadoc.io/tech.tablesaw/tablesaw-core/0.31.0/tech/tablesaw/io/DataFrameReader.html) methods for more info. You will need to add the corresponding optional dependency:
-
-```
-<dependency>
-  <groupId>tech.tablesaw</groupId>
-  <artifactId>tablesaw-html</artifactId>
-</dependency>
-```
-
-```
-<dependency>
-  <groupId>tech.tablesaw</groupId>
-  <artifactId>tablesaw-json</artifactId>
-</dependency>
-```
-
-```
-<dependency>
-  <groupId>tech.tablesaw</groupId>
-  <artifactId>tablesaw-excel</artifactId>
-</dependency>
-```
+Tablesaw supports importing data from HTML, JSON, and Excel. See the Javadoc for the [Table.read()](http://static.javadoc.io/tech.tablesaw/tablesaw-core/0.31.0/tech/tablesaw/io/DataFrameReader.html) methods for more info. 
 
 ## Exporting data
 
+Tablesaw supports exporting data to CSV, HTML, and JSON. See the Javadoc for full details. 
+
+### Exporting to CSV
+
+Any `Table` object can be exported to a local csv file using the following command. 
+```
+Table myData; //name of table object
+
+myData.write().csv("file-path-here.csv");
+```
+
+### Exporting to JSON
+
+```
+Table myData; //name of table object
+
+JsonWriter jsonWriter = new JsonWriter();
+jsonWriter.write(myData, new Destination(new File("myData.json")));
+```
 
 
-TODO
