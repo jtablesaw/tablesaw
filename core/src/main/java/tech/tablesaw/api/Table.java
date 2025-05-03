@@ -864,35 +864,87 @@ public class Table extends Relation implements Iterable<Row> {
     return newTable;
   }
 
+
   /**
-   * Returns a pivot on this table, where: The first column contains unique values from the index
-   * column1 There are n additional columns, one for each unique value in column2 The values in each
-   * of the cells in these new columns are the result of applying the given AggregateFunction to the
-   * data in column3, grouped by the values of column1 and column2
+   * Returns a new column, where the first n columns are the groupingColumns. There are then p additional
+   * columns, which is the product of each unique value in the pivot column and aggregatedColumn. The 
+   * values in each of the cells in these new columns are the result of applying the given AggregateFunction 
+   * to the data in each of aggregatedColumn, grouped by the values of groupingColumn and pivotColumn.
+   * 
+   * If more than one aggregatedColumn is provided then each is appended to each unique value of the pivot
+   * column in the format "{PivotColumnValue}.{AggregatedColumnName}
+   * 
+   * @param groupingColumn
+   * @param pivotColumn
+   * @param aggregatedColumn
+   * @param aggregateFunction
+   * @return
    */
   public Table pivot(
-      CategoricalColumn<?> column1,
-      CategoricalColumn<?> column2,
-      NumericColumn<?> column3,
-      AggregateFunction<?, ?> aggregateFunction) {
-    return PivotTable.pivot(this, column1, column2, column3, aggregateFunction);
+    List<CategoricalColumn<?>> groupingColumns,
+    CategoricalColumn<?> pivotColumn,
+    List<NumericColumn<?>> aggregatedColumns,
+    AggregateFunction<?, ?> aggregateFunction) {
+    return PivotTable.pivot(this, groupingColumns, pivotColumn, aggregatedColumns, aggregateFunction);
   }
 
   /**
-   * Returns a pivot on this table, where: The first column contains unique values from the index
-   * column1 There are n additional columns, one for each unique value in column2 The values in each
-   * of the cells in these new columns are the result of applying the given AggregateFunction to the
-   * data in column3, grouped by the values of column1 and column2
+   * Returns a new column, where the first n columns are the groupingColumns. There are then p additional
+   * columns, which is the product of each unique value in the pivot column and aggregatedColumn. The 
+   * values in each of the cells in these new columns are the result of applying the given AggregateFunction 
+   * to the data in each of aggregatedColumn, grouped by the values of groupingColumn and pivotColumn.
+   * 
+   * If more than one aggregatedColumn is provided then each is appended to each unique value of the pivot
+   * column in the format "{PivotColumnValue}.{AggregatedColumnName}
+   * 
+   * @param groupingColumnNames
+   * @param pivotColumnName
+   * @param aggregatedColumnNames
+   * @param aggregateFunction
+   * @return
    */
   public Table pivot(
-      String column1Name,
-      String column2Name,
-      String column3Name,
+      List<String> groupingColumnNames,
+      String pivotColumnName,
+      List<String> aggregatedColumnNames,
+      AggregateFunction<?, ?> aggregateFunction) {
+        return pivot(
+            groupingColumnNames.stream().map(this::categoricalColumn).collect(Collectors.toList()),
+            categoricalColumn(pivotColumnName),
+            aggregatedColumnNames.stream().map(this::numberColumn).collect(Collectors.toList()),
+            aggregateFunction);
+  }
+
+    /**
+   * Returns a pivot on this table, where: The first column contains unique values from the index
+   * groupingColumn There are n additional columns, one for each unique value in the pivotColumn. The 
+   * values in each of the cells in these new columns are the result of applying the given AggregateFunction 
+   * to the data in the aggregatedColumn, grouped by the values of groupingColumn and pivotColumn
+   */
+  public Table pivot(
+      CategoricalColumn<?> groupingColumn,
+      CategoricalColumn<?> pivotColumn,
+      NumericColumn<?> aggregatedColumn,
+      AggregateFunction<?, ?> aggregateFunction) {
+    return PivotTable.pivot(this, groupingColumn, pivotColumn, aggregatedColumn, aggregateFunction);
+  }
+
+
+  /**
+   * Returns a pivot on this table, where: The first column contains unique values from the index
+   * groupingColumn There are n additional columns, one for each unique value in the pivotColumn The 
+   * values in each of the cells in these new columns are the result of applying the given AggregateFunction 
+   * to the data in the aggregatedColumn, grouped by the values of groupingColumn and pivotColumn
+   */
+  public Table pivot(
+      String groupingColumnName,
+      String pivotColumnName,
+      String aggregatedColumnName,
       AggregateFunction<?, ?> aggregateFunction) {
     return pivot(
-        categoricalColumn(column1Name),
-        categoricalColumn(column2Name),
-        numberColumn(column3Name),
+        categoricalColumn(groupingColumnName),
+        categoricalColumn(pivotColumnName),
+        numberColumn(pivotColumnName),
         aggregateFunction);
   }
 
