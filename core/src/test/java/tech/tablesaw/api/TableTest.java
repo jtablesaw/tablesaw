@@ -976,7 +976,7 @@ public class TableTest {
   }
 
   @Test
-  void testDropDuplicateWithHashCollision() throws Exception {
+  void testDropDuplicateWithHashCollision() {
     Table testTable =
         Table.read()
             .usingOptions(
