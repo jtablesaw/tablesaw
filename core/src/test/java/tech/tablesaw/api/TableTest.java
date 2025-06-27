@@ -977,11 +977,9 @@ public class TableTest {
 
   @Test
   void testDropDuplicateWithHashCollision() {
-    Table testTable =
-        Table.read()
-            .usingOptions(
-                CsvReadOptions.builder(new File("../data/missing_values.csv"))
-                    .missingValueIndicator("-"));
+    Table testTable = Table.read().usingOptions(CsvReadOptions
+      .builder(new File("../data/missing_values.csv"))
+      .missingValueIndicator("-"));
     Row row0 = testTable.row(0);
     Int2ObjectMap<IntArrayList> uniqueHashes = new Int2ObjectOpenHashMap<>();
     IntArrayList value = new IntArrayList(new int[] {1, 0});
