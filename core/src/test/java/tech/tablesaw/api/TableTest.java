@@ -22,6 +22,9 @@ import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -333,6 +336,16 @@ public class TableTest {
     assertEquals(2 * rowCount, t1.rowCount());
     t1 = t1.dropDuplicateRows();
     assertEquals(rowCount, t1.rowCount());
+  }
+
+  @Test
+  void testDropDuplicateRows3() {
+    Table testTable = Table.create("test").addColumns(
+        IntColumn.create("part_id", new int[] {1, 1, 1, 2, 2, 2}),
+        StringColumn.create(
+            "nsequence", new String[] {"N40", "N50", "N60", "N40", "N50", "N60"}));
+    Table testUnique = testTable.selectColumns("part_id", "nsequence").dropDuplicateRows();
+    assertEquals(testTable.rowCount(), testUnique.rowCount());
   }
 
   @Test
@@ -958,5 +971,18 @@ public class TableTest {
         IndexOutOfBoundsException.class,
         () -> Table.compareRows(lastRowNumber, missingValues, differentTable),
         "Row outside range does not throw exception");
+  }
+
+  @Test
+  void testDropDuplicateWithHashCollision() {
+    Table testTable = Table.read().usingOptions(CsvReadOptions
+      .builder(new File("../data/missing_values.csv"))
+      .missingValueIndicator("-"));
+    Row row0 = testTable.row(0);
+    Int2ObjectMap<IntArrayList> uniqueHashes = new Int2ObjectOpenHashMap<>();
+    IntArrayList value = new IntArrayList(new int[] {1, 0});
+    uniqueHashes.put(row0.hashCode(), value);
+    boolean isDuplicate = testTable.isDuplicate(row0, uniqueHashes);
+    assertTrue(isDuplicate, "Duplicate row not found");
   }
 }

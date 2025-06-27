@@ -20,11 +20,14 @@ import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
 import static tech.tablesaw.api.QuerySupport.not;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -32,11 +35,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -927,15 +928,47 @@ public class Table extends Relation implements Iterable<Row> {
   }
 
   /**
+   * Returns true if all the values in row are identical to those in another row previously seen and
+   * recorded in the list.
+   *
+   * @param row the row to evaluate
+   * @param uniqueHashes a map of row hashes to the id of an exemplar row that produces that hash.
+   *     If two different rows produce the same hash, then the row number for each is placed in the
+   *     list, so that there are exemplars for both
+   * @return true if the row's values exactly match a row that was previously seen
+   */
+  @VisibleForTesting
+  protected boolean isDuplicate(Row row, Int2ObjectMap<IntArrayList> uniqueHashes) {
+    int hash = row.hashCode();
+    if (!uniqueHashes.containsKey(hash)) {
+      IntArrayList rowNumbers = new IntArrayList();
+      rowNumbers.add(row.getRowNumber());
+      uniqueHashes.put(hash, rowNumbers);
+      return false;
+    }
+
+    // the hashmap contains the hash, make sure the actual row values match
+    IntArrayList matchingKeys = uniqueHashes.get(hash);
+
+    for (int key : matchingKeys) {
+      Row oldRow = this.row(key);
+      if (row.equals(oldRow)) {
+        return true;
+      }
+    }
+    uniqueHashes.get(hash).add(row.getRowNumber());
+    return false;
+  }
+
+  /**
    * Returns the unique records in this table, such that any record that appears more than once in
    * this table, appears only once in the returned table.
    */
   public Table dropDuplicateRows() {
     Table temp = emptyCopy();
-    Set<Row> uniqueRows = new HashSet<>();
+    Int2ObjectMap<IntArrayList> uniqueHashes = new Int2ObjectOpenHashMap<>();
     for (Row row : this) {
-      if (!uniqueRows.contains(row)) {
-        uniqueRows.add(row);
+      if (!isDuplicate(row, uniqueHashes)) {
         temp.append(row);
       }
     }
