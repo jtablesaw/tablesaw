@@ -340,12 +340,10 @@ public class TableTest {
 
   @Test
   void testDropDuplicateRows3() {
-    Table testTable =
-        Table.create("test")
-            .addColumns(
-                IntColumn.create("part_id", new int[] {1, 1, 1, 2, 2, 2}),
-                StringColumn.create(
-                    "nsequence", new String[] {"N40", "N50", "N60", "N40", "N50", "N60"}));
+    Table testTable = Table.create("test").addColumns(
+        IntColumn.create("part_id", new int[] {1, 1, 1, 2, 2, 2}),
+        StringColumn.create(
+            "nsequence", new String[] {"N40", "N50", "N60", "N40", "N50", "N60"}));
     Table testUnique = testTable.selectColumns("part_id", "nsequence").dropDuplicateRows();
     assertEquals(testTable.rowCount(), testUnique.rowCount());
   }
