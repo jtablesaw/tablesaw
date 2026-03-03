@@ -30,8 +30,6 @@ import tech.tablesaw.io.WriterRegistry;
 public class JsonWriter implements DataWriter<JsonWriteOptions> {
 
   private static final JsonWriter INSTANCE = new JsonWriter();
-  private static final ObjectMapper mapper =
-      new ObjectMapper().registerModule(new JavaTimeModule());
 
   static {
     register(Table.defaultWriterRegistry);
@@ -43,33 +41,33 @@ public class JsonWriter implements DataWriter<JsonWriteOptions> {
   }
 
   public void write(Table table, JsonWriteOptions options) {
-    ArrayNode output = mapper.createArrayNode();
+    ArrayNode output = options.mapper().createArrayNode();
     if (options.asObjects()) {
       for (int r = 0; r < table.rowCount(); r++) {
-        ObjectNode row = mapper.createObjectNode();
+        ObjectNode row = options.mapper().createObjectNode();
         for (int c = 0; c < table.columnCount(); c++) {
-          row.set(table.column(c).name(), mapper.convertValue(table.get(r, c), JsonNode.class));
+          row.set(table.column(c).name(), options.mapper().convertValue(table.get(r, c), JsonNode.class));
         }
         output.add(row);
       }
     } else {
       if (options.header()) {
-        ArrayNode row = mapper.createArrayNode();
+        ArrayNode row = options.mapper().createArrayNode();
         for (int c = 0; c < table.columnCount(); c++) {
-          row.add(mapper.convertValue(table.column(c).name(), JsonNode.class));
+          row.add(options.mapper().convertValue(table.column(c).name(), JsonNode.class));
         }
         output.add(row);
       }
       for (int r = 0; r < table.rowCount(); r++) {
-        ArrayNode row = mapper.createArrayNode();
+        ArrayNode row = options.mapper().createArrayNode();
         for (int c = 0; c < table.columnCount(); c++) {
-          row.add(mapper.convertValue(table.get(r, c), JsonNode.class));
+          row.add(options.mapper().convertValue(table.get(r, c), JsonNode.class));
         }
         output.add(row);
       }
     }
     try (Writer writer = options.destination().createWriter()) {
-      String str = mapper.writeValueAsString(output);
+      String str = options.mapper().writeValueAsString(output);
       writer.write(str);
     } catch (IOException e) {
       throw new RuntimeIOException(e);
