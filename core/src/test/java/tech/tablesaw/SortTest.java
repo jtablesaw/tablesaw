@@ -21,7 +21,9 @@ import static tech.tablesaw.TableAssertions.assertTableEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import tech.tablesaw.analytic.AnalyticQuery;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.sorting.Sort;
 
@@ -148,5 +150,21 @@ public class SortTest {
     Throwable thrown = assertThrows(IllegalStateException.class, () -> Sort.create(table, ">col2"));
 
     assertEquals("Unrecognized Column: '>col2'", thrown.getMessage());
+  }
+
+  @Test
+  public void testGetOrderAndCreate0() throws Exception {
+    assertThrows(IllegalStateException.class, () -> {
+      Table table = Table.create("table1", IntColumn.create(" ales"));
+      AnalyticQuery.query()
+          .from(table)
+          .partitionBy("product", "region")
+          .orderBy("sales")
+          .rowsBetween()
+          .unboundedPreceding()
+          .andUnBoundedFollowing()
+          .sum("sales").as("sumSales")
+          .build();
+    });
   }
 }
