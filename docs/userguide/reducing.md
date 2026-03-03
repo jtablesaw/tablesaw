@@ -174,14 +174,3 @@ t.summarize(sentence.length(), min, q1, q2, q3, max, range)
 ```
 
 In this example, a standard map function (*length()*) creates a NumberColumn containing the number of characters in each value of the StringColumn sentence. Various statistics (*min*, *q1*, etc.) are calculated on the resulting column.
-
-## Conditional Summarization
-
-Another useful facility is to summarize only that data that passes some test.  For example, you could extract the common suffixes between two columns of String data, and then count the number that are longer than two characters. This can be done using the *summarizeIf()* method as follows:
-
-```java
-t.summarizeIf(c1.suffix(c2).length().isGreaterThan(2), count())
-```
-
- TODO: THIS NEEDS REVIEW. WHAT COLUMN GETS SUMMARIZED. 
-
