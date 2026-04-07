@@ -138,24 +138,21 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
   }
 
   private Boolean isBlank(Cell cell) {
-    switch (cell.getCellType()) {
+    CellType cellType =
+        cell.getCellType() == FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
+    switch (cellType) {
       case STRING:
         if (cell.getRichStringCellValue().length() > 0) {
           return false;
         }
         break;
       case NUMERIC:
-        if (DateUtil.isCellDateFormatted(cell)
-            ? cell.getDateCellValue() != null
-            : cell.getNumericCellValue() != 0) {
-          return false;
+        if (DateUtil.isCellDateFormatted(cell)) {
+          return cell.getDateCellValue() == null;
         }
-        break;
+        return false;
       case BOOLEAN:
-        if (cell.getBooleanCellValue()) {
-          return false;
-        }
-        break;
+        return false;
       case BLANK:
         return true;
       default:
