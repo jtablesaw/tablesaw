@@ -285,4 +285,52 @@ public class XlsxReaderTest {
     assertEquals(table.column("mixed2").asList(), Lists.newArrayList("abc", "123", ""));
     assertEquals(table.column("intcol2").asList(), Lists.newArrayList("", "1234", "1234"));
   }
+
+  @Test
+  public void testNumericTableAreaWithZero() {
+    Table table =
+        new XlsxReader()
+            .read(
+                XlsxReadOptions.builder("../data/single_column_tablearea_testing.xlsx")
+                    .sheetIndex(0)
+                    .build());
+    assertEquals(DOUBLE, table.column(0).type(), "Wrong column type");
+    assertEquals(3, table.rowCount(), "Numeric column not fully read");
+  }
+
+  @Test
+  public void testNumericTableAreaWithEmptyCell() {
+    Table table =
+        new XlsxReader()
+            .read(
+                XlsxReadOptions.builder("../data/single_column_tablearea_testing.xlsx")
+                    .sheetIndex(1)
+                    .build());
+    assertEquals(DOUBLE, table.column(0).type(), "Wrong column type");
+    assertEquals(2, table.rowCount(), "Numeric column not fully read");
+  }
+
+  @Test
+  public void testBooleanTableAreaWithFalse() {
+    Table table =
+        new XlsxReader()
+            .read(
+                XlsxReadOptions.builder("../data/single_column_tablearea_testing.xlsx")
+                    .sheetIndex(2)
+                    .build());
+    assertEquals(BOOLEAN, table.column(0).type(), "Wrong column type");
+    assertEquals(3, table.rowCount(), "Boolean column not fully read");
+  }
+
+  @Test
+  public void testBooleanTableAreaWithEmpty() {
+    Table table =
+        new XlsxReader()
+            .read(
+                XlsxReadOptions.builder("../data/single_column_tablearea_testing.xlsx")
+                    .sheetIndex(3)
+                    .build());
+    assertEquals(BOOLEAN, table.column(0).type(), "Wrong column type");
+    assertEquals(2, table.rowCount(), "Boolean column not fully read");
+  }
 }
