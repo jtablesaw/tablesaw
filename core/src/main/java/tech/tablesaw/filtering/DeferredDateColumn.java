@@ -133,12 +133,12 @@ public class DeferredDateColumn extends DeferredColumn
 
   @Override
   public Function<Table, Selection> isInQ3() {
-    return table -> table.dateColumn(name()).isInJanuary();
+    return table -> table.dateColumn(name()).isInQ3();
   }
 
   @Override
   public Function<Table, Selection> isInQ4() {
-    return table -> table.dateColumn(name()).isInQ3();
+    return table -> table.dateColumn(name()).isInQ4();
   }
 
   @Override
@@ -183,7 +183,7 @@ public class DeferredDateColumn extends DeferredColumn
 
   @Override
   public Function<Table, Selection> isNotEqualTo(LocalDate value) {
-    return table -> table.dateColumn(name()).isEqualTo(value);
+    return table -> table.dateColumn(name()).isNotEqualTo(value);
   }
 
   @Override

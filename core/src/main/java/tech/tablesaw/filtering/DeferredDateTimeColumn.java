@@ -133,12 +133,12 @@ public class DeferredDateTimeColumn extends DeferredColumn
 
   @Override
   public Function<Table, Selection> isInQ3() {
-    return table -> table.dateTimeColumn(name()).isInJanuary();
+    return table -> table.dateTimeColumn(name()).isInQ3();
   }
 
   @Override
   public Function<Table, Selection> isInQ4() {
-    return table -> table.dateTimeColumn(name()).isInQ3();
+    return table -> table.dateTimeColumn(name()).isInQ4();
   }
 
   @Override
