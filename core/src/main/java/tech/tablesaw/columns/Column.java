@@ -179,10 +179,14 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
   /**
    * Returns a {@link RollingColumn} with the given windowSize, which can be used for performing
-   * calculations on rolling subsets of my data
+   * calculations on rolling subsets of my data. Each result is aligned with the last row of its
+   * window, including that row. The result has the same number of rows as this column, with missing
+   * values before the first complete window. A window larger than this column produces only missing
+   * results.
    *
-   * @param windowSize The number of elements to include in each calculation
+   * @param windowSize The positive number of elements to include in each calculation
    * @return a RollingColumn
+   * @throws IllegalArgumentException if {@code windowSize} is not positive
    */
   default RollingColumn rolling(final int windowSize) {
     return new RollingColumn(this, windowSize);
