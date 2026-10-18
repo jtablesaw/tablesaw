@@ -52,4 +52,36 @@ public class RollingColumnTest {
     assertEquals(1, result.getDouble(3), 0.0);
     assertEquals(2, result.getDouble(4), 0.0);
   }
+
+  @Test
+  public void testOversizedWindowPreservesDateTimeRowCount() {
+    DateTimeColumn data =
+        DateTimeColumn.create(
+            "dates",
+            LocalDate.of(2020, 1, 1).atStartOfDay(),
+            LocalDate.of(2020, 1, 2).atStartOfDay());
+
+    DateTimeColumn result = (DateTimeColumn) data.rolling(Integer.MAX_VALUE).calc(latestDateTime);
+
+    assertEquals(data.size(), result.size());
+    assertArrayEquals(new LocalDateTime[] {null, null}, result.asObjectArray());
+  }
+
+  @Test
+  public void testEmptyDateTimeColumnRemainsEmpty() {
+    DateTimeColumn result =
+        (DateTimeColumn) DateTimeColumn.create("dates").rolling(10).calc(latestDateTime);
+
+    assertEquals(0, result.size());
+  }
+
+  @Test
+  public void testOversizedBooleanWindowPreservesRowCount() {
+    BooleanColumn data = BooleanColumn.create("flags", true, false);
+
+    DoubleColumn result = (DoubleColumn) data.rolling(3).calc(countTrue);
+
+    assertEquals(data.size(), result.size());
+    assertArrayEquals(new double[] {Double.NaN, Double.NaN}, result.asDoubleArray());
+  }
 }

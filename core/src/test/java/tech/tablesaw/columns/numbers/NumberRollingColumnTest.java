@@ -44,8 +44,8 @@ public class NumberRollingColumnTest {
   @ParameterizedTest
   @ValueSource(ints = {0, -1, Integer.MIN_VALUE})
   public void testNonPositiveWindowIsRejected(int window) {
-    assertThrows(
-        IllegalArgumentException.class, () -> DoubleColumn.create("data", 10, 20).rolling(window));
+    DoubleColumn data = DoubleColumn.create("data", 10, 20);
+    assertThrows(IllegalArgumentException.class, () -> data.rolling(window));
   }
 
   @Test
