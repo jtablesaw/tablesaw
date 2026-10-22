@@ -16,9 +16,14 @@ package tech.tablesaw.io.saw;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.api.ColumnType.INSTANT;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.function.Supplier;
@@ -351,5 +356,20 @@ class SawStorageTest {
     assertEquals(
         wines.stringColumn("index2").getDictionary(),
         table1.stringColumn("index2").getDictionary());
+  }
+
+  @Test
+  void rejectsColumnIdOutsideSawFolder() throws Exception {
+    Table secret = Table.create("secret", IntColumn.indexColumn("index1", 10, 42));
+    new SawWriter(tempDir + "/traversal", secret).write();
+    Table victim = Table.create("victim", IntColumn.indexColumn("index1", 10, 1));
+    String path = new SawWriter(tempDir + "/traversal", victim).write();
+
+    Path metadata = Paths.get(path, SawMetadata.METADATA_FILE_NAME);
+    String json = new String(Files.readAllBytes(metadata), StandardCharsets.UTF_8);
+    json = json.replace("\"index1.saw\"", "\"../secret.saw/index1.saw\"");
+    Files.write(metadata, json.getBytes(StandardCharsets.UTF_8));
+
+    assertThrows(IllegalArgumentException.class, () -> new SawReader(path).read());
   }
 }
