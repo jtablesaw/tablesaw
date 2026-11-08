@@ -29,8 +29,6 @@ public class LogicalFilterCoverageTest {
 
   private Table dummyTable;
 
-  // Simulação de filtros (Caixa Preta)
-  // Simulação de filtros (Caixa Preta)
   private Function<Table, Selection> selectAll;
   private Function<Table, Selection> selectNone;
   private Function<Table, Selection> select012;
@@ -41,10 +39,8 @@ public class LogicalFilterCoverageTest {
 
   @BeforeEach
   public void setUp() {
-    // Criando uma tabela falsa com 4 linhas (índices 0, 1, 2, 3) para o Not() conseguir inverter
     dummyTable = Table.create("Dummy", IntColumn.create("id", new int[] {10, 20, 30, 40}));
 
-    // Criando lambdas que implementam a interface Filter para os testes baseados em especificação
     selectAll = t -> Selection.with(0, 1, 2, 3);
     selectNone = t -> Selection.with(); // vazio
     select012 = t -> Selection.with(0, 1, 2);
@@ -54,34 +50,24 @@ public class LogicalFilterCoverageTest {
     select02 = t -> Selection.with(0, 2);
   }
 
-  // =================================================================================
-  // 1. TESTES ESTRUTURAIS (CAIXA BRANCA) - Lacunas mapeadas no Relatório
-  // =================================================================================
-
   @Test
   public void testAndWithEmptyArguments() {
-    // Cobre a ramificação perdida Mapeada no Jacoco: arguments.length > 0 (Falso)
     IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> new And());
     assertTrue(ex.getMessage().contains("length 1 or greater"));
   }
 
   @Test
   public void testOrWithEmptyArguments() {
-    // Cobre a ramificação perdida Mapeada no Jacoco: arguments.length > 0 (Falso)
     IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> new Or());
     assertTrue(ex.getMessage().contains("length 1 or greater"));
   }
-
-  // =================================================================================
-  // 2. TESTES BASEADOS EM ESPECIFICAÇÃO (CAIXA PRETA) - Operador AND
-  // =================================================================================
 
   @Test
   public void testAndAllAndAll() {
     And andFilter = new And(selectAll, selectAll);
     Selection result = andFilter.apply(dummyTable);
     assertArrayEquals(
-        new int[] {0, 1, 2, 3}, result.toArray(), "P1: Interseção de todos deve ser todos");
+        new int[] {0, 1, 2, 3}, result.toArray());
   }
 
   @Test
@@ -90,20 +76,15 @@ public class LogicalFilterCoverageTest {
     Selection result = andFilter.apply(dummyTable);
     assertArrayEquals(
         new int[] {1, 2},
-        result.toArray(),
-        "P4: Sobreposição parcial deve retornar a interseção {1, 2}");
+        result.toArray());
   }
 
   @Test
   public void testAndNoOverlap() {
     And andFilter = new And(select01, select23);
     Selection result = andFilter.apply(dummyTable);
-    assertTrue(result.isEmpty(), "P6: Filtros sem sobreposição devem retornar vazio");
+    assertTrue(result.isEmpty());
   }
-
-  // =================================================================================
-  // 3. TESTES BASEADOS EM ESPECIFICAÇÃO (CAIXA PRETA) - Operador OR
-  // =================================================================================
 
   @Test
   public void testOrOverlap() {
@@ -111,8 +92,7 @@ public class LogicalFilterCoverageTest {
     Selection result = orFilter.apply(dummyTable);
     assertArrayEquals(
         new int[] {0, 1, 2, 3},
-        result.toArray(),
-        "P4: União com sobreposição deve ser {0, 1, 2, 3}");
+        result.toArray());
   }
 
   @Test
@@ -121,19 +101,14 @@ public class LogicalFilterCoverageTest {
     Selection result = orFilter.apply(dummyTable);
     assertArrayEquals(
         new int[] {0, 1, 2, 3},
-        result.toArray(),
-        "P6: União sem sobreposição deve fundir os resultados");
+        result.toArray());
   }
-
-  // =================================================================================
-  // 4. TESTES BASEADOS EM ESPECIFICAÇÃO (CAIXA PRETA) - Operador NOT
-  // =================================================================================
 
   @Test
   public void testNotAll() {
     Not notFilter = new Not(selectAll);
     Selection result = notFilter.apply(dummyTable);
-    assertTrue(result.isEmpty(), "P1: Not(Todos) deve ser Vazio");
+    assertTrue(result.isEmpty());
   }
 
   @Test
@@ -142,8 +117,7 @@ public class LogicalFilterCoverageTest {
     Selection result = notFilter.apply(dummyTable);
     assertArrayEquals(
         new int[] {0, 1, 2, 3},
-        result.toArray(),
-        "P2: Not(Vazio) deve selecionar a tabela inteira");
+        result.toArray());
   }
 
   @Test
@@ -152,8 +126,7 @@ public class LogicalFilterCoverageTest {
     Selection result = notFilter.apply(dummyTable);
     assertArrayEquals(
         new int[] {1, 3},
-        result.toArray(),
-        "P3: O Not deve inverter perfeitamente a seleção parcial");
+        result.toArray());
   }
 
   @Test
@@ -161,6 +134,6 @@ public class LogicalFilterCoverageTest {
     Not doubleNotFilter = new Not(new Not(select01));
     Selection result = doubleNotFilter.apply(dummyTable);
     assertArrayEquals(
-        new int[] {0, 1}, result.toArray(), "P4: Dupla negação Not(Not(x)) deve retornar X");
+        new int[] {0, 1}, result.toArray());
   }
 }
