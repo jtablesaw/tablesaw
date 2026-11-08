@@ -77,9 +77,9 @@
       <version>0.5</version>
     </dependency>
     <dependency>
-      <groupId>org.lz4</groupId>
-      <artifactId>lz4-pure-java</artifactId>
-      <version>1.8.0</version>
+      <groupId>at.yawk.lz4</groupId>
+      <artifactId>lz4-java</artifactId>
+      <version>1.14.0</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
