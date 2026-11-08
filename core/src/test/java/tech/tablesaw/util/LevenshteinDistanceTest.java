@@ -22,19 +22,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class LevenshteinDistanceTest {
 
-  /*
-   * COVERAGE NOTE:
-   * The private method limitedCompare() contains a defensive check for negative thresholds.
-   * However, this block is unreachable via public APIs because the LevenshteinDistance
-   * constructor already validates and rejects negative thresholds.
-   * Testing this unreachable block via Reflection was removed to comply with SonarCloud
-   * security rules regarding accessibility modification.
-   */
-
-  // =================================================================================
-  // 1. STRUCTURAL TESTS - Covering missed branches
-  // =================================================================================
-
   @Test
   void testConstructorWithNegativeThreshold() {
     assertThrows(
@@ -88,24 +75,21 @@ class LevenshteinDistanceTest {
     assertNull(ld1.getThreshold(), "The default instance must not have a threshold");
   }
 
-  // =================================================================================
-  // 2. SPECIFICATION-BASED TESTS - Without Threshold
-  // =================================================================================
-
   @ParameterizedTest(name = "Left: ''{0}'', Right: ''{1}'', Expected: {2}")
   @CsvSource({
-    "abc, abc, 0", // P1: Completely equal
-    "abc, xyz, 3", // P2: Completely different
-    "abc, abcd, 1", // P3: One insertion
-    "abcd, abc, 1", // P4: One deletion
-    "abc, aXc, 1", // P5: One substitution
-    "'', '', 0", // P6: Both empty
-    "'', abc, 3", // P7: Left string is empty
-    "abc, '', 3", // P8: Right string is empty
-    "a, b, 1", // P9: One character each
-    "a, a, 0", // P10: One equal character
-    "ABC, abc, 3" // P11: Case sensitive
+    "abc, abc, 0", // Completely equal
+    "abc, xyz, 3", // Completely different
+    "abc, abcd, 1", // One insertion
+    "abcd, abc, 1", // One deletion
+    "abc, aXc, 1", // One substitution
+    "'', '', 0", // Both empty
+    "'', abc, 3", // Left string is empty
+    "abc, '', 3", // Right string is empty
+    "a, b, 1", // One character each
+    "a, a, 0", // One equal character
+    "ABC, abc, 3" // Case sensitive
   })
+
   void testApplyWithoutThreshold(String left, String right, int expectedDistance) {
     // Handle CsvSource sending nulls instead of empty strings correctly
     String safeLeft = (left == null) ? "" : left;
@@ -115,19 +99,13 @@ class LevenshteinDistanceTest {
     assertEquals(expectedDistance, ld.apply(safeLeft, safeRight));
   }
 
-  // =================================================================================
-  // 3. SPECIFICATION-BASED TESTS - With Threshold
-  // =================================================================================
-
   @ParameterizedTest(name = "Threshold: {0}, Left: ''{1}'', Right: ''{2}'', Expected: {3}")
   @CsvSource({
-    "5, ab, abcd, 2", // P1: Distance < threshold
-    "3, abc, xyz, 3", // P2: Distance == threshold
-    "2, abc, abcdef, -1", // P3: Distance > threshold (aborted early)
-    "0, a, a, 0", // P4: Threshold = 0, equal strings
-    "0, a, b, -1", // P5: Threshold = 0, different strings
-
-    // --- NEW SCENARIOS: Mutant Killers ---
+    "5, ab, abcd, 2", // Distance < threshold
+    "3, abc, xyz, 3", // Distance == threshold
+    "2, abc, abcdef, -1", // Distance > threshold (aborted early)
+    "0, a, a, 0", // Threshold = 0, equal strings
+    "0, a, b, -1", // Threshold = 0, different strings
 
     // Kills the mutants in the MAX_VALUE subtraction and diagonal limits (Threshold < n - 1)
     "1, abcd, abce, 1",
@@ -142,6 +120,7 @@ class LevenshteinDistanceTest {
     "7, hippo, elephant, 7",
     "8, hippo, zzzzzzzz, 8"
   })
+
   void testApplyWithThreshold(int threshold, String left, String right, int expectedResult) {
     // Handle CsvSource sending nulls instead of empty strings correctly
     String safeLeft = (left == null) ? "" : left;
@@ -150,10 +129,6 @@ class LevenshteinDistanceTest {
     LevenshteinDistance ld = new LevenshteinDistance(threshold);
     assertEquals(expectedResult, ld.apply(safeLeft, safeRight));
   }
-
-  // =================================================================================
-  // 4. EXTREME STRUCTURAL TESTS (WHITE BOX) - Targeting 100% Coverage
-  // =================================================================================
 
   @Test
   void testUnlimitedCompareWithNullStrings() {
