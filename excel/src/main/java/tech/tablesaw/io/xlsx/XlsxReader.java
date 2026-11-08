@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,6 +47,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.LongColumn;
@@ -58,7 +61,7 @@ import tech.tablesaw.io.Source;
 
 @Immutable
 public class XlsxReader implements DataReader<XlsxReadOptions> {
-
+  private static final Logger logger = LoggerFactory.getLogger(XlsxReader.class);
   private static final XlsxReader INSTANCE = new XlsxReader();
 
   static {
@@ -383,10 +386,18 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
             Column<String> stringColumn = (Column<String>) column;
             String dataFormatStyle = cell.getCellStyle().getDataFormatString();
             String val;
-            if ("general".equalsIgnoreCase(dataFormatStyle)) {
-              val = new CellGeneralFormatter().format(cell.getNumericCellValue());
-            } else {
-              val = new CellNumberFormatter(dataFormatStyle).format(cell.getNumericCellValue());
+            try {
+              if ("general".equalsIgnoreCase(dataFormatStyle)) {
+                val = new CellGeneralFormatter().format(cell.getNumericCellValue());
+              } else {
+                val = new CellNumberFormatter(dataFormatStyle).format(cell.getNumericCellValue());
+              }
+            } catch (IllegalFormatException e) {
+              logger.warn(
+                  "Error formatting cell value {} to string: {}. Ignoring it's value",
+                  cell.getNumericCellValue(),
+                  e.getMessage());
+              val = null;
             }
             stringColumn.append(val);
           }
@@ -401,8 +412,18 @@ public class XlsxReader implements DataReader<XlsxReadOptions> {
           // If column has String type try to honor it and leave the value as an string as similar
           // as posible as seen in Excel
           Column<String> stringColumn = (Column<String>) column;
-          String val = new CellGeneralFormatter().format(cell.getBooleanCellValue());
-          stringColumn.append(val);
+          try {
+            String val = new CellGeneralFormatter().format(cell.getBooleanCellValue());
+            stringColumn.append(val);
+          } catch (IllegalFormatException e) {
+            logger.warn(
+                "Error formatting cell value {} at ({},{}) to string: {}. Ignoring it's value",
+                cell.getNumericCellValue(),
+                cell.getColumnIndex(),
+                cell.getRowIndex(),
+                e.getMessage());
+            stringColumn.append((String) null);
+          }
         }
       default:
         break;
