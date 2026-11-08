@@ -4,7 +4,7 @@ Tablesaw User Guide
 ## Contents
 
 * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/introduction)
-* [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data)
+* [Importing & Exporting Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data)
 * Transforming Data
   * [Working with Columns](https://jtablesaw.github.io/tablesaw/userguide/columns)
   * [Working with Tables](https://jtablesaw.github.io/tablesaw/userguide/tables)
