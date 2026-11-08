@@ -19,9 +19,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set up JDK $
-        uses: actions/setup-java@v1
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v5
         with:
+          distribution: temurin
           java-version: ${{ matrix.java-version }}
+          # Smile's MKL dependencies only provide x64 binaries for macOS.
+          architecture: x64
       - name: Test with Maven
-        run: mvn test
+        run: mvn --batch-mode --show-version test
