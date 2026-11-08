@@ -72,14 +72,12 @@ import org.junit.jupiter.api.Test;
 
 public class PackedLocalDateTest {
 
-  // Tests if getDayOfMonth correctly extracts the day of the month from a packed date
   @Test
   public void testGetDayOfMonth() {
     LocalDate day = LocalDate.of(2011, Month.MARCH, 9);
     assertEquals(9, getDayOfMonth(pack(day)));
   }
 
-  // Tests if withDayOfMonth correctly updates only the day of the month of a packed date
   @Test
   public void testWithDayOfMonth() {
     LocalDate day = LocalDate.of(2011, Month.MARCH, 9);
@@ -89,7 +87,6 @@ public class PackedLocalDateTest {
     assertEquals(2011, getYear(day2));
   }
 
-  // Tests if withMonth correctly updates only the month of a packed date
   @Test
   public void testWithMonth() {
     LocalDate day = LocalDate.of(2011, Month.MARCH, 9);
@@ -100,7 +97,6 @@ public class PackedLocalDateTest {
     assertEquals(9, getDayOfMonth(day2));
   }
 
-  // Tests if withYear correctly updates only the year of a packed date
   @Test
   public void testWithYear() {
     LocalDate day = LocalDate.of(2011, Month.MARCH, 9);
@@ -111,7 +107,6 @@ public class PackedLocalDateTest {
     assertEquals(9, getDayOfMonth(day2));
   }
 
-  // Tests adding years to a packed date
   @Test
   public void testPlusYears() {
     LocalDate day = LocalDate.of(2011, Month.MARCH, 9);
@@ -122,7 +117,6 @@ public class PackedLocalDateTest {
     assertEquals(9, getDayOfMonth(day2));
   }
 
-  // Tests subtracting years from a packed date
   @Test
   public void testMinusYears() {
     LocalDate day = LocalDate.of(2011, Month.MARCH, 9);
@@ -133,7 +127,6 @@ public class PackedLocalDateTest {
     assertEquals(9, getDayOfMonth(day2));
   }
 
-  // Tests adding months to a packed date, including year wrap-around
   @Test
   public void testPlusMonths() {
     LocalDate day = LocalDate.of(2011, Month.MARCH, 9);
@@ -144,7 +137,6 @@ public class PackedLocalDateTest {
     assertEquals(9, getDayOfMonth(day2));
   }
 
-  // Tests subtracting months from a packed date, including year wrap-around
   @Test
   public void testMinusMonths() {
     LocalDate day = LocalDate.of(2011, Month.MARCH, 9);
@@ -155,7 +147,6 @@ public class PackedLocalDateTest {
     assertEquals(9, getDayOfMonth(day2));
   }
 
-  // Tests adding days to a packed date, including month/year wrap-around
   @Test
   public void testPlusDays() {
     LocalDate day = LocalDate.of(2011, Month.DECEMBER, 30);
@@ -166,7 +157,6 @@ public class PackedLocalDateTest {
     assertEquals(10, getDayOfMonth(day2));
   }
 
-  // Tests adding weeks to a packed date
   @Test
   public void testPlusWeeks() {
     LocalDate day = LocalDate.of(2000, Month.FEBRUARY, 26);
@@ -175,7 +165,6 @@ public class PackedLocalDateTest {
     assertEquals(asLocalDate(day2), day.plusWeeks(2));
   }
 
-  // Tests subtracting weeks from a packed date
   @Test
   public void testMinusWeeks() {
     LocalDate day = LocalDate.of(2001, Month.JANUARY, 3);
@@ -192,7 +181,6 @@ public class PackedLocalDateTest {
     assertEquals(7, daysUntil(day2, packed));
   }
 
-  // Tests subtracting days from a packed date, including month/year wrap-around
   @Test
   public void testMinusDays() {
     LocalDate day = LocalDate.of(2011, Month.JANUARY, 3);
@@ -203,7 +191,6 @@ public class PackedLocalDateTest {
     assertEquals(30, getDayOfMonth(day2));
   }
 
-  // Tests getting the correct number of days in a year (handling leap years)
   @Test
   public void testLengthOfYear() {
     LocalDate day = LocalDate.of(2000, Month.JANUARY, 3);
@@ -214,7 +201,6 @@ public class PackedLocalDateTest {
     assertEquals(365, lengthOfYear(packed));
   }
 
-  // Tests getting the correct number of days in a month for leap and non-leap years
   @Test
   public void testLengthOfMonth() {
     LocalDate day = LocalDate.of(2011, Month.JANUARY, 3);
@@ -225,7 +211,6 @@ public class PackedLocalDateTest {
     assertEquals(30, lengthOfMonth(packed));
   }
 
-  // Tests if DayOfWeek getters and predicates correctly evaluate weekdays
   @Test
   public void testDayOfWeek() {
     LocalDate day = LocalDate.of(2018, Month.MARCH, 29);
@@ -252,7 +237,6 @@ public class PackedLocalDateTest {
     assertTrue(isWednesday(packed));
   }
 
-  // Tests getting the correct calendar quarter (Q1-Q4) of a packed date
   @Test
   public void testQuarters() {
     LocalDate day = LocalDate.of(2018, Month.MARCH, 29);
@@ -266,14 +250,12 @@ public class PackedLocalDateTest {
     assertTrue(isInQ4(packed));
   }
 
-  // Tests extracting the year from a packed date
   @Test
   public void testGetYear() {
     LocalDate today = LocalDate.now();
     assertEquals(today.getYear(), getYear(pack(today)));
   }
 
-  // Tests extracting the month value and verifying monthly predicates (e.g., isInJanuary)
   @Test
   public void testGetMonthValue() {
     int date = pack(LocalDate.of(2015, Month.JANUARY, 25));
@@ -326,7 +308,6 @@ public class PackedLocalDateTest {
     }
   }
 
-  // Tests equality comparison between two identical packed dates
   @Test
   public void testEquals() {
     int date = pack(LocalDate.of(2015, Month.JANUARY, 25));
@@ -334,7 +315,6 @@ public class PackedLocalDateTest {
     assertTrue(isEqualTo(date, date2));
   }
 
-  // Tests chronological "after", equality, and "before" logic
   @Test
   public void testAfter() {
     int date = pack(LocalDate.of(2015, Month.JANUARY, 25));
@@ -344,7 +324,6 @@ public class PackedLocalDateTest {
     assertFalse(isBefore(date, date2));
   }
 
-  // Tests chronological "before", "after", and equality logic
   @Test
   public void testBefore() {
     int date = pack(LocalDate.of(2015, Month.JANUARY, 25));
@@ -354,7 +333,6 @@ public class PackedLocalDateTest {
     assertFalse(isEqualTo(date, date2));
   }
 
-  // Tests if getDayOfWeek correctly extracts the day of the week matching java.time.LocalDate
   @Test
   public void testGetDayOfWeek() {
     LocalDate date = LocalDate.of(2015, Month.DECEMBER, 25);
