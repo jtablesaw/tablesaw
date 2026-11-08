@@ -25,10 +25,6 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 
-/**
- * Unit tests for DeferredStringColumn. Validates that deferred string filtering methods map
- * correctly to their underlying StringColumn implementations and yield the correct Selection.
- */
 public class DeferredStringColumnTest {
 
   private Table table;
@@ -74,7 +70,6 @@ public class DeferredStringColumnTest {
     deferredCol = new DeferredStringColumn("textCol");
   }
 
-  /** Tests string prefix matching operations against both a scalar string and another column. */
   @Test
   public void testStartsWith() {
     Selection sel1 = deferredCol.startsWith("Hello").apply(table);
@@ -86,7 +81,6 @@ public class DeferredStringColumnTest {
     assertFalse(sel2.contains(1)); // "World" does not start with "No Match"
   }
 
-  /** Tests string suffix matching and substring inclusion operations. */
   @Test
   public void testEndsWithAndContains() {
     Selection selEnds = deferredCol.endsWith("ld").apply(table);
@@ -98,7 +92,6 @@ public class DeferredStringColumnTest {
     assertTrue(selContains.contains(8)); // "hello" contains "lo"
   }
 
-  /** Tests filtering by Regular Expression patterns. */
   @Test
   public void testMatchesRegex() {
     Selection sel1 = deferredCol.matchesRegex("\\d+").apply(table);
@@ -106,10 +99,6 @@ public class DeferredStringColumnTest {
     assertFalse(sel1.contains(5)); // "abc" is not numeric
   }
 
-  /**
-   * Tests equality checks (isEqualTo, isNotEqualTo, equalsIgnoreCase) against both scalar strings
-   * and other columns.
-   */
   @Test
   public void testEquality() {
     // Scalar comparisons
@@ -121,9 +110,9 @@ public class DeferredStringColumnTest {
 
     // Column comparisons
     Selection selEqCol = deferredCol.isEqualTo(otherCol).apply(table);
-    assertTrue(selEqCol.contains(0)); // Match
-    assertTrue(selEqCol.contains(4)); // Match
-    assertFalse(selEqCol.contains(1)); // Mismatch
+    assertTrue(selEqCol.contains(0));
+    assertTrue(selEqCol.contains(4));
+    assertFalse(selEqCol.contains(1));
 
     Selection selNotEqCol = deferredCol.isNotEqualTo(otherCol).apply(table);
     assertTrue(selNotEqCol.contains(1));
@@ -157,7 +146,6 @@ public class DeferredStringColumnTest {
     assertTrue(selNotInList.contains(1));
   }
 
-  /** Tests boolean property checks on strings (e.g., numeric, alphabetic, case, emptiness). */
   @Test
   public void testProperties() {
     assertTrue(deferredCol.isNumeric().apply(table).contains(4)); // "123"
@@ -168,7 +156,6 @@ public class DeferredStringColumnTest {
     assertTrue(deferredCol.isEmptyString().apply(table).contains(2)); // ""
   }
 
-  /** Tests operations based on the length of the strings. */
   @Test
   public void testLengthMethods() {
     assertTrue(deferredCol.lengthEquals(3).apply(table).contains(4)); // "123" length is 3
@@ -177,7 +164,6 @@ public class DeferredStringColumnTest {
         deferredCol.isLongerThan(5).apply(table).contains(0)); // "Hello World" length is 11 > 5
   }
 
-  /** Tests missing value operations inherited from DeferredColumn. */
   @Test
   public void testMissing() {
     assertTrue(deferredCol.isMissing().apply(table).contains(3)); // null
