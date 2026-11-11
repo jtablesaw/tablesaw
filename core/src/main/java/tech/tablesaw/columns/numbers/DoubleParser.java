@@ -49,11 +49,11 @@ public class DoubleParser extends AbstractColumnParser<Double> {
     if (isMissing(s)) {
       return DoubleColumnType.missingValueIndicator();
     }
-    if (isPercent(AbstractColumnParser.remove(s, ','))) {
-      s = AbstractColumnParser.remove(s, ',').substring(0, s.length() - 1);
-      return Double.parseDouble(s) / 100.0;
+    final String r = AbstractColumnParser.remove(s, ',');
+    if (isPercent(r)) {
+      return Double.parseDouble(r.substring(0, r.length() - 1)) / 100.0;
     }
-    return Double.parseDouble(AbstractColumnParser.remove(s, ','));
+    return Double.parseDouble(r);
   }
 
   /**
@@ -64,6 +64,9 @@ public class DoubleParser extends AbstractColumnParser<Double> {
    * @return Flag returning whether the input is a percent or not
    */
   private boolean isPercent(String s) {
+    if (s == null || s.isEmpty()) {
+      return false;
+    }
     boolean containsPercentSymbol = s.charAt(s.length() - 1) == '%';
     if (containsPercentSymbol) {
       String percentageValue = s.substring(0, s.length() - 1);
