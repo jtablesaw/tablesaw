@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import smile.data.DataFrame;
 import smile.data.formula.Formula;
@@ -45,6 +46,10 @@ public class SmileConverterTest {
 
   @Test
   public void regression() throws IOException {
+    Assumptions.assumeFalse(
+        "aarch64".equals(System.getProperty("os.arch"))
+            || "arm64".equals(System.getProperty("os.arch")),
+        "Smile MKL does not provide a native ARM backend");
     Table moneyball = Table.read().csv("../data/baseball.csv");
     moneyball.addColumns(
         moneyball.numberColumn("RS").subtract(moneyball.numberColumn("RA")).setName("RD"));
