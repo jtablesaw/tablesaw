@@ -89,7 +89,6 @@ class LevenshteinDistanceTest {
     "a, a, 0", // One equal character
     "ABC, abc, 3" // Case sensitive
   })
-
   void testApplyWithoutThreshold(String left, String right, int expectedDistance) {
     // Handle CsvSource sending nulls instead of empty strings correctly
     String safeLeft = (left == null) ? "" : left;
@@ -120,7 +119,6 @@ class LevenshteinDistanceTest {
     "7, hippo, elephant, 7",
     "8, hippo, zzzzzzzz, 8"
   })
-
   void testApplyWithThreshold(int threshold, String left, String right, int expectedResult) {
     // Handle CsvSource sending nulls instead of empty strings correctly
     String safeLeft = (left == null) ? "" : left;
