@@ -66,17 +66,14 @@ public class LogicalFilterCoverageTest {
   public void testAndAllAndAll() {
     And andFilter = new And(selectAll, selectAll);
     Selection result = andFilter.apply(dummyTable);
-    assertArrayEquals(
-        new int[] {0, 1, 2, 3}, result.toArray());
+    assertArrayEquals(new int[] {0, 1, 2, 3}, result.toArray());
   }
 
   @Test
   public void testAndOverlap() {
     And andFilter = new And(select012, select123);
     Selection result = andFilter.apply(dummyTable);
-    assertArrayEquals(
-        new int[] {1, 2},
-        result.toArray());
+    assertArrayEquals(new int[] {1, 2}, result.toArray());
   }
 
   @Test
@@ -90,18 +87,14 @@ public class LogicalFilterCoverageTest {
   public void testOrOverlap() {
     Or orFilter = new Or(select012, select123);
     Selection result = orFilter.apply(dummyTable);
-    assertArrayEquals(
-        new int[] {0, 1, 2, 3},
-        result.toArray());
+    assertArrayEquals(new int[] {0, 1, 2, 3}, result.toArray());
   }
 
   @Test
   public void testOrNoOverlap() {
     Or orFilter = new Or(select01, select23);
     Selection result = orFilter.apply(dummyTable);
-    assertArrayEquals(
-        new int[] {0, 1, 2, 3},
-        result.toArray());
+    assertArrayEquals(new int[] {0, 1, 2, 3}, result.toArray());
   }
 
   @Test
@@ -115,25 +108,20 @@ public class LogicalFilterCoverageTest {
   public void testNotNone() {
     Not notFilter = new Not(selectNone);
     Selection result = notFilter.apply(dummyTable);
-    assertArrayEquals(
-        new int[] {0, 1, 2, 3},
-        result.toArray());
+    assertArrayEquals(new int[] {0, 1, 2, 3}, result.toArray());
   }
 
   @Test
   public void testNotPartial() {
     Not notFilter = new Not(select02);
     Selection result = notFilter.apply(dummyTable);
-    assertArrayEquals(
-        new int[] {1, 3},
-        result.toArray());
+    assertArrayEquals(new int[] {1, 3}, result.toArray());
   }
 
   @Test
   public void testNotDoubleNegation() {
     Not doubleNotFilter = new Not(new Not(select01));
     Selection result = doubleNotFilter.apply(dummyTable);
-    assertArrayEquals(
-        new int[] {0, 1}, result.toArray());
+    assertArrayEquals(new int[] {0, 1}, result.toArray());
   }
 }
