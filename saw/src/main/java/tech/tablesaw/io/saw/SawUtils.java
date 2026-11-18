@@ -15,7 +15,6 @@
 package tech.tablesaw.io.saw;
 
 import com.google.common.annotations.Beta;
-import java.nio.file.FileSystems;
 import java.util.regex.Pattern;
 
 /**
@@ -27,8 +26,8 @@ class SawUtils {
 
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
   private static final String FILE_EXTENSION = "saw";
-  private static final Pattern SEPARATOR_PATTERN =
-      Pattern.compile(Pattern.quote(FileSystems.getDefault().getSeparator()));
+  // match both separators, Windows paths accept '/' as well as '\'
+  private static final Pattern SEPARATOR_PATTERN = Pattern.compile("[/\\\\]");
 
   private SawUtils() {}
 
