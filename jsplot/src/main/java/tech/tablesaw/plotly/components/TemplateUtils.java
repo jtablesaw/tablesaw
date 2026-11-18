@@ -6,6 +6,7 @@ import io.pebbletemplates.pebble.loader.ClasspathLoader;
 import io.pebbletemplates.pebble.loader.DelegatingLoader;
 import io.pebbletemplates.pebble.loader.FileLoader;
 import io.pebbletemplates.pebble.loader.Loader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,8 +29,8 @@ public class TemplateUtils {
       if (templateLocations != null && !templateLocations.isEmpty()) {
         List<Loader<?>> loaders = new ArrayList<>();
         for (String templateLocation : templateLocations) {
-          FileLoader fileLoader = new FileLoader();
-          fileLoader.setPrefix(templateLocation);
+          FileLoader fileLoader =
+              new FileLoader(Path.of(templateLocation).toAbsolutePath().toString());
           loaders.add(fileLoader);
         }
         // add this one last, so it is shadowed

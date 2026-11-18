@@ -393,8 +393,7 @@ public class TableTest {
 
   @Test
   void testLast() {
-    bush = bush.sortOn("date");
-    Table t1 = bush.last(3);
+    Table t1 = bush.sortOn("date").last(3);
     assertEquals(3, t1.rowCount());
     assertEquals(LocalDate.of(2004, 2, 5), t1.dateColumn(0).get(2));
   }

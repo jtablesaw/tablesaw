@@ -49,7 +49,7 @@ public class SmileConverterTest {
     Assumptions.assumeFalse(
         "aarch64".equals(System.getProperty("os.arch"))
             || "arm64".equals(System.getProperty("os.arch")),
-        "Smile MKL does not provide a native ARM backend");
+        "Smile's bundled native libraries do not support all ARM platforms");
     Table moneyball = Table.read().csv("../data/baseball.csv");
     moneyball.addColumns(
         moneyball.numberColumn("RS").subtract(moneyball.numberColumn("RA")).setName("RD"));
@@ -90,6 +90,6 @@ public class SmileConverterTest {
     table.addColumns(StringColumn.create("string", new String[] {"james", "bond"}));
     table.addColumns(StringColumn.create("text", new String[] {"foo", "bar"}));
     DataFrame dataframe = table.smile().toDataFrame();
-    assertEquals(2, dataframe.nrows());
+    assertEquals(2, dataframe.nrow());
   }
 }

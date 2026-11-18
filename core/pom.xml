@@ -13,6 +13,7 @@
     <packaging>jar</packaging>
     <properties>
         <doclint>none</doclint>
+        <smile.version>3.1.1</smile.version>
     </properties>
 
     <profiles>
@@ -56,7 +57,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.5.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -91,12 +92,12 @@
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
-            <version>8.5.13</version>
+            <version>8.5.19</version>
         </dependency>
        <dependency>
             <groupId>org.roaringbitmap</groupId>
             <artifactId>RoaringBitmap</artifactId>
-            <version>1.0.5</version>
+            <version>1.6.30</version>
         </dependency>
         <dependency>
             <groupId>com.univocity</groupId>
@@ -106,12 +107,12 @@
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
-            <version>74.2</version>
+            <version>79.1</version>
         </dependency>
         <dependency>
             <groupId>io.github.classgraph</groupId>
             <artifactId>classgraph</artifactId>
-            <version>4.8.168</version>
+            <version>4.8.200</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -119,8 +120,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.haifengl</groupId>
-            <artifactId>smile-data</artifactId>
-            <version>2.6.0</version>
+            <artifactId>smile-base</artifactId>
+            <version>${smile.version}</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
@@ -137,13 +138,13 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.18.0</version>
+            <version>3.22.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.11.0</version>
+            <version>1.15.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -155,25 +156,19 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.2.224</version>
+            <version>2.5.252</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
-            <version>2.6.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.haifengl</groupId>
-            <artifactId>smile-mkl</artifactId>
-            <version>2.6.0</version>
+            <version>${smile.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

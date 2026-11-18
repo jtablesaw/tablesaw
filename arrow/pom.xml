@@ -13,6 +13,7 @@
   <packaging>jar</packaging>
   <properties>
     <doclint>none</doclint>
+    <arrow.version>19.0.0</arrow.version>
   </properties>
 
   <profiles>
@@ -60,7 +61,7 @@
       <plugin>
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-shade-plugin</artifactId>
-         <version>3.1.0</version>
+         <version>3.6.2</version>
          <configuration>
              <shadedArtifactAttached>true</shadedArtifactAttached>
              <shadedClassifierName>shaded</shadedClassifierName>
@@ -88,7 +89,7 @@
     <dependency>
       <groupId>org.apache.arrow</groupId>
       <artifactId>arrow-vector</artifactId>
-      <version>18.2.0</version>
+      <version>${arrow.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -98,7 +99,7 @@
     <dependency>
       <groupId>org.apache.arrow</groupId>
       <artifactId>arrow-memory-netty</artifactId>
-      <version>18.3.0</version>
+      <version>${arrow.version}</version>
       <exclusions>
         <exclusion>
           <groupId>com.fasterxml.jackson.core</groupId>

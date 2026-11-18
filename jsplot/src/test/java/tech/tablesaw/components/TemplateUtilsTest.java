@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Figure;
@@ -28,17 +29,19 @@ public class TemplateUtilsTest {
   }
 
   @Test
-  public void testCustomTemplateLocation() {
+  public void testCustomTemplateLocation() throws URISyntaxException {
     URL url = this.getClass().getResource(this.getClass().getSimpleName() + ".class");
     assertNotNull(url, "Couldn't locate class (as resource), where template is also found");
-    String path = url.getPath();
-    assertTrue(path.lastIndexOf('/') >= 0);
-    String folderPath = path.substring(0, path.lastIndexOf('/'));
-    File templateFile = new File(folderPath + "/page_template.html");
+    File templateDirectory = new File(url.toURI()).getParentFile();
+    File templateFile = new File(templateDirectory, "page_template.html");
     assertTrue(templateFile.exists(), templateFile + " doesn't exist");
-    TemplateUtils.setTemplateLocations(folderPath);
-    String html = createPageHtml();
-    assertTrue(html.indexOf(customTemplateString) >= 0);
+    TemplateUtils.setTemplateLocations(templateDirectory.getPath());
+    try {
+      String html = createPageHtml();
+      assertTrue(html.indexOf(customTemplateString) >= 0);
+    } finally {
+      TemplateUtils.setTemplateLocations();
+    }
   }
 
   private String createPageHtml() {

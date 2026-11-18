@@ -532,8 +532,9 @@ public class RowTest {
 
   @Test
   void testIsMissing() {
-    assertFalse(bush.row(0).isMissing("approval"));
-    bush.row(0).setMissing("approval");
-    assertTrue(bush.row(0).isMissing("approval"));
+    Row row = bush.copy().row(0);
+    assertFalse(row.isMissing("approval"));
+    row.setMissing("approval");
+    assertTrue(row.isMissing("approval"));
   }
 }
