@@ -150,12 +150,15 @@ public class SawReader {
     List<Callable<Column<?>>> callables = new ArrayList<>();
     Map<String, Column<?>> columns = new ConcurrentHashMap<>();
     try {
+      Path folder = sawPath.toAbsolutePath().normalize();
       for (ColumnMetadata column : columnMetadata) {
-        callables.add(
-            () -> {
-              Path columnPath = sawPath.resolve(column.getId());
-              return readColumn(columnPath.toString(), sawMetadata, column);
-            });
+        Path columnPath = folder.resolve(column.getId()).normalize();
+        Preconditions.checkArgument(
+            columnPath.getParent() != null && columnPath.getParent().equals(folder),
+            "Column file %s is outside the saw folder %s",
+            column.getId(),
+            folder);
+        callables.add(() -> readColumn(columnPath.toString(), sawMetadata, column));
       }
       List<Future<Column<?>>> futures = executor.invokeAll(callables);
       for (Future<Column<?>> future : futures) {
