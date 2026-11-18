@@ -16,10 +16,20 @@ package tech.tablesaw.io.json;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.Destination;
 
 public class JsonWriterTest {
 
@@ -53,5 +63,24 @@ public class JsonWriterTest {
     Table table = Table.read().string(json, "json");
     String output = table.write().toString("json");
     assertEquals(json, output);
+  }
+
+  @Test
+  public void withCustomMapper() {
+    var json = "[{\"a\":\"2021-01-01\"}, {\"a\":\"2021-02-01\"}]";
+    var table = Table.read().string(json, "json");
+    var mapper = new ObjectMapper();
+    mapper.registerModule(new SimpleModule().addSerializer(new StdSerializer<LocalDate>(LocalDate.class) {
+      final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+      @Override
+      public void serialize(LocalDate localDate, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+              throws IOException {
+        jsonGenerator.writeString(FORMATTER.format(localDate));
+      }
+    }));
+
+    var baos = new ByteArrayOutputStream();
+    new JsonWriter().write(table, new JsonWriteOptions.Builder(new Destination(baos)).mapper(mapper).build());
+    assertEquals(new String(baos.toByteArray()), "[{\"a\":\"2021/01/01\"},{\"a\":\"2021/02/01\"}]");
   }
 }
