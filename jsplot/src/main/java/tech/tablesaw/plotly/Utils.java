@@ -20,10 +20,26 @@ public class Utils {
 
   /**
    * Escapes string for Javascript, assuming but without surrounding it with doublequotes (") and
-   * saves to output to the given StringBuilder.
+   * saves to output to the given StringBuilder. The output is embedded in an inline HTML script
+   * block, so '<', '>' and '&' are also escaped to keep a value such as "</script>" from ending the
+   * block early.
    */
   private static void escape(String s, StringBuilder sb) {
-    JsonStringEncoder.getInstance().quoteAsString(s, sb);
+    for (char c : JsonStringEncoder.getInstance().quoteAsString(s)) {
+      switch (c) {
+        case '<':
+          sb.append("\\u003c");
+          break;
+        case '>':
+          sb.append("\\u003e");
+          break;
+        case '&':
+          sb.append("\\u0026");
+          break;
+        default:
+          sb.append(c);
+      }
+    }
   }
 
   /**
