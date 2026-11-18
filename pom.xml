@@ -30,6 +30,7 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <owasp.version>12.1.0</owasp.version>
     </properties>
     <distributionManagement>
         <snapshotRepository>
@@ -91,7 +92,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.5.0</version>
                     <configuration>
-                        <source>11</source>
+                        <source>17</source>
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
@@ -193,8 +194,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <source>11</source>
-                        <target>11</target>
+                        <release>17</release>
                         <compilerArgument>-Xlint:all</compilerArgument>
                     </configuration>
                 </plugin>
@@ -202,6 +202,15 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${owasp.version}</version>
+                <configuration>
+                    <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+                    <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -256,7 +265,7 @@
             <plugin>
                 <groupId>com.cosium.code</groupId>
                 <artifactId>git-code-format-maven-plugin</artifactId>
-                <version>5.3</version>
+                <version>5.6</version>
                 <executions>
                     <!-- On commit, format the modified java files -->
                     <execution>
@@ -279,7 +288,7 @@
                     <dependency>
                         <groupId>com.cosium.code</groupId>
                         <artifactId>google-java-format</artifactId>
-                        <version>5.3</version>
+                        <version>5.6</version>
                     </dependency>
                 </dependencies>
             </plugin>
