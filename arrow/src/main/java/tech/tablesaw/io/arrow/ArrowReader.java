@@ -10,6 +10,7 @@ import org.apache.arrow.vector.*;
 import org.apache.arrow.vector.ipc.ArrowStreamReader;
 import org.apache.arrow.vector.types.Types;
 import tech.tablesaw.api.*;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.RuntimeIOException;
 
 /**
@@ -63,11 +64,7 @@ public class ArrowReader {
         for (int i = 0; i < vcv.getValueCount(); i++) {
           strCol.append(new String(vcv.get(i)));
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(strCol);
-        } else {
-          table.stringColumn(strCol.name()).append(strCol);
-        }
+        addOrAppendColumn(table, strCol);
         break;
       case BIGINT:
         LongColumn longCol = LongColumn.create(name);
@@ -79,11 +76,7 @@ public class ArrowReader {
             longCol.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(longCol);
-        } else {
-          table.longColumn(longCol.name()).append(longCol);
-        }
+        addOrAppendColumn(table, longCol);
         break;
       case INT:
         IntColumn intCol = IntColumn.create(name);
@@ -95,11 +88,7 @@ public class ArrowReader {
             intCol.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(intCol);
-        } else {
-          table.intColumn(intCol.name()).append(intCol);
-        }
+        addOrAppendColumn(table, intCol);
         break;
       case SMALLINT:
         ShortColumn shortColumn = ShortColumn.create(name);
@@ -111,11 +100,7 @@ public class ArrowReader {
             shortColumn.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(shortColumn);
-        } else {
-          table.shortColumn(shortColumn.name()).append(shortColumn);
-        }
+        addOrAppendColumn(table, shortColumn);
         break;
       case DATEDAY:
         DateColumn dateCol = DateColumn.create(name);
@@ -127,11 +112,7 @@ public class ArrowReader {
             dateCol.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(dateCol);
-        } else {
-          table.dateColumn(dateCol.name()).append(dateCol);
-        }
+        addOrAppendColumn(table, dateCol);
         break;
       case TIMESTAMPMILLI:
         DateTimeColumn dtCol = DateTimeColumn.create(name);
@@ -144,11 +125,7 @@ public class ArrowReader {
             dtCol.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(dtCol);
-        } else {
-          table.dateTimeColumn(dtCol.name()).append(dtCol);
-        }
+        addOrAppendColumn(table, dtCol);
         break;
       case TIMEMILLI:
         TimeColumn timeColumn = TimeColumn.create(name);
@@ -160,11 +137,7 @@ public class ArrowReader {
             timeColumn.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(timeColumn);
-        } else {
-          table.timeColumn(timeColumn.name()).append(timeColumn);
-        }
+        addOrAppendColumn(table, timeColumn);
         break;
       case TIMESTAMPMILLITZ:
         InstantColumn instantColumn = InstantColumn.create(name);
@@ -176,11 +149,7 @@ public class ArrowReader {
             instantColumn.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(instantColumn);
-        } else {
-          table.instantColumn(instantColumn.name()).append(instantColumn);
-        }
+        addOrAppendColumn(table, instantColumn);
         break;
       case BIT:
         BooleanColumn booleanColumn = BooleanColumn.create(name);
@@ -192,11 +161,7 @@ public class ArrowReader {
             booleanColumn.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(booleanColumn);
-        } else {
-          table.booleanColumn(booleanColumn.name()).append(booleanColumn);
-        }
+        addOrAppendColumn(table, booleanColumn);
         break;
       case FLOAT4:
         FloatColumn floatCol = FloatColumn.create(name);
@@ -208,11 +173,7 @@ public class ArrowReader {
             floatCol.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(floatCol);
-        } else {
-          table.floatColumn(floatCol.name()).append(floatCol);
-        }
+        addOrAppendColumn(table, floatCol);
         break;
       case FLOAT8:
         DoubleColumn doubleCol = DoubleColumn.create(name);
@@ -224,15 +185,24 @@ public class ArrowReader {
             doubleCol.appendMissing();
           }
         }
-        if (!table.containsColumn(name)) {
-          table.addColumns(doubleCol);
-        } else {
-          table.doubleColumn(doubleCol.name()).append(doubleCol);
-        }
+        addOrAppendColumn(table, doubleCol);
         break;
       default:
         throw new IllegalArgumentException(
             "Unhandled Column type " + type.name() + " in arrow data");
+    }
+  }
+
+  /**
+   * Adds the given column to the table, or, if the table already has a column with the same name,
+   * appends the column's values to that existing column.
+   */
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  private void addOrAppendColumn(Table table, Column<?> column) {
+    if (!table.containsColumn(column.name())) {
+      table.addColumns(column);
+    } else {
+      ((Column) table.column(column.name())).append(column);
     }
   }
 }

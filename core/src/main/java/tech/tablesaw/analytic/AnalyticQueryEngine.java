@@ -1,7 +1,7 @@
 package tech.tablesaw.analytic;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Optional;
+import java.util.function.Supplier;
 import tech.tablesaw.analytic.ArgumentList.FunctionCall;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
@@ -18,20 +18,37 @@ import tech.tablesaw.table.TableSlice;
  * the order of the rows in underlying source table.
  */
 final class AnalyticQueryEngine {
-  private final AnalyticQuery query;
+  private final Table table;
+  private final ArgumentList argumentList;
+  private final WindowFrame windowFrame;
+  private final Optional<Sort> sort;
+  private final Supplier<Iterable<TableSlice>> partitions;
   private final Table destination;
   private final IntComparatorChain rowComparator;
 
-  private AnalyticQueryEngine(AnalyticQuery query) {
-    this.query = query;
-    this.destination = Table.create("Analytic ~ " + query.getTable().name());
-    Optional<Sort> sort = query.getSort();
-    this.rowComparator = sort.isPresent() ? SortUtils.getChain(query.getTable(), sort.get()) : null;
-  }
-
-  /** Returns a new AnalyticQueryEngine to execute the given query */
-  public static AnalyticQueryEngine create(AnalyticQuery query) {
-    return new AnalyticQueryEngine(query);
+  /**
+   * Creates an engine from the parts of a query it needs. The engine does not hold a reference to
+   * the query object itself, so the dependency only goes from the query to the engine.
+   *
+   * @param table the source table
+   * @param argumentList the functions to calculate and their source and destination columns
+   * @param windowFrame the window frame used by aggregate functions
+   * @param sort the optional order of rows within each partition
+   * @param partitions supplies the partitions (slices) of the source table to process
+   */
+  AnalyticQueryEngine(
+      Table table,
+      ArgumentList argumentList,
+      WindowFrame windowFrame,
+      Optional<Sort> sort,
+      Supplier<Iterable<TableSlice>> partitions) {
+    this.table = table;
+    this.argumentList = argumentList;
+    this.windowFrame = windowFrame;
+    this.sort = sort;
+    this.partitions = partitions;
+    this.destination = Table.create("Analytic ~ " + table.name());
+    this.rowComparator = sort.isPresent() ? SortUtils.getChain(table, sort.get()) : null;
   }
 
   /**
@@ -42,7 +59,7 @@ final class AnalyticQueryEngine {
    */
   public Table execute() {
     addColumns();
-    partition().forEach(this::processSlice);
+    partitions.get().forEach(this::processSlice);
     return destination;
   }
 
@@ -57,17 +74,16 @@ final class AnalyticQueryEngine {
    * destination column.
    */
   private void processAggregateFunctions(TableSlice slice) {
-    for (String toColumn : query.getArgumentList().getAggregateFunctions().keySet()) {
+    for (String toColumn : argumentList.getAggregateFunctions().keySet()) {
       FunctionCall<AggregateFunctions> functionCall =
-          query.getArgumentList().getAggregateFunctions().get(toColumn);
+          argumentList.getAggregateFunctions().get(toColumn);
 
       AggregateFunctions aggregateFunction = functionCall.getFunction();
-      Column<?> sourceColumn = query.getTable().column(functionCall.getSourceColumnName());
+      Column<?> sourceColumn = table.column(functionCall.getSourceColumnName());
       validateColumn(aggregateFunction, sourceColumn);
 
       Column<?> destinationColumn = destination.column(functionCall.getDestinationColumnName());
-      new WindowSlider(
-              query.getWindowFrame(), aggregateFunction, slice, sourceColumn, destinationColumn)
+      new WindowSlider(windowFrame, aggregateFunction, slice, sourceColumn, destinationColumn)
           .execute();
     }
   }
@@ -78,12 +94,12 @@ final class AnalyticQueryEngine {
    */
   @SuppressWarnings({"unchecked"})
   private void processNumberingFunctions(TableSlice slice) {
-    for (String toColumn : query.getArgumentList().getNumberingFunctions().keySet()) {
+    for (String toColumn : argumentList.getNumberingFunctions().keySet()) {
       if (rowComparator == null) {
         throw new IllegalArgumentException("Cannot use Numbering Function without OrderBy");
       }
       FunctionCall<NumberingFunctions> functionCall =
-          query.getArgumentList().getNumberingFunctions().get(toColumn);
+          argumentList.getNumberingFunctions().get(toColumn);
       NumberingFunctions numberingFunctions = functionCall.getFunction();
       NumberingFunction function = numberingFunctions.getImplementation();
       Column<Integer> destinationColumn =
@@ -132,24 +148,11 @@ final class AnalyticQueryEngine {
    */
   private void addColumns() {
     this.destination.addColumns(
-        query
-            .getArgumentList()
-            .createEmptyDestinationColumns(query.getTable().rowCount())
-            .toArray(new Column<?>[0]));
-  }
-
-  /**
-   * Partition the source table into a series of table slices. Does not modify the underlying table.
-   */
-  private Iterable<TableSlice> partition() {
-    if (query.getPartitionColumns().isEmpty()) {
-      return ImmutableList.of(new TableSlice(query.getTable()));
-    }
-    return query.getTable().splitOn(query.getPartitionColumns().toArray(new String[0]));
+        argumentList.createEmptyDestinationColumns(table.rowCount()).toArray(new Column<?>[0]));
   }
 
   /** Order the tableSlice in place. Does not modify the underlying table. */
   private void orderBy(TableSlice tableSlice) {
-    query.getSort().ifPresent(tableSlice::sortOn);
+    sort.ifPresent(tableSlice::sortOn);
   }
 }

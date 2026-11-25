@@ -78,15 +78,6 @@ public abstract class TableSliceGroup implements Iterable<TableSlice> {
     return splitColumnNames;
   }
 
-  /** Returns the sum of the sizes for the columns in the given {@link Column} list */
-  protected int getByteSize(List<Column<?>> columns) {
-    int byteSize = 0;
-    for (Column<?> c : columns) {
-      byteSize += c.byteSize();
-    }
-    return byteSize;
-  }
-
   /** Add a slice to this group */
   protected void addSlice(TableSlice slice) {
     subTables.add(slice);

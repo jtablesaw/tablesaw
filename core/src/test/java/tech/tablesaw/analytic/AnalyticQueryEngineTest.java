@@ -47,7 +47,7 @@ class AnalyticQueryEngineTest {
             .as(destinationColumnName)
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Throwable thrown = assertThrows(IllegalArgumentException.class, queryEngine::execute);
     assertTrue(
         thrown.getMessage().contains("Function: SUM Is not compatible with column type: STRING"));
@@ -70,7 +70,7 @@ class AnalyticQueryEngineTest {
             .as("max")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = new double[] {8, 8, 8, 8, 6, 5, 4};
@@ -101,7 +101,7 @@ class AnalyticQueryEngineTest {
             .as(destinationColumnName)
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = new double[] {1, 2, 2, 1, Double.NaN, Double.NaN, 1, 2, 2};
@@ -131,7 +131,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_unboundedpreceding_and_5preceding");
@@ -177,7 +177,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_unboundedpreceding_and_currentrow");
@@ -223,7 +223,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_unboundedpreceding_and_5following");
@@ -269,7 +269,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected =
@@ -316,7 +316,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_5preceding_and_3preceding");
@@ -362,7 +362,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_5preceding_and_currentrow");
@@ -408,7 +408,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_5preceding_and_5following");
@@ -454,7 +454,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_5preceding_and_unboundedfollowing");
@@ -500,7 +500,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_currentrow_and_unboundedfollowing");
@@ -546,7 +546,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_5following_and_8following");
@@ -592,7 +592,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     double[] expected = intSourceColumnAsDoubleArray("sum_5following_and_unboundedfollowing");
@@ -633,7 +633,7 @@ class AnalyticQueryEngineTest {
             .as("count")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     assertEquals(ImmutableList.of(1, 2, 2, 3, 4, 5, 6), result.intColumn("count").asList());
@@ -654,7 +654,7 @@ class AnalyticQueryEngineTest {
             .as("denseRank")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     assertArrayEquals(
@@ -684,7 +684,7 @@ class AnalyticQueryEngineTest {
             .as("denseRank")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     assertArrayEquals(
@@ -714,7 +714,7 @@ class AnalyticQueryEngineTest {
             .as("denseRank")
             .build();
 
-    AnalyticQueryEngine queryEngine = AnalyticQueryEngine.create(query);
+    AnalyticQueryEngine queryEngine = query.createEngine();
     Table result = queryEngine.execute();
 
     assertEquals(ImmutableList.of("rowNumber", "rank", "denseRank"), result.columnNames());

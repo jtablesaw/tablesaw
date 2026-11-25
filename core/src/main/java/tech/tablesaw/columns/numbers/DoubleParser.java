@@ -1,6 +1,5 @@
 package tech.tablesaw.columns.numbers;
 
-import com.google.common.collect.Lists;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import tech.tablesaw.api.ColumnType;
@@ -15,9 +14,7 @@ public class DoubleParser extends AbstractColumnParser<Double> {
 
   public DoubleParser(DoubleColumnType doubleColumnType, ReadOptions readOptions) {
     super(doubleColumnType);
-    if (readOptions.missingValueIndicators().length > 0) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
-    }
+    applyMissingValueIndicators(readOptions);
   }
 
   @Override

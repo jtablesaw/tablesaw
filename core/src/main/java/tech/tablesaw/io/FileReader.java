@@ -224,9 +224,9 @@ public abstract class FileReader {
         (nextLine = reader.parseNext()) != null;
         rowNumber++) {
       // validation
-      if (options.skipRowsWithInvalidColumnCount()
-          && options.header()
-          && nextLine.length != types.length) {
+      boolean hasWrongColumnCount = nextLine.length != types.length;
+      boolean canSkipInvalidRows = options.skipRowsWithInvalidColumnCount() && options.header();
+      if (canSkipInvalidRows && hasWrongColumnCount) {
         continue;
       }
       if (nextLine.length < types.length) {

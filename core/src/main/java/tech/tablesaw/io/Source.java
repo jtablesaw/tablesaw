@@ -1,8 +1,5 @@
 package tech.tablesaw.io;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +21,7 @@ public class Source {
   protected final Charset charset;
 
   public Source(File file) {
-    this(file, getCharSet(file));
+    this(file, FileCharsetDetector.detect(file));
   }
 
   public Source(File file, Charset charset) {
@@ -107,46 +104,5 @@ public class Source {
       scanner.useDelimiter("\\A"); // start of a string
       return scanner.hasNext() ? scanner.next() : "";
     }
-  }
-
-  /**
-   * Returns the likely charset for the given file, if it can be determined. A confidence score is
-   * calculated. If the score is less than 60 (on a 1 to 100 interval) the system default charset is
-   * returned instead.
-   *
-   * @param file The file to be evaluated
-   * @return The likely charset, or the system default charset
-   */
-  @VisibleForTesting
-  static Charset getCharSet(File file) {
-    long bufferSize = file.length() < 9999 ? file.length() : 9999;
-    byte[] buffer = new byte[(int) bufferSize];
-    try (InputStream initialStream = new FileInputStream(file)) {
-      int bytesRead = initialStream.read(buffer);
-      if (bytesRead < bufferSize) {
-        throw new IOException("Was not able to read expected number of bytes");
-      }
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
-    }
-    return getCharSet(buffer);
-  }
-
-  /**
-   * Returns the likely charset for the given byte[], if it can be determined. A confidence score is
-   * calculated. If the score is less than 60 (on a 1 to 100 interval) the system default charset is
-   * returned instead.
-   *
-   * @param buffer The byte array to evaluate
-   * @return The likely charset, or the system default charset
-   */
-  private static Charset getCharSet(byte[] buffer) {
-    CharsetDetector detector = new CharsetDetector();
-    detector.setText(buffer);
-    CharsetMatch match = detector.detect();
-    if (match == null || match.getConfidence() < 60) {
-      return Charset.defaultCharset();
-    }
-    return Charset.forName(match.getName());
   }
 }
