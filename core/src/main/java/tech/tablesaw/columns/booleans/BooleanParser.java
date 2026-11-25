@@ -4,7 +4,6 @@ import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_FALSE;
 import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_TRUE;
 import static tech.tablesaw.columns.booleans.BooleanColumnType.MISSING_VALUE;
 
-import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.List;
 import tech.tablesaw.api.ColumnType;
@@ -35,9 +34,7 @@ public class BooleanParser extends AbstractColumnParser<Boolean> {
 
   public BooleanParser(BooleanColumnType booleanColumnType, ReadOptions readOptions) {
     super(booleanColumnType);
-    if (readOptions.missingValueIndicators().length > 0) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
-    }
+    applyMissingValueIndicators(readOptions);
   }
 
   @Override

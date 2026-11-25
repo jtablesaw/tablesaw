@@ -2,6 +2,7 @@ package tech.tablesaw.analytic;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
@@ -23,6 +24,7 @@ import tech.tablesaw.analytic.AnalyticQuerySteps.SetWindowEndOptionTwo;
 import tech.tablesaw.analytic.AnalyticQuerySteps.SetWindowStart;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.sorting.Sort;
+import tech.tablesaw.table.TableSlice;
 
 /** A class representing an analytic query similar to the Over or Window clause in SQL. */
 public final class AnalyticQuery {
@@ -125,6 +127,22 @@ public final class AnalyticQuery {
     return windowSpecification.getSort();
   }
 
+  /**
+   * Partition the source table into a series of table slices. Does not modify the underlying table.
+   */
+  Iterable<TableSlice> partition() {
+    if (getPartitionColumns().isEmpty()) {
+      return ImmutableList.of(new TableSlice(getTable()));
+    }
+    return getTable().splitOn(getPartitionColumns().toArray(new String[0]));
+  }
+
+  /** Creates the engine that executes this query, passing it only the parts it needs. */
+  AnalyticQueryEngine createEngine() {
+    return new AnalyticQueryEngine(
+        getTable(), getArgumentList(), getWindowFrame(), getSort(), this::partition);
+  }
+
   WindowSpecification getWindowSpecification() {
     return windowSpecification;
   }
@@ -179,7 +197,7 @@ public final class AnalyticQuery {
    * @return a new table containing only the result columns.
    */
   public Table execute() {
-    return AnalyticQueryEngine.create(this).execute();
+    return createEngine().execute();
   }
 
   /**

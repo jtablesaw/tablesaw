@@ -32,13 +32,60 @@ final class WindowFrame {
 
   enum WindowGrowthType {
     // UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-    FIXED,
+    FIXED {
+      @Override
+      int slideLeftBound(int leftBound) {
+        return leftBound;
+      }
+
+      @Override
+      int slideRightBound(int rightBound) {
+        return rightBound;
+      }
+    },
     // UNBOUNDED PRECEDING AND NOT UNBOUNDED FOLLOWING
-    FIXED_LEFT,
+    FIXED_LEFT {
+      @Override
+      int slideLeftBound(int leftBound) {
+        return leftBound;
+      }
+
+      @Override
+      int slideRightBound(int rightBound) {
+        return rightBound + 1;
+      }
+    },
     // NOT UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-    FIXED_RIGHT,
+    // Never slid directly: WindowSlider mirrors it into a FIXED_LEFT window first.
+    FIXED_RIGHT {
+      @Override
+      int slideLeftBound(int leftBound) {
+        throw new IllegalArgumentException("Unexpected growthType: " + this);
+      }
+
+      @Override
+      int slideRightBound(int rightBound) {
+        throw new IllegalArgumentException("Unexpected growthType: " + this);
+      }
+    },
     // NOT UNBOUNDED PRECEDING AND NOT UNBOUNDED FOLLOWING
-    SLIDING;
+    SLIDING {
+      @Override
+      int slideLeftBound(int leftBound) {
+        return leftBound + 1;
+      }
+
+      @Override
+      int slideRightBound(int rightBound) {
+        return rightBound + 1;
+      }
+    };
+
+    /** Returns the new left bound of the window after it moves forward by one row. */
+    abstract int slideLeftBound(int leftBound);
+
+    /** Returns the new right bound of the window after it moves forward by one row. */
+    abstract int slideRightBound(int rightBound);
   }
 
   private final WindowBoundTypes leftBoundType;
@@ -121,21 +168,33 @@ final class WindowFrame {
    * Calculate the window growth type. Knowing the growth type simplifies the executing the query.
    */
   WindowGrowthType windowGrowthType() {
-    if (leftBoundType == WindowBoundTypes.UNBOUNDED_PRECEDING
-        && rightBoundType == WindowBoundTypes.UNBOUNDED_FOLLOWING) {
+    if (isUnboundedOnBothSides()) {
       return WindowGrowthType.FIXED;
-    } else if ((leftBoundType == WindowBoundTypes.PRECEDING
-            || leftBoundType == WindowBoundTypes.FOLLOWING
-            || leftBoundType == WindowBoundTypes.CURRENT_ROW)
-        && (rightBoundType == WindowBoundTypes.PRECEDING
-            || rightBoundType == WindowBoundTypes.FOLLOWING
-            || rightBoundType == WindowBoundTypes.CURRENT_ROW)) {
+    } else if (isBoundedOnBothSides()) {
       return WindowGrowthType.SLIDING;
     }
     if (leftBoundType == WindowBoundTypes.UNBOUNDED_PRECEDING) {
       return WindowGrowthType.FIXED_LEFT;
     }
     return WindowGrowthType.FIXED_RIGHT;
+  }
+
+  /** Returns true if the window covers the whole partition (UNBOUNDED PRECEDING to FOLLOWING). */
+  private boolean isUnboundedOnBothSides() {
+    return leftBoundType == WindowBoundTypes.UNBOUNDED_PRECEDING
+        && rightBoundType == WindowBoundTypes.UNBOUNDED_FOLLOWING;
+  }
+
+  /** Returns true if neither end of the window is UNBOUNDED, so the window slides with the row. */
+  private boolean isBoundedOnBothSides() {
+    return isBounded(leftBoundType) && isBounded(rightBoundType);
+  }
+
+  /** Returns true if the bound type is a fixed offset (PRECEDING, FOLLOWING or CURRENT ROW). */
+  private static boolean isBounded(WindowBoundTypes boundType) {
+    return boundType == WindowBoundTypes.PRECEDING
+        || boundType == WindowBoundTypes.FOLLOWING
+        || boundType == WindowBoundTypes.CURRENT_ROW;
   }
 
   @Override

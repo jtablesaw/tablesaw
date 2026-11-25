@@ -1,6 +1,5 @@
 package tech.tablesaw.columns.numbers;
 
-import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
@@ -13,9 +12,7 @@ public class FloatParser extends AbstractColumnParser<Float> {
 
   public FloatParser(FloatColumnType columnType, ReadOptions readOptions) {
     super(columnType);
-    if (readOptions.missingValueIndicators().length > 0) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
-    }
+    applyMissingValueIndicators(readOptions);
   }
 
   @Override

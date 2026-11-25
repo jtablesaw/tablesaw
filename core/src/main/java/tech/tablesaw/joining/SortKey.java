@@ -101,64 +101,64 @@ class SortKey implements Iterable<ColumnIndexPair> {
   /** Returns a comparator for a given ColumnIndexPair */
   private static Comparator<Row> comparator(ColumnIndexPair pair) {
     if (pair.type.equals(ColumnType.INTEGER)) {
-      return (r11, r21) -> {
-        int b1 = r11.getInt(pair.left);
-        int b2 = r21.getInt(pair.right);
-        return Integer.compare(b1, b2);
+      return (leftRow, rightRow) -> {
+        int leftValue = leftRow.getInt(pair.left);
+        int rightValue = rightRow.getInt(pair.right);
+        return Integer.compare(leftValue, rightValue);
       };
     } else if (pair.type.equals(ColumnType.LOCAL_DATE)) {
-      return (r11, r21) -> {
-        int b1 = r11.getPackedDate(pair.left);
-        int b2 = r21.getPackedDate(pair.right);
-        return Integer.compare(b1, b2);
+      return (leftRow, rightRow) -> {
+        int leftValue = leftRow.getPackedDate(pair.left);
+        int rightValue = rightRow.getPackedDate(pair.right);
+        return Integer.compare(leftValue, rightValue);
       };
     } else if (pair.type.equals(ColumnType.LOCAL_TIME)) {
-      return (r11, r21) -> {
-        int b1 = r11.getPackedTime(pair.left);
-        int b2 = r21.getPackedTime(pair.right);
-        return Integer.compare(b1, b2);
+      return (leftRow, rightRow) -> {
+        int leftValue = leftRow.getPackedTime(pair.left);
+        int rightValue = rightRow.getPackedTime(pair.right);
+        return Integer.compare(leftValue, rightValue);
       };
     } else if (pair.type.equals(ColumnType.LONG)) {
-      return (r11, r21) -> {
-        long b1 = r11.getLong(pair.left);
-        long b2 = r21.getLong(pair.right);
-        return Long.compare(b1, b2);
+      return (leftRow, rightRow) -> {
+        long leftValue = leftRow.getLong(pair.left);
+        long rightValue = rightRow.getLong(pair.right);
+        return Long.compare(leftValue, rightValue);
       };
     } else if (pair.type.equals(ColumnType.LOCAL_DATE_TIME)) {
-      return (r11, r21) -> {
-        long b1 = r11.getPackedDateTime(pair.left);
-        long b2 = r21.getPackedDateTime(pair.right);
-        return Long.compare(b1, b2);
+      return (leftRow, rightRow) -> {
+        long leftValue = leftRow.getPackedDateTime(pair.left);
+        long rightValue = rightRow.getPackedDateTime(pair.right);
+        return Long.compare(leftValue, rightValue);
       };
     } else if (pair.type.equals(ColumnType.INSTANT)) {
-      return (r11, r21) -> {
-        long b1 = r11.getPackedInstant(pair.left);
-        long b2 = r21.getPackedInstant(pair.right);
-        return Long.compare(b1, b2);
+      return (leftRow, rightRow) -> {
+        long leftValue = leftRow.getPackedInstant(pair.left);
+        long rightValue = rightRow.getPackedInstant(pair.right);
+        return Long.compare(leftValue, rightValue);
       };
     } else if (pair.type.equals(ColumnType.DOUBLE)) {
-      return (r11, r21) -> {
-        double b1 = r11.getDouble(pair.left);
-        double b2 = r21.getDouble(pair.right);
-        return Double.compare(b1, b2);
+      return (leftRow, rightRow) -> {
+        double leftValue = leftRow.getDouble(pair.left);
+        double rightValue = rightRow.getDouble(pair.right);
+        return Double.compare(leftValue, rightValue);
       };
     } else if (pair.type.equals(ColumnType.FLOAT)) {
-      return (r11, r21) -> {
-        float b1 = r11.getFloat(pair.left);
-        float b2 = r21.getFloat(pair.right);
-        return Float.compare(b1, b2);
+      return (leftRow, rightRow) -> {
+        float leftValue = leftRow.getFloat(pair.left);
+        float rightValue = rightRow.getFloat(pair.right);
+        return Float.compare(leftValue, rightValue);
       };
     } else if (pair.type.equals(ColumnType.BOOLEAN)) {
-      return (r11, r21) -> {
-        byte b1 = r11.getBooleanAsByte(pair.left);
-        byte b2 = r21.getBooleanAsByte(pair.right);
-        return Byte.compare(b1, b2);
+      return (leftRow, rightRow) -> {
+        byte leftValue = leftRow.getBooleanAsByte(pair.left);
+        byte rightValue = rightRow.getBooleanAsByte(pair.right);
+        return Byte.compare(leftValue, rightValue);
       };
     } else if (pair.type.equals(ColumnType.STRING)) {
-      return (r11, r21) -> {
-        String b1 = r11.getString(pair.left);
-        String b2 = r21.getString(pair.right);
-        return b1.compareTo(b2);
+      return (leftRow, rightRow) -> {
+        String leftValue = leftRow.getString(pair.left);
+        String rightValue = rightRow.getString(pair.right);
+        return leftValue.compareTo(rightValue);
       };
     }
     throw new RuntimeException("Unhandled ColumnType in SortKey.");

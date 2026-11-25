@@ -128,6 +128,15 @@ public class StandardTableSliceGroup extends TableSliceGroup {
     }
   }
 
+  /** Returns the sum of the sizes for the columns in the given {@link Column} list */
+  private int getByteSize(List<Column<?>> columns) {
+    int byteSize = 0;
+    for (Column<?> c : columns) {
+      byteSize += c.byteSize();
+    }
+    return byteSize;
+  }
+
   private boolean containsTextColumn(List<Column<?>> splitColumns) {
     return false;
     // return splitColumns.stream().anyMatch(objects -> objects.type().equals(ColumnType.TEXT));

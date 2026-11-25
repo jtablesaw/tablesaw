@@ -1,7 +1,6 @@
 package tech.tablesaw.columns.times;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -76,9 +75,7 @@ public class TimeParser extends AbstractColumnParser<LocalTime> {
     if (readOptions.locale() != null) {
       locale = readOptions.locale();
     }
-    if (readOptions.missingValueIndicators().length > 0) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
-    }
+    applyMissingValueIndicators(readOptions);
   }
 
   @Override

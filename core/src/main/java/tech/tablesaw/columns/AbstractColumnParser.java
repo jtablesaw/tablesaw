@@ -1,7 +1,9 @@
 package tech.tablesaw.columns;
 
+import com.google.common.collect.Lists;
 import java.util.List;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.TypeUtils;
 
 /**
@@ -86,5 +88,15 @@ public abstract class AbstractColumnParser<T> {
 
   public void setMissingValueStrings(List<String> missingValueStrings) {
     this.missingValueStrings = missingValueStrings;
+  }
+
+  /**
+   * Uses the missing-value indicators from the given read options, if any were provided. Otherwise
+   * the default indicators are kept.
+   */
+  protected void applyMissingValueIndicators(ReadOptions readOptions) {
+    if (readOptions.missingValueIndicators().length > 0) {
+      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
+    }
   }
 }

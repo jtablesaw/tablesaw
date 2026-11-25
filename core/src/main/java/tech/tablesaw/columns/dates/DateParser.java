@@ -1,6 +1,5 @@
 package tech.tablesaw.columns.dates;
 
-import com.google.common.collect.Lists;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -81,9 +80,7 @@ public class DateParser extends AbstractColumnParser<LocalDate> {
     if (readOptions.locale() != null) {
       locale = readOptions.locale();
     }
-    if (readOptions.missingValueIndicators().length > 0) {
-      missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicators());
-    }
+    applyMissingValueIndicators(readOptions);
   }
 
   public DateParser(ColumnType type) {

@@ -1,6 +1,5 @@
 package tech.tablesaw.analytic;
 
-import java.util.function.Function;
 import tech.tablesaw.analytic.WindowFrame.WindowGrowthType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
@@ -65,7 +64,7 @@ class WindowSlider {
       this.set(i, function.getValue());
 
       // Slide the left side of the window if applicable for the window definition.
-      int newLeftBound = slideLeftStrategy().apply(leftBound);
+      int newLeftBound = windowGrowthType.slideLeftBound(leftBound);
       if (newLeftBound > leftBound && isRowNumberInSlice(newLeftBound)) {
         // If the left side of the window changed remove the left most value from the aggregate
         // function.
@@ -74,7 +73,7 @@ class WindowSlider {
       leftBound = newLeftBound;
 
       // Slide the right side of the window if applicable for the window definition.
-      int newRightBound = slideRightStrategy().apply(rightBound);
+      int newRightBound = windowGrowthType.slideRightBound(rightBound);
       if (newRightBound > rightBound && isRowNumberInSlice(newRightBound)) {
         // If the right side of the window changed add the next value to the aggregate function.
         if (isMissing(newRightBound)) {
@@ -136,28 +135,6 @@ class WindowSlider {
   /** Returns true of the rowNumber exists in the slice. */
   private boolean isRowNumberInSlice(int rowNumber) {
     return rowNumber >= 0 && rowNumber < slice.rowCount();
-  }
-
-  private Function<Integer, Integer> slideLeftStrategy() {
-    switch (this.windowGrowthType) {
-      case FIXED:
-      case FIXED_LEFT:
-        return i -> i;
-      case SLIDING:
-        return i -> i + 1;
-    }
-    throw new IllegalArgumentException("Unexpected growthType: " + this.windowGrowthType);
-  }
-
-  private Function<Integer, Integer> slideRightStrategy() {
-    switch (this.windowGrowthType) {
-      case FIXED:
-        return i -> i;
-      case FIXED_LEFT:
-      case SLIDING:
-        return i -> i + 1;
-    }
-    throw new IllegalArgumentException("Unexpected growthType: " + this.windowGrowthType);
   }
 
   private int getInitialLeftBound() {
